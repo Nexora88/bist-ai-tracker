@@ -98,10 +98,51 @@
 
     <h2>Takip Listesi</h2>
 
-<div class="card">
-    <h3>
-    <a href="thyao.html">THYAO</a>
-</h3>
+<div id="stocks"></div>
+
+<script>
+const stocks = [
+  {
+    symbol: "THYAO",
+    name: "Türk Hava Yolları",
+    price: 312,
+    change: +1.8
+  },
+  {
+    symbol: "ASELS",
+    name: "Aselsan",
+    price: 145,
+    change: +0.9
+  },
+  {
+    symbol: "TUPRS",
+    name: "Tüpraş",
+    price: 178,
+    change: -0.4
+  }
+];
+
+const container = document.getElementById("stocks");
+
+stocks.forEach(stock => {
+  const div = document.createElement("div");
+
+  const color = stock.change >= 0 ? "green" : "red";
+
+  div.innerHTML = `
+    <div class="card">
+      <h3>${stock.symbol}</h3>
+      <p>${stock.name}</p>
+      <p>Fiyat: ${stock.price} TL</p>
+      <p style="color:${color}">
+        Günlük: ${stock.change}%
+      </p>
+    </div>
+  `;
+
+  container.appendChild(div);
+});
+</script>
     <p>Türk Hava Yolları</p>
     <p>Fiyat: 312 TL</p>
     <p class="positive">Günlük: +%1.8</p>
