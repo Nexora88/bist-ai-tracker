@@ -51,8 +51,23 @@
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     border-left: 5px solid #1e3a8a;
+    transition: 0.3s;
 }
-    .cards-container {
+    .card {
+    background: white;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-left: 5px solid #1e3a8a;
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.cards-container {
     display: flex;
     gap: 15px;
     flex-wrap: wrap;
