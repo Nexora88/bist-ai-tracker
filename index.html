@@ -111,14 +111,14 @@
     <div class="card">
     <h2>🔍 Hisse Ara</h2>
 
-    <input type="text" placeholder="THYAO, ASELS, TUPRS..." />
+    <input id="searchInput" type="text" placeholder="THYAO, ASELS, TUPRS..." />
 </div>
 
     <hr>
 
     <h2>Takip Listesi</h2>
 
-<div class="cards-container">
+<div id="hisseListesi" class="cards-container">
 
 <div class="card">
 <h3>
@@ -376,6 +376,33 @@
     <hr>
     <p><strong>Toplam Değer: 7.000 TL</strong></p>
 </div>
+</div>
 
+<script>
+const searchInput = document.getElementById("searchInput");
+
+searchInput.addEventListener("keyup", function() {
+
+    let filtre = searchInput.value.toLowerCase();
+
+    let kartlar = document.querySelectorAll("#hisseListesi .card");
+
+    kartlar.forEach(function(kart) {
+
+        let hisse = kart.innerText.toLowerCase();
+
+        if (hisse.includes(filtre)) {
+            kart.style.display = "block";
+        } else {
+            kart.style.display = "none";
+        }
+
+    });
+
+});
+</script>
+
+</body>
+</html>
 </body>
 </html>
