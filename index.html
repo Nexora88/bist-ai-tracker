@@ -476,16 +476,24 @@ searchInput.addEventListener("keyup", function() {
 </script>
 
     <script>
-let takipSayisi = 0;
+<script>
+let takipte = false;
 
 document.querySelector(".takipBtn").addEventListener("click", function() {
 
-    takipSayisi++;
-
-    document.getElementById("takipSayisi").innerText =
-        takipSayisi + " Hisse";
+    if (!takipte) {
+        document.getElementById("takipSayisi").innerText = "1 Hisse";
+        this.innerText = "⭐ Takip Ediliyor";
+        takipte = true;
+    } else {
+        document.getElementById("takipSayisi").innerText = "0 Hisse";
+        this.innerText = "⭐ Takip Et";
+        takipte = false;
+    }
 
 });
+</script>
+
 </script>
 
 </body>
