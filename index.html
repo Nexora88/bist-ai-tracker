@@ -475,5 +475,18 @@ searchInput.addEventListener("keyup", function() {
 });
 </script>
 
+    <script>
+let takipSayisi = 0;
+
+document.querySelector(".takipBtn").addEventListener("click", function() {
+
+    takipSayisi++;
+
+    document.getElementById("takipSayisi").innerText =
+        takipSayisi + " Hisse";
+
+});
+</script>
+
 </body>
 </html>
