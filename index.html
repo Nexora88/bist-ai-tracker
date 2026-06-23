@@ -389,7 +389,7 @@ searchInput.addEventListener("keyup", function() {
 
     kartlar.forEach(function(kart) {
 
-        let hisse = kart.innerText.toLowerCase();
+        let hisse = kart.querySelector("h3").innerText.toLowerCase();
 
         if (hisse.includes(filtre)) {
             kart.style.display = "block";
