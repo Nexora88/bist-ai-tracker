@@ -425,13 +425,23 @@
     <h2>💼 Portföyüm</h2>
 
 <div class="card">
-    <p>Nakit: 3.000 TL</p>
-    <p>RYSAS: 2.000 TL</p>
-    <p>HLGYO: 2.000 TL</p>
+    <p id="nakit">Nakit: 3000 TL</p>
+    <p id="rysas">RYSAS: 2000 TL</p>
+    <p id="hlgyo">HLGYO: 2000 TL</p>
     <hr>
-    <p><strong>Toplam Değer: 7.000 TL</strong></p>
+    <p><strong>Toplam Değer: <span id="toplam"></span> TL</strong></p>
 </div>
 </div>
+
+    <script>
+let nakit = 3000;
+let rysas = 2000;
+let hlgyo = 2000;
+
+let toplam = nakit + rysas + hlgyo;
+
+document.getElementById("toplam").innerText = toplam;
+</script>
 
 <script>
 const searchInput = document.getElementById("searchInput");
@@ -457,7 +467,5 @@ searchInput.addEventListener("keyup", function() {
 });
 </script>
 
-</body>
-</html>
 </body>
 </html>
