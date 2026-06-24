@@ -249,16 +249,16 @@ placeholder="THYAO, ASELS, TUPRS..."
 <script>
 
 const hisseler = [
-{kod:"THYAO", ad:"Türk Hava Yolları"},
-{kod:"ASELS", ad:"Aselsan"},
-{kod:"TUPRS", ad:"Tüpraş"},
-{kod:"KCHOL", ad:"Koç Holding"},
-{kod:"EREGL", ad:"Ereğli"},
-{kod:"AKBNK", ad:"Akbank"},
-{kod:"GARAN", ad:"Garanti"},
-{kod:"ISCTR", ad:"İş Bankası"},
-{kod:"SAHOL", ad:"Sabancı"},
-{kod:"YKBNK", ad:"Yapı Kredi"}
+{kod:"THYAO", ad:"Türk Hava Yolları", logo:"logos/thyao.png"},
+{kod:"ASELS", ad:"Aselsan", logo:"logos/asels.png"},
+{kod:"TUPRS", ad:"Tüpraş", logo:"logos/tuprs.png"},
+{kod:"KCHOL", ad:"Koç Holding", logo:"logos/kchol.png"},
+{kod:"EREGL", ad:"Ereğli", logo:"logos/eregl.png"},
+{kod:"AKBNK", ad:"Akbank", logo:"logos/akbnk.png"},
+{kod:"GARAN", ad:"Garanti BBVA", logo:"logos/garan.png"},
+{kod:"ISCTR", ad:"İş Bankası", logo:"logos/isctr.png"},
+{kod:"SAHOL", ad:"Sabancı Holding", logo:"logos/sahol.png"},
+{kod:"YKBNK", ad:"Yapı Kredi", logo:"logos/ykbnk.png"}
 ];
 
 let takipte = 0;
@@ -275,13 +275,34 @@ kart.className =
 "stock-card";
 
 kart.innerHTML = `
+
+<div style="display:flex;align-items:center;gap:10px;">
+
+<img
+src="${hisse.logo}"
+width="40"
+height="40"
+style="border-radius:8px;"
+
+>
+
 <h3>
 <a href="${hisse.kod.toLowerCase()}.html">
 ${hisse.kod}
 </a>
 </h3>
 
+</div>
+
 <p>${hisse.ad}</p>
+
+<p>AI Notu: Pozitif</p>
+
+<button class="followBtn">
+⭐ Takip Et
+</button>
+
+`;
 
 <p>AI Notu: Pozitif</p>
 
