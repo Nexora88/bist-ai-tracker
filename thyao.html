@@ -44,5 +44,39 @@
         </p>
     </div>
 
+    <div class="card" style="margin-top:20px;">
+
+<h2>📈 Canlı THYAO Grafiği</h2>
+
+<div class="tradingview-widget-container">
+  <div id="tradingview_thyao"></div>
+
+<script
+type="text/javascript"
+src="https://s3.tradingview.com/tv.js">
+</script>
+
+<script>
+new TradingView.widget({
+  "width": "100%",
+  "height": 500,
+  "symbol": "BIST:THYAO",
+  "interval": "D",
+  "timezone": "Europe/Istanbul",
+  "theme": "light",
+  "style": "1",
+  "locale": "tr",
+  "toolbar_bg": "#f1f3f6",
+  "enable_publishing": false,
+  "hide_top_toolbar": false,
+  "save_image": true,
+  "container_id": "tradingview_thyao"
+});
+</script>
+
+</div>
+
+</div>
+
 </body>
 </html>
