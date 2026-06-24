@@ -539,12 +539,18 @@ document.querySelectorAll(".takipBtn").forEach(function(btn) {
             takipte++;
 
             let li = document.createElement("li");
-            li.id = "takip-" + hisseKodu;
-            li.innerText = hisseKodu;
+li.id = "takip-" + hisseKodu;
 
-            document
-                .getElementById("takipListesi")
-                .appendChild(li);
+let link = document.createElement("a");
+link.href = hisseKodu.toLowerCase() + ".html";
+link.innerText = hisseKodu;
+
+li.appendChild(link);
+
+document
+.getElementById("takipListesi")
+.appendChild(li);
+
         }
 
         document.getElementById("takipSayisi").innerText =
