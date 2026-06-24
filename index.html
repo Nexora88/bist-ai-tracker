@@ -516,14 +516,35 @@ document.querySelectorAll(".takipBtn").forEach(function(btn) {
 
     btn.addEventListener("click", function() {
 
+        let hisseKodu =
+            this.parentElement.querySelector("a").innerText;
+
         if (this.classList.contains("active")) {
+
             this.classList.remove("active");
             this.innerText = "⭐ Takip Et";
             takipte--;
+
+            let eleman =
+                document.getElementById("takip-" + hisseKodu);
+
+            if (eleman) {
+                eleman.remove();
+            }
+
         } else {
+
             this.classList.add("active");
             this.innerText = "⭐ Takip Ediliyor";
             takipte++;
+
+            let li = document.createElement("li");
+            li.id = "takip-" + hisseKodu;
+            li.innerText = hisseKodu;
+
+            document
+                .getElementById("takipListesi")
+                .appendChild(li);
         }
 
         document.getElementById("takipSayisi").innerText =
@@ -533,6 +554,7 @@ document.querySelectorAll(".takipBtn").forEach(function(btn) {
 
 });
 </script>
+
 
 
 
