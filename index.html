@@ -13,6 +13,19 @@
     color: red;
     font-weight: bold;
 }
+    .cards-container {
+    display: flex;
+    overflow-x: auto;
+    gap: 15px;
+    padding: 10px;
+    scroll-behavior: smooth;
+}
+
+.cards-container .card {
+    min-width: 250px;
+    flex-shrink: 0;
+}
+
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -562,9 +575,17 @@ document
     });
 
 });
+        <script>
+function sagaKay() {
+    document.getElementById("hisseListesi")
+        .scrollBy(300, 0);
+}
+
+function solaKay() {
+    document.getElementById("hisseListesi")
+        .scrollBy(-300, 0);
+}
 </script>
-
-
 
 
 </body>
