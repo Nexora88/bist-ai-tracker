@@ -506,22 +506,30 @@ searchInput.addEventListener("keyup", function() {
 </script>
 
     <script>
-let takipte = false;
+let takipte = 0;
 
-document.querySelector(".takipBtn").addEventListener("click", function() {
+document.querySelectorAll(".takipBtn").forEach(function(btn) {
 
-    if (!takipte) {
-        document.getElementById("takipSayisi").innerText = "1 Hisse";
-        this.innerText = "⭐ Takip Ediliyor";
-        takipte = true;
-    } else {
-        document.getElementById("takipSayisi").innerText = "0 Hisse";
-        this.innerText = "⭐ Takip Et";
-        takipte = false;
-    }
+    btn.addEventListener("click", function() {
+
+        if (this.classList.contains("active")) {
+            this.classList.remove("active");
+            this.innerText = "⭐ Takip Et";
+            takipte--;
+        } else {
+            this.classList.add("active");
+            this.innerText = "⭐ Takip Ediliyor";
+            takipte++;
+        }
+
+        document.getElementById("takipSayisi").innerText =
+            takipte + " Hisse";
+
+    });
 
 });
 </script>
+
 
 
 </body>
