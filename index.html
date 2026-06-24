@@ -1,605 +1,423 @@
 <!DOCTYPE html>
-<html>
+
+<html lang="tr">
 <head>
-    <title>BIST AI Tracker</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-.positive {
-    color: green;
-    font-weight: bold;
-}
+<title>BIST AI Tracker</title>
 
-.negative {
-    color: red;
-    font-weight: bold;
-}
-.cards-container {
-    display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    gap: 15px;
-    padding: 10px;
-    scroll-behavior: smooth;
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
 
-.cards-container .card {
-    min-width: 250px;
-    max-width: 250px;
-    flex: 0 0 auto;
+body{
+    background:#0f172a;
+    color:white;
+    font-family:Arial, sans-serif;
 }
 
-.cards-container .card {
-    min-width: 250px;
-    flex-shrink: 0;
+.navbar{
+    background:#111827;
+    padding:15px;
+    display:flex;
+    gap:20px;
+    border-bottom:1px solid #1f2937;
 }
 
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 20px;
-        }
-
-        h1 {
-            color: #1e3a8a;
-        }
-        h2 {
-    color: #1e3a8a;
-}
-        input {
-    width: 90%;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-}
-.navbar {
-    background: #1e3a8a;
-    padding: 15px;
-    border-radius: 10px;
-    margin-bottom: 20px;
+.navbar a{
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
 }
 
-.navbar a {
-    color: white;
-    text-decoration: none;
-    margin-right: 15px;
-    font-weight: bold;
-}
-        .card {
-    background: white;
-    padding: 15px;
-    margin: 10px 0;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    border-left: 5px solid #1e3a8a;
-    transition: 0.3s;
-}
-    .card {
-    background: white;
-    padding: 15px;
-    margin: 10px 0;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    border-left: 5px solid #1e3a8a;
-    transition: 0.3s;
+.container{
+    padding:20px;
 }
 
-.card:hover {
-    transform: translateY(-5px);
+h1{
+    margin-bottom:10px;
 }
 
-.cards-container {
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
+.subtitle{
+    color:#94a3b8;
+    margin-bottom:25px;
 }
-    </style>
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:15px;
+    margin-bottom:25px;
+}
+
+.card{
+    background:#111827;
+    border:1px solid #1f2937;
+    border-radius:12px;
+    padding:15px;
+}
+
+.card h2{
+    margin-bottom:10px;
+}
+
+.positive{
+    color:#22c55e;
+    font-weight:bold;
+}
+
+.negative{
+    color:#ef4444;
+    font-weight:bold;
+}
+
+.search-box{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    margin-top:10px;
+}
+
+.slider-wrapper{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-top:20px;
+}
+
+.arrowBtn{
+    background:#2563eb;
+    color:white;
+    border:none;
+    padding:12px;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.arrowBtn:hover{
+    background:#1d4ed8;
+}
+
+.cards-container{
+    display:flex;
+    gap:15px;
+    overflow-x:auto;
+    scroll-behavior:smooth;
+    width:100%;
+    padding:10px;
+}
+
+.cards-container::-webkit-scrollbar{
+    height:8px;
+}
+
+.cards-container::-webkit-scrollbar-thumb{
+    background:#374151;
+    border-radius:10px;
+}
+
+.stock-card{
+    min-width:280px;
+    background:#111827;
+    border:1px solid #1f2937;
+    border-radius:12px;
+    padding:15px;
+}
+
+.stock-card h3{
+    margin-bottom:10px;
+}
+
+.stock-card a{
+    color:white;
+    text-decoration:none;
+}
+
+.followBtn{
+    width:100%;
+    margin-top:10px;
+    padding:10px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    background:#2563eb;
+    color:white;
+}
+
+.followBtn.active{
+    background:#16a34a;
+}
+
+.portfolio-card{
+    margin-top:25px;
+}
+
+.chart-box{
+    margin-top:25px;
+    background:#111827;
+    padding:15px;
+    border-radius:12px;
+}
+
+canvas{
+    background:white;
+    border-radius:10px;
+}
+
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
-
 <body>
 
-    <div class="navbar">
-    <a href="#">Ana Sayfa</a>
-    <a href="portfolio.html">Portföy</a>
-    <a href="ai-analiz.html">AI Analiz</a>
+<div class="navbar">
+<a href="#">Ana Sayfa</a>
+<a href="#">Portföy</a>
+<a href="#">AI Analiz</a>
 </div>
 
-    <h1>📈 BIST AI Tracker</h1>
+<div class="container">
 
-<p>
-    Yapay zeka destekli Borsa İstanbul analiz platformu
+<h1>📈 BIST AI Tracker</h1>
+
+<p class="subtitle">
+Investing + TradingView tarzı yapay zeka destekli BIST platformu
 </p>
 
-<p><strong>Bu sürüm yalnızca BIST 30 hisselerini içermektedir.</strong></p>
+<div class="grid">
 
-<p>
-    BIST 30 Ortalama Günlük Değişim: +%0.4
-</p>
+<div class="card">
+<h2>📊 BIST30 Ortalama</h2>
+<p id="bist30Ort">+%0.42</p>
+</div>
 
-    <div class="card">
-    <h2>📈 Takip Edilen Hisse</h2>
-    <p id="takipSayisi">0 Hisse</p>
-
+<div class="card">
+<h2>📈 Takip Edilenler</h2>
+<p id="takipSayisi">0 Hisse</p>
 <ul id="takipListesi"></ul>
-
-</div>
-
-
-<div class="card">
-    <h2>🤖 AI Analiz Sayısı</h2>
-    <p>3 Analiz</p>
 </div>
 
 <div class="card">
-    <h2>💼 Portföy Değeri</h2>
-    <p>7.000 TL</p>
+<h2>💼 Portföy</h2>
+<p>Nakit: 3000 TL</p>
+<p>RYSAS: 2000 TL</p>
+<p>HLGYO: 2000 TL</p>
+<p><strong>Toplam: 7000 TL</strong></p>
+</div>
+
 </div>
 
 <div class="card">
-    <h2>📊 BIST 100</h2>
-    <p>Günlük Değişim: +%1.25</p>
-    <p>Piyasa Durumu: Pozitif</p>
-</div>
-    <div class="card">
-    <h2>🔍 Hisse Ara</h2>
-
-    <input id="searchInput" type="text" placeholder="THYAO, ASELS, TUPRS..." />
+<h2>🔍 Hisse Ara</h2>
+<input
+id="searchInput"
+class="search-box"
+placeholder="THYAO, ASELS, TUPRS..."
+>
 </div>
 
-    <hr>
+<div class="slider-wrapper">
 
-    <h2>Takip Listesi</h2>
-    
-    <button onclick="solaKay()">⬅️</button> 
-    <button onclick="sagaKay()">➡️</button>
-button {
-    margin: 5px;
-    padding: 8px 12px;
-    cursor: pointer;
-}
+<button class="arrowBtn" onclick="solaKay()">
+⬅️
+</button>
 
 <div id="hisseListesi" class="cards-container">
-
-<div class="card">
-<h3>
-<a href="thyao.html">THYAO</a>
-</h3>
-    <p>Türk Hava Yolları</p>
-    <p>Fiyat: 312 TL</p>
-    <p class="positive">Günlük: +%1.8</p>
-    <p>AI Notu: Pozitif</p>
-    <button class="takipBtn">⭐ Takip Et</button>
 </div>
 
-<div class="card">
-    <h3>
-    <a href="asels.html">ASELS</a>
-</h3>
-    <p>Aselsan</p>
-    <p>Fiyat: 145 TL</p>
-    <p class="positive">Günlük: +%0.9</p>
-    <p>AI Notu: Nötr</p>
-    <button class="takipBtn">⭐ Takip Et</button>
-</div>
-
-<div class="card">
-    <h3>
-    <a href="tuprs.html">TUPRS</a>
-</h3>
-    <p>Tüpraş</p>
-    <p>Fiyat: 178 TL</p>
-    <p class="negative">Günlük: -%0.4</p>
-    <p>AI Notu: Dikkat</p>
-    <button class="takipBtn">⭐ Takip Et</button>
-</div>
-    
-    <div class="card">
-    <h3>
-    <a href="kchol.html">KCHOL</a>
-</h3>
-    <p>Koç Holding</p>
-    <p>Fiyat: 215 TL</p>
-    <p class="positive">Günlük: +%1.2</p>
-    <p>AI Notu: Pozitif</p>
-    <button class="takipBtn">⭐ Takip Et</button>
-</div>
-
-<div class="card">
-    <h3>
-    <a href="eregl.html">EREGL</a>
-</h3>
-    <p>Ereğli Demir Çelik</p>
-    <p>Fiyat: 28 TL</p>
-    <p class="negative">Günlük: -%0.5</p>
-    <p>AI Notu: Nötr</p>
-    <button class="takipBtn">⭐ Takip Et</button>
-</div>
-
-<div class="card">
-    <h3>
-    <a href="akbnk.html">AKBNK</a>
-</h3>
-    <p>Akbank</p>
-    <p>Fiyat: 72 TL</p>
-    <p class="positive">Günlük: +%0.4</p>
-    <p>AI Notu: Pozitif</p>
-    <button class="takipBtn">⭐ Takip Et</button>
-</div>
-
-<div class="card">
-    <h3>
-        <a href="garan.html">GARAN</a>
-    </h3>
-    <p>Garanti BBVA</p>
-    <p>Fiyat: 135 TL</p>
-    <p class="positive">Günlük: +%0.6</p>
-    <p>AI Notu: Pozitif</p>
-    <button class="takipBtn">⭐ Takip Et</button>
-</div>
-
-<div class="card">
-    <h3>
-    <a href="isctr.html">ISCTR</a>
-</h3>
-    <p>İş Bankası</p>
-    <p>Fiyat: 18 TL</p>
-    <p class="positive">Günlük: +%0.3</p>
-    <p>AI Notu: Nötr</p>
-    <button class="takipBtn">⭐ Takip Et</button>
-</div>
-    
-<div class="card">
-    <h3>
-        <a href="sahol.html">SAHOL</a>
-    </h3>
-    <p>Sabancı Holding</p>
-    <p>Fiyat: 72 TL</p>
-    <p class="positive">Günlük: +%0.8</p>
-    <p>AI Notu: Pozitif</p>
-    <button class="takipBtn">⭐ Takip Et</button>
-</div>
-
-<div class="card">
-    <h3>
-    <a href="ykbnk.html">YKBNK</a>
-</h3>
-    <p>Yapı Kredi</p>
-    <p>Fiyat: 34 TL</p>
-    <p class="positive">Günlük: +%0.5</p>
-    <p>AI Notu: Nötr</p>
-    <button class="takipBtn">⭐ Takip Et</button>
-</div>
-    
-<div class="card">
-    <h3>
-    <a href="sasa.html">SASA</a>
-</h3>
-    <p>SASA Polyester</p>
-    <p>Fiyat: 42 TL</p>
-    <p class="positive">Günlük: +%0.7</p>
-    <p>AI Notu: Pozitif</p>
-    <button class="takipBtn">⭐ Takip Et</button>
-</div>
-
-<div class="card">
-    <h3>
-    <a href="bimas.html">BIMAS</a>
-</h3>
-    <p>BİM Mağazalar</p>
-    <p>Fiyat: 615 TL</p>
-    <p class="positive">Günlük: +%1.2</p>
-    <p>AI Notu: Pozitif</p>
-    <button class="takipBtn">⭐ Takip Et</button>
-</div>
-
-<div class="card">
-    <h3>
-    <a href="sise.html">SISE</a>
-</h3>
-    <p>Şişecam</p>
-    <p>Fiyat: 46 TL</p>
-    <p class="positive">Günlük: +%0.4</p>
-    <p>AI Notu: Nötr</p>
-    <button class="takipBtn">⭐ Takip Et</button>
-</div>
-
-<div class="card">
-    <h3>
-    <a href="petkm.html">PETKM</a>
-</h3>
-    <p>Petkim</p>
-    <p>Fiyat: 21 TL</p>
-    <p class="negative">Günlük: -%0.2</p>
-    <p>AI Notu: Dikkat</p>
-    <button class="takipBtn">⭐ Takip Et</button>
-</div>
-
-<div class="card">
-    <h3>
-    <a href="kozal.html">KOZAL</a>
-</h3>
-    <p>Koza Altın</p>
-    <p>Fiyat: 32 TL</p>
-    <p class="positive">Günlük: +%0.6</p>
-    <p>AI Notu: Pozitif</p>
-    <button class="takipBtn">⭐ Takip Et</button>
-</div>
-
-<div class="card">
-    <h3>
-    <a href="enkai.html">ENKAI</a>
-</h3>
-    <p>Enka İnşaat</p>
-    <p>Fiyat: 78 TL</p>
-    <p class="positive">Günlük: +%0.5</p>
-    <p>AI Notu: Nötr</p>
-    <button class="takipBtn">⭐ Takip Et</button>
-</div>
-
-<div class="card">
-    <h3>
-    <a href="froto.html">FROTO</a>
-</h3>
-    <p>Ford Otosan</p>
-    <p>Fiyat: 980 TL</p>
-    <p class="positive">Günlük: +%1.1</p>
-    <p>AI Notu: Pozitif</p>
-    <button class="takipBtn">⭐ Takip Et</button>
-</div>
-
-<div class="card">
-    <h3>
-    <a href="toaso.html">TOASO</a>
-</h3>
-    <p>Tofaş</p>
-    <p>Fiyat: 245 TL</p>
-    <p class="positive">Günlük: +%0.8</p>
-    <p>AI Notu: Pozitif</p>
-    <button class="takipBtn">⭐ Takip Et</button>
-</div>
-
-<div class="card">
-    <h3>
-    <a href="tcell.html">TCELL</a>
-</h3>
-    <p>Turkcell</p>
-    <p>Fiyat: 115 TL</p>
-    <p class="positive">Günlük: +%0.4</p>
-    <p>AI Notu: Pozitif</p>
-    <button class="takipBtn">⭐ Takip Et</button>
-</div>
-
-<div class="card">
-    <h3>
-    <a href="ekgyo.html">EKGYO</a>
-</h3>
-    <p>Emlak Konut GYO</p>
-    <p>Fiyat: 14 TL</p>
-    <p class="positive">Günlük: +%0.2</p>
-    <p>AI Notu: Nötr</p>
-    <button class="takipBtn">⭐ Takip Et</button>
-</div>
-
-<div class="card">
-    <h3>
-    <a href="hekts.html">HEKTS</a>
-</h3>
-    <p>Hektaş</p>
-    <p>Fiyat: 9 TL</p>
-    <p class="negative">Günlük: -%0.4</p>
-    <p>AI Notu: Dikkat</p>
-    <button class="takipBtn">⭐ Takip Et</button>
-</div>
-
-<div class="card">
-    <h3>
-    <a href="oyakc.html">OYAKC</a>
-</h3>
-    <p>OYAK Çimento</p>
-    <p>Fiyat: 31 TL</p>
-    <p class="positive">Günlük: +%0.3</p>
-    <p>AI Notu: Nötr</p>
-    <button class="takipBtn">⭐ Takip Et</button>
-</div>
-
-<div class="card">
-    <h3>
-    <a href="gubrf.html">GUBRF</a>
-</h3>
-    <p>Gübre Fabrikaları</p>
-    <p>Fiyat: 290 TL</p>
-    <p class="negative">Günlük: -%0.5</p>
-    <p>AI Notu: Dikkat</p>
-    <button class="takipBtn">⭐ Takip Et</button>
-</div>
-
-<div class="card">
-    <h3>
-    <a href="dohol.html">DOHOL</a>
-</h3>
-    <p>Doğan Holding</p>
-    <p>Fiyat: 18 TL</p>
-    <p class="positive">Günlük: +%0.2</p>
-    <p>AI Notu: Nötr</p>
-    <button class="takipBtn">⭐ Takip Et</button>
-</div>
-
-<div class="card">
-    <h3>
-    <a href="vakbn.html">VAKBN</a>
-</h3>
-    <p>Vakıfbank</p>
-    <p>Fiyat: 29 TL</p>
-    <p class="positive">Günlük: +%0.4</p>
-    <p>AI Notu: Nötr</p>
-    <button class="takipBtn">⭐ Takip Et</button>
-</div>
-
-<div class="card">
-    <h3>
-    <a href="halkb.html">HALKB</a>
-</h3>
-    <p>Halkbank</p>
-    <p>Fiyat: 24 TL</p>
-    <p class="positive">Günlük: +%0.3</p>
-    <p>AI Notu: Nötr</p>
-    <button class="takipBtn">⭐ Takip Et</button>
-</div>
-
-<div class="card">
-    <h3>
-    <a href="tavhl.html">TAVHL</a>
-</h3>
-    <p>TAV Havalimanları</p>
-    <p>Fiyat: 285 TL</p>
-    <p class="positive">Günlük: +%0.7</p>
-    <p>AI Notu: Pozitif</p>
-    <button class="takipBtn">⭐ Takip Et</button>
-</div>
-
-<div class="card">
-    <h3>
-    <a href="alark.html">ALARK</a>
-</h3>
-    <p>Alarko Holding</p>
-    <p>Fiyat: 108 TL</p>
-    <p class="positive">Günlük: +%0.5</p>
-    <p>AI Notu: Pozitif</p>
-    <button class="takipBtn">⭐ Takip Et</button>
-</div>
-
-<div class="card">
-    <h3>
-    <a href="krdmd.html">KRDMD</a>
-</h3>
-    <p>Kardemir D</p>
-    <p>Fiyat: 31 TL</p>
-    <p class="negative">Günlük: -%0.2</p>
-    <p>AI Notu: Nötr</p>
-    <button class="takipBtn">⭐ Takip Et</button>
-</div>
-
-<div class="card">
-    <h3>
-    <a href="aefes.html">AEFES</a>
-</h3>
-    <p>Anadolu Efes</p>
-    <p>Fiyat: 198 TL</p>
-    <p class="positive">Günlük: +%0.6</p>
-    <p>AI Notu: Pozitif</p>
-    <button class="takipBtn">⭐ Takip Et</button>
-</div>
+<button class="arrowBtn" onclick="sagaKay()">
+➡️
+</button>
 
 </div>
-    <hr>
 
-    <h2>💼 Portföyüm</h2>
+<div class="chart-box">
 
-<div class="card">
-    <p id="nakit">Nakit: 3000 TL</p>
-    <p id="rysas">RYSAS: 2000 TL</p>
-    <p id="hlgyo">HLGYO: 2000 TL</p>
-    <hr>
-    <p><strong>Toplam Değer: <span id="toplam"></span> TL</strong></p>
+<h2>📊 AI Grafik Merkezi</h2>
+
+<canvas id="myChart" height="100"></canvas>
+
 </div>
-</div>
-
-    <script>
-let nakit = 3000;
-let rysas = 2000;
-let hlgyo = 2000;
-
-let toplam = nakit + rysas + hlgyo;
-
-document.getElementById("toplam").innerText = toplam;
-</script>
 
 <script>
-const searchInput = document.getElementById("searchInput");
 
-searchInput.addEventListener("keyup", function() {
+const hisseler = [
+{kod:"THYAO", ad:"Türk Hava Yolları"},
+{kod:"ASELS", ad:"Aselsan"},
+{kod:"TUPRS", ad:"Tüpraş"},
+{kod:"KCHOL", ad:"Koç Holding"},
+{kod:"EREGL", ad:"Ereğli"},
+{kod:"AKBNK", ad:"Akbank"},
+{kod:"GARAN", ad:"Garanti"},
+{kod:"ISCTR", ad:"İş Bankası"},
+{kod:"SAHOL", ad:"Sabancı"},
+{kod:"YKBNK", ad:"Yapı Kredi"}
+];
 
-    let filtre = searchInput.value.toLowerCase();
-
-    let kartlar = document.querySelectorAll("#hisseListesi .card");
-
-    kartlar.forEach(function(kart) {
-
-        let hisse = kart.querySelector("h3").innerText.toLowerCase();
-
-        if (hisse.includes(filtre)) {
-            kart.style.display = "block";
-        } else {
-            kart.style.display = "none";
-        }
-
-    });
-
-});
-</script>
-
-    <script>
 let takipte = 0;
 
-document.querySelectorAll(".takipBtn").forEach(function(btn) {
+const liste =
+document.getElementById("hisseListesi");
 
-    btn.addEventListener("click", function() {
+hisseler.forEach(hisse=>{
 
-        let hisseKodu =
-            this.parentElement.querySelector("a").innerText;
+const kart =
+document.createElement("div");
 
-        if (this.classList.contains("active")) {
+kart.className =
+"stock-card";
 
-            this.classList.remove("active");
-            this.innerText = "⭐ Takip Et";
-            takipte--;
+kart.innerHTML = `
+<h3>
+<a href="${hisse.kod.toLowerCase()}.html">
+${hisse.kod}
+</a>
+</h3>
 
-            let eleman =
-                document.getElementById("takip-" + hisseKodu);
+<p>${hisse.ad}</p>
 
-            if (eleman) {
-                eleman.remove();
-            }
+<p>AI Notu: Pozitif</p>
 
-        } else {
+<button class="followBtn">
+⭐ Takip Et
+</button>
+`;
 
-            this.classList.add("active");
-            this.innerText = "⭐ Takip Ediliyor";
-            takipte++;
+liste.appendChild(kart);
 
-            let li = document.createElement("li");
-li.id = "takip-" + hisseKodu;
+});
 
-let link = document.createElement("a");
-link.href = hisseKodu.toLowerCase() + ".html";
-link.innerText = hisseKodu;
+document
+.querySelectorAll(".followBtn")
+.forEach(btn=>{
 
-li.appendChild(link);
+btn.addEventListener("click",function(){
+
+const kod =
+this.parentElement
+.querySelector("a")
+.innerText;
+
+if(this.classList.contains("active")){
+
+this.classList.remove("active");
+this.innerText =
+"⭐ Takip Et";
+
+takipte--;
+
+const eleman =
+document.getElementById(
+"takip-"+kod
+);
+
+if(eleman)
+eleman.remove();
+
+}
+else{
+
+this.classList.add("active");
+this.innerText =
+"⭐ Takip Ediliyor";
+
+takipte++;
+
+const li =
+document.createElement("li");
+
+li.id =
+"takip-"+kod;
+
+li.innerHTML =
+`<a href="${kod.toLowerCase()}.html">${kod}</a>`;
 
 document
 .getElementById("takipListesi")
 .appendChild(li);
 
-        }
+}
 
-        document.getElementById("takipSayisi").innerText =
-            takipte + " Hisse";
-
-    });
+document
+.getElementById("takipSayisi")
+.innerText =
+takipte + " Hisse";
 
 });
 
-function sagaKay() {
-    document.getElementById("hisseListesi")
-        .scrollBy(300, 0);
+});
+
+function sagaKay(){
+
+document
+.getElementById("hisseListesi")
+.scrollBy(350,0);
+
 }
 
-function solaKay() {
-    document.getElementById("hisseListesi")
-        .scrollBy(-300, 0);
+function solaKay(){
+
+document
+.getElementById("hisseListesi")
+.scrollBy(-350,0);
+
 }
-        
+
+document
+.getElementById("searchInput")
+.addEventListener("keyup",function(){
+
+let filtre =
+this.value.toLowerCase();
+
+document
+.querySelectorAll(".stock-card")
+.forEach(kart=>{
+
+let kod =
+kart.querySelector("a")
+.innerText
+.toLowerCase();
+
+if(kod.includes(filtre))
+kart.style.display="block";
+else
+kart.style.display="none";
+
+});
+
+});
+
+new Chart(
+document.getElementById("myChart"),
+{
+type:"line",
+data:{
+labels:[
+"Pzt",
+"Sal",
+"Çar",
+"Per",
+"Cum"
+],
+datasets:[{
+label:"BIST AI Trend",
+data:[100,110,108,120,130]
+}]
+}
+}
+);
+
 </script>
 
+</div>
 
 </body>
 </html>
