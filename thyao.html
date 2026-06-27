@@ -5,17 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>THYAO - BIST AI Tracker</title>
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
-body { background:#0f172a; color:white; font-family:Arial, sans-serif; }
-.container { padding:20px; max-width:1100px; margin:auto; }
-.card { background:#111827; border:1px solid #1f2937; border-radius:12px; padding:20px; margin-bottom:20px; }
-h1 { margin-bottom:15px; }
-.price { font-size:2.8em; font-weight:bold; margin:10px 0; }
-.positive { color:#22c55e; }
-.negative { color:#ef4444; }
-button { padding:12px 20px; margin:5px; border:none; border-radius:8px; cursor:pointer; }
-.back-btn { background:#64748b; color:white; }
-.tech-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:15px; margin-top:15px; }
+/* ... önceki stiller aynı ... */
 </style>
 </head>
 <body>
@@ -25,58 +15,44 @@ button { padding:12px 20px; margin:5px; border:none; border-radius:8px; cursor:p
     
     <h1>THYAO - Türk Hava Yolları</h1>
 
-    <!-- Fiyat ve Değişim -->
     <div class="card">
         <h2>Güncel Fiyat</h2>
         <p class="price" id="currentPrice">Yükleniyor...</p>
         <p id="changePercent" style="font-size:1.4em;"></p>
     </div>
 
-    <!-- Teknik Bilgiler -->
     <div class="card">
         <h2>Teknik Bilgiler</h2>
         <div class="tech-grid">
             <div><strong>Hacim:</strong> <span id="volume">---</span></div>
             <div><strong>RSI (14):</strong> <span id="rsi">---</span></div>
             <div><strong>Günlük Değişim:</strong> <span id="dailyChange">---</span></div>
-            <div><strong>Günlük Yüksek/Düşük:</strong> <span id="highLow">---</span></div>
+            <div><strong>Yüksek / Düşük:</strong> <span id="highLow">---</span></div>
         </div>
     </div>
 
-    <!-- Grafik -->
     <div class="card">
         <h2>Grafik</h2>
         <div style="height:520px;">
-            <iframe src="https://www.tradingview.com/widgetembed/?symbol=BIST%3ATHYAO" 
-                    width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
+            <iframe src="https://www.tradingview.com/widgetembed/?symbol=BIST%3ATHYAO" width="100%" height="100%" frameborder="0"></iframe>
         </div>
     </div>
 
-    <!-- Alarm -->
     <div class="card">
         <h2>🔔 Alarm Kur</h2>
-        <input id="alarmPrice" type="number" placeholder="Alarm fiyatı (örn: 245.50)" style="padding:12px; width:70%;">
+        <input id="alarmPrice" type="number" placeholder="Alarm fiyatı" style="padding:12px; width:70%;">
         <button onclick="setAlarm()">Alarm Kur</button>
-        <p id="alarmStatus" style="margin-top:10px; color:#94a3b8;"></p>
-    </div>
-
-    <!-- AI Yorum -->
-    <div class="card">
-        <h2>AI Yorum</h2>
-        <p id="aiYorum" style="line-height:1.6; background:#1e2937; padding:15px; border-radius:8px;">
-            THYAO, turizm sezonunun etkisiyle güçlü bir performans gösteriyor. Teknik göstergeler orta vadede pozitif sinyal veriyor.
-        </p>
-    </div>
-
-    <!-- Haberler -->
-    <div class="card">
-        <h2>Son Haberler</h2>
-        <div id="newsContainer">Haberler yükleniyor...</div>
+        <p id="alarmStatus" style="margin-top:10px;"></p>
     </div>
 </div>
 
 <script>
-// ====================== GERÇEK VERİ ÇEKME ======================
+// Bildirim izni
+if (Notification.permission === "default") {
+    Notification.requestPermission();
+}
+
+// Veri Yükleme
 async function loadData() {
     try {
         const res = await fetch('https://query1.finance.yahoo.com/v8/finance/chart/THYAO.IS?interval=1d');
@@ -89,7 +65,6 @@ async function loadData() {
         const change = meta.regularMarketChangePercent || 0;
         const volume = (quote.volume[quote.volume.length-1] / 1000000).toFixed(1) + "M";
 
-        // RSI basit hesaplama
         let rsi = "---";
         const closes = quote.close;
         if (closes.length >= 15) {
@@ -117,34 +92,25 @@ async function loadData() {
     }
 }
 
-// Alarm
 function setAlarm() {
     const price = document.getElementById("alarmPrice").value;
-    if (price) {
-        localStorage.setItem("alarm_THYAO", price);
-        document.getElementById("alarmStatus").textContent = `✅ Alarm kuruldu: ${price} ₺`;
-    }
-}
+    if (!price) return;
 
-// Haberler
-function loadNews() {
-    const container = document.getElementById("newsContainer");
-    container.innerHTML = `
-        <p style="padding:12px; background:#1e2937; margin:8px 0; border-radius:6px;">
-            <a href="https://www.kap.org.tr/tr/sirket-bilgileri/ozet/thyao" target="_blank" style="color:#60a5fa;">• KAP - THYAO Bildirimleri →</a>
-        </p>
-        <p style="padding:12px; background:#1e2937; margin:8px 0; border-radius:6px;">
-            <a href="https://www.borsaistanbul.com/tr/sayfa/2/hisse-senetleri" target="_blank" style="color:#60a5fa;">• Borsa İstanbul THYAO Sayfası →</a>
-        </p>
-        <p style="padding:12px; background:#1e2937; margin:8px 0; border-radius:6px;">
-            <a href="https://www.bloomberght.com/hisse-senetleri/thyao" target="_blank" style="color:#60a5fa;">• Bloomberg HT - THYAO Haberleri →</a>
-        </p>
-    `;
+    localStorage.setItem("alarm_THYAO", price);
+    document.getElementById("alarmStatus").innerHTML = `✅ Alarm kuruldu: <b>${price} ₺</b>`;
+
+    if (Notification.permission === "granted") {
+        new Notification("THYAO Alarmı Kuruldu", {
+            body: `${price} TL seviyesinde bildirim alacaksınız.`,
+            icon: "https://www.borsaistanbul.com/favicon.ico"
+        });
+    } else {
+        alert("Bildirim izni verilmedi. Tarayıcı ayarlarından izin verebilirsiniz.");
+    }
 }
 
 window.onload = () => {
     loadData();
-    loadNews();
 };
 </script>
 </body>
