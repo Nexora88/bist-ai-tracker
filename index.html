@@ -16,36 +16,14 @@ body.light .navbar { background:#e2e8f0; color:#1e2937; }
 .card { background:#111827; border:1px solid #1f2937; border-radius:12px; padding:15px; margin-bottom:20px; }
 body.light .card { background:white; border-color:#cbd5e1; }
 
-.stock-container {
-    display:flex; 
-    gap:15px; 
-    overflow-x:auto; 
-    padding:15px 0;
-    scroll-behavior:smooth;
-}
-.stock-card { 
-    min-width:280px; 
-    background:#111827; 
-    border:1px solid #1f2937; 
-    border-radius:12px; 
-    padding:15px; 
-    cursor:pointer;
-}
+.stock-container { display:flex; gap:15px; overflow-x:auto; padding:15px 0; scroll-behavior:smooth; }
+.stock-card { min-width:290px; background:#111827; border:1px solid #1f2937; border-radius:12px; padding:15px; cursor:pointer; }
 body.light .stock-card { background:white; border-color:#cbd5e1; }
 
-.followBtn {
-    width:100%; 
-    margin-top:10px; 
-    padding:10px; 
-    border:none; 
-    border-radius:8px; 
-    cursor:pointer; 
-    background:#2563eb; 
-    color:white;
-}
-.followBtn.active {
-    background:#16a34a;
-}
+.followBtn, .alarmBtn { width:100%; margin-top:8px; padding:9px; border:none; border-radius:8px; cursor:pointer; }
+.followBtn { background:#2563eb; color:white; }
+.followBtn.active { background:#16a34a; }
+.alarmBtn { background:#eab308; color:black; }
 
 .theme-toggle { margin-left:auto; padding:8px 16px; background:#334155; border:none; border-radius:8px; cursor:pointer; }
 </style>
@@ -61,16 +39,14 @@ body.light .stock-card { background:white; border-color:#cbd5e1; }
 <div class="container">
     <h1>📈 BIST AI Tracker</h1>
 
-    <input id="searchInput" placeholder="Hisse ara..." 
-           style="width:100%; padding:14px; margin:15px 0; border-radius:10px; background:#1e2937; color:white;">
+    <input id="searchInput" placeholder="Hisse ara..." style="width:100%;padding:14px;margin:15px 0;border-radius:10px;background:#1e2937;color:white;">
 
-    <!-- Hisseler -->
     <div class="stock-container" id="hisseListesi"></div>
 
     <!-- Takip Listesi -->
     <div class="card">
         <h2>⭐ Takip Edilenler (<span id="takipSayisi">0</span>)</h2>
-        <ul id="takipListesi" style="list-style:none; padding:10px;"></ul>
+        <ul id="takipListesi" style="list-style:none;"></ul>
     </div>
 
     <!-- Portföy -->
@@ -80,55 +56,76 @@ body.light .stock-card { background:white; border-color:#cbd5e1; }
         <input id="pAdet" type="number" placeholder="Adet" style="padding:8px;width:20%;">
         <input id="pAlis" type="number" placeholder="Alış Fiyatı" style="padding:8px;width:25%;">
         <button onclick="addPortfolio()">Ekle</button>
-
         <table style="width:100%;margin-top:15px;border-collapse:collapse;" id="portTable">
-            <thead><tr><th>Kod</th><th>Adet</th><th>Alış</th><th></th></tr></thead>
+            <thead><tr><th>Kod</th><th>Adet</th><th>Alış</th><th>Güncel</th><th>Değer</th><th>K/Z</th><th></th></tr></thead>
             <tbody></tbody>
         </table>
     </div>
 </div>
 
 <script>
+// ====================== AYARLAR ======================
 let portfolio = JSON.parse(localStorage.getItem('bistPortfolio')) || [];
 let takipte = JSON.parse(localStorage.getItem('takipListesi')) || [];
 
 // Tema
 function toggleTheme() { document.body.classList.toggle('light'); }
 
-// Hisseler
+// ====================== GERÇEK FİYAT ======================
+async function fetchPrice(kod) {
+    try {
+        const res = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${kod}.IS?interval=1d`);
+        const data = await res.json();
+        const meta = data.chart.result[0].meta;
+        return {
+            price: meta.regularMarketPrice.toFixed(2),
+            change: meta.regularMarketChangePercent.toFixed(2)
+        };
+    } catch(e) {
+        return {price: "?.??", change: "0"};
+    }
+}
+
+// ====================== HİSSELER ======================
 const bistHisseler = ["THYAO","ASELS","TUPRS","KCHOL","EREGL","AKBNK","GARAN","ISCTR","SAHOL","YKBNK","BIMAS","FROTO","PETKM","TCELL","SISE","KOZAL","GUBRF","EKGYO","HALKB","VAKBN","SASA","HEKTS","TKFEN","ALARK","KRDMD","VESBE","TOASO","AYGAZ","ENJSA","PGSUS"];
 
-function loadStocks() {
+async function loadStocks() {
     const container = document.getElementById("hisseListesi");
     container.innerHTML = "";
 
-    bistHisseler.forEach(kod => {
+    for (let kod of bistHisseler) {
+        const priceData = await fetchPrice(kod);
+        
         const card = document.createElement("div");
         card.className = "stock-card";
         card.innerHTML = `
             <h3>${kod}</h3>
-            <p style="color:#94a3b8; margin-top:8px;">Detay sayfasına git →</p>
+            <p style="font-size:1.5em;margin:8px 0;">${priceData.price} ₺</p>
+            <p class="${parseFloat(priceData.change) >= 0 ? 'positive' : 'negative'}">
+                ${parseFloat(priceData.change) >= 0 ? '+' : ''}${priceData.change}%
+            </p>
             <button class="followBtn" data-kod="${kod}">⭐ Takip Et</button>
+            <button class="alarmBtn" data-kod="${kod}">🔔 Alarm</button>
         `;
         card.onclick = (e) => {
-            if (!e.target.classList.contains('followBtn')) {
+            if (!e.target.classList.contains('followBtn') && !e.target.classList.contains('alarmBtn')) {
                 window.location.href = `${kod.toLowerCase()}.html`;
             }
         };
         container.appendChild(card);
+    }
+
+    // Buton eventleri
+    document.querySelectorAll('.followBtn').forEach(btn => {
+        const kod = btn.dataset.kod;
+        if (takipte.includes(kod)) btn.classList.add('active'), btn.textContent = '✅ Takip Ediliyor';
+        btn.addEventListener('click', e => { e.stopImmediatePropagation(); toggleTakip(kod, btn); });
     });
 
-    // Takip butonları
-    document.querySelectorAll('.followBtn').forEach(btn => {
-        const kod = btn.getAttribute('data-kod');
-        if (takipte.includes(kod)) {
-            btn.classList.add('active');
-            btn.textContent = '✅ Takip Ediliyor';
-        }
-
-        btn.addEventListener('click', (e) => {
+    document.querySelectorAll('.alarmBtn').forEach(btn => {
+        btn.addEventListener('click', e => {
             e.stopImmediatePropagation();
-            toggleTakip(kod, btn);
+            setAlarm(btn.dataset.kod);
         });
     });
 }
@@ -149,15 +146,13 @@ function toggleTakip(kod, btn) {
 
 function updateTakipListesi() {
     const liste = document.getElementById("takipListesi");
-    const sayi = document.getElementById("takipSayisi");
     liste.innerHTML = "";
-
-    sayi.textContent = takipte.length;
+    document.getElementById("takipSayisi").textContent = takipte.length;
 
     takipte.forEach(kod => {
         const li = document.createElement("li");
-        li.style.padding = "8px";
-        li.style.margin = "4px 0";
+        li.style.padding = "10px";
+        li.style.margin = "5px 0";
         li.style.background = "#1e2937";
         li.style.borderRadius = "6px";
         li.innerHTML = `<a href="${kod.toLowerCase()}.html" style="color:white;">${kod}</a>`;
@@ -165,10 +160,18 @@ function updateTakipListesi() {
     });
 }
 
-// Portföy (aynı)
-function addPortfolio() { /* ... önceki kod ... */ }
-function renderPortfolio() { /* ... önceki kod ... */ }
-window.deletePortfolio = function(i) { /* ... önceki kod ... */ };
+function setAlarm(kod) {
+    const price = prompt(`${kod} için alarm fiyatı girin (örn: 245.50):`);
+    if (price) {
+        localStorage.setItem(`alarm_${kod}`, price);
+        alert(`${kod} için ${price} ₺ alarmı kuruldu!`);
+    }
+}
+
+// Portföy (basit)
+function addPortfolio() { /* ... önceki versiyonlardaki aynı kod ... */ }
+function renderPortfolio() { /* ... aynı kod ... */ }
+window.deletePortfolio = function(i) { /* ... aynı kod ... */ };
 
 // Arama
 document.getElementById("searchInput").addEventListener("input", function() {
