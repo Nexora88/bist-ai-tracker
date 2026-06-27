@@ -1,25 +1,95 @@
 <!DOCTYPE html>
-
-<html>
+<html lang="tr">
 <head>
-    <title>GARAN</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GARAN - BIST AI Tracker</title>
+<style>
+/* Yukarıdaki stil kodunu buraya kopyala (aynı stil) */
+</style>
 </head>
 <body>
 
-<h1>GARAN</h1>
+<div class="container">
+    <button class="back-btn" onclick="window.location.href='index.html'">← Ana Sayfaya Dön</button>
+    
+    <h1>GARAN - Garanti BBVA</h1>
 
-<p>Garanti BBVA</p>
+    <!-- Fiyat, Teknik, Grafik, Alarm, AI Yorum aynı yapıda -->
 
-<p>Fiyat: 135 TL</p>
+    <div class="card">
+        <h2>Güncel Fiyat</h2>
+        <p class="price" id="currentPrice">Yükleniyor...</p>
+        <p id="changePercent" style="font-size:1.4em;"></p>
+    </div>
 
-<p>AI Analizi: Pozitif</p>
+    <div class="card">
+        <h2>Teknik Bilgiler</h2>
+        <div class="tech-grid">
+            <div><strong>Hacim:</strong> <span id="volume">---</span></div>
+            <div><strong>RSI (14):</strong> <span id="rsi">---</span></div>
+            <div><strong>Günlük Değişim:</strong> <span id="dailyChange">---</span></div>
+            <div><strong>Yüksek / Düşük:</strong> <span id="highLow">---</span></div>
+        </div>
+    </div>
 
-<p>
-Garanti BBVA Türkiye'nin en büyük özel bankalarından biridir.
-Bu bölüm ileride gerçek veriler ve AI yorumları ile doldurulacaktır.
-</p>
+    <div class="card">
+        <h2>Grafik</h2>
+        <div style="height:520px;">
+            <iframe src="https://www.tradingview.com/widgetembed/?symbol=BIST%3AGARAN" 
+                    width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
+        </div>
+    </div>
 
-<a href="index.html">⬅ Ana Sayfaya Dön</a>
+    <div class="card">
+        <h2>🔔 Alarm Kur</h2>
+        <input id="alarmPrice" type="number" placeholder="Alarm fiyatı" style="padding:12px; width:70%;">
+        <button onclick="setAlarm()">Alarm Kur</button>
+        <p id="alarmStatus" style="margin-top:10px; color:#94a3b8;"></p>
+    </div>
 
+    <div class="card">
+        <h2>AI Yorum</h2>
+        <p id="aiYorum" style="line-height:1.6; background:#1e2937; padding:15px; border-radius:8px;">
+            GARAN, güçlü sermaye yapısı ve dijital bankacılık yatırımlarıyla öne çıkıyor.
+        </p>
+    </div>
+
+    <div class="card">
+        <h2>Son Haberler</h2>
+        <div id="newsContainer"></div>
+    </div>
+</div>
+
+<script>
+// Aynı script (sadece fetch ve haberleri değiştir)
+async function loadData() {
+    const res = await fetch('https://query1.finance.yahoo.com/v8/finance/chart/GARAN.IS?interval=1d');
+    // ... kalan kod aynı (loadData fonksiyonunun içini önceki gibi kopyala)
+}
+
+function setAlarm() { /* aynı */ }
+
+function loadNews() {
+    const container = document.getElementById("newsContainer");
+    container.innerHTML = `
+        <div class="news-item">
+            <a href="https://www.cnnturk.com/ekonomi/borsa" target="_blank" style="color:#60a5fa;">• CNN Türk - Borsa ve GARAN Haberler →</a>
+        </div>
+        <div class="news-item">
+            <a href="https://www.kap.org.tr/tr/sirket-bilgileri/ozet/garan" target="_blank" style="color:#60a5fa;">• KAP - GARAN Bildirimleri →</a>
+        </div>
+        <div class="news-item">
+            <a href="https://www.borsaistanbul.com/tr/sayfa/2/hisse-senetleri" target="_blank" style="color:#60a5fa;">• Borsa İstanbul GARAN Sayfası →</a>
+        </div>
+    `;
+}
+
+window.onload = () => {
+    loadData();
+    loadNews();
+    if (Notification.permission === "default") Notification.requestPermission();
+};
+</script>
 </body>
 </html>
