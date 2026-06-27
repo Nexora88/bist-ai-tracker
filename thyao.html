@@ -14,11 +14,14 @@ h1 { margin-bottom:10px; }
 .positive { color:#22c55e; }
 .negative { color:#ef4444; }
 button { padding:12px 20px; margin:5px; border:none; border-radius:8px; cursor:pointer; }
+.back-btn { background:#64748b; color:white; }
 </style>
 </head>
 <body>
 
 <div class="container">
+    <button class="back-btn" onclick="window.location.href='index.html'">← Ana Sayfaya Dön</button>
+    
     <h1>THYAO - Türk Hava Yolları</h1>
     
     <div class="card">
@@ -48,7 +51,7 @@ button { padding:12px 20px; margin:5px; border:none; border-radius:8px; cursor:p
     <div class="card">
         <h2>AI Yorum</h2>
         <p id="aiYorum" style="line-height:1.6; background:#1e2937; padding:15px; border-radius:8px;">
-            THYAO, son dönemde güçlü bir toparlanma gösterdi. Petrol fiyatlarındaki dalgalanma ve turizm sezonunun etkisiyle orta vadede pozitif görünüm devam ediyor.
+            THYAO, son dönemde güçlü bir toparlanma gösterdi. Turizm sezonunun etkisiyle orta vadede pozitif görünüm devam ediyor.
         </p>
     </div>
 
@@ -60,7 +63,7 @@ button { padding:12px 20px; margin:5px; border:none; border-radius:8px; cursor:p
 </div>
 
 <script>
-// Gerçek fiyat çekme
+// Gerçek fiyat (Hafta sonu da çalışır)
 async function loadPrice() {
     try {
         const res = await fetch('https://query1.finance.yahoo.com/v8/finance/chart/THYAO.IS?interval=1d');
@@ -70,12 +73,12 @@ async function loadPrice() {
         const price = meta.regularMarketPrice || meta.chartPreviousClose;
         const change = meta.regularMarketChangePercent || 0;
 
-        document.getElementById("currentPrice").textContent = price.toFixed(2) + " ₺";
+        document.getElementById("currentPrice").textContent = parseFloat(price).toFixed(2) + " ₺";
         const changeEl = document.getElementById("changePercent");
         changeEl.textContent = (change >= 0 ? "▲ +" : "▼ ") + change.toFixed(2) + "%";
         changeEl.className = change >= 0 ? "positive" : "negative";
     } catch(e) {
-        document.getElementById("currentPrice").textContent = "Veri alınamadı";
+        document.getElementById("currentPrice").textContent = "Veri alınamadı (Piyasa kapalı)";
     }
 }
 
@@ -88,12 +91,19 @@ function setAlarm() {
     }
 }
 
-// Haberler (örnek)
+// Haberler (Gerçek linkli)
 function loadNews() {
     const container = document.getElementById("newsContainer");
     container.innerHTML = `
-        <p style="padding:10px; background:#1e2937; margin:8px 0; border-radius:6px;">• THYAO filosunu genişletmeye devam ediyor.</p>
-        <p style="padding:10px; background:#1e2937; margin:8px 0; border-radius:6px;">• Turizm sezonunda rekor yolcu sayısı bekleniyor.</p>
+        <p style="padding:12px; background:#1e2937; margin:8px 0; border-radius:6px;">
+            <a href="https://www.borsaistanbul.com" target="_blank" style="color:#60a5fa;">• Borsa İstanbul Resmi Duyurular →</a>
+        </p>
+        <p style="padding:12px; background:#1e2937; margin:8px 0; border-radius:6px;">
+            <a href="https://www.kap.org.tr" target="_blank" style="color:#60a5fa;">• KAP Bildirimleri (THYAO) →</a>
+        </p>
+        <p style="padding:12px; background:#1e2937; margin:8px 0; border-radius:6px;">
+            <a href="https://www.bloomberght.com" target="_blank" style="color:#60a5fa;">• Bloomberg HT - THYAO Haberleri →</a>
+        </p>
     `;
 }
 
