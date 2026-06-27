@@ -1,82 +1,106 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
-    <title>THYAO Detay</title>
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 20px;
-        }
-
-        .card {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        a {
-            text-decoration: none;
-            color: #1e3a8a;
-            font-weight: bold;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THYAO - BIST AI Tracker</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#0f172a; color:white; font-family:Arial, sans-serif; }
+.container { padding:20px; max-width:1100px; margin:auto; }
+.card { background:#111827; border:1px solid #1f2937; border-radius:12px; padding:20px; margin-bottom:20px; }
+h1 { margin-bottom:10px; }
+.price { font-size:2.5em; font-weight:bold; margin:10px 0; }
+.positive { color:#22c55e; }
+.negative { color:#ef4444; }
+button { padding:12px 20px; margin:5px; border:none; border-radius:8px; cursor:pointer; }
+</style>
 </head>
-
 <body>
 
-    <a href="index.html">← Ana Sayfaya Dön</a>
-
-    <h1>✈️ THYAO Detay Sayfası</h1>
-
+<div class="container">
+    <h1>THYAO - Türk Hava Yolları</h1>
+    
     <div class="card">
-        <h2>Türk Hava Yolları</h2>
+        <h2>Güncel Fiyat</h2>
+        <p class="price" id="currentPrice">Yükleniyor...</p>
+        <p id="changePercent" style="font-size:1.3em;"></p>
+    </div>
 
-        <p>Fiyat: 312 TL</p>
+    <!-- TradingView Grafik -->
+    <div class="card">
+        <h2>Grafik</h2>
+        <div style="height:520px;">
+            <iframe src="https://www.tradingview.com/widgetembed/?symbol=BIST%3ATHYAO" 
+                    width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
+        </div>
+    </div>
 
-        <p>AI Analizi: Pozitif</p>
+    <!-- Alarm -->
+    <div class="card">
+        <h2>🔔 Alarm Kur</h2>
+        <input id="alarmPrice" type="number" placeholder="Alarm fiyatı (örn: 245.50)" style="padding:12px; width:70%;">
+        <button onclick="setAlarm()">Alarm Kur</button>
+        <p id="alarmStatus" style="margin-top:10px; color:#94a3b8;"></p>
+    </div>
 
-        <p>
-            Şirket güçlü büyüme potansiyeline sahip.
-            Bu bölüm ileride gerçek verilerle doldurulacak.
+    <!-- AI Yorum -->
+    <div class="card">
+        <h2>AI Yorum</h2>
+        <p id="aiYorum" style="line-height:1.6; background:#1e2937; padding:15px; border-radius:8px;">
+            THYAO, son dönemde güçlü bir toparlanma gösterdi. Petrol fiyatlarındaki dalgalanma ve turizm sezonunun etkisiyle orta vadede pozitif görünüm devam ediyor.
         </p>
     </div>
 
-    <div class="card" style="margin-top:20px;">
-
-<h2>📈 Canlı THYAO Grafiği</h2>
-
-<div class="tradingview-widget-container">
-  <div id="tradingview_thyao"></div>
-
-<script
-type="text/javascript"
-src="https://s3.tradingview.com/tv.js">
-</script>
+    <!-- Haberler -->
+    <div class="card">
+        <h2>Son Haberler</h2>
+        <div id="newsContainer">Haberler yükleniyor...</div>
+    </div>
+</div>
 
 <script>
-new TradingView.widget({
-  "width": "100%",
-  "height": 500,
-  "symbol": "BIST:THYAO",
-  "interval": "D",
-  "timezone": "Europe/Istanbul",
-  "theme": "light",
-  "style": "1",
-  "locale": "tr",
-  "toolbar_bg": "#f1f3f6",
-  "enable_publishing": false,
-  "hide_top_toolbar": false,
-  "save_image": true,
-  "container_id": "tradingview_thyao"
-});
+// Gerçek fiyat çekme
+async function loadPrice() {
+    try {
+        const res = await fetch('https://query1.finance.yahoo.com/v8/finance/chart/THYAO.IS?interval=1d');
+        const data = await res.json();
+        const meta = data.chart.result[0].meta;
+        
+        const price = meta.regularMarketPrice || meta.chartPreviousClose;
+        const change = meta.regularMarketChangePercent || 0;
+
+        document.getElementById("currentPrice").textContent = price.toFixed(2) + " ₺";
+        const changeEl = document.getElementById("changePercent");
+        changeEl.textContent = (change >= 0 ? "▲ +" : "▼ ") + change.toFixed(2) + "%";
+        changeEl.className = change >= 0 ? "positive" : "negative";
+    } catch(e) {
+        document.getElementById("currentPrice").textContent = "Veri alınamadı";
+    }
+}
+
+// Alarm
+function setAlarm() {
+    const price = document.getElementById("alarmPrice").value;
+    if (price) {
+        localStorage.setItem("alarm_THYAO", price);
+        document.getElementById("alarmStatus").textContent = `✅ Alarm kuruldu: ${price} ₺`;
+    }
+}
+
+// Haberler (örnek)
+function loadNews() {
+    const container = document.getElementById("newsContainer");
+    container.innerHTML = `
+        <p style="padding:10px; background:#1e2937; margin:8px 0; border-radius:6px;">• THYAO filosunu genişletmeye devam ediyor.</p>
+        <p style="padding:10px; background:#1e2937; margin:8px 0; border-radius:6px;">• Turizm sezonunda rekor yolcu sayısı bekleniyor.</p>
+    `;
+}
+
+window.onload = () => {
+    loadPrice();
+    loadNews();
+};
 </script>
-
-</div>
-
-</div>
-
 </body>
 </html>
