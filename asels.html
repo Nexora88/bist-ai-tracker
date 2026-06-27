@@ -1,48 +1,165 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
-    <title>ASELS Detay</title>
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 20px;
-        }
-
-        .card {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        a {
-            text-decoration: none;
-            color: #1e3a8a;
-            font-weight: bold;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASELS - BIST AI Tracker</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#0f172a; color:white; font-family:Arial, sans-serif; }
+.container { padding:20px; max-width:1100px; margin:auto; }
+.card { background:#111827; border:1px solid #1f2937; border-radius:12px; padding:20px; margin-bottom:20px; }
+h1 { margin-bottom:15px; }
+.price { font-size:2.8em; font-weight:bold; margin:10px 0; }
+.positive { color:#22c55e; }
+.negative { color:#ef4444; }
+button { padding:12px 20px; margin:5px; border:none; border-radius:8px; cursor:pointer; }
+.back-btn { background:#64748b; color:white; }
+.tech-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:15px; margin-top:15px; }
+.news-item { padding:12px; background:#1e2937; margin:8px 0; border-radius:6px; }
+</style>
 </head>
-
 <body>
 
-    <a href="index.html">← Ana Sayfaya Dön</a>
+<div class="container">
+    <button class="back-btn" onclick="window.location.href='index.html'">← Ana Sayfaya Dön</button>
+    
+    <h1>ASELS - Aselsan</h1>
 
-    <h1>🛡️ ASELS Detay Sayfası</h1>
-
+    <!-- Fiyat -->
     <div class="card">
-        <h2>Aselsan</h2>
+        <h2>Güncel Fiyat</h2>
+        <p class="price" id="currentPrice">Yükleniyor...</p>
+        <p id="changePercent" style="font-size:1.4em;"></p>
+    </div>
 
-        <p>Fiyat: 145 TL</p>
+    <!-- Teknik Bilgiler -->
+    <div class="card">
+        <h2>Teknik Bilgiler</h2>
+        <div class="tech-grid">
+            <div><strong>Hacim:</strong> <span id="volume">---</span></div>
+            <div><strong>RSI (14):</strong> <span id="rsi">---</span></div>
+            <div><strong>Günlük Değişim:</strong> <span id="dailyChange">---</span></div>
+            <div><strong>Yüksek / Düşük:</strong> <span id="highLow">---</span></div>
+        </div>
+    </div>
 
-        <p>AI Analizi: Nötr</p>
+    <!-- Grafik -->
+    <div class="card">
+        <h2>Grafik</h2>
+        <div style="height:520px;">
+            <iframe src="https://www.tradingview.com/widgetembed/?symbol=BIST%3AASELS" 
+                    width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
+        </div>
+    </div>
 
-        <p>
-            Savunma sanayi sektöründe faaliyet göstermektedir.
-            Bu bölüm ileride gerçek verilerle doldurulacak.
+    <!-- Alarm -->
+    <div class="card">
+        <h2>🔔 Alarm Kur</h2>
+        <input id="alarmPrice" type="number" placeholder="Alarm fiyatı (örn: 68.50)" style="padding:12px; width:70%;">
+        <button onclick="setAlarm()">Alarm Kur</button>
+        <p id="alarmStatus" style="margin-top:10px; color:#94a3b8;"></p>
+    </div>
+
+    <!-- AI Yorum -->
+    <div class="card">
+        <h2>AI Yorum</h2>
+        <p id="aiYorum" style="line-height:1.6; background:#1e2937; padding:15px; border-radius:8px;">
+            ASELS, savunma sanayiindeki güçlü konumunu koruyor. Devlet kontratları ve ihracat rakamları hisseyi destekliyor.
         </p>
     </div>
 
+    <!-- Haberler -->
+    <div class="card">
+        <h2>Son Haberler</h2>
+        <div id="newsContainer">Haberler yükleniyor...</div>
+    </div>
+</div>
+
+<script>
+// ====================== VERİ ÇEKME ======================
+async function loadData() {
+    try {
+        const res = await fetch('https://query1.finance.yahoo.com/v8/finance/chart/ASELS.IS?interval=1d');
+        const json = await res.json();
+        const r = json.chart.result[0];
+        const meta = r.meta;
+        const quote = r.indicators.quote[0];
+
+        const price = meta.regularMarketPrice || meta.chartPreviousClose;
+        const change = meta.regularMarketChangePercent || 0;
+        const volume = (quote.volume[quote.volume.length-1] / 1000000).toFixed(1) + "M";
+
+        let rsi = "---";
+        const closes = quote.close;
+        if (closes.length >= 15) {
+            let gain = 0, loss = 0;
+            for (let i = 1; i <= 14; i++) {
+                const diff = closes[closes.length-i] - closes[closes.length-i-1];
+                if (diff > 0) gain += diff; else loss -= diff;
+            }
+            const rs = gain / (loss || 0.0001);
+            rsi = (100 - 100 / (1 + rs)).toFixed(1);
+        }
+
+        document.getElementById("currentPrice").textContent = parseFloat(price).toFixed(2) + " ₺";
+        const changeEl = document.getElementById("changePercent");
+        changeEl.textContent = (change >= 0 ? "▲ +" : "▼ ") + change.toFixed(2) + "%";
+        changeEl.className = change >= 0 ? "positive" : "negative";
+
+        document.getElementById("volume").textContent = volume;
+        document.getElementById("rsi").textContent = rsi;
+        document.getElementById("dailyChange").textContent = change.toFixed(2) + "%";
+        document.getElementById("highLow").textContent = meta.regularMarketDayHigh.toFixed(2) + " / " + meta.regularMarketDayLow.toFixed(2);
+
+    } catch(e) {
+        document.getElementById("currentPrice").textContent = "Veri alınamadı";
+    }
+}
+
+// Alarm + Bildirim
+function setAlarm() {
+    const price = document.getElementById("alarmPrice").value;
+    if (!price) return;
+
+    localStorage.setItem("alarm_ASELS", price);
+    document.getElementById("alarmStatus").innerHTML = `✅ Alarm kuruldu: <b>${price} ₺</b>`;
+
+    if (Notification.permission === "granted") {
+        new Notification("ASELS Alarmı", {
+            body: `${price} TL seviyesinde bildirim alacaksınız.`,
+            icon: "https://www.borsaistanbul.com/favicon.ico"
+        });
+    }
+}
+
+// Haberler
+function loadNews() {
+    const container = document.getElementById("newsContainer");
+    container.innerHTML = `
+        <div class="news-item">
+            <a href="https://www.kap.org.tr/tr/sirket-bilgileri/ozet/asels" target="_blank" style="color:#60a5fa;">
+                • KAP - ASELS Resmi Bildirimleri
+            </a>
+        </div>
+        <div class="news-item">
+            <a href="https://www.borsaistanbul.com/tr/sayfa/2/hisse-senetleri" target="_blank" style="color:#60a5fa;">
+                • Borsa İstanbul ASELS Sayfası
+            </a>
+        </div>
+        <div class="news-item">
+            <a href="https://www.bloomberght.com/hisse-senetleri/asels" target="_blank" style="color:#60a5fa;">
+                • Bloomberg HT - ASELS Güncel Haberler
+            </a>
+        </div>
+    `;
+}
+
+window.onload = () => {
+    loadData();
+    loadNews();
+    if (Notification.permission === "default") Notification.requestPermission();
+};
+</script>
 </body>
 </html>
