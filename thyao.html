@@ -5,7 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>THYAO - BIST AI Tracker</title>
 <style>
-/* ... önceki stiller aynı ... */
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#0f172a; color:white; font-family:Arial, sans-serif; }
+.container { padding:20px; max-width:1100px; margin:auto; }
+.card { background:#111827; border:1px solid #1f2937; border-radius:12px; padding:20px; margin-bottom:20px; }
+h1 { margin-bottom:15px; }
+.price { font-size:2.8em; font-weight:bold; margin:10px 0; }
+.positive { color:#22c55e; }
+.negative { color:#ef4444; }
+button { padding:12px 20px; margin:5px; border:none; border-radius:8px; cursor:pointer; }
+.back-btn { background:#64748b; color:white; }
+.tech-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:15px; margin-top:15px; }
+.news-item { padding:12px; background:#1e2937; margin:8px 0; border-radius:6px; }
 </style>
 </head>
 <body>
@@ -15,12 +26,14 @@
     
     <h1>THYAO - Türk Hava Yolları</h1>
 
+    <!-- Fiyat -->
     <div class="card">
         <h2>Güncel Fiyat</h2>
         <p class="price" id="currentPrice">Yükleniyor...</p>
         <p id="changePercent" style="font-size:1.4em;"></p>
     </div>
 
+    <!-- Teknik Bilgiler -->
     <div class="card">
         <h2>Teknik Bilgiler</h2>
         <div class="tech-grid">
@@ -31,28 +44,40 @@
         </div>
     </div>
 
+    <!-- Grafik -->
     <div class="card">
         <h2>Grafik</h2>
         <div style="height:520px;">
-            <iframe src="https://www.tradingview.com/widgetembed/?symbol=BIST%3ATHYAO" width="100%" height="100%" frameborder="0"></iframe>
+            <iframe src="https://www.tradingview.com/widgetembed/?symbol=BIST%3ATHYAO" 
+                    width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
         </div>
     </div>
 
+    <!-- Alarm -->
     <div class="card">
         <h2>🔔 Alarm Kur</h2>
-        <input id="alarmPrice" type="number" placeholder="Alarm fiyatı" style="padding:12px; width:70%;">
+        <input id="alarmPrice" type="number" placeholder="Alarm fiyatı (örn: 245.50)" style="padding:12px; width:70%;">
         <button onclick="setAlarm()">Alarm Kur</button>
-        <p id="alarmStatus" style="margin-top:10px;"></p>
+        <p id="alarmStatus" style="margin-top:10px; color:#94a3b8;"></p>
+    </div>
+
+    <!-- AI Yorum -->
+    <div class="card">
+        <h2>AI Yorum</h2>
+        <p id="aiYorum" style="line-height:1.6; background:#1e2937; padding:15px; border-radius:8px;">
+            THYAO, turizm sezonunun olumlu etkisiyle güçlü duruşunu koruyor. Teknik göstergeler orta vadede alım sinyali veriyor.
+        </p>
+    </div>
+
+    <!-- Haberler -->
+    <div class="card">
+        <h2>Son Haberler</h2>
+        <div id="newsContainer">Haberler yükleniyor...</div>
     </div>
 </div>
 
 <script>
-// Bildirim izni
-if (Notification.permission === "default") {
-    Notification.requestPermission();
-}
-
-// Veri Yükleme
+// ====================== VERİ ÇEKME ======================
 async function loadData() {
     try {
         const res = await fetch('https://query1.finance.yahoo.com/v8/finance/chart/THYAO.IS?interval=1d');
@@ -92,6 +117,7 @@ async function loadData() {
     }
 }
 
+// Alarm + Bildirim
 function setAlarm() {
     const price = document.getElementById("alarmPrice").value;
     if (!price) return;
@@ -100,17 +126,44 @@ function setAlarm() {
     document.getElementById("alarmStatus").innerHTML = `✅ Alarm kuruldu: <b>${price} ₺</b>`;
 
     if (Notification.permission === "granted") {
-        new Notification("THYAO Alarmı Kuruldu", {
+        new Notification("THYAO Alarmı", {
             body: `${price} TL seviyesinde bildirim alacaksınız.`,
             icon: "https://www.borsaistanbul.com/favicon.ico"
         });
-    } else {
-        alert("Bildirim izni verilmedi. Tarayıcı ayarlarından izin verebilirsiniz.");
     }
+}
+
+// Haberler
+function loadNews() {
+    const container = document.getElementById("newsContainer");
+    container.innerHTML = `
+        <div class="news-item">
+            <a href="https://www.kap.org.tr/tr/sirket-bilgileri/ozet/thyao" target="_blank" style="color:#60a5fa;">
+                • KAP - THYAO Resmi Bildirimleri
+            </a>
+        </div>
+        <div class="news-item">
+            <a href="https://www.borsaistanbul.com/tr/sayfa/2/hisse-senetleri" target="_blank" style="color:#60a5fa;">
+                • Borsa İstanbul THYAO Sayfası
+            </a>
+        </div>
+        <div class="news-item">
+            <a href="https://www.bloomberght.com/hisse-senetleri/thyao" target="_blank" style="color:#60a5fa;">
+                • Bloomberg HT - THYAO Güncel Haberler
+            </a>
+        </div>
+        <div class="news-item">
+            <a href="https://www.cnnturk.com/ekonomi/borsa" target="_blank" style="color:#60a5fa;">
+                • CNN Türk Borsa Haberleri
+            </a>
+        </div>
+    `;
 }
 
 window.onload = () => {
     loadData();
+    loadNews();
+    if (Notification.permission === "default") Notification.requestPermission();
 };
 </script>
 </body>
