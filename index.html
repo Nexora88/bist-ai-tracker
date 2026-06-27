@@ -16,12 +16,25 @@ body.light .navbar { background:#e2e8f0; color:#1e2937; }
 .card { background:#111827; border:1px solid #1f2937; border-radius:12px; padding:15px; margin-bottom:20px; }
 body.light .card { background:white; border-color:#cbd5e1; }
 
+.stock-container {
+    display:flex; 
+    gap:15px; 
+    overflow-x:auto; 
+    padding:15px 0;
+    scroll-behavior:smooth;
+    white-space:nowrap;
+}
 .stock-card { 
-    min-width:280px; background:#111827; border:1px solid #1f2937; 
-    border-radius:12px; padding:15px; cursor:pointer; transition:0.2s;
+    min-width:260px; 
+    background:#111827; 
+    border:1px solid #1f2937; 
+    border-radius:12px; 
+    padding:15px; 
+    cursor:pointer; 
+    display:inline-block;
 }
 body.light .stock-card { background:white; border-color:#cbd5e1; }
-.stock-card:hover { transform:scale(1.03); }
+.stock-card:hover { transform:scale(1.05); }
 
 .theme-toggle { margin-left:auto; padding:8px 16px; background:#334155; border:none; border-radius:8px; cursor:pointer; }
 </style>
@@ -37,11 +50,12 @@ body.light .stock-card { background:white; border-color:#cbd5e1; }
 <div class="container">
     <h1>📈 BIST AI Tracker</h1>
 
-    <!-- BIST 30 Genel Grafik -->
+    <!-- BIST 30 Genel -->
     <div class="card">
         <h2>BIST 30 Endeksi</h2>
-        <div style="height:480px;">
-            <iframe src="https://www.tradingview.com/widgetembed/?symbol=BIST%3AXU030&interval=D" 
+        <p style="color:#94a3b8; margin-top:10px;">TradingView grafik yükleniyor... (Eğer görünmüyorsa tarayıcıda TradingView engeli olabilir)</p>
+        <div style="height:420px; margin-top:10px; background:#000;">
+            <iframe src="https://www.tradingview.com/widgetembed/?symbol=BIST%3AXU030" 
                     width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
         </div>
     </div>
@@ -49,7 +63,8 @@ body.light .stock-card { background:white; border-color:#cbd5e1; }
     <input id="searchInput" placeholder="Hisse ara..." 
            style="width:100%; padding:14px; margin:15px 0; border-radius:10px; background:#1e2937; color:white;">
 
-    <div id="hisseListesi" style="display:flex; gap:15px; overflow-x:auto; padding:10px 0; flex-wrap:wrap;"></div>
+    <!-- Hisseler Yatay Kaydırmalı -->
+    <div class="stock-container" id="hisseListesi"></div>
 
     <!-- Portföy -->
     <div class="card">
@@ -84,10 +99,10 @@ function loadStocks() {
         card.className = "stock-card";
         card.innerHTML = `
             <h3>${kod}</h3>
-            <p style="color:#94a3b8; margin-top:8px;">Detay Sayfasına Git →</p>
+            <p style="color:#94a3b8; margin-top:8px;">Detay sayfasına git →</p>
         `;
         card.onclick = () => {
-            window.location.href = `${kod.toLowerCase()}.html`;   // Senin sayfalarına yönlendiriyor
+            window.location.href = `${kod.toLowerCase()}.html`;
         };
         container.appendChild(card);
     });
@@ -127,7 +142,7 @@ window.deletePortfolio = function(i) {
 document.getElementById("searchInput").addEventListener("input", function() {
     const filter = this.value.toUpperCase();
     document.querySelectorAll(".stock-card").forEach(card => {
-        card.style.display = card.textContent.includes(filter) ? "block" : "none";
+        card.style.display = card.textContent.includes(filter) ? "inline-block" : "none";
     });
 });
 
