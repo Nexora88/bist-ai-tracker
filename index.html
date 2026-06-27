@@ -16,8 +16,17 @@ body.light .navbar { background:#e2e8f0; }
 .card { background:#111827; border:1px solid #1f2937; border-radius:12px; padding:15px; margin-bottom:20px; }
 body.light .card { background:white; border-color:#cbd5e1; }
 
-.stock-card { min-width:290px; background:#111827; border:1px solid #1f2937; border-radius:12px; padding:15px; cursor:pointer; }
+.stock-card { 
+    min-width:290px; 
+    background:#111827; 
+    border:1px solid #1f2937; 
+    border-radius:12px; 
+    padding:15px; 
+    cursor:pointer;
+    transition:0.2s;
+}
 body.light .stock-card { background:white; border-color:#cbd5e1; }
+.stock-card:hover { transform: scale(1.03); }
 
 .positive { color:#22c55e; }
 .negative { color:#ef4444; }
@@ -39,33 +48,31 @@ body.light .news-item { background:#f1f5f9; }
 
 <div class="container">
     <h1>📈 BIST AI Tracker</h1>
-    <p style="color:#94a3b8;">Gerçek veri • Haber • Teknik • Portföy</p>
+    <p style="color:#94a3b8;">Gerçek Zamanlı • Haber • Teknik • Portföy</p>
 
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px;margin:20px 0;">
-        <div class="card"><h2>BIST30</h2><p id="bist30Ort">Yükleniyor...</p></div>
+    <div class="card">
+        <h2>BIST 30 Endeksi</h2>
+        <p id="bist30Ort" style="font-size:1.4em;">Yükleniyor...</p>
     </div>
 
-    <input id="searchInput" placeholder="Hisse ara (THYAO...)" style="width:100%;padding:12px;margin-bottom:15px;border-radius:10px;background:#1e2937;color:white;">
+    <input id="searchInput" placeholder="Hisse ara (THYAO, ASELS, GARAN...)" 
+           style="width:100%; padding:14px; margin:15px 0; border-radius:10px; background:#1e2937; color:white; font-size:1.1em;">
 
-    <div id="hisseListesi" style="display:flex;gap:15px;overflow-x:auto;padding:10px;"></div>
+    <div id="hisseListesi" style="display:flex; gap:15px; overflow-x:auto; padding:10px 0;"></div>
 
     <!-- Detay Panel -->
     <div id="detailPanel" class="card" style="display:none;">
         <h2 id="detailTitle"></h2>
-        
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
-            <!-- Teknik -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
             <div>
                 <h3>Teknik Bilgiler</h3>
                 <p>Fiyat: <strong id="dPrice"></strong> ₺</p>
                 <p>Hacim: <strong id="dVolume"></strong></p>
-                <p>RSI: <strong id="dRSI"></strong></p>
+                <p>RSI(14): <strong id="dRSI"></strong></p>
                 <p>Değişim: <strong id="dChange"></strong></p>
-                <p>Yüksek/Düşük: <strong id="dHighLow"></strong></p>
-                <button onclick="setAlarm()">🔔 Alarm Kur</button>
+                <p>Yüksek / Düşük: <strong id="dHighLow"></strong></p>
+                <button onclick="setAlarm()" style="margin-top:10px;">🔔 Alarm Kur</button>
             </div>
-            
-            <!-- Haber -->
             <div>
                 <h3>Son Haberler</h3>
                 <div id="newsContainer"></div>
@@ -77,12 +84,12 @@ body.light .news-item { background:#f1f5f9; }
     <!-- Portföy -->
     <div class="card">
         <h2>💼 Portföy</h2>
-        <input id="pKod" placeholder="Kod (THYAO)" style="padding:8px;width:25%;">
-        <input id="pAdet" type="number" placeholder="Adet" style="padding:8px;width:20%;">
-        <input id="pAlis" type="number" placeholder="Alış Fiyatı" style="padding:8px;width:25%;">
+        <input id="pKod" placeholder="Hisse Kodu" style="padding:8px;width:22%;">
+        <input id="pAdet" type="number" placeholder="Adet" style="padding:8px;width:18%;">
+        <input id="pAlis" type="number" placeholder="Alış Fiyatı" style="padding:8px;width:22%;">
         <button onclick="addPortfolio()">Ekle</button>
-        
-        <table style="width:100%;margin-top:15px;border-collapse:collapse;" id="portTable">
+
+        <table style="width:100%; margin-top:15px; border-collapse:collapse;" id="portTable">
             <thead><tr><th>Kod</th><th>Adet</th><th>Alış</th><th>Güncel</th><th>Değer</th><th>K/Z</th><th></th></tr></thead>
             <tbody></tbody>
         </table>
@@ -90,7 +97,7 @@ body.light .news-item { background:#f1f5f9; }
 </div>
 
 <script>
-// ====================== DEĞİŞKENLER ======================
+// ====================== AYARLAR ======================
 let portfolio = JSON.parse(localStorage.getItem('bistPortfolio')) || [];
 
 // Tema
@@ -100,10 +107,10 @@ function toggleTheme() {
 }
 if (localStorage.getItem('theme') === 'light') document.body.classList.add('light');
 
-// ====================== VERİ FONKSİYONLARI ======================
+// ====================== VERİ ÇEKME ======================
 async function fetchData(symbol) {
     try {
-        const res = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=5d`);
+        const res = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d`);
         const json = await res.json();
         const r = json.chart.result[0];
         const meta = r.meta;
@@ -127,25 +134,30 @@ async function fetchData(symbol) {
             volume: (q.volume[q.volume.length-1]/1000000).toFixed(1) + "M",
             high: meta.regularMarketDayHigh.toFixed(2),
             low: meta.regularMarketDayLow.toFixed(2),
-            rsi: rsi
+            rsi
         };
     } catch(e) { return null; }
 }
 
 async function fetchNews(symbol) {
     try {
-        const res = await fetch(`https://query1.finance.yahoo.com/v1/finance/search?q=${symbol.replace('.IS','')}&newsCount=4`);
+        const res = await fetch(`https://query1.finance.yahoo.com/v1/finance/search?q=${symbol.replace('.IS','')}&newsCount=5`);
         const data = await res.json();
         return data.news || [];
     } catch(e) { return []; }
 }
 
-// ====================== ANA İŞLEMLER ======================
-async function loadMainPage() {
+// ====================== ANA SAYFA ======================
+async function loadStocks() {
     const container = document.getElementById("hisseListesi");
     container.innerHTML = "";
 
-    const symbols = ["THYAO.IS","ASELS.IS","TUPRS.IS","KCHOL.IS","EREGL.IS","AKBNK.IS","GARAN.IS","ISCTR.IS","SAHOL.IS","YKBNK.IS"];
+    // Daha fazla BIST30 hissesi
+    const symbols = [
+        "THYAO.IS","ASELS.IS","TUPRS.IS","KCHOL.IS","EREGL.IS","AKBNK.IS","GARAN.IS",
+        "ISCTR.IS","SAHOL.IS","YKBNK.IS","BIMAS.IS","FROTO.IS","PETKM.IS","TCELL.IS",
+        "SISE.IS","KOZAL.IS","GUBRF.IS","EKGYO.IS","HALKB.IS","VAKBN.IS"
+    ];
 
     for (let sym of symbols) {
         const data = await fetchData(sym);
@@ -155,8 +167,10 @@ async function loadMainPage() {
         card.className = "stock-card";
         card.innerHTML = `
             <h3>${sym.replace('.IS','')}</h3>
-            <p style="font-size:1.5em;">${data.price} ₺</p>
-            <p class="${data.change>0?'positive':'negative'}">${data.change>0?'+' : ''}${data.change}%</p>
+            <p style="font-size:1.6em; margin:8px 0;">${data.price} ₺</p>
+            <p class="${parseFloat(data.change)>0 ? 'positive' : 'negative'}">
+                ${parseFloat(data.change)>0 ? '+' : ''}${data.change}%
+            </p>
         `;
         card.onclick = () => showDetail(sym, data);
         container.appendChild(card);
@@ -165,23 +179,22 @@ async function loadMainPage() {
 
 async function showDetail(symbol, data) {
     document.getElementById("detailPanel").style.display = "block";
-    document.getElementById("detailTitle").textContent = symbol.replace('.IS','') + " Detay";
+    document.getElementById("detailTitle").textContent = symbol.replace('.IS','') + " - Detay";
 
     document.getElementById("dPrice").textContent = data.price;
     document.getElementById("dVolume").textContent = data.volume;
     document.getElementById("dRSI").textContent = data.rsi;
-    document.getElementById("dChange").innerHTML = `<span class="${data.change>0?'positive':'negative'}">${data.change>0?'+' : ''}${data.change}%</span>`;
-    document.getElementById("dHighLow").textContent = data.high + " / " + data.low;
+    document.getElementById("dChange").innerHTML = `<span class="${parseFloat(data.change)>0?'positive':'negative'}">${parseFloat(data.change)>0?'+' : ''}${data.change}%</span>`;
+    document.getElementById("dHighLow").textContent = `${data.high} / ${data.low}`;
 
-    // Haberler
     const news = await fetchNews(symbol);
-    const cont = document.getElementById("newsContainer");
-    cont.innerHTML = "";
-    news.forEach(n => {
+    const container = document.getElementById("newsContainer");
+    container.innerHTML = "";
+    news.forEach(item => {
         const div = document.createElement("div");
         div.className = "news-item";
-        div.innerHTML = `<a href="${n.link}" target="_blank">${n.title}</a>`;
-        cont.appendChild(div);
+        div.innerHTML = `<a href="${item.link}" target="_blank" style="color:inherit;">${item.title}</a>`;
+        container.appendChild(div);
     });
 }
 
@@ -190,21 +203,20 @@ function closeDetail() {
 }
 
 function setAlarm() {
-    if (!currentDetail) return;
-    const price = prompt("Alarm fiyatı gir (örn: 245.5):");
-    if (price) {
-        localStorage.setItem("alarm_" + currentDetail, price);
-        alert(currentDetail.replace('.IS','') + " için alarm kuruldu!");
-    }
+    const price = prompt("Alarm fiyatı girin:");
+    if (price) alert("Alarm kuruldu! (Şimdilik sadece bilgilendirme)");
 }
 
-// Portföy
+// ====================== PORTFÖY ======================
 function addPortfolio() {
-    const kod = document.getElementById("pKod").value.toUpperCase().trim() + ".IS";
+    const kodInput = document.getElementById("pKod").value.trim().toUpperCase();
+    if (!kodInput) return alert("Hisse kodu girin!");
+
+    const kod = kodInput.includes('.IS') ? kodInput : kodInput + ".IS";
     const adet = parseFloat(document.getElementById("pAdet").value);
     const alis = parseFloat(document.getElementById("pAlis").value);
 
-    if (!kod || !adet || !alis) return alert("Eksik bilgi!");
+    if (!adet || !alis) return alert("Adet ve alış fiyatı girin!");
 
     portfolio.push({kod, adet, alis});
     localStorage.setItem('bistPortfolio', JSON.stringify(portfolio));
@@ -231,39 +243,44 @@ async function renderPortfolio() {
             <td>${item.alis}</td>
             <td>${current}</td>
             <td>${value}</td>
-            <td class="${pnl > 0 ? 'positive' : 'negative'}">${pnl}</td>
-            <td><button onclick="deleteFromPortfolio('${item.kod}')" style="color:red;">Sil</button></td>
+            <td class="${pnl>0?'positive':'negative'}">${pnl}</td>
+            <td><button onclick="deletePortfolio('${item.kod}')" style="color:red;">Sil</button></td>
         `;
         tbody.appendChild(row);
     }
 }
 
-window.deleteFromPortfolio = function(kod) {
+window.deletePortfolio = function(kod) {
     portfolio = portfolio.filter(p => p.kod !== kod);
     localStorage.setItem('bistPortfolio', JSON.stringify(portfolio));
     renderPortfolio();
 };
 
-// Arama
-document.getElementById("searchInput").addEventListener("keyup", (e) => {
-    const val = e.target.value.toLowerCase();
-    document.querySelectorAll(".stock-card").forEach(c => {
-        c.style.display = c.textContent.toLowerCase().includes(val) ? "block" : "none";
+// ====================== ARAMA ======================
+document.getElementById("searchInput").addEventListener("input", function() {
+    const filter = this.value.toLowerCase();
+    document.querySelectorAll(".stock-card").forEach(card => {
+        card.style.display = card.textContent.toLowerCase().includes(filter) ? "block" : "none";
     });
 });
 
+// BIST30
+async function loadBist30() {
+    try {
+        const res = await fetch('https://query1.finance.yahoo.com/v8/finance/chart/%5EBIST30?interval=1d');
+        const data = await res.json();
+        const change = data.chart.result[0].meta.regularMarketChangePercent.toFixed(2);
+        document.getElementById("bist30Ort").textContent = (change >= 0 ? "+" : "") + change + "%";
+    } catch(e) {
+        document.getElementById("bist30Ort").textContent = "Veri alınamadı";
+    }
+}
+
 // ====================== BAŞLAT ======================
 window.onload = () => {
-    loadMainPage();
+    loadStocks();
+    loadBist30();
     renderPortfolio();
-    
-    // BIST30
-    fetch('https://query1.finance.yahoo.com/v8/finance/chart/%5EBIST30?interval=1d')
-        .then(r => r.json())
-        .then(d => {
-            const ch = d.chart.result[0].meta.regularMarketChangePercent.toFixed(2);
-            document.getElementById("bist30Ort").textContent = (ch > 0 ? "+" : "") + ch + "%";
-        });
 };
 </script>
 </body>
