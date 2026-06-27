@@ -23,12 +23,7 @@ body.light .card { background:white; border-color:#cbd5e1; }
 body.light .stock-card { background:white; border-color:#cbd5e1; }
 .stock-card:hover { transform:scale(1.03); }
 
-.positive { color:#22c55e; }
-.negative { color:#ef4444; }
-
 .theme-toggle { margin-left:auto; padding:8px 16px; background:#334155; border:none; border-radius:8px; cursor:pointer; }
-
-.news-item { padding:10px; background:#1e2937; margin:8px 0; border-radius:8px; font-size:0.9em; }
 </style>
 </head>
 <body>
@@ -42,7 +37,7 @@ body.light .stock-card { background:white; border-color:#cbd5e1; }
 <div class="container">
     <h1>📈 BIST AI Tracker</h1>
 
-    <!-- Genel BIST 30 Grafiği -->
+    <!-- BIST 30 Genel Grafik -->
     <div class="card">
         <h2>BIST 30 Endeksi</h2>
         <div style="height:480px;">
@@ -51,28 +46,10 @@ body.light .stock-card { background:white; border-color:#cbd5e1; }
         </div>
     </div>
 
-    <input id="searchInput" placeholder="Hisse ara (THYAO, ASELS...)" 
-           style="width:100%; padding:14px; margin:15px 0; border-radius:10px; background:#1e2937; color:white; font-size:1.1em;">
+    <input id="searchInput" placeholder="Hisse ara..." 
+           style="width:100%; padding:14px; margin:15px 0; border-radius:10px; background:#1e2937; color:white;">
 
     <div id="hisseListesi" style="display:flex; gap:15px; overflow-x:auto; padding:10px 0; flex-wrap:wrap;"></div>
-
-    <!-- Detay Panel -->
-    <div id="detailPanel" class="card" style="display:none;">
-        <h2 id="detailTitle"></h2>
-        
-        <div style="height:460px; margin:15px 0;">
-            <iframe id="tvWidget" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-        </div>
-
-        <h3>AI Yorum</h3>
-        <p id="aiYorum" style="background:#1e2937; padding:12px; border-radius:8px; line-height:1.5;"></p>
-
-        <h3>Son Haberler</h3>
-        <div id="newsContainer"></div>
-
-        <button onclick="setAlarm()" style="margin:10px 5px 0 0;">🔔 Alarm Kur</button>
-        <button onclick="closeDetail()">Kapat</button>
-    </div>
 
     <!-- Portföy -->
     <div class="card">
@@ -82,8 +59,8 @@ body.light .stock-card { background:white; border-color:#cbd5e1; }
         <input id="pAlis" type="number" placeholder="Alış Fiyatı" style="padding:8px;width:25%;">
         <button onclick="addPortfolio()">Ekle</button>
 
-        <table style="width:100%; margin-top:15px; border-collapse:collapse;" id="portTable">
-            <thead><tr><th>Kod</th><th>Adet</th><th>Alış</th><th>Güncel</th><th>Değer</th><th>K/Z</th><th></th></tr></thead>
+        <table style="width:100%;margin-top:15px;border-collapse:collapse;" id="portTable">
+            <thead><tr><th>Kod</th><th>Adet</th><th>Alış</th><th></th></tr></thead>
             <tbody></tbody>
         </table>
     </div>
@@ -105,40 +82,18 @@ function loadStocks() {
     bistHisseler.forEach(kod => {
         const card = document.createElement("div");
         card.className = "stock-card";
-        card.innerHTML = `<h3>${kod}</h3><p style="color:#94a3b8;">Tıklayınca grafik açılır</p>`;
-        card.onclick = () => showDetail(kod);
+        card.innerHTML = `
+            <h3>${kod}</h3>
+            <p style="color:#94a3b8; margin-top:8px;">Detay Sayfasına Git →</p>
+        `;
+        card.onclick = () => {
+            window.location.href = `${kod.toLowerCase()}.html`;   // Senin sayfalarına yönlendiriyor
+        };
         container.appendChild(card);
     });
 }
 
-function showDetail(kod) {
-    document.getElementById("detailPanel").style.display = "block";
-    document.getElementById("detailTitle").textContent = kod + " Detay";
-
-    // TradingView Hisse Grafiği
-    document.getElementById("tvWidget").src = `https://www.tradingview.com/widgetembed/?symbol=BIST%3A${kod}&interval=D`;
-
-    // AI Yorum (örnek)
-    document.getElementById("aiYorum").textContent = `${kod} hissesi teknik olarak orta vadede pozitif sinyaller veriyor. Hacim ve hareketli ortalamalar takip edilmeli.`;
-
-    // Haberler (geçici placeholder - istersen başka kaynak ekleriz)
-    const newsCont = document.getElementById("newsContainer");
-    newsCont.innerHTML = `
-        <div class="news-item">• ${kod} ile ilgili son KAP bildirimi bekleniyor.</div>
-        <div class="news-item">• Sektör ortalaması üzerinde performans gösteriyor.</div>
-    `;
-}
-
-function closeDetail() {
-    document.getElementById("detailPanel").style.display = "none";
-}
-
-function setAlarm() {
-    const price = prompt("Alarm fiyatı girin (örn: 245.5):");
-    if (price) alert(`🔔 ${price} TL alarmı ${document.getElementById("detailTitle").textContent} için kuruldu!`);
-}
-
-// Portföy (basit)
+// Portföy
 function addPortfolio() {
     const kod = document.getElementById("pKod").value.trim().toUpperCase();
     const adet = parseFloat(document.getElementById("pAdet").value);
@@ -157,9 +112,6 @@ function renderPortfolio() {
             <td>${p.kod}</td>
             <td>${p.adet}</td>
             <td>${p.alis}</td>
-            <td>---</td>
-            <td>---</td>
-            <td>---</td>
             <td><button onclick="deletePortfolio(${i})" style="color:red;">Sil</button></td>
         </tr>
     `).join('');
