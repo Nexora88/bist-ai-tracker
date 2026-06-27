@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BIST AI Tracker - Gerçek Fiyatlı</title>
+<title>BIST AI Tracker</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 body { background:#0f172a; color:white; font-family:Arial, sans-serif; }
@@ -17,7 +17,7 @@ body.light .navbar { background:#e2e8f0; color:#1e2937; }
 body.light .card { background:white; border-color:#cbd5e1; }
 
 .stock-card { 
-    min-width:300px; background:#111827; border:1px solid #1f2937; 
+    min-width:280px; background:#111827; border:1px solid #1f2937; 
     border-radius:12px; padding:15px; cursor:pointer; transition:0.2s;
 }
 body.light .stock-card { background:white; border-color:#cbd5e1; }
@@ -42,41 +42,48 @@ body.light .stock-card { background:white; border-color:#cbd5e1; }
 <div class="container">
     <h1>📈 BIST AI Tracker</h1>
 
+    <!-- Genel BIST 30 Grafiği -->
     <div class="card">
         <h2>BIST 30 Endeksi</h2>
-        <div style="height:420px;">
-            <iframe src="https://www.tradingview.com/widgetembed/?symbol=BIST%3AXU030" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
+        <div style="height:480px;">
+            <iframe src="https://www.tradingview.com/widgetembed/?symbol=BIST%3AXU030&interval=D" 
+                    width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
         </div>
     </div>
 
-    <input id="searchInput" placeholder="Hisse ara..." style="width:100%;padding:14px;margin:15px 0;border-radius:10px;background:#1e2937;color:white;">
+    <input id="searchInput" placeholder="Hisse ara (THYAO, ASELS...)" 
+           style="width:100%; padding:14px; margin:15px 0; border-radius:10px; background:#1e2937; color:white; font-size:1.1em;">
 
-    <div id="hisseListesi" style="display:flex;gap:15px;overflow-x:auto;padding:10px 0;flex-wrap:wrap;"></div>
+    <div id="hisseListesi" style="display:flex; gap:15px; overflow-x:auto; padding:10px 0; flex-wrap:wrap;"></div>
 
     <!-- Detay Panel -->
     <div id="detailPanel" class="card" style="display:none;">
         <h2 id="detailTitle"></h2>
-        <div style="height:420px;margin:15px 0;">
-            <iframe id="tvWidget" width="100%" height="100%" frameborder="0"></iframe>
+        
+        <div style="height:460px; margin:15px 0;">
+            <iframe id="tvWidget" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
         </div>
+
         <h3>AI Yorum</h3>
-        <p id="aiYorum" style="background:#1e2937;padding:12px;border-radius:8px;"></p>
+        <p id="aiYorum" style="background:#1e2937; padding:12px; border-radius:8px; line-height:1.5;"></p>
+
         <h3>Son Haberler</h3>
         <div id="newsContainer"></div>
-        <button onclick="setAlarm()">🔔 Alarm Kur</button>
+
+        <button onclick="setAlarm()" style="margin:10px 5px 0 0;">🔔 Alarm Kur</button>
         <button onclick="closeDetail()">Kapat</button>
     </div>
 
     <!-- Portföy -->
     <div class="card">
         <h2>💼 Portföy</h2>
-        <input id="pKod" placeholder="Kod" style="padding:8px;width:22%;">
-        <input id="pAdet" type="number" placeholder="Adet" style="padding:8px;width:18%;">
-        <input id="pAlis" type="number" placeholder="Alış Fiyatı" style="padding:8px;width:22%;">
+        <input id="pKod" placeholder="Kod" style="padding:8px;width:25%;">
+        <input id="pAdet" type="number" placeholder="Adet" style="padding:8px;width:20%;">
+        <input id="pAlis" type="number" placeholder="Alış Fiyatı" style="padding:8px;width:25%;">
         <button onclick="addPortfolio()">Ekle</button>
 
-        <table style="width:100%;margin-top:15px;border-collapse:collapse;" id="portTable">
-            <thead><tr><th>Kod</th><th>Adet</th><th>Alış</th><th>Güncel</th><th>Değer</th><th>K/Z %</th><th></th></tr></thead>
+        <table style="width:100%; margin-top:15px; border-collapse:collapse;" id="portTable">
+            <thead><tr><th>Kod</th><th>Adet</th><th>Alış</th><th>Güncel</th><th>Değer</th><th>K/Z</th><th></th></tr></thead>
             <tbody></tbody>
         </table>
     </div>
@@ -88,119 +95,78 @@ let portfolio = JSON.parse(localStorage.getItem('bistPortfolio')) || [];
 // Tema
 function toggleTheme() { document.body.classList.toggle('light'); }
 
-// ====================== GERÇEK FİYAT API ======================
-async function fetchData(symbol) {
-    try {
-        const res = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}.IS?interval=1d`);
-        const json = await res.json();
-        const r = json.chart.result[0];
-        const meta = r.meta;
-        const q = r.indicators.quote[0];
-
-        return {
-            price: meta.regularMarketPrice.toFixed(2),
-            change: meta.regularMarketChangePercent.toFixed(2),
-            volume: (q.volume[q.volume.length-1]/1000000).toFixed(1) + "M"
-        };
-    } catch(e) { return {price: "---", change: "0", volume: "N/A"}; }
-}
-
-// ====================== ANA HİSSELER ======================
+// Hisseler
 const bistHisseler = ["THYAO","ASELS","TUPRS","KCHOL","EREGL","AKBNK","GARAN","ISCTR","SAHOL","YKBNK","BIMAS","FROTO","PETKM","TCELL","SISE","KOZAL","GUBRF","EKGYO","HALKB","VAKBN","SASA","HEKTS","TKFEN","ALARK","KRDMD","VESBE","TOASO","AYGAZ","ENJSA","PGSUS"];
 
-async function loadStocks() {
+function loadStocks() {
     const container = document.getElementById("hisseListesi");
     container.innerHTML = "";
 
-    for (let kod of bistHisseler) {
-        const data = await fetchData(kod);
+    bistHisseler.forEach(kod => {
         const card = document.createElement("div");
         card.className = "stock-card";
-        card.innerHTML = `
-            <h3>${kod}</h3>
-            <p style="font-size:1.5em;margin:8px 0;">${data.price} ₺</p>
-            <p class="${parseFloat(data.change) >= 0 ? 'positive' : 'negative'}">
-                ${parseFloat(data.change) >= 0 ? '+' : ''}${data.change}%
-            </p>
-        `;
+        card.innerHTML = `<h3>${kod}</h3><p style="color:#94a3b8;">Tıklayınca grafik açılır</p>`;
         card.onclick = () => showDetail(kod);
         container.appendChild(card);
-    }
+    });
 }
 
-// ====================== DETAY PANEL ======================
-async function showDetail(kod) {
+function showDetail(kod) {
     document.getElementById("detailPanel").style.display = "block";
     document.getElementById("detailTitle").textContent = kod + " Detay";
 
-    document.getElementById("tvWidget").src = `https://www.tradingview.com/widgetembed/?symbol=BIST%3A${kod}`;
+    // TradingView Hisse Grafiği
+    document.getElementById("tvWidget").src = `https://www.tradingview.com/widgetembed/?symbol=BIST%3A${kod}&interval=D`;
 
-    document.getElementById("aiYorum").textContent = "AI Yorum: Son dönemde hacim artışı ve teknik göstergeler olumlu sinyal veriyor. Kısa vadede dikkatli takip edilmeli.";
+    // AI Yorum (örnek)
+    document.getElementById("aiYorum").textContent = `${kod} hissesi teknik olarak orta vadede pozitif sinyaller veriyor. Hacim ve hareketli ortalamalar takip edilmeli.`;
 
-    // Haberler
+    // Haberler (geçici placeholder - istersen başka kaynak ekleriz)
     const newsCont = document.getElementById("newsContainer");
-    newsCont.innerHTML = "<p>Yükleniyor...</p>";
-    try {
-        const res = await fetch(`https://query1.finance.yahoo.com/v1/finance/search?q=${kod}&newsCount=5`);
-        const data = await res.json();
-        newsCont.innerHTML = "";
-        (data.news || []).forEach(n => {
-            const div = document.createElement("div");
-            div.className = "news-item";
-            div.innerHTML = `<a href="${n.link}" target="_blank">${n.title}</a>`;
-            newsCont.appendChild(div);
-        });
-    } catch(e) {
-        newsCont.innerHTML = "<p>Haberler alınamadı.</p>";
-    }
+    newsCont.innerHTML = `
+        <div class="news-item">• ${kod} ile ilgili son KAP bildirimi bekleniyor.</div>
+        <div class="news-item">• Sektör ortalaması üzerinde performans gösteriyor.</div>
+    `;
 }
 
-function closeDetail() { document.getElementById("detailPanel").style.display = "none"; }
+function closeDetail() {
+    document.getElementById("detailPanel").style.display = "none";
+}
 
 function setAlarm() {
-    const price = prompt("Alarm fiyatı girin:");
-    if (price) alert(`✅ ${price} ₺ alarmı kuruldu!`);
+    const price = prompt("Alarm fiyatı girin (örn: 245.5):");
+    if (price) alert(`🔔 ${price} TL alarmı ${document.getElementById("detailTitle").textContent} için kuruldu!`);
 }
 
-// ====================== PORTFÖY ======================
-async function addPortfolio() {
+// Portföy (basit)
+function addPortfolio() {
     const kod = document.getElementById("pKod").value.trim().toUpperCase();
     const adet = parseFloat(document.getElementById("pAdet").value);
     const alis = parseFloat(document.getElementById("pAlis").value);
     if (!kod || !adet || !alis) return alert("Tüm alanları doldurun!");
 
-    portfolio.push({kod: kod + ".IS", adet, alis});
+    portfolio.push({kod, adet, alis});
     localStorage.setItem('bistPortfolio', JSON.stringify(portfolio));
     renderPortfolio();
 }
 
-async function renderPortfolio() {
+function renderPortfolio() {
     const tbody = document.querySelector("#portTable tbody");
-    tbody.innerHTML = "";
-
-    for (let item of portfolio) {
-        const data = await fetchData(item.kod.replace('.IS',''));
-        const current = parseFloat(data.price);
-        const value = (item.adet * current).toFixed(2);
-        const cost = (item.adet * item.alis).toFixed(2);
-        const pnlPct = current && item.alis ? ((current - item.alis) / item.alis * 100).toFixed(1) : 0;
-
-        const row = document.createElement("tr");
-        row.innerHTML = `
-            <td>${item.kod.replace('.IS','')}</td>
-            <td>${item.adet}</td>
-            <td>${item.alis}</td>
-            <td>${data.price}</td>
-            <td>${value}</td>
-            <td class="${pnlPct >= 0 ? 'positive' : 'negative'}">${pnlPct}%</td>
-            <td><button onclick="deletePortfolio('${item.kod}')" style="color:red;">Sil</button></td>
-        `;
-        tbody.appendChild(row);
-    }
+    tbody.innerHTML = portfolio.map((p, i) => `
+        <tr>
+            <td>${p.kod}</td>
+            <td>${p.adet}</td>
+            <td>${p.alis}</td>
+            <td>---</td>
+            <td>---</td>
+            <td>---</td>
+            <td><button onclick="deletePortfolio(${i})" style="color:red;">Sil</button></td>
+        </tr>
+    `).join('');
 }
 
-window.deletePortfolio = function(kod) {
-    portfolio = portfolio.filter(p => p.kod !== kod);
+window.deletePortfolio = function(i) {
+    portfolio.splice(i, 1);
     localStorage.setItem('bistPortfolio', JSON.stringify(portfolio));
     renderPortfolio();
 };
@@ -213,7 +179,6 @@ document.getElementById("searchInput").addEventListener("input", function() {
     });
 });
 
-// Başlat
 window.onload = () => {
     loadStocks();
     renderPortfolio();
