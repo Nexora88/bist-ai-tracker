@@ -1,218 +1,424 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AEFES LIVE</title>
 
-<style>
-body {
-  margin:0;
-  font-family:Arial;
-  background:#0f172a;
-  color:white;
-}
+<title>AEFES | BIST AI Tracker</title>
 
-.container {
-  max-width:900px;
-  margin:auto;
-  padding:20px;
-}
+<meta name="description" content="Anadolu Efes (AEFES) canlı borsa verileri, grafikler, teknik analiz ve yapay zeka destekli yorumlar.">
 
-.card {
-  background:#111827;
-  padding:15px;
-  margin-bottom:15px;
-  border-radius:10px;
-}
+<link rel="stylesheet" href="assets/css/style.css">
 
-.price {
-  font-size:3em;
-  font-weight:bold;
-}
+<link rel="icon" href="assets/logos/aefes.png">
 
-.green { color:#22c55e; }
-.red { color:#ef4444; }
-
-input, button {
-  padding:10px;
-  border:none;
-  border-radius:8px;
-}
-
-button {
-  cursor:pointer;
-  background:#2563eb;
-  color:white;
-}
-</style>
 </head>
 
 <body>
 
 <div class="container">
 
-<h1>📊 AEFES LIVE</h1>
+<header class="header">
+
+<div class="logo-area">
+
+<img
+src="assets/logos/aefes.png"
+alt="AEFES Logo"
+class="logo"
+id="companyLogo">
+
+<div class="company">
+
+<h1>AEFES</h1>
+
+<p>Anadolu Efes Biracılık A.Ş.</p>
+
+</div>
+
+</div>
+
+<div>
+
+<div
+id="marketStatus"
+class="market-status">
+
+Yükleniyor...
+
+</div>
+
+<p
+id="marketCountdown"
+style="margin-top:10px;color:var(--muted);">
+
+...
+
+</p>
+
+</div>
+
+</header>
+
+<div class="grid grid-2">
 
 <div class="card">
-  <div>Güncel Fiyat</div>
-  <div id="price" class="price">---</div>
-  <div id="change"></div>
+
+<h2>Canlı Fiyat</h2>
+
+<div
+id="currentPrice"
+class="price">
+
+--.-- ₺
+
+</div>
+
+<div
+id="changePercent"
+class="change">
+
+%0.00
+
+</div>
+
+<p
+id="lastUpdate"
+style="margin-top:15px;color:var(--muted);">
+
+Son Güncelleme:
+
+--
+
+</p>
+
+<p
+id="connectionStatus"
+style="margin-top:6px;">
+
+Bağlanıyor...
+
+</p>
+
+<div
+style="margin-top:25px;display:flex;gap:10px;flex-wrap:wrap;">
+
+<button
+class="primary-btn"
+onclick="Engine.refresh()">
+
+🔄 Yenile
+
+</button>
+
+<button
+class="warning-btn"
+onclick="document.getElementById('alarmCard').scrollIntoView({behavior:'smooth'})">
+
+🔔 Alarm
+
+</button>
+
+<button
+class="secondary-btn"
+onclick="location.href='index.html'">
+
+← Ana Sayfa
+
+</button>
+
+</div>
+
 </div>
 
 <div class="card">
-  <p>RSI: <b id="rsi">---</b></p>
-  <p>Hacim: <b id="volume">---</b></p>
-  <p>High / Low: <b id="hl">---</b></p>
+
+<h2>Teknik Veriler</h2>
+
+<div class="grid grid-3">
+
+<div class="info-box">
+
+<div class="info-title">
+
+Hacim
+
+</div>
+
+<div
+id="volume"
+class="info-value">
+
+--
+
+</div>
+
+</div>
+
+<div class="info-box">
+
+<div class="info-title">
+
+Günlük Yüksek
+
+</div>
+
+<div
+id="dayHigh"
+class="info-value">
+
+--
+
+</div>
+
+</div>
+
+<div class="info-box">
+
+<div class="info-title">
+
+Günlük Düşük
+
+</div>
+
+<div
+id="dayLow"
+class="info-value">
+
+--
+
+</div>
+
+</div>
+
+<div class="info-box">
+
+<div class="info-title">
+
+Yüksek / Düşük
+
+</div>
+
+<div
+id="highLow"
+class="info-value">
+
+--
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="card">
+
+<h2>Canlı Grafik</h2>
+
+<div class="chart-box">
+
+<canvas id="priceChart"></canvas>
+
+</div>
+
+<p style="margin-top:12px;color:var(--muted);">
+
+Grafik her veri güncellemesinde otomatik yenilenir.
+
+</p>
+
+</div>
+
+<div class="grid grid-2">
+
+<div class="card">
+
+<h2>🤖 AI Analizi</h2>
+
+<div class="info-box">
+
+<div class="info-title">
+
+AI Skoru
+
+</div>
+
+<div id="aiScore" class="info-value">
+
+Hesaplanıyor...
+
+</div>
+
+</div>
+
+<div class="info-box" style="margin-top:15px;">
+
+<div class="info-title">
+
+AI Yorumu
+
+</div>
+
+<p id="aiComment" style="margin-top:10px;line-height:1.8;">
+
+Canlı veriler analiz ediliyor...
+
+</p>
+
+</div>
+
+</div>
+
+<div class="card" id="alarmCard">
+
+<h2>🔔 Fiyat Alarmı</h2>
+
+<input
+
+type="number"
+
+id="alarmPrice"
+
+placeholder="Örneğin: 145.50">
+
+<div style="margin-top:15px;display:flex;gap:10px;flex-wrap:wrap;">
+
+<button
+
+class="primary-btn"
+
+onclick="setAlarm()">
+
+Alarm Kur
+
+</button>
+
+<button
+
+class="secondary-btn"
+
+onclick="localStorage.removeItem('alarm_AEFES');alert('Alarm silindi');">
+
+Alarmı Sil
+
+</button>
+
+</div>
+
+<p
+
+id="alarmStatus"
+
+style="margin-top:15px;color:var(--muted);">
+
+Henüz alarm kurulmadı.
+
+</p>
+
+</div>
+
 </div>
 
 <div class="card">
-  <h3>🔔 Alarm</h3>
-  <input id="alarmInput" placeholder="Fiyat">
-  <button onclick="setAlarm()">Kur</button>
-  <p id="alarmStatus"></p>
+
+<h2>📰 Son Haberler</h2>
+
+<div
+
+id="newsContainer"
+
+class="news">
+
+<div class="news-item">
+
+Haberler yükleniyor...
+
 </div>
 
-<div class="card">
-  <h3>📈 Grafik</h3>
-  <iframe
-    src="https://www.tradingview.com/widgetembed/?symbol=BIST%3AAEFES"
-    width="100%" height="400"></iframe>
 </div>
 
 </div>
+<footer class="footer">
+
+<p>BIST AI Tracker © 2026</p>
+
+<p id="footerTime"></p>
+
+</footer>
+
+</div>
+
+<script src="assets/js/engine.js"></script>
+<script src="assets/js/chart.js"></script>
+<script src="assets/js/news.js"></script>
+<script src="assets/js/alarm.js"></script>
+<script src="assets/js/ai.js"></script>
 
 <script>
 
-const SYMBOL = "AEFES.IS";
+const SYMBOL="AEFES";
 
-let lastPrice = 0;
+function setAlarm(){
 
-// ---------------- FETCH ----------------
-async function getData() {
-  try {
+    const value=document.getElementById("alarmPrice").value;
 
-    const url =
-      "https://api.allorigins.win/raw?url=" +
-      encodeURIComponent(
-        `https://query1.finance.yahoo.com/v8/finance/chart/${SYMBOL}?interval=1m`
-      );
+    if(!value){
 
-    const res = await fetch(url);
-    const json = await res.json();
+        alert("Lütfen alarm fiyatı giriniz.");
 
-    const r = json?.chart?.result?.[0];
-    if (!r) return;
+        return;
 
-    const meta = r.meta || {};
-    const q = r.indicators?.quote?.[0] || {};
-
-    const price = meta.regularMarketPrice ?? 0;
-    const prev = meta.chartPreviousClose ?? price;
-
-    // ✔ DOĞRU CHANGE
-    const change = ((price - prev) / prev) * 100;
-
-    const closes = q.close || [];
-
-    // RSI
-    let rsi = 0;
-    if (closes.length > 15) {
-      let g = 0, l = 0;
-
-      for (let i = 1; i <= 14; i++) {
-        const a = closes.at(-i);
-        const b = closes.at(-i-1);
-        if (a == null || b == null) continue;
-
-        const diff = a - b;
-        diff > 0 ? g += diff : l -= diff;
-      }
-
-      const rs = g / (l || 1);
-      rsi = 100 - (100 / (1 + rs));
     }
 
-    const volume = q.volume?.at(-1) || 0;
+    localStorage.setItem("alarm_"+SYMBOL,value);
 
-    // ---------------- UI ----------------
-    document.getElementById("price").innerText =
-      price.toFixed(2) + " ₺";
+    document.getElementById("alarmStatus").textContent=
+        "✅ Alarm "+value+" ₺ olarak kaydedildi.";
 
-    const ch = document.getElementById("change");
-    ch.innerText = (change >= 0 ? "▲ +" : "▼ ") + change.toFixed(2) + "%";
-    ch.className = change >= 0 ? "green" : "red";
-
-    document.getElementById("rsi").innerText =
-      rsi.toFixed(1);
-
-    document.getElementById("volume").innerText =
-      (volume / 1e6).toFixed(1) + "M";
-
-    const high = meta.regularMarketDayHigh ?? 0;
-    const low = meta.regularMarketDayLow ?? 0;
-
-    document.getElementById("hl").innerText =
-      high.toFixed(2) + " / " + low.toFixed(2);
-
-    lastPrice = price;
-
-  } catch (e) {
-    console.log("error", e);
-  }
 }
 
-// ---------------- ALARM ----------------
-function setAlarm() {
-  const val = document.getElementById("alarmInput").value;
-  if (!val) return;
+function updateFooterClock(){
 
-  localStorage.setItem("AEFES_ALARM", val);
+    document.getElementById("footerTime").textContent=
+        "Son ziyaret: "+
+        new Date().toLocaleString("tr-TR");
 
-  document.getElementById("alarmStatus").innerText =
-    "Alarm kuruldu: " + val + " ₺";
-
-  if (Notification.permission === "default") {
-    Notification.requestPermission();
-  }
 }
 
-// alarm kontrol
-function checkAlarm() {
-  const a = localStorage.getItem("AEFES_ALARM");
-  if (!a) return;
+window.addEventListener("load",()=>{
 
-  const target = parseFloat(a);
+    Engine.init(SYMBOL);
 
-  if (lastPrice >= target) {
-    alert("🚨 AEFES alarm: " + target);
+    if(typeof loadChart==="function"){
 
-    if (Notification.permission === "granted") {
-      new Notification("AEFES Alarm", {
-        body: "Hedef fiyat geldi: " + target
-      });
+        loadChart(SYMBOL);
+
     }
 
-    localStorage.removeItem("AEFES_ALARM");
-  }
-}
+    if(typeof loadNews==="function"){
 
-// ---------------- LOOP ----------------
-setInterval(() => {
-  getData();
-  checkAlarm();
-}, 5000);
+        loadNews(SYMBOL);
 
-// ---------------- INIT ----------------
-window.onload = () => {
-  getData();
+    }
 
-  if (Notification.permission === "default") {
-    Notification.requestPermission();
-  }
-};
+    if(typeof loadAI==="function"){
+
+        loadAI(SYMBOL);
+
+    }
+
+    updateFooterClock();
+
+});
 
 </script>
 
 </body>
+
 </html>
