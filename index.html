@@ -7,15 +7,54 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 body { background:#0f172a; color:white; font-family:Arial, sans-serif; }
+body.light { background:#f8fafc; color:#1e2937; }
+
+.navbar { background:#111827; padding:15px; display:flex; gap:20px; align-items:center; }
+body.light .navbar { background:#e2e8f0; color:#1e2937; }
+
 .container { padding:20px; }
 .card { background:#111827; border:1px solid #1f2937; border-radius:12px; padding:15px; margin-bottom:20px; }
-.stock-container { display:flex; gap:15px; overflow-x:auto; padding:15px 0; scroll-behavior:smooth; flex-wrap:wrap; }
-.stock-card { min-width:280px; background:#111827; border:1px solid #1f2937; border-radius:12px; padding:15px; cursor:pointer; }
+body.light .card { background:white; border-color:#cbd5e1; }
+
+.stock-container { 
+    display:flex; 
+    gap:15px; 
+    overflow-x:auto; 
+    padding:15px 0; 
+    scroll-behavior:smooth; 
+}
+.stock-card { 
+    min-width:280px; 
+    background:#111827; 
+    border:1px solid #1f2937; 
+    border-radius:12px; 
+    padding:15px; 
+    cursor:pointer; 
+}
 body.light .stock-card { background:white; border-color:#cbd5e1; }
-.followBtn, .alarmBtn { width:100%; margin-top:8px; padding:9px; border:none; border-radius:8px; cursor:pointer; }
+
+.followBtn, .alarmBtn { 
+    width:100%; 
+    margin-top:8px; 
+    padding:9px; 
+    border:none; 
+    border-radius:8px; 
+    cursor:pointer; 
+}
 .followBtn { background:#2563eb; color:white; }
 .followBtn.active { background:#16a34a; }
 .alarmBtn { background:#eab308; color:black; }
+
+.arrowBtn {
+    background:#2563eb; 
+    color:white; 
+    border:none; 
+    padding:12px; 
+    border-radius:10px; 
+    cursor:pointer; 
+    font-size:1.2em;
+}
+
 .theme-toggle { margin-left:auto; padding:8px 16px; background:#334155; border:none; border-radius:8px; cursor:pointer; }
 </style>
 </head>
@@ -30,9 +69,14 @@ body.light .stock-card { background:white; border-color:#cbd5e1; }
 <div class="container">
     <h1>📈 BIST AI Tracker</h1>
 
-    <input id="searchInput" placeholder="Hisse ara..." style="width:100%;padding:14px;margin:15px 0;border-radius:10px;background:#1e2937;color:white;">
+    <input id="searchInput" placeholder="Hisse ara..." 
+           style="width:100%; padding:14px; margin:15px 0; border-radius:10px; background:#1e2937; color:white;">
 
-    <div class="stock-container" id="hisseListesi"></div>
+    <div style="display:flex; align-items:center; gap:10px;">
+        <button class="arrowBtn" onclick="scrollLeft()">⬅️</button>
+        <div class="stock-container" id="hisseListesi"></div>
+        <button class="arrowBtn" onclick="scrollRight()">➡️</button>
+    </div>
 
     <div class="card">
         <h2>⭐ Takip Edilenler (<span id="takipSayisi">0</span>)</h2>
@@ -46,7 +90,7 @@ let takipte = JSON.parse(localStorage.getItem('takipListesi')) || [];
 // Tema
 function toggleTheme() { document.body.classList.toggle('light'); }
 
-// Hisseler (Senin verdiğin liste)
+// BIST30 Listesi
 const bistHisseler = [
     "AEFES","AKBNK","ASELS","ASTOR","BIMAS","DSTKF","EKGYO","ENKAI","EREGL","FROTO",
     "GARAN","GUBRF","ISCTR","KCHOL","KRDMD","MGROS","PETKM","PGSUS","SAHOL","SASA",
@@ -62,7 +106,7 @@ async function loadStocks() {
         card.className = "stock-card";
         card.innerHTML = `
             <h3>${kod}</h3>
-            <p style="color:#94a3b8; margin-top:8px;">Detay sayfasına git →</p>
+            <p style="color:#94a3b8; margin-top:8px;">Detay →</p>
             <button class="followBtn" data-kod="${kod}">⭐ Takip Et</button>
             <button class="alarmBtn" data-kod="${kod}">🔔 Alarm</button>
         `;
@@ -74,7 +118,7 @@ async function loadStocks() {
         container.appendChild(card);
     }
 
-    // Butonlar
+    // Buton eventleri
     document.querySelectorAll('.followBtn').forEach(btn => {
         const kod = btn.dataset.kod;
         if (takipte.includes(kod)) {
@@ -128,6 +172,14 @@ function setAlarm(kod) {
         localStorage.setItem(`alarm_${kod}`, price);
         alert(`${kod} için ${price} ₺ alarmı kuruldu!`);
     }
+}
+
+function scrollLeft() {
+    document.getElementById("hisseListesi").scrollBy(-320, 0);
+}
+
+function scrollRight() {
+    document.getElementById("hisseListesi").scrollBy(320, 0);
 }
 
 // Arama
