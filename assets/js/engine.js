@@ -4,9 +4,9 @@
 
 const Engine = {
 
-    symbol: "",
+    currentSymbol: "",
 
-    refreshInterval: 10000,
+    refreshInterval: CONFIG.REFRESH_INTERVAL,
 
     previousPrice: null,
 
@@ -18,7 +18,7 @@ const Engine = {
 
     async load(symbol){
 
-        this.symbol = symbol;
+        this.currentSymbol = Market.normalize(symbol);
 
         try{
 
@@ -171,7 +171,7 @@ const Engine = {
 
         this.timer=setInterval(()=>{
 
-            this.load(this.symbol);
+            this.load(this.currentSymbol);
 
         },this.refreshInterval);
 
@@ -293,7 +293,7 @@ setInterval(()=>{
 
 Engine.checkAlarm=function(price){
 
-    const key="alarm_"+this.symbol;
+    const key="alarm_"+this.currentSymbol;
 
     const target=parseFloat(localStorage.getItem(key));
 
@@ -303,7 +303,7 @@ Engine.checkAlarm=function(price){
 
         if(Notification.permission==="granted"){
 
-            new Notification(this.symbol,{
+            new Notification(this.currentSymbol,{
                 body:`${target.toFixed(2)} ₺ seviyesine ulaştı.`
             });
 
@@ -351,7 +351,7 @@ window.addEventListener("offline",()=>Engine.updateConnection());
 
 Engine.refresh=function(){
 
-    this.load(this.symbol);
+    this.load(this.currentSymbol);
 
 };
 
