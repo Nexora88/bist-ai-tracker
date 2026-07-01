@@ -70,6 +70,18 @@ const Engine = {
             );
 
             this.checkAlarm(price);
+            if (window.ChartManager && Array.isArray(quote.close)) {
+
+    const data = quote.close
+        .filter(price => price !== null)
+        .slice(-50)
+        .map(price => ({
+            close: Number(price)
+        }))
+
+    ChartManager.update(data)
+
+}
 
         }
 
