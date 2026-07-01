@@ -79,6 +79,8 @@ const Engine = {
             close: Number(price)
         }))
 
+    console.log(data)
+
     ChartManager.update(data)
 
 }
