@@ -22,21 +22,17 @@ const Engine = {
 
         try{
 
-            const response = await fetch(this.apiUrl(symbol),{
-                cache:"no-store"
-            });
+            const json = await API.getQuote(symbol);
 
-            if(!response.ok){
-                throw new Error("API Hatası");
-            }
-
-            const json = await response.json();
-
-            const result = json.chart.result[0];
+const result = json.chart.result[0];
 
             const meta = result.meta;
 
             const quote = result.indicators.quote[0];
+
+            if(!quote){
+    throw new Error("Veri bulunamadı.");
+}
 
             const price =
                 meta.regularMarketPrice ??
@@ -46,8 +42,7 @@ const Engine = {
                 meta.regularMarketChangePercent ?? 0;
 
             const volume =
-                quote.volume.at(-1) ?? 0;
-
+                quote.volume?.at(-1) ?? 0;
             const high =
                 meta.regularMarketDayHigh;
 
