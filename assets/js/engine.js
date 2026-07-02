@@ -12,9 +12,6 @@ const Engine = {
 
     timer: null,
 
-    apiUrl(symbol){
-        return `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}.IS?interval=1m&range=1d`;
-    },
 
     async load(symbol){
 
@@ -22,17 +19,28 @@ const Engine = {
 
         try{
 
+
             const json = await API.getQuote(symbol);
 
-const result = json.chart.result[0];
+            const result = json.chart?.result?.[0];
+
+if (!result) {
+    throw new Error("API veri döndürmedi.");
+}
+
 
             const meta = result.meta;
 
-            const quote = result.indicators.quote[0];
+            if (!meta) {
+     throw new Error("Meta verisi bulunamadı.");
+}
 
-            if(!quote){
+            const quote = result.indicators?.quote?.[0];
+
+if (!quote) {
     throw new Error("Veri bulunamadı.");
 }
+
 
             const price =
                 meta.regularMarketPrice ??
@@ -49,6 +57,11 @@ const result = json.chart.result[0];
             const low =
                 meta.regularMarketDayLow;
 
+            this.setText(
+    "highLow",
+    `${(high ?? 0).toFixed(2)} ₺ / ${(low ?? 0).toFixed(2)} ₺`
+);
+
             this.updatePrice(price);
 
             this.updateChange(change);
@@ -56,8 +69,6 @@ const result = json.chart.result[0];
             this.setText("volume",
                 Intl.NumberFormat("tr-TR").format(volume));
 
-            this.setText("highLow",
-                `${high.toFixed(2)} ₺ / ${low.toFixed(2)} ₺`);
 
             this.setText(
                 "lastUpdate",
@@ -65,22 +76,23 @@ const result = json.chart.result[0];
             );
 
             this.checkAlarm(price);
-            if (window.ChartManager && Array.isArray(quote.close)) {
+            const closes = quote.close ?? [];
 
-    const data = quote.close
+if (window.ChartManager && closes.length) {
+
+    const data = closes
         .filter(price => price !== null)
         .slice(-50)
         .map(price => ({
             close: Number(price)
-        }))
+        }));
 
-    console.log(data)
-
-    ChartManager.update(data)
+    ChartManager.update(data);
 
 }
 
-        }
+}
+
 
         catch(err){
 
