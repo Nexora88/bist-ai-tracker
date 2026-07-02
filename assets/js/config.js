@@ -15,6 +15,8 @@ const CONFIG = {
 
     REFRESH_INTERVAL: 10000,
 
+    API_URL: "https://polished-waterfall-087c.ahmeteymenbakrac.workers.dev",
+
     MARKETS: {
 
         BIST: ".IS",
