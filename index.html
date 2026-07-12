@@ -1,199 +1,215 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BIST AI Tracker</title>
-<style>
-* { margin:0; padding:0; box-sizing:border-box; }
-body { background:#0f172a; color:white; font-family:Arial, sans-serif; }
-body.light { background:#f8fafc; color:#1e2937; }
-
-.navbar { background:#111827; padding:15px; display:flex; gap:20px; align-items:center; }
-body.light .navbar { background:#e2e8f0; color:#1e2937; }
-
-.container { padding:20px; }
-.stock-container { 
-    display:flex; 
-    gap:15px; 
-    overflow-x:auto; 
-    padding:15px 0; 
-    scroll-behavior:smooth; 
-}
-.stock-card { 
-    min-width:260px; 
-    background:#111827; 
-    border:1px solid #1f2937; 
-    border-radius:12px; 
-    padding:15px; 
-    cursor:pointer; 
-    transition:0.2s;
-}
-body.light .stock-card { background:white; border-color:#cbd5e1; }
-.stock-card:hover { transform:scale(1.03); }
-
-.followBtn, .alarmBtn { 
-    width:100%; 
-    margin-top:10px; 
-    padding:9px; 
-    border:none; 
-    border-radius:8px; 
-    cursor:pointer; 
-    font-size:0.95em;
-}
-.followBtn { background:#2563eb; color:white; }
-.followBtn.active { background:#16a34a; }
-.alarmBtn { background:#eab308; color:black; }
-
-.arrowBtn {
-    background:#2563eb; 
-    color:white; 
-    border:none; 
-    padding:12px 16px; 
-    border-radius:10px; 
-    cursor:pointer; 
-    font-size:1.1em;
-}
-
-.theme-toggle { margin-left:auto; padding:8px 16px; background:#334155; border:none; border-radius:8px; cursor:pointer; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIST AI Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body { font-family: 'Segoe UI', system-ui, sans-serif; }
+        .stock-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .stock-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+        .scroll-container {
+            scrollbar-width: thin;
+            scrollbar-color: #64748b #1e2937;
+        }
+    </style>
 </head>
-<body>
+<body class="bg-slate-950 text-slate-200 min-h-screen">
 
-<div class="navbar">
-    <a href="#">Ana Sayfa</a>
-    <a href="#">Portföy</a>
-    <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
-</div>
+    <!-- Navbar -->
+    <nav class="bg-slate-900 border-b border-slate-700 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-8">
+                <a href="index.html" class="text-2xl font-bold flex items-center gap-2">
+                    📈 <span class="text-emerald-400">BIST</span> AI
+                </a>
+                <div class="flex gap-6 text-sm">
+                    <a href="index.html" class="hover:text-white transition-colors">Ana Sayfa</a>
+                    <a href="portfolio.html" class="hover:text-white transition-colors">Portföy</a>
+                    <a href="ai-analiz.html" class="hover:text-white transition-colors">🤖 AI Analiz</a>
+                </div>
+            </div>
+            
+            <button onclick="toggleTheme()" id="themeBtn"
+                    class="p-3 rounded-xl bg-slate-800 hover:bg-slate-700 transition-colors">
+                🌙
+            </button>
+        </div>
+    </nav>
 
-<div class="container">
-    <h1>📈 BIST AI Tracker</h1>
+    <div class="max-w-7xl mx-auto px-6 py-8">
+        <h1 class="text-4xl font-bold mb-2">BIST AI Tracker</h1>
+        <p class="text-slate-400 mb-8">Borsa İstanbul hisselerini takip edin, AI analizleri görün</p>
 
-    <input id="searchInput" placeholder="Hisse ara..." 
-           style="width:100%; padding:14px; margin:15px 0; border-radius:10px; background:#1e2937; color:white;">
+        <!-- Arama -->
+        <div class="mb-8">
+            <input id="searchInput" type="text" 
+                   placeholder="Hisse kodu ara... (Örn: AEFES, THYAO)"
+                   class="w-full bg-slate-900 border border-slate-700 rounded-2xl px-6 py-4 text-lg focus:outline-none focus:border-emerald-500 transition-colors">
+        </div>
 
-    <div style="display:flex; align-items:center; gap:12px;">
-        <button class="arrowBtn" onclick="scrollLeft()">⬅️</button>
-        <div class="stock-container" id="hisseListesi"></div>
-        <button class="arrowBtn" onclick="scrollRight()">➡️</button>
+        <!-- Hisse Kartları -->
+        <div class="flex items-center gap-4 mb-6">
+            <button onclick="scrollLeft()" 
+                    class="bg-slate-800 hover:bg-slate-700 p-4 rounded-2xl transition-colors">
+                <i class="fas fa-chevron-left text-xl"></i>
+            </button>
+            
+            <div id="hisseListesi" 
+                 class="flex gap-6 overflow-x-auto scroll-container pb-4 flex-1 snap-x">
+                <!-- JavaScript ile doldurulacak -->
+            </div>
+
+            <button onclick="scrollRight()" 
+                    class="bg-slate-800 hover:bg-slate-700 p-4 rounded-2xl transition-colors">
+                <i class="fas fa-chevron-right text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Takip Edilenler -->
+        <div class="bg-slate-900 border border-slate-700 rounded-3xl p-6">
+            <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                ⭐ Takip Edilenler 
+                <span id="takipSayisi" class="bg-emerald-500 text-white text-sm px-3 py-1 rounded-full">0</span>
+            </h2>
+            <ul id="takipListesi" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                <!-- JS ile doldurulacak -->
+            </ul>
+        </div>
     </div>
 
-    <div class="card">
-        <h2>⭐ Takip Edilenler (<span id="takipSayisi">0</span>)</h2>
-        <ul id="takipListesi" style="list-style:none;"></ul>
-    </div>
-</div>
+    <script>
+        // Tema
+        function toggleTheme() {
+            document.documentElement.classList.toggle('light');
+            const isLight = document.documentElement.classList.contains('light');
+            document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙';
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+        }
 
-<script>
-let takipte = JSON.parse(localStorage.getItem('takipListesi')) || [];
+        // BIST Hisseleri
+        const bistHisseler = [
+            "AEFES","AKBNK","ASELS","ASTOR","BIMAS","DSTKF","EKGYO","ENKAI","EREGL","FROTO",
+            "GARAN","GUBRF","ISCTR","KCHOL","KRDMD","MGROS","PETKM","PGSUS","SAHOL","SASA",
+            "SISE","TAVHL","TCELL","THYAO","TOASO","TRALT","TTKOM","TUPRS","VAKBN","YKBNK"
+        ];
 
-// Tema
-function toggleTheme() { document.body.classList.toggle('light'); }
+        let takipte = JSON.parse(localStorage.getItem('takipListesi')) || [];
 
-// BIST30 Listesi
-const bistHisseler = [
-    "AEFES","AKBNK","ASELS","ASTOR","BIMAS","DSTKF","EKGYO","ENKAI","EREGL","FROTO",
-    "GARAN","GUBRF","ISCTR","KCHOL","KRDMD","MGROS","PETKM","PGSUS","SAHOL","SASA",
-    "SISE","TAVHL","TCELL","THYAO","TOASO","TRALT","TTKOM","TUPRS","VAKBN","YKBNK"
-];
+        function loadStocks() {
+            const container = document.getElementById("hisseListesi");
+            container.innerHTML = "";
 
-function loadStocks() {
-    const container = document.getElementById("hisseListesi");
-    container.innerHTML = "";
+            bistHisseler.forEach(kod => {
+                const card = document.createElement("div");
+                card.className = `stock-card bg-slate-900 border border-slate-700 rounded-3xl p-6 min-w-[260px] snap-center cursor-pointer`;
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="text-2xl font-bold">${kod}</h3>
+                            <p class="text-emerald-400 text-sm mt-1">BIST 30</p>
+                        </div>
+                        <span class="text-xs bg-slate-800 px-3 py-1 rounded-full">AI</span>
+                    </div>
+                    
+                    <div class="mt-6 space-y-3">
+                        <button onclick="event.stopImmediatePropagation(); toggleTakip('${kod}', this)" 
+                                class="followBtn w-full py-3 rounded-2xl text-sm font-medium transition-all ${takipte.includes(kod) ? 'bg-emerald-500 text-black' : 'bg-slate-800 hover:bg-slate-700'}">
+                            ${takipte.includes(kod) ? '✅ Takip Ediliyor' : '⭐ Takip Et'}
+                        </button>
+                        
+                        <button onclick="event.stopImmediatePropagation(); setAlarm('${kod}')" 
+                                class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-black rounded-2xl text-sm font-medium transition-all">
+                            🔔 Alarm Kur
+                        </button>
+                    </div>
+                `;
 
-    bistHisseler.forEach(kod => {
-        const card = document.createElement("div");
-        card.className = "stock-card";
-        card.innerHTML = `
-            <h3>${kod}</h3>
-            <p style="color:#94a3b8; margin-top:8px;">Detay sayfası</p>
-            <button class="followBtn" data-kod="${kod}">⭐ Takip Et</button>
-            <button class="alarmBtn" data-kod="${kod}">🔔 Alarm</button>
-        `;
-        card.onclick = (e) => {
-            if (!e.target.classList.contains('followBtn') && !e.target.classList.contains('alarmBtn')) {
-                window.location.href = `${kod.toLowerCase()}.html`;
+                card.onclick = (e) => {
+                    if (!e.target.closest('button')) {
+                        window.location.href = `${kod.toLowerCase()}.html`;
+                    }
+                };
+
+                container.appendChild(card);
+            });
+        }
+
+        function toggleTakip(kod, btn) {
+            if (takipte.includes(kod)) {
+                takipte = takipte.filter(k => k !== kod);
+                btn.classList.remove('bg-emerald-500', 'text-black');
+                btn.classList.add('bg-slate-800', 'hover:bg-slate-700');
+                btn.textContent = '⭐ Takip Et';
+            } else {
+                takipte.push(kod);
+                btn.classList.add('bg-emerald-500', 'text-black');
+                btn.classList.remove('bg-slate-800', 'hover:bg-slate-700');
+                btn.textContent = '✅ Takip Ediliyor';
+            }
+            
+            localStorage.setItem('takipListesi', JSON.stringify(takipte));
+            updateTakipListesi();
+        }
+
+        function updateTakipListesi() {
+            const liste = document.getElementById("takipListesi");
+            liste.innerHTML = "";
+            document.getElementById("takipSayisi").textContent = takipte.length;
+
+            takipte.forEach(kod => {
+                const li = document.createElement("li");
+                li.className = "bg-slate-800 hover:bg-slate-700 rounded-2xl p-4 transition-colors cursor-pointer";
+                li.innerHTML = `<a href="${kod.toLowerCase()}.html" class="block font-medium">${kod}</a>`;
+                liste.appendChild(li);
+            });
+        }
+
+        function setAlarm(kod) {
+            const price = prompt(`${kod} için alarm fiyatı girin (TL):`);
+            if (price && !isNaN(price)) {
+                localStorage.setItem(`alarm_${kod}`, price);
+                alert(`${kod} için ${price} TL alarmı kuruldu!`);
+            }
+        }
+
+        function scrollLeft() {
+            document.getElementById("hisseListesi").scrollBy({ left: -320, behavior: 'smooth' });
+        }
+
+        function scrollRight() {
+            document.getElementById("hisseListesi").scrollBy({ left: 320, behavior: 'smooth' });
+        }
+
+        // Arama
+        document.getElementById("searchInput").addEventListener("input", function() {
+            const filter = this.value.toUpperCase();
+            const cards = document.querySelectorAll(".stock-card");
+            
+            cards.forEach(card => {
+                const text = card.textContent;
+                card.style.display = text.includes(filter) ? "block" : "none";
+            });
+        });
+
+        // Başlangıç
+        window.onload = () => {
+            loadStocks();
+            updateTakipListesi();
+            
+            // Tema yükle
+            if (localStorage.getItem('theme') === 'light') {
+                document.documentElement.classList.add('light');
+                document.getElementById('themeBtn').textContent = '☀️';
             }
         };
-        container.appendChild(card);
-    });
-
-    // Butonlar
-    document.querySelectorAll('.followBtn').forEach(btn => {
-        const kod = btn.dataset.kod;
-        if (takipte.includes(kod)) {
-            btn.classList.add('active');
-            btn.textContent = '✅ Takip Ediliyor';
-        }
-        btn.addEventListener('click', e => { e.stopImmediatePropagation(); toggleTakip(kod, btn); });
-    });
-
-    document.querySelectorAll('.alarmBtn').forEach(btn => {
-        btn.addEventListener('click', e => {
-            e.stopImmediatePropagation();
-            setAlarm(btn.dataset.kod);
-        });
-    });
-}
-
-function toggleTakip(kod, btn) {
-    if (takipte.includes(kod)) {
-        takipte = takipte.filter(k => k !== kod);
-        btn.classList.remove('active');
-        btn.textContent = '⭐ Takip Et';
-    } else {
-        takipte.push(kod);
-        btn.classList.add('active');
-        btn.textContent = '✅ Takip Ediliyor';
-    }
-    localStorage.setItem('takipListesi', JSON.stringify(takipte));
-    updateTakipListesi();
-}
-
-function updateTakipListesi() {
-    const liste = document.getElementById("takipListesi");
-    liste.innerHTML = "";
-    document.getElementById("takipSayisi").textContent = takipte.length;
-
-    takipte.forEach(kod => {
-        const li = document.createElement("li");
-        li.style.padding = "10px";
-        li.style.margin = "5px 0";
-        li.style.background = "#1e2937";
-        li.style.borderRadius = "6px";
-        li.innerHTML = `<a href="${kod.toLowerCase()}.html" style="color:white;">${kod}</a>`;
-        liste.appendChild(li);
-    });
-}
-
-function setAlarm(kod) {
-    const price = prompt(`${kod} için alarm fiyatı girin:`);
-    if (price) {
-        localStorage.setItem(`alarm_${kod}`, price);
-        alert(`${kod} için ${price} ₺ alarmı kuruldu!`);
-    }
-}
-
-function scrollLeft() {
-    document.getElementById("hisseListesi").scrollBy(-300, 0);
-}
-
-function scrollRight() {
-    document.getElementById("hisseListesi").scrollBy(300, 0);
-}
-
-// Arama
-document.getElementById("searchInput").addEventListener("input", function() {
-    const filter = this.value.toUpperCase();
-    document.querySelectorAll(".stock-card").forEach(card => {
-        card.style.display = card.textContent.includes(filter) ? "block" : "none";
-    });
-});
-
-window.onload = () => {
-    loadStocks();
-    updateTakipListesi();
-};
-</script>
+    </script>
 </body>
 </html>
