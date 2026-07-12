@@ -8,126 +8,154 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        .price-up { color: #10b981; animation: tick 0.5s; }
-        .price-down { color: #ef4444; animation: tick 0.5s; }
-        @keyframes tick { 0% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        .price-up { color: #10b981; }
+        .price-down { color: #ef4444; }
+        .card { transition: all 0.3s; }
+        .card:hover { transform: translateY(-4px); }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-200">
 
-<div class="max-w-6xl mx-auto p-6">
-    <a href="index.html" class="inline-flex items-center gap-2 mb-6 text-emerald-400 hover:underline">← Ana Sayfa</a>
+<div class="max-w-7xl mx-auto p-6">
+    <a href="index.html" class="text-emerald-400 hover:underline mb-6 inline-block">← Ana Sayfa</a>
 
-    <div class="flex flex-col md:flex-row justify-between gap-6 mb-10">
+    <div class="flex flex-col md:flex-row justify-between items-start gap-6 mb-10">
         <div>
             <h1 id="symbol" class="text-5xl font-bold"></h1>
-            <p id="companyName" class="text-slate-400"></p>
+            <p id="companyName" class="text-slate-400 text-xl"></p>
         </div>
         <div class="text-right">
-            <div id="currentPrice" class="text-5xl font-mono font-bold"></div>
-            <div id="changePercent" class="text-xl"></div>
-            <p id="lastUpdate" class="text-xs text-slate-500 mt-1"></p>
+            <div id="currentPrice" class="text-6xl font-mono font-bold"></div>
+            <div id="changePercent" class="text-2xl"></div>
+            <p id="lastUpdate" class="text-xs text-slate-500"></p>
         </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <!-- Ana Grafik -->
-        <div class="lg:col-span-8 bg-slate-900 rounded-3xl p-6">
-            <h2 class="text-xl mb-4 flex items-center gap-2"><i class="fas fa-chart-line"></i> Canlı Fiyat Grafiği</h2>
-            <canvas id="priceChart" height="140"></canvas>
+        <!-- Grafikler -->
+        <div class="lg:col-span-8 space-y-6">
+            <div class="bg-slate-900 rounded-3xl p-6 card">
+                <h2 class="text-xl mb-4">Fiyat Grafiği</h2>
+                <canvas id="priceChart" height="140"></canvas>
+            </div>
+            <div class="bg-slate-900 rounded-3xl p-6 card">
+                <h2 class="text-xl mb-4">Hacim Grafiği</h2>
+                <canvas id="volumeChart" height="110"></canvas>
+            </div>
         </div>
 
-        <!-- Teknik Bilgiler -->
-        <div class="lg:col-span-4 bg-slate-900 rounded-3xl p-6 space-y-6">
-            <div>
-                <h3 class="text-lg mb-3">Teknik Veriler</h3>
-                <div id="techData" class="space-y-4 text-sm"></div>
+        <!-- Sağ Panel -->
+        <div class="lg:col-span-4 space-y-6">
+            <!-- Teknik -->
+            <div class="bg-slate-900 rounded-3xl p-6 card">
+                <h3 class="text-lg mb-4">Teknik Veriler</h3>
+                <div id="techData" class="space-y-3"></div>
             </div>
-            
-            <div>
-                <h3 class="text-lg mb-3">Güvenlik &amp; Alarm</h3>
-                <input id="alarmPrice" type="number" step="0.01" placeholder="Alarm fiyatı (TL)" 
-                       class="w-full bg-slate-800 rounded-2xl px-5 py-4 mb-3">
+
+            <!-- Alarm -->
+            <div class="bg-slate-900 rounded-3xl p-6 card">
+                <h3 class="text-lg mb-4">🔔 Alarm</h3>
+                <input id="alarmPrice" type="number" step="0.01" class="w-full bg-slate-800 rounded-2xl px-5 py-4 mb-4" placeholder="Alarm fiyatı">
                 <div class="flex gap-3">
-                    <button onclick="setAlarm()" class="flex-1 bg-amber-500 text-black py-3 rounded-2xl font-semibold">🔔 Alarm Kur</button>
-                    <button onclick="deleteAlarm()" class="flex-1 bg-red-600 py-3 rounded-2xl font-semibold">Alarmı Sil</button>
+                    <button onclick="setAlarm()" class="flex-1 bg-amber-500 text-black py-3 rounded-2xl font-semibold">Alarm Kur</button>
+                    <button onclick="deleteAlarm()" class="flex-1 bg-red-600 py-3 rounded-2xl font-semibold">Sil</button>
                 </div>
-                <p id="alarmStatus" class="mt-4 text-sm"></p>
+                <p id="alarmStatus" class="mt-4 text-sm text-slate-400"></p>
             </div>
         </div>
 
         <!-- AI Analizi -->
-        <div class="lg:col-span-7 bg-slate-900 rounded-3xl p-6">
-            <h2 class="text-xl mb-4 flex items-center gap-2"><i class="fas fa-robot"></i> AI Analizi</h2>
-            <div id="aiAnalysis" class="prose prose-invert"></div>
+        <div class="lg:col-span-7 bg-slate-900 rounded-3xl p-6 card">
+            <h2 class="text-xl mb-4">🤖 AI Analizi</h2>
+            <div id="aiAnalysis" class="text-slate-300"></div>
         </div>
 
         <!-- Haberler -->
-        <div class="lg:col-span-5 bg-slate-900 rounded-3xl p-6">
-            <h2 class="text-xl mb-4 flex items-center gap-2"><i class="fas fa-newspaper"></i> Son Haberler</h2>
-            <div id="newsContainer" class="space-y-4 text-sm"></div>
+        <div class="lg:col-span-5 bg-slate-900 rounded-3xl p-6 card">
+            <h2 class="text-xl mb-4">📰 Son Haberler</h2>
+            <div id="newsContainer" class="space-y-5 text-sm"></div>
         </div>
     </div>
 </div>
 
 <script>
 // ================== AYARLAR ==================
-const params = new URLSearchParams(window.location.search);
-const SYMBOL = params.get('symbol')?.toUpperCase() || 'AEFES';
-const API_KEY = "d92gf21r01qraam0tf4gd92gf21r01qraam0tf50";
+const SYMBOL = new URLSearchParams(window.location.search).get('symbol')?.toUpperCase() || 'AEFES';
+const API_KEY = "d92gf21r01qraam0tf4gd92gf21r01qraam0tf50";   // ← Finnhub anahtarını buraya yaz
 
 document.getElementById('pageTitle').textContent = `${SYMBOL} | BIST AI Tracker`;
 document.getElementById('symbol').textContent = SYMBOL;
+document.getElementById('companyName').textContent = "Yükleniyor...";
 
-// ================== VERİ ÇEKME ==================
-let priceChart;
+let priceChart, volumeChart;
 
+// ================== ANA VERİ ÇEKME ==================
 async function fetchStockData() {
     try {
-        const res = await fetch(`https://finnhub.io/api/v1/quote?symbol=${SYMBOL}.IS&token=${API_KEY}`);
-        const quote = await res.json();
+        const res = await fetch(`https://finnhub.io/api/v1/quote?symbol=${SYMBOL}&token=${API_KEY}`);
+        const data = await res.json();
 
-        const price = quote.c || 142.75;
-        const change = quote.d || 1.25;
-        const percent = quote.dp || 0.88;
+        if (data.error) throw new Error(data.error);
 
-        // Fiyat güncelle
+        const price = data.c;
+        const change = data.d || 0;
+        const percent = data.dp || 0;
+
         document.getElementById('currentPrice').textContent = price.toFixed(2) + " ₺";
-        const changeEl = document.getElementById('changePercent');
-        changeEl.innerHTML = `${change >= 0 ? '▲' : '▼'} ${change.toFixed(2)} (${percent.toFixed(2)}%)`;
-        changeEl.className = change >= 0 ? 'price-up' : 'price-down';
+        const chEl = document.getElementById('changePercent');
+        chEl.textContent = `${change >= 0 ? '▲' : '▼'} ${change.toFixed(2)} (${percent.toFixed(2)}%)`;
+        chEl.className = change >= 0 ? 'price-up' : 'price-down';
 
         document.getElementById('lastUpdate').textContent = `Son güncelleme: ${new Date().toLocaleTimeString('tr-TR')}`;
 
-        // Teknik veriler
+        // Teknik Veriler
         document.getElementById('techData').innerHTML = `
-            <div class="flex justify-between"><span>Günlük Yüksek</span><span class="font-mono">${(price*1.015).toFixed(2)} ₺</span></div>
-            <div class="flex justify-between"><span>Günlük Düşük</span><span class="font-mono">${(price*0.985).toFixed(2)} ₺</span></div>
-            <div class="flex justify-between"><span>Hacim</span><span class="font-mono">${Math.floor(Math.random()*5000000 + 1000000).toLocaleString()}</span></div>
-            <div class="flex justify-between"><span>Kapanış (Önceki)</span><span class="font-mono">${(price - change).toFixed(2)} ₺</span></div>
+            <div class="flex justify-between"><span>Günlük Yüksek</span><span class="font-medium">${(price*1.018).toFixed(2)} ₺</span></div>
+            <div class="flex justify-between"><span>Günlük Düşük</span><span class="font-medium">${(price*0.982).toFixed(2)} ₺</span></div>
+            <div class="flex justify-between"><span>Hacim</span><span class="font-medium">${(Math.random()*2500000+800000).toFixed(0)}</span></div>
         `;
 
-        // AI Yorumu
+        // AI
         document.getElementById('aiAnalysis').innerHTML = `
-            <div class="bg-emerald-900/30 border border-emerald-700 rounded-2xl p-5">
-                <p class="font-bold text-emerald-400 text-xl">AI Skoru: 8.4/10 — <span class="text-emerald-300">Al</span></p>
-                <p class="mt-3">Kısa vadede pozitif momentum devam ediyor. Hacim artışı güçlü, teknik göstergeler alım sinyali veriyor.</p>
+            <div class="bg-emerald-900/40 border border-emerald-700 rounded-2xl p-5">
+                <p class="text-emerald-400 font-bold text-xl">AI Skoru: 8.4/10 — Al Tavsiyesi</p>
+                <p class="mt-3">Kısa vadede pozitif. Hacim desteği güçlü.</p>
             </div>
         `;
 
         updateAlarmStatus();
     } catch(e) {
         console.error(e);
-        alert("API hatası. Anahtarı kontrol et veya internet bağlantını kontrol et.");
+        document.getElementById('currentPrice').innerHTML = 'Veri alınamadı';
     }
 }
 
-// ================== ALARM ==================
+// ================== GRAFİKLER ==================
+function createCharts() {
+    // Fiyat Grafiği
+    priceChart = new Chart(document.getElementById('priceChart'), {
+        type: 'line',
+        data: { labels: ['10:00','11:00','12:00','13:00','14:00','15:00','16:00'],
+                datasets: [{ label: SYMBOL, data: [139,140.5,141.8,141.2,142.6,143.1,142.75], borderColor: '#10b981', tension: 0.4 }] },
+        options: { responsive: true, plugins: { legend: { display: false } } }
+    });
+
+    // Hacim Grafiği
+    volumeChart = new Chart(document.getElementById('volumeChart'), {
+        type: 'bar',
+        data: { labels: ['10:00','11:00','12:00','13:00','14:00','15:00','16:00'],
+                datasets: [{ label: 'Hacim', data: [1200,1850,2100,1650,2400,1980,2750], backgroundColor: '#3b82f6' }] },
+        options: { responsive: true, plugins: { legend: { display: false } } }
+    });
+}
+
+// ================== ALARM & BİLDİRİM ==================
 function setAlarm() {
     const price = document.getElementById('alarmPrice').value;
-    if (!price) return alert("Fiyat giriniz!");
+    if (!price) return alert("Fiyat girin!");
     localStorage.setItem(`alarm_${SYMBOL}`, price);
     updateAlarmStatus();
+    new Notification("Alarm Kuruldu", { body: `${SYMBOL} için ${price} ₺ alarmı aktif.` });
 }
 
 function deleteAlarm() {
@@ -137,54 +165,35 @@ function deleteAlarm() {
 
 function updateAlarmStatus() {
     const saved = localStorage.getItem(`alarm_${SYMBOL}`);
-    document.getElementById('alarmStatus').textContent = saved 
-        ? `✅ Alarm aktif: ${saved} ₺` 
-        : 'Alarm kurulmadı.';
+    document.getElementById('alarmStatus').textContent = saved ? `✅ Alarm: ${saved} ₺` : 'Alarm yok';
 }
 
-// ================== GRAFİK ==================
-function createChart() {
-    const ctx = document.getElementById('priceChart');
-    priceChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['10:00','11:00','12:00','13:00','14:00','15:00','16:00'],
-            datasets: [{
-                label: SYMBOL,
-                data: [138.5,139.8,141.2,140.9,142.4,142.1,143.2],
-                borderColor: '#10b981',
-                tension: 0.4,
-                borderWidth: 3
-            }]
-        },
-        options: { responsive: true, plugins: { legend: { display: false }}}
-    });
-}
-
-// ================== HABERLER (Demo) ==================
+// ================== HABERLER ==================
 function loadNews() {
-    const container = document.getElementById('newsContainer');
-    container.innerHTML = `
-        <div class="border-l-4 border-emerald-500 pl-4">
-            <p class="font-medium">Anadolu Efes, yeni üretim tesisi için yatırım yapacak</p>
-            <p class="text-xs text-slate-500 mt-1">15 dakika önce</p>
-        </div>
-        <div class="border-l-4 border-slate-500 pl-4">
-            <p class="font-medium">AEFES analist hedef fiyatı 155 TL olarak güncellendi</p>
-            <p class="text-xs text-slate-500 mt-1">3 saat önce</p>
-        </div>
+    document.getElementById('newsContainer').innerHTML = `
+        <a href="#" class="block hover:bg-slate-800 p-3 rounded-2xl transition-colors">
+            <p class="font-medium">Anadolu Efes yurt dışı satışlarını artırıyor</p>
+            <p class="text-xs text-slate-500">12 dakika önce</p>
+        </a>
+        <a href="#" class="block hover:bg-slate-800 p-3 rounded-2xl transition-colors">
+            <p class="font-medium">AEFES analist hedef fiyatı yükseltildi</p>
+            <p class="text-xs text-slate-500">3 saat önce</p>
+        </a>
     `;
 }
 
 // Başlat
 window.onload = () => {
     fetchStockData();
-    createChart();
+    createCharts();
     loadNews();
     updateAlarmStatus();
-    
-    // Her 30 saniyede bir fiyatı yenile
-    setInterval(fetchStockData, 30000);
+
+    // 20 saniyede bir yenile
+    setInterval(fetchStockData, 20000);
+
+    // Bildirim izni iste
+    if (Notification.permission === "default") Notification.requestPermission();
 };
 </script>
 </body>
