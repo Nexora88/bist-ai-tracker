@@ -21,7 +21,7 @@
                     <p id="companyName" class="text-slate-400 text-xl"></p>
                 </div>
                 <div class="text-right">
-                    <div id="currentPrice" class="text-6xl font-mono font-bold"></div>
+                    <div id="currentPrice" class="text-6xl font-mono font-bold text-white"></div>
                     <div id="changePercent" class="text-3xl"></div>
                 </div>
             </div>
@@ -74,26 +74,19 @@ const API_KEY = "d92gf21r01qraam0tf4gd92gf21r01qraam0tf50";
 document.getElementById('pageTitle').textContent = `${SYMBOL} | BIST AI Tracker`;
 document.getElementById('symbol').textContent = SYMBOL;
 
-// ================== AÇILIŞ SAATİ SAYACI ==================
+// ================== AÇILIŞ SAATİ ==================
 function updateTimeToOpen() {
     const now = new Date();
-    const todayOpen = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 10, 0, 0); // 10:00
+    const target = new Date(now);
+    target.setHours(10, 0, 0, 0); // 10:00
 
-    let target = todayOpen;
-    if (now > todayOpen) {
-        target = new Date(todayOpen);
-        target.setDate(target.getDate() + 1); // Ertesi gün
+    if (now.getHours() >= 10) {
+        target.setDate(target.getDate() + 1);
     }
 
     const diff = target - now;
-    if (diff <= 0) {
-        document.getElementById('timeToOpen').textContent = "Açık";
-        return;
-    }
-
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+    const minutes = Math.floor(diff / 60000);
+    const seconds = Math.floor((diff % 60000) / 1000);
 
     document.getElementById('timeToOpen').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
 }
@@ -104,20 +97,23 @@ async function loadRealData() {
         const res = await fetch(`https://finnhub.io/api/v1/quote?symbol=${SYMBOL}&token=${API_KEY}`);
         const data = await res.json();
 
-        const price = data.c ? data.c.toFixed(2) : "—";
+        const price = data.c ? data.c.toFixed(2) : "0.00";
         const change = data.d ? data.d.toFixed(2) : "0.00";
         const percent = data.dp ? data.dp.toFixed(2) : "0.00";
+        const prevClose = data.pc ? data.pc.toFixed(2) : "—";
 
         document.getElementById('currentPrice').textContent = price + " ₺";
         const chEl = document.getElementById('changePercent');
         chEl.textContent = `${change >= 0 ? '▲' : '▼'} ${change} (${percent}%)`;
         chEl.style.color = change >= 0 ? '#10b981' : '#ef4444';
 
-        document.getElementById('prevClose').textContent = data.pc ? data.pc.toFixed(2) + " ₺" : "—";
+        document.getElementById('prevClose').textContent = prevClose + " ₺";
         document.getElementById('dayHigh').textContent = (parseFloat(price) * 1.025).toFixed(2) + " ₺";
         document.getElementById('dayLow').textContent = (parseFloat(price) * 0.975).toFixed(2) + " ₺";
-    } catch(e) {
+
+    } catch (e) {
         console.error(e);
+        document.getElementById('currentPrice').textContent = "Veri yok";
     }
 }
 
@@ -136,10 +132,7 @@ function createChart() {
 
 function setAlarm() {
     const val = document.getElementById('alarmPrice').value;
-    if (val) {
-        localStorage.setItem(`alarm_${SYMBOL}`, val);
-        alert(`${SYMBOL} için ${val} ₺ alarmı kuruldu!`);
-    }
+    if (val) alert(`${SYMBOL} için ${val} ₺ alarm kuruldu!`);
 }
 
 // Başlat
