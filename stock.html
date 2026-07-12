@@ -14,7 +14,6 @@
     <a href="index.html" class="inline-flex items-center gap-2 text-emerald-400 mb-8">← Tüm Hisseler</a>
 
     <div class="flex flex-col lg:flex-row gap-10">
-        <!-- Sol Taraf -->
         <div class="flex-1">
             <div class="flex justify-between mb-8">
                 <div>
@@ -27,13 +26,11 @@
                 </div>
             </div>
 
-            <!-- Grafik -->
             <div class="bg-slate-900 rounded-3xl p-6 mb-8">
                 <h2 class="text-xl mb-4">Fiyat Grafiği</h2>
                 <canvas id="priceChart" height="220"></canvas>
             </div>
 
-            <!-- Özet Bilgiler -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div class="bg-slate-900 rounded-3xl p-6">
                     <p class="text-slate-400 text-sm">Önceki Kapanış</p>
@@ -49,12 +46,11 @@
                 </div>
                 <div class="bg-slate-900 rounded-3xl p-6">
                     <p class="text-slate-400 text-sm">Açılışa Kalan</p>
-                    <p id="timeToOpen" class="text-2xl font-semibold text-amber-400"></p>
+                    <p id="timeToOpen" class="text-2xl font-semibold text-amber-400 font-mono"></p>
                 </div>
             </div>
         </div>
 
-        <!-- Sağ Sidebar -->
         <div class="w-full lg:w-96 space-y-6">
             <div class="bg-slate-900 rounded-3xl p-6">
                 <h3 class="mb-4 font-semibold">AI Analizi</h3>
@@ -78,31 +74,37 @@ const API_KEY = "d92gf21r01qraam0tf4gd92gf21r01qraam0tf50";
 document.getElementById('pageTitle').textContent = `${SYMBOL} | BIST AI Tracker`;
 document.getElementById('symbol').textContent = SYMBOL;
 
-// Borsa Açılış Saati (Türkiye saati)
+// ================== AÇILIŞ SAATİ SAYACI ==================
 function updateTimeToOpen() {
     const now = new Date();
-    const openHour = 10; // Borsa 10:00'da açılıyor
-    let target = new Date(now);
-    target.setHours(openHour, 0, 0, 0);
+    const todayOpen = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 10, 0, 0); // 10:00
 
-    if (now.getHours() >= openHour) {
-        target.setDate(target.getDate() + 1);
+    let target = todayOpen;
+    if (now > todayOpen) {
+        target = new Date(todayOpen);
+        target.setDate(target.getDate() + 1); // Ertesi gün
     }
 
     const diff = target - now;
+    if (diff <= 0) {
+        document.getElementById('timeToOpen').textContent = "Açık";
+        return;
+    }
+
     const hours = Math.floor(diff / (1000 * 60 * 60));
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-    document.getElementById('timeToOpen').textContent = `${minutes}d ${seconds}s`;
+    document.getElementById('timeToOpen').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
 }
 
+// ================== VERİ ÇEKME ==================
 async function loadRealData() {
     try {
         const res = await fetch(`https://finnhub.io/api/v1/quote?symbol=${SYMBOL}&token=${API_KEY}`);
         const data = await res.json();
 
-        const price = data.c ? data.c.toFixed(2) : "0.00";
+        const price = data.c ? data.c.toFixed(2) : "—";
         const change = data.d ? data.d.toFixed(2) : "0.00";
         const percent = data.dp ? data.dp.toFixed(2) : "0.00";
 
@@ -111,16 +113,9 @@ async function loadRealData() {
         chEl.textContent = `${change >= 0 ? '▲' : '▼'} ${change} (${percent}%)`;
         chEl.style.color = change >= 0 ? '#10b981' : '#ef4444';
 
-        // Özet Bilgiler
         document.getElementById('prevClose').textContent = data.pc ? data.pc.toFixed(2) + " ₺" : "—";
-        document.getElementById('dayHigh').textContent = (price * 1.025).toFixed(2) + " ₺";
-        document.getElementById('dayLow').textContent = (price * 0.975).toFixed(2) + " ₺";
-
-        // AI
-        document.getElementById('aiAnalysis').innerHTML = `
-            <p class="text-emerald-400 font-bold text-xl">AI Skoru: 8.4/10</p>
-            <p class="mt-3">Pozitif momentum devam ediyor. Hacim artışı alım sinyali veriyor.</p>
-        `;
+        document.getElementById('dayHigh').textContent = (parseFloat(price) * 1.025).toFixed(2) + " ₺";
+        document.getElementById('dayLow').textContent = (parseFloat(price) * 0.975).toFixed(2) + " ₺";
     } catch(e) {
         console.error(e);
     }
@@ -139,7 +134,6 @@ function createChart() {
     });
 }
 
-// Alarm
 function setAlarm() {
     const val = document.getElementById('alarmPrice').value;
     if (val) {
@@ -153,8 +147,8 @@ window.onload = () => {
     loadRealData();
     createChart();
     updateTimeToOpen();
-    setInterval(updateTimeToOpen, 1000);      // Her saniye
-    setInterval(loadRealData, 30000);         // Her 30 saniye
+    setInterval(updateTimeToOpen, 1000);
+    setInterval(loadRealData, 30000);
 };
 </script>
 </body>
