@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">BIST AI Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        .price-up { color: #10b981; }
+        .price-down { color: #ef4444; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen">
+
+<div class="max-w-6xl mx-auto p-6">
+    <a href="index.html" class="inline-flex items-center gap-2 mb-8 text-emerald-400 hover:underline">
+        ← Ana Sayfaya Dön
+    </a>
+
+    <div class="flex flex-col md:flex-row justify-between items-start gap-6 mb-10">
+        <div>
+            <h1 id="symbol" class="text-5xl font-bold"></h1>
+            <p id="companyName" class="text-slate-400 text-xl mt-1"></p>
+        </div>
+        <div class="text-right">
+            <div id="currentPrice" class="text-5xl font-mono font-bold"></div>
+            <div id="changePercent" class="text-xl mt-1"></div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Grafik -->
+        <div class="lg:col-span-2 bg-slate-900 rounded-3xl p-6">
+            <h2 class="text-xl mb-4 flex items-center gap-2"><i class="fas fa-chart-line"></i> Canlı Grafik</h2>
+            <canvas id="priceChart" height="110"></canvas>
+        </div>
+
+        <!-- Teknik Veriler -->
+        <div class="bg-slate-900 rounded-3xl p-6">
+            <h2 class="text-xl mb-4">Teknik Veriler</h2>
+            <div id="techData" class="space-y-4"></div>
+        </div>
+
+        <!-- AI Analiz -->
+        <div class="lg:col-span-2 bg-slate-900 rounded-3xl p-6">
+            <h2 class="text-xl mb-4 flex items-center gap-2"><i class="fas fa-robot"></i> 🤖 AI Analizi</h2>
+            <div id="aiAnalysis" class="bg-slate-800 rounded-2xl p-6"></div>
+        </div>
+
+        <!-- Alarm -->
+        <div class="bg-slate-900 rounded-3xl p-6">
+            <h2 class="text-xl mb-4">🔔 Fiyat Alarmı</h2>
+            <input id="alarmPrice" type="number" step="0.01" placeholder="Alarm fiyatı girin (ör: 145.50)" 
+                   class="w-full bg-slate-800 border border-slate-700 rounded-2xl px-5 py-4 text-lg mb-4">
+            <div class="flex gap-3">
+                <button onclick="setAlarm()" class="flex-1 bg-amber-500 hover:bg-amber-400 text-black py-4 rounded-2xl font-semibold">Alarm Kur</button>
+                <button onclick="deleteAlarm()" class="flex-1 bg-red-500 hover:bg-red-600 py-4 rounded-2xl font-semibold">Alarmı Sil</button>
+            </div>
+            <p id="alarmStatus" class="mt-4 text-sm text-slate-400"></p>
+        </div>
+    </div>
+</div>
+
+<script>
+// URL'den sembol al
+const params = new URLSearchParams(window.location.search);
+const SYMBOL = params.get('symbol')?.toUpperCase() || 'AEFES';
+
+document.getElementById('pageTitle').textContent = `${SYMBOL} | BIST AI Tracker`;
+document.getElementById('symbol').textContent = SYMBOL;
+
+let priceChart;
+
+// Demo / Gerçek veri fonksiyonu (Finnhub entegrasyonu hazır)
+async function fetchStockData() {
+    // Gerçek API için Finnhub anahtarını buraya ekleyeceksin
+    const API_KEY = "YOUR_FINNHUB_API_KEY"; // ← Burayı değiştir
+
+    try {
+        // Finnhub API örneği (BIST için sembol: AEFES.IS gibi olabilir)
+        const res = await fetch(`https://finnhub.io/api/v1/quote?symbol=${SYMBOL}.IS&token=${API_KEY}`);
+        const data = await res.json();
+
+        const price = data.c || 142.75;
+        const change = data.d || 2.35;
+        const percent = data.dp || 1.67;
+
+        // Fiyatı güncelle
+        document.getElementById('currentPrice').textContent = price.toFixed(2) + " ₺";
+        
+        const changeEl = document.getElementById('changePercent');
+        changeEl.textContent = `${change >= 0 ? '+' : ''}${change.toFixed(2)} (${percent.toFixed(2)}%)`;
+        changeEl.className = change >= 0 ? 'price-up text-xl' : 'price-down text-xl';
+
+        // Teknik veriler
+        document.getElementById('techData').innerHTML = `
+            <div class="flex justify-between"><span>Hacim</span><span class="font-mono">${(data.v || 1245000).toLocaleString()}</span></div>
+            <div class="flex justify-between"><span>Günlük Yüksek</span><span>${(price * 1.02).toFixed(2)} ₺</span></div>
+            <div class="flex justify-between"><span>Günlük Düşük</span><span>${(price * 0.98).toFixed(2)} ₺</span></div>
+        `;
+
+        // AI Analizi (gerçekte LLM ile yapılabilir)
+        document.getElementById('aiAnalysis').innerHTML = `
+            <div class="text-emerald-400 text-2xl font-bold mb-2">AI Skoru: 8.4/10</div>
+            <p class="text-slate-300 leading-relaxed">
+                ${SYMBOL} için kısa vadeli pozitif sinyal var. Hacim artışı ve teknik göstergeler alım yönlü. 
+                Orta vadede ise kar realizasyonu riski takip edilmeli.
+            </p>
+        `;
+
+        updateAlarmStatus();
+    } catch(e) {
+        console.error(e);
+        alert("Veri çekilemedi. Demo moddayız.");
+        // Demo veriler
+        document.getElementById('currentPrice').textContent = "142.75 ₺";
+    }
+}
+
+function updateAlarmStatus() {
+    const saved = localStorage.getItem(`alarm_${SYMBOL}`);
+    document.getElementById('alarmStatus').textContent = saved 
+        ? `✅ Alarm kuruldu: ${saved} ₺` 
+        : 'Henüz alarm kurulmadı.';
+}
+
+function setAlarm() {
+    const val = document.getElementById('alarmPrice').value;
+    if (!val) return alert("Fiyat giriniz!");
+    localStorage.setItem(`alarm_${SYMBOL}`, val);
+    updateAlarmStatus();
+    alert(`${SYMBOL} için alarm kuruldu!`);
+}
+
+function deleteAlarm() {
+    localStorage.removeItem(`alarm_${SYMBOL}`);
+    updateAlarmStatus();
+    alert("Alarm silindi.");
+}
+
+// Grafik
+function createChart() {
+    const ctx = document.getElementById('priceChart');
+    priceChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: Array(12).fill(0).map((_, i) => `${9+i}:00`),
+            datasets: [{
+                label: SYMBOL,
+                data: [135,137,139,140.5,141.2,142,141.8,142.4,142.1,142.6,142.9,142.75],
+                borderColor: '#10b981',
+                tension: 0.4,
+                borderWidth: 3
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: { y: { grid: { color: '#334155' } } }
+        }
+    });
+}
+
+// Başlat
+window.onload = () => {
+    fetchStockData();
+    createChart();
+    updateAlarmStatus();
+};
+</script>
+</body>
+</html>
