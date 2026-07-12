@@ -7,209 +7,202 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        body { font-family: 'Segoe UI', system-ui, sans-serif; }
         .stock-card {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .stock-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.4);
         }
-        .scroll-container {
-            scrollbar-width: thin;
-            scrollbar-color: #64748b #1e2937;
+        .scroll-container::-webkit-scrollbar {
+            height: 8px;
+        }
+        .scroll-container::-webkit-scrollbar-thumb {
+            background: #64748b;
+            border-radius: 20px;
         }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-200 min-h-screen">
+<body class="bg-slate-950 text-slate-200">
 
     <!-- Navbar -->
     <nav class="bg-slate-900 border-b border-slate-700 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-8">
-                <a href="index.html" class="text-2xl font-bold flex items-center gap-2">
-                    📈 <span class="text-emerald-400">BIST</span> AI
-                </a>
-                <div class="flex gap-6 text-sm">
-                    <a href="index.html" class="hover:text-white transition-colors">Ana Sayfa</a>
-                    <a href="portfolio.html" class="hover:text-white transition-colors">Portföy</a>
-                    <a href="ai-analiz.html" class="hover:text-white transition-colors">🤖 AI Analiz</a>
-                </div>
+        <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <span class="text-3xl">📈</span>
+                <h1 class="text-2xl font-bold tracking-tight">BIST <span class="text-emerald-400">AI</span> Tracker</h1>
             </div>
             
-            <button onclick="toggleTheme()" id="themeBtn"
-                    class="p-3 rounded-xl bg-slate-800 hover:bg-slate-700 transition-colors">
-                🌙
-            </button>
+            <div class="flex items-center gap-8 text-sm">
+                <a href="index.html" class="hover:text-white transition-colors font-medium">Ana Sayfa</a>
+                <a href="portfolio.html" class="hover:text-white transition-colors">💼 Portföy</a>
+                <a href="ai-analiz.html" class="hover:text-white transition-colors">🤖 AI Merkezi</a>
+                <button onclick="toggleTheme()" id="themeBtn" 
+                        class="p-3 bg-slate-800 hover:bg-slate-700 rounded-2xl transition-colors">
+                    🌙
+                </button>
+            </div>
         </div>
     </nav>
 
-    <div class="max-w-7xl mx-auto px-6 py-8">
-        <h1 class="text-4xl font-bold mb-2">BIST AI Tracker</h1>
-        <p class="text-slate-400 mb-8">Borsa İstanbul hisselerini takip edin, AI analizleri görün</p>
-
-        <!-- Arama -->
-        <div class="mb-8">
-            <input id="searchInput" type="text" 
-                   placeholder="Hisse kodu ara... (Örn: AEFES, THYAO)"
-                   class="w-full bg-slate-900 border border-slate-700 rounded-2xl px-6 py-4 text-lg focus:outline-none focus:border-emerald-500 transition-colors">
+    <div class="max-w-7xl mx-auto px-6 py-10">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10">
+            <div>
+                <h2 class="text-4xl font-bold mb-2">Borsa İstanbul Takip</h2>
+                <p class="text-slate-400">Gerçek zamanlı fiyatlar • AI analizleri • Kişisel takip listesi</p>
+            </div>
+            
+            <input id="searchInput" type="text" placeholder="Hisse ara... (AEFES, THYAO, GARAN...)"
+                   class="mt-6 md:mt-0 w-full md:w-96 bg-slate-900 border border-slate-700 focus:border-emerald-500 rounded-3xl px-6 py-4 text-lg outline-none transition-colors">
         </div>
 
         <!-- Hisse Kartları -->
-        <div class="flex items-center gap-4 mb-6">
+        <div class="flex items-center gap-4 mb-8">
             <button onclick="scrollLeft()" 
-                    class="bg-slate-800 hover:bg-slate-700 p-4 rounded-2xl transition-colors">
-                <i class="fas fa-chevron-left text-xl"></i>
+                    class="bg-slate-800 hover:bg-slate-700 w-14 h-14 flex items-center justify-center rounded-3xl text-2xl transition-colors flex-shrink-0">
+                ←
             </button>
             
             <div id="hisseListesi" 
-                 class="flex gap-6 overflow-x-auto scroll-container pb-4 flex-1 snap-x">
+                 class="flex gap-6 overflow-x-auto scroll-container pb-6 flex-1 snap-x snap-mandatory">
                 <!-- JavaScript ile doldurulacak -->
             </div>
 
             <button onclick="scrollRight()" 
-                    class="bg-slate-800 hover:bg-slate-700 p-4 rounded-2xl transition-colors">
-                <i class="fas fa-chevron-right text-xl"></i>
+                    class="bg-slate-800 hover:bg-slate-700 w-14 h-14 flex items-center justify-center rounded-3xl text-2xl transition-colors flex-shrink-0">
+                →
             </button>
         </div>
 
         <!-- Takip Edilenler -->
-        <div class="bg-slate-900 border border-slate-700 rounded-3xl p-6">
-            <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
-                ⭐ Takip Edilenler 
-                <span id="takipSayisi" class="bg-emerald-500 text-white text-sm px-3 py-1 rounded-full">0</span>
-            </h2>
-            <ul id="takipListesi" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+        <div class="bg-slate-900 border border-slate-700 rounded-3xl p-8">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-semibold flex items-center gap-3">
+                    ⭐ Takip Edilenler 
+                    <span id="takipSayisi" class="bg-emerald-500 text-black text-sm font-bold px-4 py-1.5 rounded-full">0</span>
+                </h2>
+                <a href="stock.html?symbol=THYAO" class="text-emerald-400 hover:underline text-sm">Tümünü Gör →</a>
+            </div>
+            <ul id="takipListesi" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                 <!-- JS ile doldurulacak -->
             </ul>
         </div>
     </div>
 
-    <script>
-        // Tema
-        function toggleTheme() {
-            document.documentElement.classList.toggle('light');
-            const isLight = document.documentElement.classList.contains('light');
-            document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙';
-            localStorage.setItem('theme', isLight ? 'light' : 'dark');
-        }
+<script>
+// Tema
+function toggleTheme() {
+    document.documentElement.classList.toggle('light');
+    const btn = document.getElementById('themeBtn');
+    btn.textContent = document.documentElement.classList.contains('light') ? '☀️' : '🌙';
+    localStorage.setItem('theme', document.documentElement.classList.contains('light') ? 'light' : 'dark');
+}
 
-        // BIST Hisseleri
-        const bistHisseler = [
-            "AEFES","AKBNK","ASELS","ASTOR","BIMAS","DSTKF","EKGYO","ENKAI","EREGL","FROTO",
-            "GARAN","GUBRF","ISCTR","KCHOL","KRDMD","MGROS","PETKM","PGSUS","SAHOL","SASA",
-            "SISE","TAVHL","TCELL","THYAO","TOASO","TRALT","TTKOM","TUPRS","VAKBN","YKBNK"
-        ];
+// BIST Hisseleri
+const bistHisseler = [
+    "AEFES","AKBNK","ASELS","ASTOR","BIMAS","DSTKF","EKGYO","ENKAI","EREGL","FROTO",
+    "GARAN","GUBRF","ISCTR","KCHOL","KRDMD","MGROS","PETKM","PGSUS","SAHOL","SASA",
+    "SISE","TAVHL","TCELL","THYAO","TOASO","TRALT","TTKOM","TUPRS","VAKBN","YKBNK"
+];
 
-        let takipte = JSON.parse(localStorage.getItem('takipListesi')) || [];
+let takipte = JSON.parse(localStorage.getItem('takipListesi')) || [];
 
-        function loadStocks() {
-            const container = document.getElementById("hisseListesi");
-            container.innerHTML = "";
+function loadStocks() {
+    const container = document.getElementById("hisseListesi");
+    container.innerHTML = "";
 
-            bistHisseler.forEach(kod => {
-                const card = document.createElement("div");
-                card.className = `stock-card bg-slate-900 border border-slate-700 rounded-3xl p-6 min-w-[260px] snap-center cursor-pointer`;
-                card.innerHTML = `
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <h3 class="text-2xl font-bold">${kod}</h3>
-                            <p class="text-emerald-400 text-sm mt-1">BIST 30</p>
-                        </div>
-                        <span class="text-xs bg-slate-800 px-3 py-1 rounded-full">AI</span>
-                    </div>
-                    
-                    <div class="mt-6 space-y-3">
-                        <button onclick="event.stopImmediatePropagation(); toggleTakip('${kod}', this)" 
-                                class="followBtn w-full py-3 rounded-2xl text-sm font-medium transition-all ${takipte.includes(kod) ? 'bg-emerald-500 text-black' : 'bg-slate-800 hover:bg-slate-700'}">
-                            ${takipte.includes(kod) ? '✅ Takip Ediliyor' : '⭐ Takip Et'}
-                        </button>
-                        
-                        <button onclick="event.stopImmediatePropagation(); setAlarm('${kod}')" 
-                                class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-black rounded-2xl text-sm font-medium transition-all">
-                            🔔 Alarm Kur
-                        </button>
-                    </div>
-                `;
-
-                card.onclick = (e) => {
-                    if (!e.target.closest('button')) {
-                        window.location.href = `${kod.toLowerCase()}.html`;
-                    }
-                };
-
-                container.appendChild(card);
-            });
-        }
-
-        function toggleTakip(kod, btn) {
-            if (takipte.includes(kod)) {
-                takipte = takipte.filter(k => k !== kod);
-                btn.classList.remove('bg-emerald-500', 'text-black');
-                btn.classList.add('bg-slate-800', 'hover:bg-slate-700');
-                btn.textContent = '⭐ Takip Et';
-            } else {
-                takipte.push(kod);
-                btn.classList.add('bg-emerald-500', 'text-black');
-                btn.classList.remove('bg-slate-800', 'hover:bg-slate-700');
-                btn.textContent = '✅ Takip Ediliyor';
-            }
+    bistHisseler.forEach(kod => {
+        const isFollowed = takipte.includes(kod);
+        
+        const card = document.createElement("div");
+        card.className = `stock-card bg-slate-900 border border-slate-700 rounded-3xl p-6 min-w-[270px] snap-center cursor-pointer`;
+        card.innerHTML = `
+            <div class="flex justify-between">
+                <div>
+                    <h3 class="text-3xl font-bold">${kod}</h3>
+                    <p class="text-emerald-400 text-sm mt-1">BIST 30</p>
+                </div>
+                <span class="text-xs bg-slate-800 px-3 py-1 rounded-full self-start">AI</span>
+            </div>
             
-            localStorage.setItem('takipListesi', JSON.stringify(takipte));
-            updateTakipListesi();
-        }
+            <div class="mt-8 space-y-3">
+                <button onclick="event.stopImmediatePropagation(); toggleTakip('${kod}', this)" 
+                        class="w-full py-3.5 rounded-2xl text-sm font-semibold transition-all ${isFollowed ? 'bg-emerald-500 text-black' : 'bg-slate-800 hover:bg-slate-700'}">
+                    ${isFollowed ? '✅ Takip Ediliyor' : '⭐ Takip Et'}
+                </button>
+                
+                <button onclick="event.stopImmediatePropagation(); window.location.href='stock.html?symbol=${kod}'" 
+                        class="w-full py-3.5 bg-white text-slate-900 hover:bg-slate-100 rounded-2xl text-sm font-semibold transition-all">
+                    Detayları Gör →
+                </button>
+            </div>
+        `;
 
-        function updateTakipListesi() {
-            const liste = document.getElementById("takipListesi");
-            liste.innerHTML = "";
-            document.getElementById("takipSayisi").textContent = takipte.length;
-
-            takipte.forEach(kod => {
-                const li = document.createElement("li");
-                li.className = "bg-slate-800 hover:bg-slate-700 rounded-2xl p-4 transition-colors cursor-pointer";
-                li.innerHTML = `<a href="${kod.toLowerCase()}.html" class="block font-medium">${kod}</a>`;
-                liste.appendChild(li);
-            });
-        }
-
-        function setAlarm(kod) {
-            const price = prompt(`${kod} için alarm fiyatı girin (TL):`);
-            if (price && !isNaN(price)) {
-                localStorage.setItem(`alarm_${kod}`, price);
-                alert(`${kod} için ${price} TL alarmı kuruldu!`);
-            }
-        }
-
-        function scrollLeft() {
-            document.getElementById("hisseListesi").scrollBy({ left: -320, behavior: 'smooth' });
-        }
-
-        function scrollRight() {
-            document.getElementById("hisseListesi").scrollBy({ left: 320, behavior: 'smooth' });
-        }
-
-        // Arama
-        document.getElementById("searchInput").addEventListener("input", function() {
-            const filter = this.value.toUpperCase();
-            const cards = document.querySelectorAll(".stock-card");
-            
-            cards.forEach(card => {
-                const text = card.textContent;
-                card.style.display = text.includes(filter) ? "block" : "none";
-            });
-        });
-
-        // Başlangıç
-        window.onload = () => {
-            loadStocks();
-            updateTakipListesi();
-            
-            // Tema yükle
-            if (localStorage.getItem('theme') === 'light') {
-                document.documentElement.classList.add('light');
-                document.getElementById('themeBtn').textContent = '☀️';
+        card.onclick = (e) => {
+            if (!e.target.closest('button')) {
+                window.location.href = `stock.html?symbol=${kod}`;
             }
         };
-    </script>
+
+        container.appendChild(card);
+    });
+}
+
+function toggleTakip(kod, btn) {
+    if (takipte.includes(kod)) {
+        takipte = takipte.filter(k => k !== kod);
+        btn.classList.remove('bg-emerald-500', 'text-black');
+        btn.classList.add('bg-slate-800', 'hover:bg-slate-700');
+        btn.textContent = '⭐ Takip Et';
+    } else {
+        takipte.push(kod);
+        btn.classList.add('bg-emerald-500', 'text-black');
+        btn.classList.remove('bg-slate-800', 'hover:bg-slate-700');
+        btn.textContent = '✅ Takip Ediliyor';
+    }
+    
+    localStorage.setItem('takipListesi', JSON.stringify(takipte));
+    updateTakipListesi();
+}
+
+function updateTakipListesi() {
+    const container = document.getElementById("takipListesi");
+    container.innerHTML = "";
+    document.getElementById("takipSayisi").textContent = takipte.length;
+
+    takipte.forEach(kod => {
+        const item = document.createElement("li");
+        item.className = "bg-slate-800 hover:bg-slate-700 rounded-2xl p-5 transition-all cursor-pointer";
+        item.innerHTML = `
+            <a href="stock.html?symbol=${kod}" class="block">
+                <span class="font-mono text-lg font-bold">${kod}</span>
+            </a>
+        `;
+        container.appendChild(item);
+    });
+}
+
+function scrollLeft() { document.getElementById("hisseListesi").scrollBy({left: -300, behavior: 'smooth'}); }
+function scrollRight() { document.getElementById("hisseListesi").scrollBy({left: 300, behavior: 'smooth'}); }
+
+// Arama
+document.getElementById("searchInput").addEventListener("input", function() {
+    const filter = this.value.toUpperCase().trim();
+    document.querySelectorAll(".stock-card").forEach(card => {
+        card.style.display = card.textContent.includes(filter) ? "" : "none";
+    });
+});
+
+// Başlat
+window.onload = () => {
+    loadStocks();
+    updateTakipListesi();
+    
+    if (localStorage.getItem('theme') === 'light') {
+        document.documentElement.classList.add('light');
+        document.getElementById('themeBtn').textContent = '☀️';
+    }
+};
+</script>
 </body>
 </html>
