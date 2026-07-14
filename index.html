@@ -1,208 +1,1218 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BIST AI Tracker</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <style>
-        .stock-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .stock-card:hover {
-            transform: translateY(-8px) scale(1.03);
-            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.4);
-        }
-        .scroll-container::-webkit-scrollbar {
-            height: 8px;
-        }
-        .scroll-container::-webkit-scrollbar-thumb {
-            background: #64748b;
-            border-radius: 20px;
-        }
-    </style>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>
+BIST AI Tracker | Yapay Zeka Destekli Borsa Takip Platformu
+</title>
+
+<meta name="description"
+content="BIST AI Tracker ile Borsa İstanbul hisselerini takip edin, teknik analiz, grafik ve yapay zeka destekli yorumlara ulaşın.">
+
+
+<!-- Tailwind CSS -->
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+
+<!-- Font Awesome -->
+
+<link 
+rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+
+<style>
+
+
+:root{
+
+--primary:#10b981;
+
+--dark:#020617;
+
+--card:#0f172a;
+
+}
+
+
+*{
+
+margin:0;
+
+padding:0;
+
+box-sizing:border-box;
+
+}
+
+
+body{
+
+background:var(--dark);
+
+color:#e2e8f0;
+
+font-family:
+'Segoe UI',
+system-ui,
+sans-serif;
+
+}
+
+
+.stock-card{
+
+transition:
+all .35s ease;
+
+}
+
+
+.stock-card:hover{
+
+transform:
+translateY(-8px);
+
+box-shadow:
+0 20px 40px rgba(0,0,0,.4);
+
+}
+
+
+.section-title{
+
+font-size:2.5rem;
+
+font-weight:800;
+
+text-align:center;
+
+margin-bottom:40px;
+
+}
+
+
+.glass{
+
+background:
+rgba(15,23,42,.8);
+
+backdrop-filter:
+blur(15px);
+
+border:
+1px solid rgba(255,255,255,.08);
+
+}
+
+
+</style>
+
+
 </head>
-<body class="bg-slate-950 text-slate-200">
 
-    <!-- Navbar -->
-    <nav class="bg-slate-900 border-b border-slate-700 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <span class="text-3xl">📈</span>
-                <h1 class="text-2xl font-bold tracking-tight">BIST <span class="text-emerald-400">AI</span> Tracker</h1>
-            </div>
-            
-            <div class="flex items-center gap-8 text-sm">
-                <a href="index.html" class="hover:text-white transition-colors font-medium">Ana Sayfa</a>
-                <a href="portfolio.html" class="hover:text-white transition-colors">💼 Portföy</a>
-                <a href="ai-analiz.html" class="hover:text-white transition-colors">🤖 AI Merkezi</a>
-                <button onclick="toggleTheme()" id="themeBtn" 
-                        class="p-3 bg-slate-800 hover:bg-slate-700 rounded-2xl transition-colors">
-                    🌙
-                </button>
-            </div>
-        </div>
-    </nav>
 
-    <div class="max-w-7xl mx-auto px-6 py-10">
-        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10">
-            <div>
-                <h2 class="text-4xl font-bold mb-2">Borsa İstanbul Takip</h2>
-                <p class="text-slate-400">Gerçek zamanlı fiyatlar • AI analizleri • Kişisel takip listesi</p>
-            </div>
-            
-            <input id="searchInput" type="text" placeholder="Hisse ara... (AEFES, THYAO, GARAN...)"
-                   class="mt-6 md:mt-0 w-full md:w-96 bg-slate-900 border border-slate-700 focus:border-emerald-500 rounded-3xl px-6 py-4 text-lg outline-none transition-colors">
-        </div>
+<body>
 
-        <!-- Hisse Kartları -->
-        <div class="flex items-center gap-4 mb-8">
-            <button onclick="scrollLeft()" 
-                    class="bg-slate-800 hover:bg-slate-700 w-14 h-14 flex items-center justify-center rounded-3xl text-2xl transition-colors flex-shrink-0">
-                ←
-            </button>
-            
-            <div id="hisseListesi" 
-                 class="flex gap-6 overflow-x-auto scroll-container pb-6 flex-1 snap-x snap-mandatory">
-                <!-- JavaScript ile doldurulacak -->
-            </div>
 
-            <button onclick="scrollRight()" 
-                    class="bg-slate-800 hover:bg-slate-700 w-14 h-14 flex items-center justify-center rounded-3xl text-2xl transition-colors flex-shrink-0">
-                →
-            </button>
-        </div>
+<!-- =========================
+NAVBAR
+========================= -->
 
-        <!-- Takip Edilenler -->
-        <div class="bg-slate-900 border border-slate-700 rounded-3xl p-8">
-            <div class="flex items-center justify-between mb-6">
-                <h2 class="text-2xl font-semibold flex items-center gap-3">
-                    ⭐ Takip Edilenler 
-                    <span id="takipSayisi" class="bg-emerald-500 text-black text-sm font-bold px-4 py-1.5 rounded-full">0</span>
-                </h2>
-                <a href="stock.html?symbol=THYAO" class="text-emerald-400 hover:underline text-sm">Tümünü Gör →</a>
-            </div>
-            <ul id="takipListesi" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                <!-- JS ile doldurulacak -->
-            </ul>
-        </div>
-    </div>
 
-<script>
-// Tema
-function toggleTheme() {
-    document.documentElement.classList.toggle('light');
-    const btn = document.getElementById('themeBtn');
-    btn.textContent = document.documentElement.classList.contains('light') ? '☀️' : '🌙';
-    localStorage.setItem('theme', document.documentElement.classList.contains('light') ? 'light' : 'dark');
-}
+<nav
+class="
+sticky top-0
+z-50
+bg-slate-950/90
+backdrop-blur
+border-b
+border-slate-800
+">
 
-// BIST Hisseleri
-const bistHisseler = [
-    "AEFES","AKBNK","ASELS","ASTOR","BIMAS","DSTKF","EKGYO","ENKAI","EREGL","FROTO",
-    "GARAN","GUBRF","ISCTR","KCHOL","KRDMD","MGROS","PETKM","PGSUS","SAHOL","SASA",
-    "SISE","TAVHL","TCELL","THYAO","TOASO","TRALT","TTKOM","TUPRS","VAKBN","YKBNK"
-];
 
-let takipte = JSON.parse(localStorage.getItem('takipListesi')) || [];
+<div
+class="
+max-w-7xl
+mx-auto
+px-6
+py-5
+flex
+justify-between
+items-center
+">
 
-function loadStocks() {
-    const container = document.getElementById("hisseListesi");
-    container.innerHTML = "";
 
-    bistHisseler.forEach(kod => {
-        const isFollowed = takipte.includes(kod);
-        
-        const card = document.createElement("div");
-        card.className = `stock-card bg-slate-900 border border-slate-700 rounded-3xl p-6 min-w-[270px] snap-center cursor-pointer`;
-        card.innerHTML = `
-            <div class="flex justify-between">
-                <div>
-                    <h3 class="text-3xl font-bold">${kod}</h3>
-                    <p class="text-emerald-400 text-sm mt-1">BIST 30</p>
-                </div>
-                <span class="text-xs bg-slate-800 px-3 py-1 rounded-full self-start">AI</span>
-            </div>
-            
-            <div class="mt-8 space-y-3">
-                <button onclick="event.stopImmediatePropagation(); toggleTakip('${kod}', this)" 
-                        class="w-full py-3.5 rounded-2xl text-sm font-semibold transition-all ${isFollowed ? 'bg-emerald-500 text-black' : 'bg-slate-800 hover:bg-slate-700'}">
-                    ${isFollowed ? '✅ Takip Ediliyor' : '⭐ Takip Et'}
-                </button>
-                
-                <button onclick="event.stopImmediatePropagation(); window.location.href='stock.html?symbol=${kod}'" 
-                        class="w-full py-3.5 bg-white text-slate-900 hover:bg-slate-100 rounded-2xl text-sm font-semibold transition-all">
-                    Detayları Gör →
-                </button>
-            </div>
-        `;
+<!-- Logo -->
 
-        card.onclick = (e) => {
-            if (!e.target.closest('button')) {
-                window.location.href = `stock.html?symbol=${kod}`;
-            }
-        };
 
-        container.appendChild(card);
-    });
-}
+<div
+class="
+flex
+items-center
+gap-3
+">
 
-function toggleTakip(kod, btn) {
-    if (takipte.includes(kod)) {
-        takipte = takipte.filter(k => k !== kod);
-        btn.classList.remove('bg-emerald-500', 'text-black');
-        btn.classList.add('bg-slate-800', 'hover:bg-slate-700');
-        btn.textContent = '⭐ Takip Et';
-    } else {
-        takipte.push(kod);
-        btn.classList.add('bg-emerald-500', 'text-black');
-        btn.classList.remove('bg-slate-800', 'hover:bg-slate-700');
-        btn.textContent = '✅ Takip Ediliyor';
-    }
-    
-    localStorage.setItem('takipListesi', JSON.stringify(takipte));
-    updateTakipListesi();
-}
 
-function updateTakipListesi() {
-    const container = document.getElementById("takipListesi");
-    container.innerHTML = "";
-    document.getElementById("takipSayisi").textContent = takipte.length;
+<span
+class="text-3xl">
 
-    takipte.forEach(kod => {
-        const item = document.createElement("li");
-        item.className = "bg-slate-800 hover:bg-slate-700 rounded-2xl p-5 transition-all cursor-pointer";
-        item.innerHTML = `
-            <a href="stock.html?symbol=${kod}" class="block">
-                <span class="font-mono text-lg font-bold">${kod}</span>
-            </a>
-        `;
-        container.appendChild(item);
-    });
-}
+📈
 
-function scrollLeft() { document.getElementById("hisseListesi").scrollBy({left: -300, behavior: 'smooth'}); }
-function scrollRight() { document.getElementById("hisseListesi").scrollBy({left: 300, behavior: 'smooth'}); }
+</span>
 
-// Arama
-document.getElementById("searchInput").addEventListener("input", function() {
-    const filter = this.value.toUpperCase().trim();
-    document.querySelectorAll(".stock-card").forEach(card => {
-        card.style.display = card.textContent.includes(filter) ? "" : "none";
-    });
-});
 
-// Başlat
-window.onload = () => {
-    loadStocks();
-    updateTakipListesi();
-    
-    if (localStorage.getItem('theme') === 'light') {
-        document.documentElement.classList.add('light');
-        document.getElementById('themeBtn').textContent = '☀️';
-    }
-};
-</script>
-</body>
-</html>
+<h1
+class="
+text-2xl
+font-bold
+">
+
+
+BIST
+
+<span
+class="text-emerald-400">
+
+AI
+
+</span>
+
+Tracker
+
+
+</h1>
+
+
+</div>
+
+
+
+<!-- Menü -->
+
+
+<div
+class="
+flex
+gap-6
+text-sm
+font-medium
+">
+
+
+<a
+href="index.html"
+class="hover:text-emerald-400">
+
+Ana Sayfa
+
+</a>
+
+
+<a
+href="portfolio.html"
+class="hover:text-emerald-400">
+
+💼 Portföy
+
+</a>
+
+
+<a
+href="calculator.html"
+class="hover:text-emerald-400">
+
+🧮 Hesaplayıcı
+
+</a>
+
+
+<a
+href="about.html"
+class="hover:text-emerald-400">
+
+🚀 Uygulama
+
+</a>
+
+
+<a
+href="ai-analiz.html"
+class="hover:text-emerald-400">
+
+🤖 AI Merkezi
+
+</a>
+
+
+</div>
+
+
+</div>
+
+
+</nav>
+
+
+<!-- =========================
+HERO SECTION
+========================= -->
+
+
+<section
+class="
+min-h-screen
+flex
+items-center
+justify-center
+px-6
+bg-gradient-to-br
+from-slate-950
+via-slate-900
+to-emerald-950
+">
+
+
+<div
+class="
+max-w-5xl
+text-center
+">
+
+
+<!-- Başlık -->
+
+
+<h2
+class="
+text-5xl
+md:text-7xl
+font-extrabold
+leading-tight
+mb-6
+">
+
+
+Borsa İstanbul'u
+
+<span
+class="
+text-emerald-400
+">
+
+Yapay Zeka
+
+</span>
+
+ile takip edin.
+
+
+</h2>
+
+
+
+<!-- Açıklama -->
+
+
+<p
+class="
+text-xl
+md:text-2xl
+text-slate-400
+max-w-3xl
+mx-auto
+mb-10
+">
+
+
+BIST AI Tracker;
+hisse fiyatları,
+canlı grafikler,
+teknik veriler ve
+AI destekli analizleri
+tek platformda birleştirir.
+
+
+</p>
+
+
+
+<!-- Butonlar -->
+
+
+<div
+class="
+flex
+flex-wrap
+justify-center
+gap-5
+">
+
+
+<a
+href="#stocks"
+class="
+bg-emerald-500
+hover:bg-emerald-400
+text-black
+font-bold
+px-8
+py-4
+rounded-2xl
+transition
+">
+
+
+📈 Hisseleri İncele
+
+
+</a>
+
+
+
+<a
+href="about.html"
+class="
+bg-slate-800
+hover:bg-slate-700
+px-8
+py-4
+rounded-2xl
+font-bold
+transition
+">
+
+
+🚀 Proje Hakkında
+
+
+</a>
+
+
+</div>
+
+
+
+<!-- İstatistik Kartları -->
+
+
+<div
+class="
+grid
+grid-cols-1
+md:grid-cols-3
+gap-5
+mt-16
+">
+
+
+<div
+class="
+glass
+rounded-3xl
+p-6
+">
+
+
+<h3
+class="
+text-3xl
+font-bold
+text-emerald-400
+">
+
+30+
+
+</h3>
+
+
+<p
+class="text-slate-400">
+
+BIST Hissesi
+
+</p>
+
+
+</div>
+
+
+
+<div
+class="
+glass
+rounded-3xl
+p-6
+">
+
+
+<h3
+class="
+text-3xl
+font-bold
+text-emerald-400
+">
+
+AI
+
+</h3>
+
+
+<p
+class="text-slate-400">
+
+Yapay Zeka Analizi
+
+</p>
+
+
+</div>
+
+
+
+<div
+class="
+glass
+rounded-3xl
+p-6
+">
+
+
+<h3
+class="
+text-3xl
+font-bold
+text-emerald-400
+">
+
+24/7
+
+</h3>
+
+
+<p
+class="text-slate-400">
+
+Takip Sistemi
+
+</p>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</section>
+
+<!-- =========================
+BIST AI TRACKER TANITIM
+========================= -->
+
+
+<section
+class="
+py-24
+px-6
+bg-slate-900
+">
+
+
+<div
+class="
+max-w-6xl
+mx-auto
+">
+
+
+<h2
+class="
+section-title
+">
+
+🚀 BIST AI Tracker Nedir?
+
+</h2>
+
+
+
+<div
+class="
+grid
+md:grid-cols-2
+gap-10
+items-center
+">
+
+
+
+<!-- Sol taraf -->
+
+
+<div>
+
+
+<p
+class="
+text-lg
+text-slate-300
+leading-relaxed
+mb-6
+">
+
+
+BIST AI Tracker,
+Borsa İstanbul yatırımcıları için geliştirilmiş
+modern bir takip platformudur.
+
+
+</p>
+
+
+<p
+class="
+text-lg
+text-slate-300
+leading-relaxed
+mb-6
+">
+
+
+Platform;
+hisse fiyatlarını,
+grafikleri,
+teknik verileri ve
+yapay zeka destekli analizleri
+tek bir yerde sunmayı amaçlar.
+
+
+</p>
+
+
+<p
+class="
+text-lg
+text-slate-300
+leading-relaxed
+">
+
+
+Amacımız yatırımcıların daha düzenli,
+bilinçli ve hızlı karar verebilmesine
+yardımcı olan profesyonel bir finans
+asistanı oluşturmaktır.
+
+
+</p>
+
+
+</div>
+
+
+
+
+<!-- Sağ taraf özellik kartları -->
+
+
+<div
+class="
+grid
+gap-5
+">
+
+
+<div
+class="
+glass
+rounded-3xl
+p-6
+">
+
+
+<div
+class="
+text-3xl
+mb-3
+">
+
+📊
+
+</div>
+
+
+<h3
+class="
+text-xl
+font-bold
+mb-2
+">
+
+Canlı Veri Takibi
+
+</h3>
+
+
+<p
+class="text-slate-400">
+
+Hisse fiyatları ve piyasa hareketlerini
+takip edin.
+
+</p>
+
+
+</div>
+
+
+
+
+<div
+class="
+glass
+rounded-3xl
+p-6
+">
+
+
+<div
+class="
+text-3xl
+mb-3
+">
+
+🤖
+
+</div>
+
+
+<h3
+class="
+text-xl
+font-bold
+mb-2
+">
+
+AI Destekli Analiz
+
+</h3>
+
+
+<p
+class="text-slate-400">
+
+Verileri analiz ederek
+yatırım kararlarını destekleyen sistem.
+
+</p>
+
+
+</div>
+
+
+
+
+<div
+class="
+glass
+rounded-3xl
+p-6
+">
+
+
+<div
+class="
+text-3xl
+mb-3
+">
+
+📈
+
+</div>
+
+
+<h3
+class="
+text-xl
+font-bold
+mb-2
+">
+
+Profesyonel Grafikler
+
+</h3>
+
+
+<p
+class="text-slate-400">
+
+Fiyat hareketlerini ve trendleri
+kolayca inceleyin.
+
+</p>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</section>
+
+<!-- =========================
+HISSE TAKIP ALANI
+========================= -->
+
+
+<section
+id="stocks"
+class="
+py-24
+px-6
+bg-slate-950
+">
+
+
+<div
+class="
+max-w-7xl
+mx-auto
+">
+
+
+<h2
+class="
+section-title
+">
+
+📈 BIST Hisse Takip Merkezi
+
+</h2>
+
+
+
+<div
+class="
+flex
+flex-col
+md:flex-row
+gap-5
+mb-10
+items-center
+justify-between
+">
+
+
+<p
+class="
+text-slate-400
+text-lg
+">
+
+Popüler BIST hisselerini inceleyin,
+takip listenize ekleyin ve detay analizlere ulaşın.
+
+</p>
+
+
+
+<input
+
+id="searchInput"
+
+type="text"
+
+placeholder="Hisse ara... (AEFES, THYAO, ASELS...)"
+
+class="
+w-full
+md:w-96
+bg-slate-900
+border
+border-slate-700
+rounded-3xl
+px-6
+py-4
+outline-none
+focus:border-emerald-400
+"
+
+>
+
+
+</div>
+
+
+
+
+
+<!-- Kart Alanı -->
+
+
+<div
+
+id="hisseListesi"
+
+class="
+grid
+grid-cols-1
+sm:grid-cols-2
+lg:grid-cols-4
+gap-6
+
+"
+
+>
+
+<!-- Javascript dolduracak -->
+
+</div>
+
+
+
+</div>
+
+
+</section>
+
+<!-- =========================
+TAKIP LISTESI
+========================= -->
+
+
+<section
+class="
+py-20
+px-6
+bg-slate-900
+">
+
+
+<div
+class="
+max-w-7xl
+mx-auto
+">
+
+
+<div
+class="
+flex
+items-center
+justify-between
+mb-8
+">
+
+
+<h2
+class="
+text-3xl
+font-bold
+">
+
+⭐ Takip Edilen Hisseler
+
+</h2>
+
+
+<span
+id="takipSayisi"
+
+class="
+bg-emerald-500
+text-black
+font-bold
+px-4
+py-2
+rounded-full
+">
+
+0
+
+</span>
+
+
+</div>
+
+
+
+<ul
+
+id="takipListesi"
+
+class="
+grid
+grid-cols-2
+sm:grid-cols-3
+md:grid-cols-5
+gap-5
+
+"
+
+>
+
+<!-- Javascript dolduracak -->
+
+</ul>
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+<!-- =========================
+YATIRIM ARAÇLARI
+========================= -->
+
+
+<section
+
+class="
+py-24
+px-6
+bg-slate-950
+
+">
+
+
+<div
+class="
+max-w-7xl
+mx-auto
+">
+
+
+<h2
+class="
+section-title
+">
+
+🧮 Yatırım Araçları
+
+</h2>
+
+
+
+
+<div
+
+class="
+grid
+md:grid-cols-3
+gap-6
+
+"
+
+>
+
+
+
+<!-- Hesaplayıcı -->
+
+
+<a
+
+href="calculator.html"
+
+class="
+glass
+rounded-3xl
+p-8
+hover:-translate-y-2
+transition
+
+"
+
+
+>
+
+
+<div
+class="
+text-4xl
+mb-5
+">
+
+🧮
+
+</div>
+
+
+<h3
+class="
+text-2xl
+font-bold
+mb-3
+">
+
+Hisse Hesaplayıcı
+
+</h3>
+
+
+<p
+class="
+text-slate-400
+">
+
+Alış fiyatı,
+satış hedefi,
+lot miktarı ve
+kar-zarar hesaplama.
+
+</p>
+
+
+</a>
+
+
+
+
+
+<!-- Portföy -->
+
+
+<a
+
+href="portfolio.html"
+
+class="
+glass
+rounded-3xl
+p-8
+hover:-translate-y-2
+transition
+
+"
+
+>
+
+
+<div
+class="
+text-4xl
+mb-5
+">
+
+💼
+
+</div>
+
+
+<h3
+class="
+text-2xl
+font-bold
+mb-3
+">
+
+Portföy Takibi
+
+</h3>
+
+
+<p
+class="
+text-slate-400
+">
+
+Yatırımlarınızı,
+maliyetlerinizi ve
+performansınızı takip edin.
+
+</p>
+
+
+</a>
+
+
+
+
+
+<!-- AI -->
+
+
+<a
+
+href="ai-analiz.html"
+
+class="
+glass
+rounded-3xl
+p-8
+hover:-translate-y-2
+transition
+
+"
+
+>
+
+
+<div
+class="
+text-4xl
+mb-5
+">
+
+🤖
+
+</div>
+
+
+<h3
+class="
+text-2xl
+font-bold
+mb-3
+">
+
+AI Analiz Merkezi
+
+</h3>
+
+
+<p
+class="
+text-slate-400
+">
+
+Hisse verilerini analiz eden
+yapay zeka destekli sistem.
+
+</p>
+
+
+</a>
+
+
+
+</div>
+
+
+</div>
+
+
+</section>
+
