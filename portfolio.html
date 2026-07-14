@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ahmet Eymen Bakraç | Full Stack Developer</title>
-    <meta name="description" content="Ahmet Eymen Bakraç - Deneyimli Full Stack Developer. Kurumsal ve yüksek performanslı web çözümleri.">
+    <meta name="description" content="Ahmet Eymen Bakraç - Senior Full Stack Developer">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <style>
@@ -12,13 +12,12 @@
             --primary: #4f46e5;
             --dark: #0f172a;
             --gray: #1e2937;
-            --light-text: #e2e8f0;
         }
         * { margin:0; padding:0; box-sizing:border-box; }
         body {
             font-family: 'Segoe UI', system-ui, sans-serif;
             background: var(--dark);
-            color: var(--light-text);
+            color: #e2e8f0;
             line-height: 1.7;
         }
         
@@ -29,25 +28,25 @@
             background: rgba(15, 23, 42, 0.97);
             backdrop-filter: blur(12px);
             z-index: 1000;
-            padding: 1.2rem 6%;
+            padding: 1.1rem 6%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(79, 70, 229, 0.2);
         }
         .logo {
-            font-size: 1.6rem;
+            font-size: 1.65rem;
             font-weight: 700;
-            color: white;
+            letter-spacing: -0.5px;
         }
         .logo span { color: var(--primary); }
+
         .nav-links {
             display: flex;
             gap: 2.2rem;
             font-weight: 500;
         }
         .nav-links a {
-            color: var(--light-text);
+            color: #e2e8f0;
             text-decoration: none;
             transition: color 0.3s;
         }
@@ -63,27 +62,28 @@
             background: linear-gradient(135deg, #1e2937 0%, #0f172a 100%);
         }
         .hero-content h1 {
-            font-size: 3.8rem;
-            margin-bottom: 1rem;
+            font-size: 4.2rem;
+            margin-bottom: 0.8rem;
+            line-height: 1.1;
         }
-        .hero-content .title {
-            font-size: 1.5rem;
+        .hero-content .subtitle {
+            font-size: 1.55rem;
             color: #94a3b8;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.8rem;
         }
         .hero-content p {
-            max-width: 620px;
-            margin: 0 auto 2.5rem;
+            max-width: 680px;
+            margin: 0 auto 2.8rem;
             font-size: 1.25rem;
         }
         .btn {
-            display: inline-block;
-            padding: 15px 36px;
+            padding: 16px 38px;
             background: var(--primary);
             color: white;
             border-radius: 50px;
             text-decoration: none;
             font-weight: 600;
+            font-size: 1.1rem;
             transition: all 0.4s;
         }
         .btn:hover {
@@ -91,29 +91,26 @@
             box-shadow: 0 20px 30px -10px rgba(79, 70, 229, 0.5);
         }
 
-        section {
-            padding: 110px 6%;
-        }
+        section { padding: 110px 6%; }
         h2 {
-            font-size: 2.8rem;
+            font-size: 2.9rem;
             text-align: center;
             margin-bottom: 4rem;
-            color: white;
         }
 
-        /* About */
+        /* Hakkımda */
         #about p {
-            max-width: 800px;
+            max-width: 820px;
             margin: 0 auto;
-            font-size: 1.2rem;
+            font-size: 1.22rem;
             text-align: center;
         }
 
-        /* Projects */
+        /* Projeler */
         .projects-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-            gap: 2rem;
+            gap: 2.2rem;
         }
         .project-card {
             background: var(--gray);
@@ -121,21 +118,14 @@
             overflow: hidden;
             transition: all 0.4s;
         }
-        .project-card:hover {
-            transform: translateY(-12px);
-        }
+        .project-card:hover { transform: translateY(-12px); }
         .project-card img {
             width: 100%;
             height: 240px;
             object-fit: cover;
         }
-        .project-info {
-            padding: 1.8rem;
-        }
-        .project-info h3 {
-            margin-bottom: 0.8rem;
-            font-size: 1.4rem;
-        }
+        .project-info { padding: 1.8rem; }
+        .project-info h3 { margin-bottom: 0.8rem; }
         .tags {
             display: flex;
             gap: 0.6rem;
@@ -147,40 +137,6 @@
             padding: 5px 14px;
             border-radius: 9999px;
             font-size: 0.9rem;
-        }
-
-        /* Skills */
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2.5rem;
-        }
-
-        /* Contact */
-        form {
-            max-width: 700px;
-            margin: 0 auto;
-        }
-        input, textarea {
-            width: 100%;
-            padding: 16px;
-            margin-bottom: 1.2rem;
-            background: #334155;
-            border: none;
-            border-radius: 8px;
-            color: white;
-            font-size: 1.05rem;
-        }
-        button {
-            width: 100%;
-            padding: 16px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
         }
 
         footer {
@@ -207,8 +163,8 @@
     <section class="hero">
         <div class="hero-content">
             <h1>Ahmet Eymen Bakraç</h1>
-            <p class="title">Full Stack Developer</p>
-            <p>Kurumsal ölçekte web uygulamaları geliştiren, temiz kod ve yüksek performans odaklı yazılım mühendisi.</p>
+            <p class="subtitle">Senior Full Stack Developer</p>
+            <p>Kurumsal ölçekte, yüksek performanslı ve modern web uygulamaları geliştiriyorum.</p>
             <a href="#projects" class="btn">Projelerimi İncele</a>
         </div>
     </section>
@@ -217,41 +173,24 @@
     <section id="about">
         <h2>Hakkımda</h2>
         <p>
-            Yazılım geliştirme alanında 1 yıllık deneyime sahibim. Backend ve frontend teknolojilerinde uzmanlaşarak 
-            kurumsal firmalar ve startup’lar için ölçeklenebilir, güvenli ve kullanıcı odaklı çözümler üretiyorum. 
-            Temiz mimari, performans optimizasyonu ve takım çalışmasına önem veriyorum.
+            Deneyimli bir Full Stack Developer olarak, backend ve frontend teknolojilerinde uzmanlaşmış durumdayım. 
+            Kurumsal projelerde temiz kod, ölçeklenebilir mimari ve kullanıcı odaklı çözümler üretiyorum.
         </p>
     </section>
 
     <!-- Projeler -->
     <section id="projects" style="background: #1e2937;">
-        <h2>Öne Çıkan Projeler</h2>
+        <h2>Projelerim</h2>
         <div class="projects-grid">
-            <!-- Buraya projelerini ekleyebilirsin -->
+            <!-- Buraya kendi projelerini ekleyeceksin -->
             <div class="project-card">
-                <img src="https://via.placeholder.com/700x400/4f46e5/ffffff?text=Proje+1" alt="Proje 1">
+                <img src="https://via.placeholder.com/700x400/4f46e5/ffffff?text=Proje+1" alt="">
                 <div class="project-info">
-                    <h3>Kurumsal ERP Sistemi</h3>
-                    <p>Next.js, NestJS ve PostgreSQL ile geliştirilen kapsamlı kurumsal kaynak planlama platformu.</p>
-                    <div class="tags">
-                        <span class="tag">Next.js</span>
-                        <span class="tag">NestJS</span>
-                        <span class="tag">PostgreSQL</span>
-                        <span class="tag">Docker</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- İkinci proje örneği -->
-            <div class="project-card">
-                <img src="https://via.placeholder.com/700x400/4f46e5/ffffff?text=Proje+2" alt="Proje 2">
-                <div class="project-info">
-                    <h3>E-Ticaret Altyapısı</h3>
-                    <p>Yüksek trafik için optimize edilmiş, mikro servis mimarisine sahip e-ticaret platformu.</p>
+                    <h3>Proje Adı 1</h3>
+                    <p>Kısa açıklama...</p>
                     <div class="tags">
                         <span class="tag">React</span>
                         <span class="tag">Node.js</span>
-                        <span class="tag">Redis</span>
                     </div>
                 </div>
             </div>
@@ -261,22 +200,21 @@
     <!-- Yetenekler -->
     <section id="skills">
         <h2>Teknik Yetenekler</h2>
-        <div class="skills-grid">
-            <div><strong>Frontend:</strong> React, Next.js, TypeScript, Tailwind CSS</div>
-            <div><strong>Backend:</strong> Node.js, NestJS, Python (FastAPI/Django)</div>
-            <div><strong>Veritabanı &amp; DevOps:</strong> PostgreSQL, MongoDB, Docker, AWS</div>
-            <div><strong>Diğer:</strong> Git, REST API, GraphQL, Clean Architecture</div>
+        <div style="max-width: 900px; margin: 0 auto; text-align:center; font-size:1.2rem;">
+            <p><strong>Frontend:</strong> React, Next.js, TypeScript, Tailwind CSS</p>
+            <p><strong>Backend:</strong> Node.js, NestJS, Python (FastAPI)</p>
+            <p><strong>Diğer:</strong> PostgreSQL, Docker, AWS, Git</p>
         </div>
     </section>
 
     <!-- İletişim -->
     <section id="contact" style="background: #1e2937;">
         <h2>İletişime Geçin</h2>
-        <form>
-            <input type="text" placeholder="Adınız Soyadınız" required>
-            <input type="email" placeholder="E-posta Adresiniz" required>
-            <textarea placeholder="Mesajınız..." rows="6" required></textarea>
-            <button type="submit">Mesaj Gönder</button>
+        <form style="max-width: 700px; margin: 0 auto;">
+            <input type="text" placeholder="Adınız Soyadınız" style="width:100%; padding:16px; margin-bottom:1rem; background:#334155; border:none; border-radius:8px; color:white;" required>
+            <input type="email" placeholder="E-posta Adresiniz" style="width:100%; padding:16px; margin-bottom:1rem; background:#334155; border:none; border-radius:8px; color:white;" required>
+            <textarea placeholder="Mesajınız..." rows="6" style="width:100%; padding:16px; background:#334155; border:none; border-radius:8px; color:white;" required></textarea>
+            <button type="submit" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:8px; font-size:1.1rem;">Gönder</button>
         </form>
     </section>
 
