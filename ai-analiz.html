@@ -1,51 +1,2183 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>AI Analiz</title>
+<!-- ===========================
+     AL ANALİZ HERO
+=========================== -->
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 20px;
-        }
+<div class="hero">
 
-        .card {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            border-left: 5px solid #1e3a8a;
-        }
+    <div class="hero-left">
 
-        a {
-            text-decoration: none;
-            color: #1e3a8a;
-            font-weight: bold;
-        }
-    </style>
-</head>
+        <div class="logo-box">
 
-<body>
+            <div class="ai-icon">
+                🤖
+            </div>
 
-    <a href="index.html">← Ana Sayfaya Dön</a>
+            <div>
 
-    <h1>🤖 AI Analiz Merkezi</h1>
+                <h1>AL ANALİZ</h1>
 
-    <div class="card">
-        <h2>THYAO</h2>
-        <p>AI Skoru: 8.4/10</p>
+                <p>Powered by BIST AI Tracker AI Engine</p>
+
+            </div>
+
+        </div>
+
     </div>
 
-    <div class="card">
-        <h2>ASELS</h2>
-        <p>AI Skoru: 7.8/10</p>
+    <div class="hero-center">
+
+        <div class="score-card">
+
+            <div class="score-title">
+
+                AI SCORE
+
+            </div>
+
+            <div id="aiScoreMain" class="score-value">
+
+                92
+
+            </div>
+
+            <div class="score-total">
+
+                /100
+
+            </div>
+
+            <div class="score-status">
+
+                🟢 GÜÇLÜ AL
+
+            </div>
+
+            <div class="progress">
+
+                <div
+                    id="scoreBar"
+                    class="progress-fill"
+                    style="width:92%;">
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
 
-    <div class="card">
-        <h2>TUPRS</h2>
-        <p>AI Skoru: 6.9/10</p>
+    <div class="hero-right">
+
+        <div class="status-card">
+
+            <h2>Sistem Durumu</h2>
+
+            <ul>
+
+                <li>🟢 Canlı Veri</li>
+
+                <li>🟢 Haber Motoru</li>
+
+                <li>🟢 Grafik Analizi</li>
+
+                <li>🟢 AI Hazır</li>
+
+                <li>🟢 Portföy Motoru</li>
+
+            </ul>
+
+            <div id="lastAIUpdate">
+
+                Son Güncelleme
+                <br>
+                18:45:23
+
+            </div>
+
+        </div>
+
     </div>
 
-</body>
-</html>
+</div>
+
+<!-- ===========================
+     AI DURUM KARTLARI
+=========================== -->
+
+<div class="stats-grid">
+
+    <div class="stat-card">
+
+        <span>📈</span>
+
+        <h3>Trend</h3>
+
+        <p id="trendValue">Yükseliş</p>
+
+    </div>
+
+    <div class="stat-card">
+
+        <span>⚠️</span>
+
+        <h3>Risk</h3>
+
+        <p id="riskValue">Orta</p>
+
+    </div>
+
+    <div class="stat-card">
+
+        <span>💰</span>
+
+        <h3>Para Girişi</h3>
+
+        <p id="moneyFlow">Güçlü</p>
+
+    </div>
+
+    <div class="stat-card">
+
+        <span>📰</span>
+
+        <h3>Haber Etkisi</h3>
+
+        <p id="newsEffect">Pozitif</p>
+
+    </div>
+
+    <div class="stat-card">
+
+        <span>📊</span>
+
+        <h3>Teknik</h3>
+
+        <p id="technicalScore">8.9 / 10</p>
+
+    </div>
+
+    <div class="stat-card">
+
+        <span>🏦</span>
+
+        <h3>Temel</h3>
+
+        <p id="fundamentalScore">9.2 / 10</p>
+
+    </div>
+
+</div>
+
+<!-- ===========================
+     CANLI AI YORUMU
+=========================== -->
+
+<div class="analysis-panel">
+
+    <div class="analysis-header">
+
+        <h2>🧠 AL ANALİZ Canlı Yorumu</h2>
+
+        <span class="live-badge">● CANLI</span>
+
+    </div>
+
+    <div class="analysis-body">
+
+        <p id="aiComment">
+
+            Piyasa verileri analiz ediliyor...
+
+        </p>
+
+    </div>
+
+</div>
+
+<!-- ===========================
+     AI ANALİZ DETAYLARI
+=========================== -->
+
+<div class="analysis-grid">
+
+    <div class="analysis-card">
+        <h3>📈 Trend Analizi</h3>
+        <p id="trendText">
+            Yükseliş trendi devam ediyor.
+        </p>
+    </div>
+
+    <div class="analysis-card">
+        <h3>📊 Teknik Analiz</h3>
+        <p id="technicalText">
+            RSI, MACD ve hareketli ortalamalar pozitif sinyal üretiyor.
+        </p>
+    </div>
+
+    <div class="analysis-card">
+        <h3>📰 Haber Analizi</h3>
+        <p id="newsText">
+            Son haber akışı olumlu görünüyor.
+        </p>
+    </div>
+
+    <div class="analysis-card">
+        <h3>💰 Para Akışı</h3>
+        <p id="moneyText">
+            Kurumsal alımlar artış gösteriyor.
+        </p>
+    </div>
+
+</div>
+
+<!-- ===========================
+     AI MOTOR DURUMU
+=========================== -->
+
+<div class="engine-panel">
+
+    <h2>⚙️ AI Motoru</h2>
+
+    <div class="engine-list">
+
+        <div>✅ Canlı fiyat verileri okunuyor</div>
+
+        <div>✅ Grafik analiz ediliyor</div>
+
+        <div>✅ Teknik göstergeler hesaplanıyor</div>
+
+        <div>✅ Haberler taranıyor</div>
+
+        <div>✅ Risk hesaplanıyor</div>
+
+        <div>✅ AI puanı oluşturuluyor</div>
+
+        <div>✅ Son yatırım tavsiyesi hazırlanıyor</div>
+
+    </div>
+
+</div>
+
+<!-- ===========================
+     AL ANALİZ ASİSTANI
+=========================== -->
+
+<div class="chat-section">
+
+    <div class="analysis-header">
+
+        <h2>🤖 AL ANALİZ Asistanı</h2>
+
+        <span class="live-badge">AI ONLINE</span>
+
+    </div>
+
+    <div id="chatBox" class="chat-box">
+
+        <div class="ai-message">
+
+            <strong>AL ANALİZ</strong>
+
+            <p>
+
+                Merhaba.
+
+                Ben AL ANALİZ.
+
+                BIST hisseleri, teknik analiz, temel analiz, bilanço, haberler ve portföy yönetimi konusunda yardımcı olabilirim.
+
+                Bana bir hisse yaz veya yatırım sorunu sor.
+
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="chat-input-area">
+
+        <input
+            type="text"
+            id="chatInput"
+            placeholder="Örneğin: ASELS alınır mı?"
+        >
+
+        <button id="sendQuestion">
+
+            Gönder
+
+        </button>
+
+    </div>
+
+</div>
+
+<!-- ===========================
+     HIZLI SORULAR
+=========================== -->
+
+<div class="quick-question-panel">
+
+    <h2>⚡ Hızlı Sorular</h2>
+
+    <div class="quick-buttons">
+
+        <button class="quick-btn">
+            ASELS alınır mı?
+        </button>
+
+        <button class="quick-btn">
+            THYAO hedef fiyat?
+        </button>
+
+        <button class="quick-btn">
+            En güçlü BIST hisseleri
+        </button>
+
+        <button class="quick-btn">
+            Portföyümü analiz et
+        </button>
+
+        <button class="quick-btn">
+            Bugünün haberleri
+        </button>
+
+        <button class="quick-btn">
+            Teknik analiz yap
+        </button>
+
+    </div>
+
+</div>
+
+<!-- ===========================
+     AI SON KARARI
+=========================== -->
+
+<div class="final-decision">
+
+    <h2>🎯 AL ANALİZ Son Kararı</h2>
+
+    <div id="decisionBox">
+
+        <div class="decision-score">
+
+            🟢 GÜÇLÜ AL
+
+        </div>
+
+        <p>
+
+            AI motoru mevcut teknik göstergeleri, hacim verilerini,
+            haber akışını ve piyasa momentumunu birlikte değerlendirerek
+            hissede pozitif görünüm tespit etti.
+
+        </p>
+
+    </div>
+
+</div>
+
+<!-- ===========================
+     CANLI PİYASA MERKEZİ
+=========================== -->
+
+<div class="market-center">
+
+    <div class="analysis-header">
+
+        <h2>📡 Canlı Piyasa Merkezi</h2>
+
+        <span class="live-badge">GERÇEK ZAMANLI</span>
+
+    </div>
+
+    <div class="market-grid">
+
+        <div class="market-card">
+
+            <h3>📈 BIST100</h3>
+
+            <div id="bistValue" class="market-value">
+
+                12.345,67
+
+            </div>
+
+            <div id="bistChange" class="market-green">
+
+                ▲ +1.42%
+
+            </div>
+
+        </div>
+
+        <div class="market-card">
+
+            <h3>💵 Dolar</h3>
+
+            <div id="usdValue" class="market-value">
+
+                41.22 ₺
+
+            </div>
+
+            <div class="market-red">
+
+                ▼ -0.12%
+
+            </div>
+
+        </div>
+
+        <div class="market-card">
+
+            <h3>💶 Euro</h3>
+
+            <div id="eurValue" class="market-value">
+
+                48.15 ₺
+
+            </div>
+
+            <div class="market-green">
+
+                ▲ +0.25%
+
+            </div>
+
+        </div>
+
+        <div class="market-card">
+
+            <h3>🥇 Gram Altın</h3>
+
+            <div id="goldValue" class="market-value">
+
+                5.280 ₺
+
+            </div>
+
+            <div class="market-green">
+
+                ▲ +0.81%
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===========================
+     GÜNÜN EN GÜÇLÜ HİSSELERİ
+=========================== -->
+
+<div class="top-stocks">
+
+    <div class="analysis-header">
+
+        <h2>🔥 Günün En Güçlü Hisseleri</h2>
+
+    </div>
+
+    <table class="stock-table">
+
+        <thead>
+
+            <tr>
+
+                <th>Hisse</th>
+
+                <th>AI Skoru</th>
+
+                <th>Trend</th>
+
+                <th>Karar</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+
+                <td>ASELS</td>
+
+                <td>97</td>
+
+                <td>📈</td>
+
+                <td>🟢 Güçlü Al</td>
+
+            </tr>
+
+            <tr>
+
+                <td>THYAO</td>
+
+                <td>94</td>
+
+                <td>📈</td>
+
+                <td>🟢 Al</td>
+
+            </tr>
+
+            <tr>
+
+                <td>TUPRS</td>
+
+                <td>90</td>
+
+                <td>📈</td>
+
+                <td>🟢 Al</td>
+
+            </tr>
+
+            <tr>
+
+                <td>KCHOL</td>
+
+                <td>88</td>
+
+                <td>➡️</td>
+
+                <td>🟡 Tut</td>
+
+            </tr>
+
+            <tr>
+
+                <td>GARAN</td>
+
+                <td>86</td>
+
+                <td>📈</td>
+
+                <td>🟢 Al</td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<!-- ===========================
+     EKONOMİK TAKVİM
+=========================== -->
+
+<div class="calendar-panel">
+
+    <div class="analysis-header">
+
+        <h2>📅 Bugünün Ekonomik Takvimi</h2>
+
+    </div>
+
+    <div class="calendar-list">
+
+        <div class="calendar-item">
+
+            <span>10:00</span>
+
+            <span>🇹🇷 TCMB Verisi</span>
+
+            <span class="calendar-high">Yüksek Etki</span>
+
+        </div>
+
+        <div class="calendar-item">
+
+            <span>15:30</span>
+
+            <span>🇺🇸 ABD Enflasyon</span>
+
+            <span class="calendar-high">Yüksek Etki</span>
+
+        </div>
+
+        <div class="calendar-item">
+
+            <span>17:00</span>
+
+            <span>🇪🇺 ECB Açıklaması</span>
+
+            <span class="calendar-medium">Orta Etki</span>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===========================
+     AI RİSK ANALİZİ
+=========================== -->
+
+<div class="risk-panel">
+
+    <div class="analysis-header">
+
+        <h2>⚠️ AI Risk Analizi</h2>
+
+        <span class="live-badge">CANLI</span>
+
+    </div>
+
+    <div class="risk-grid">
+
+        <div class="risk-card">
+
+            <h3>📊 Volatilite</h3>
+
+            <div id="volatilityValue" class="risk-score">
+                Düşük
+            </div>
+
+        </div>
+
+        <div class="risk-card">
+
+            <h3>💰 Para Girişi</h3>
+
+            <div id="moneyFlow">
+                Güçlü
+            </div>
+
+        </div>
+
+        <div class="risk-card">
+
+            <h3>📈 Trend Gücü</h3>
+
+            <div id="trendPower">
+                89 / 100
+            </div>
+
+        </div>
+
+        <div class="risk-card">
+
+            <h3>🛡️ Risk Skoru</h3>
+
+            <div id="riskScore">
+                18 / 100
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===========================
+     AI TAHMİN MERKEZİ
+=========================== -->
+
+<div class="prediction-panel">
+
+    <div class="analysis-header">
+
+        <h2>🔮 AI Tahmin Merkezi</h2>
+
+    </div>
+
+    <table class="stock-table">
+
+        <thead>
+
+            <tr>
+
+                <th>Zaman</th>
+
+                <th>Beklenen Hareket</th>
+
+                <th>Olasılık</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+
+                <td>Bugün</td>
+
+                <td>📈 Yükseliş</td>
+
+                <td>81%</td>
+
+            </tr>
+
+            <tr>
+
+                <td>1 Hafta</td>
+
+                <td>📈 Pozitif</td>
+
+                <td>76%</td>
+
+            </tr>
+
+            <tr>
+
+                <td>1 Ay</td>
+
+                <td>📈 Güçlü Trend</td>
+
+                <td>72%</td>
+
+            </tr>
+
+            <tr>
+
+                <td>3 Ay</td>
+
+                <td>➡️ Kararsız</td>
+
+                <td>58%</td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<!-- ===========================
+     AI TEKNİK GÖSTERGELER
+=========================== -->
+
+<div class="indicator-panel">
+
+    <div class="analysis-header">
+
+        <h2>📊 Teknik Göstergeler</h2>
+
+    </div>
+
+    <div class="indicator-grid">
+
+        <div class="indicator-card">
+
+            <h3>RSI</h3>
+
+            <div id="rsiValue">
+                63.4
+            </div>
+
+            <small>🟢 Pozitif</small>
+
+        </div>
+
+        <div class="indicator-card">
+
+            <h3>MACD</h3>
+
+            <div id="macdValue">
+                AL
+            </div>
+
+            <small>📈 Güçlü Sinyal</small>
+
+        </div>
+
+        <div class="indicator-card">
+
+            <h3>EMA 50</h3>
+
+            <div id="ema50">
+                Üstünde
+            </div>
+
+            <small>🟢 Pozitif</small>
+
+        </div>
+
+        <div class="indicator-card">
+
+            <h3>EMA 200</h3>
+
+            <div id="ema200">
+                Üstünde
+            </div>
+
+            <small>🟢 Uzun Vadeli Pozitif</small>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===========================
+     AI HABER MERKEZİ
+=========================== -->
+
+<div class="news-center">
+
+    <div class="analysis-header">
+
+        <h2>📰 AI Haber Merkezi</h2>
+
+        <span class="live-badge">CANLI HABERLER</span>
+
+    </div>
+
+    <div id="liveNews">
+
+        <div class="news-card">
+
+            <div class="news-header">
+
+                <span class="news-time">2 dk önce</span>
+
+                <span class="news-impact high-impact">
+
+                    Yüksek Etki
+
+                </span>
+
+            </div>
+
+            <h3>
+
+                THYAO yeni yatırım planını açıkladı.
+
+            </h3>
+
+            <p>
+
+                AL ANALİZ bu haberin kısa vadede hisse üzerinde
+                pozitif etki oluşturabileceğini değerlendiriyor.
+
+            </p>
+
+            <div class="ai-opinion">
+
+                🤖 AI Yorumu :
+                Pozitif
+
+            </div>
+
+        </div>
+
+        <div class="news-card">
+
+            <div class="news-header">
+
+                <span class="news-time">
+
+                    9 dk önce
+
+                </span>
+
+                <span class="news-impact medium-impact">
+
+                    Orta Etki
+
+                </span>
+
+            </div>
+
+            <h3>
+
+                ASELSAN yeni ihracat sözleşmesi imzaladı.
+
+            </h3>
+
+            <p>
+
+                Savunma sanayi gelirlerinde artış bekleniyor.
+
+            </p>
+
+            <div class="ai-opinion">
+
+                🤖 AI Yorumu :
+                Güçlü Pozitif
+
+            </div>
+
+        </div>
+
+        <div class="news-card">
+
+            <div class="news-header">
+
+                <span class="news-time">
+
+                    18 dk önce
+
+                </span>
+
+                <span class="news-impact low-impact">
+
+                    Düşük Etki
+
+                </span>
+
+            </div>
+
+            <h3>
+
+                BIST100 günü yükselişle sürdürüyor.
+
+            </h3>
+
+            <p>
+
+                Bankacılık ve ulaştırma sektörleri endeksi destekliyor.
+
+            </p>
+
+            <div class="ai-opinion">
+
+                🤖 AI Yorumu :
+                Nötr
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===========================
+     AI PİYASA DUYGUSU
+=========================== -->
+
+<div class="sentiment-panel">
+
+    <div class="analysis-header">
+
+        <h2>😊 AI Piyasa Duygusu</h2>
+
+    </div>
+
+    <div class="sentiment-grid">
+
+        <div class="sentiment-card">
+
+            <h3>Pozitif Haberler</h3>
+
+            <div class="sentiment-value">
+
+                %71
+
+            </div>
+
+        </div>
+
+        <div class="sentiment-card">
+
+            <h3>Negatif Haberler</h3>
+
+            <div class="sentiment-value">
+
+                %16
+
+            </div>
+
+        </div>
+
+        <div class="sentiment-card">
+
+            <h3>Nötr Haberler</h3>
+
+            <div class="sentiment-value">
+
+                %13
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===========================
+     AI İŞLEM ÖNERİLERİ
+=========================== -->
+
+<div class="signal-panel">
+
+    <div class="analysis-header">
+
+        <h2>⚡ AI İşlem Sinyalleri</h2>
+
+    </div>
+
+    <table class="stock-table">
+
+        <thead>
+
+            <tr>
+
+                <th>Hisse</th>
+
+                <th>Sinyal</th>
+
+                <th>Güven</th>
+
+                <th>Risk</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+
+                <td>ASELS</td>
+
+                <td>🟢 Güçlü AL</td>
+
+                <td>97%</td>
+
+                <td>Düşük</td>
+
+            </tr>
+
+            <tr>
+
+                <td>THYAO</td>
+
+                <td>🟢 AL</td>
+
+                <td>92%</td>
+
+                <td>Düşük</td>
+
+            </tr>
+
+            <tr>
+
+                <td>TUPRS</td>
+
+                <td>🟢 AL</td>
+
+                <td>88%</td>
+
+                <td>Orta</td>
+
+            </tr>
+
+            <tr>
+
+                <td>KCHOL</td>
+
+                <td>🟡 TUT</td>
+
+                <td>74%</td>
+
+                <td>Düşük</td>
+
+            </tr>
+
+            <tr>
+
+                <td>SASA</td>
+
+                <td>🔴 SAT</td>
+
+                <td>69%</td>
+
+                <td>Yüksek</td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<!-- ===========================
+     AI PORTFÖY MERKEZİ
+=========================== -->
+
+<div class="portfolio-center">
+
+    <div class="analysis-header">
+
+        <h2>💼 AI Portföy Merkezi</h2>
+
+        <span class="live-badge">CANLI ANALİZ</span>
+
+    </div>
+
+    <div class="portfolio-grid">
+
+        <div class="portfolio-card">
+
+            <h3>💰 Portföy Değeri</h3>
+
+            <div id="portfolioValue" class="portfolio-number">
+
+                ₺0,00
+
+            </div>
+
+        </div>
+
+        <div class="portfolio-card">
+
+            <h3>📈 Günlük Kazanç</h3>
+
+            <div id="dailyProfit" class="portfolio-green">
+
+                +₺0,00
+
+            </div>
+
+        </div>
+
+        <div class="portfolio-card">
+
+            <h3>🏆 Toplam Getiri</h3>
+
+            <div id="totalProfit" class="portfolio-green">
+
+                +0.00%
+
+            </div>
+
+        </div>
+
+        <div class="portfolio-card">
+
+            <h3>⭐ AI Portföy Puanı</h3>
+
+            <div id="portfolioScore" class="portfolio-score">
+
+                94 / 100
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===========================
+     AI PORTFÖY ANALİZİ
+=========================== -->
+
+<div class="portfolio-analysis">
+
+    <div class="analysis-header">
+
+        <h2>🧠 AL ANALİZ Portföy Yorumu</h2>
+
+    </div>
+
+    <div class="analysis-card">
+
+        <h3>Genel Durum</h3>
+
+        <p id="portfolioComment">
+
+            Portföyünüz dengeli görünüyor.
+
+            Bankacılık, sanayi ve savunma sektörleri arasında
+            yeterli çeşitlilik bulunuyor.
+
+            Risk seviyesi düşük,
+            büyüme potansiyeli ise yüksek.
+
+        </p>
+
+    </div>
+
+    <div class="analysis-card">
+
+        <h3>📌 AI Tavsiyeleri</h3>
+
+        <ul>
+
+            <li>🟢 Savunma sektöründeki ağırlık korunabilir.</li>
+
+            <li>🟡 Bankacılık hisselerinde kâr realizasyonu düşünülebilir.</li>
+
+            <li>🟢 Enerji sektörüne küçük ekleme yapılabilir.</li>
+
+            <li>🔵 Nakit oranı %15-20 seviyesinde tutulmalı.</li>
+
+        </ul>
+
+    </div>
+
+</div>
+
+<!-- ===========================
+     PORTFÖY DAĞILIMI
+=========================== -->
+
+<div class="sector-panel">
+
+    <div class="analysis-header">
+
+        <h2>🏭 Sektör Dağılımı</h2>
+
+    </div>
+
+    <table class="stock-table">
+
+        <thead>
+
+            <tr>
+
+                <th>Sektör</th>
+
+                <th>Oran</th>
+
+                <th>AI Değerlendirmesi</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+
+                <td>🏦 Bankacılık</td>
+
+                <td>%24</td>
+
+                <td>🟢 Sağlıklı</td>
+
+            </tr>
+
+            <tr>
+
+                <td>🛡️ Savunma</td>
+
+                <td>%31</td>
+
+                <td>🟢 Güçlü</td>
+
+            </tr>
+
+            <tr>
+
+                <td>✈️ Ulaştırma</td>
+
+                <td>%17</td>
+
+                <td>🟢 Pozitif</td>
+
+            </tr>
+
+            <tr>
+
+                <td>⚡ Enerji</td>
+
+                <td>%13</td>
+
+                <td>🟡 Artırılabilir</td>
+
+            </tr>
+
+            <tr>
+
+                <td>💵 Nakit</td>
+
+                <td>%15</td>
+
+                <td>🟢 İdeal</td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<!-- ===========================
+     AI HEDEF FİYATLAR
+=========================== -->
+
+<div class="target-panel">
+
+    <div class="analysis-header">
+
+        <h2>🎯 AI Hedef Fiyatlar</h2>
+
+    </div>
+
+    <table class="stock-table">
+
+        <thead>
+
+            <tr>
+
+                <th>Hisse</th>
+
+                <th>Mevcut</th>
+
+                <th>Hedef</th>
+
+                <th>Potansiyel</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+
+                <td>ASELS</td>
+
+                <td>---</td>
+
+                <td>---</td>
+
+                <td class="portfolio-green">+18%</td>
+
+            </tr>
+
+            <tr>
+
+                <td>THYAO</td>
+
+                <td>---</td>
+
+                <td>---</td>
+
+                <td class="portfolio-green">+12%</td>
+
+            </tr>
+
+            <tr>
+
+                <td>TUPRS</td>
+
+                <td>---</td>
+
+                <td>---</td>
+
+                <td class="portfolio-green">+15%</td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<!-- ===========================
+     GLOBAL PİYASA MERKEZİ
+=========================== -->
+
+<div class="global-market">
+
+    <div class="analysis-header">
+
+        <h2>🌍 Global Piyasa Merkezi</h2>
+
+        <span class="live-badge">CANLI</span>
+
+    </div>
+
+    <div class="market-grid">
+
+        <div class="market-card">
+
+            <h3>🇹🇷 BIST100</h3>
+
+            <div id="bist100Index" class="market-value">--</div>
+
+            <div id="bist100Change" class="market-green">--</div>
+
+        </div>
+
+        <div class="market-card">
+
+            <h3>🇺🇸 NASDAQ</h3>
+
+            <div id="nasdaqIndex" class="market-value">--</div>
+
+            <div id="nasdaqChange">--</div>
+
+        </div>
+
+        <div class="market-card">
+
+            <h3>🇺🇸 S&P500</h3>
+
+            <div id="sp500Index" class="market-value">--</div>
+
+            <div id="sp500Change">--</div>
+
+        </div>
+
+        <div class="market-card">
+
+            <h3>🇩🇪 DAX</h3>
+
+            <div id="daxIndex" class="market-value">--</div>
+
+            <div id="daxChange">--</div>
+
+        </div>
+
+        <div class="market-card">
+
+            <h3>🇯🇵 Nikkei</h3>
+
+            <div id="nikkeiIndex" class="market-value">--</div>
+
+            <div id="nikkeiChange">--</div>
+
+        </div>
+
+        <div class="market-card">
+
+            <h3>🇬🇧 FTSE100</h3>
+
+            <div id="ftseIndex" class="market-value">--</div>
+
+            <div id="ftseChange">--</div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===========================
+     KRİPTO VE EMTİA
+=========================== -->
+
+<div class="crypto-center">
+
+    <div class="analysis-header">
+
+        <h2>₿ Kripto & Emtia</h2>
+
+    </div>
+
+    <div class="market-grid">
+
+        <div class="market-card">
+
+            <h3>₿ Bitcoin</h3>
+
+            <div id="btcPrice" class="market-value">--</div>
+
+        </div>
+
+        <div class="market-card">
+
+            <h3>Ξ Ethereum</h3>
+
+            <div id="ethPrice" class="market-value">--</div>
+
+        </div>
+
+        <div class="market-card">
+
+            <h3>🥇 Ons Altın</h3>
+
+            <div id="goldPrice" class="market-value">--</div>
+
+        </div>
+
+        <div class="market-card">
+
+            <h3>🥈 Gümüş</h3>
+
+            <div id="silverPrice" class="market-value">--</div>
+
+        </div>
+
+        <div class="market-card">
+
+            <h3>🛢️ Brent Petrol</h3>
+
+            <div id="oilPrice" class="market-value">--</div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===========================
+     FEAR & GREED
+=========================== -->
+
+<div class="fear-panel">
+
+    <div class="analysis-header">
+
+        <h2>😱 Fear & Greed Index</h2>
+
+    </div>
+
+    <div class="fear-score">
+
+        <div id="fearValue">
+
+            65
+
+        </div>
+
+        <p id="fearComment">
+
+            Açgözlülük Bölgesi
+
+        </p>
+
+    </div>
+
+</div>
+
+<!-- ===========================
+     AI RADAR
+=========================== -->
+
+<div class="radar-panel">
+
+    <div class="analysis-header">
+
+        <h2>📡 AI Radar</h2>
+
+    </div>
+
+    <div class="analysis-card">
+
+        <p>
+
+            AL ANALİZ şu anda tüm BIST hisselerini tarıyor.
+
+            Bilançolar, teknik göstergeler,
+
+            hacim artışları,
+
+            para girişleri,
+
+            haber akışı,
+
+            sektör performansı,
+
+            yabancı yatırımcı hareketleri
+
+            ve geçmiş fiyat davranışları analiz ediliyor.
+
+        </p>
+
+        <br>
+
+        <div id="radarStatus">
+
+            🔄 Tarama devam ediyor...
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===========================
+     SON DAKİKA
+=========================== -->
+
+<div class="breaking-news">
+
+    <div class="analysis-header">
+
+        <h2>🚨 Son Dakika</h2>
+
+    </div>
+
+    <marquee scrollamount="5">
+
+        📢 Son dakika haberleri burada canlı olarak akacaktır...
+
+    </marquee>
+
+</div>
+
+<!-- ===========================
+     AL ANALİZ AI ASİSTANI
+=========================== -->
+
+<div class="assistant-center">
+
+    <div class="analysis-header">
+
+        <h2>🤖 AL ANALİZ</h2>
+
+        <span class="live-badge">
+
+            AI AKTİF
+
+        </span>
+
+    </div>
+
+    <div class="assistant-card">
+
+        <div class="assistant-avatar">
+
+            🤖
+
+        </div>
+
+        <div class="assistant-info">
+
+            <h3>
+
+                AL ANALİZ
+
+            </h3>
+
+            <p>
+
+                Yapay Zeka Destekli Finansal Analist
+
+            </p>
+
+            <small>
+
+                Canlı piyasa verileri, teknik analiz, haber akışı ve finansal göstergeleri yorumlar.
+
+            </small>
+
+        </div>
+
+    </div>
+
+    <div class="assistant-chat">
+
+        <div class="assistant-message">
+
+            👋 Merhaba.
+
+            Ben <strong>AL ANALİZ</strong>.
+
+            Borsa İstanbul, ABD borsaları, kripto paralar ve emtialar hakkında finansal analiz yapabilirim.
+
+        </div>
+
+    </div>
+
+    <div class="assistant-input">
+
+        <input
+
+            type="text"
+
+            id="aiQuestion"
+
+            placeholder="Örneğin: ASELS alınır mı?"
+
+        >
+
+        <button id="askAIButton">
+
+            Analiz Et
+
+        </button>
+
+    </div>
+
+</div>
+
+<!-- ===========================
+     HIZLI SORULAR
+=========================== -->
+
+<div class="quick-question-panel">
+
+    <div class="analysis-header">
+
+        <h2>⚡ Hazır Sorular</h2>
+
+    </div>
+
+    <div class="quick-buttons">
+
+        <button class="quick-btn">
+
+            ASELS alınır mı?
+
+        </button>
+
+        <button class="quick-btn">
+
+            Bugünün en güçlü hissesi
+
+        </button>
+
+        <button class="quick-btn">
+
+            Portföyümü analiz et
+
+        </button>
+
+        <button class="quick-btn">
+
+            BIST100 yorumu
+
+        </button>
+
+        <button class="quick-btn">
+
+            Bitcoin analizi
+
+        </button>
+
+        <button class="quick-btn">
+
+            Son haberleri özetle
+
+        </button>
+
+    </div>
+
+</div>
+
+<!-- ===========================
+     AI CEVAP MERKEZİ
+=========================== -->
+
+<div class="ai-response-panel">
+
+    <div class="analysis-header">
+
+        <h2>🧠 AL ANALİZ Sonucu</h2>
+
+    </div>
+
+    <div class="response-card">
+
+        <div class="response-top">
+
+            <div class="response-score">
+
+                <span>AI Güven Skoru</span>
+
+                <h2 id="confidenceScore">
+
+                    96%
+
+                </h2>
+
+            </div>
+
+            <div class="response-action">
+
+                <span>İşlem Önerisi</span>
+
+                <h2 id="recommendation">
+
+                    🟢 AL
+
+                </h2>
+
+            </div>
+
+        </div>
+
+        <div class="response-text">
+
+            <h3>
+
+                📋 Analiz Özeti
+
+            </h3>
+
+            <p id="analysisText">
+
+                Analiz sonucu burada görüntülenecek.
+
+                AL ANALİZ; bilanço, teknik göstergeler,
+                haber akışı, hacim hareketleri ve
+                piyasa duyarlılığını değerlendirerek
+                yatırım görüşünü oluşturacaktır.
+
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===========================
+     AI DESTEKLEYEN VERİLER
+=========================== -->
+
+<div class="analysis-data">
+
+    <div class="analysis-header">
+
+        <h2>📊 Analizi Destekleyen Veriler</h2>
+
+    </div>
+
+    <div class="indicator-grid">
+
+        <div class="indicator-card">
+
+            <h3>📈 Teknik Analiz</h3>
+
+            <div>
+
+                Güçlü
+
+            </div>
+
+        </div>
+
+        <div class="indicator-card">
+
+            <h3>📰 Haber Etkisi</h3>
+
+            <div>
+
+                Pozitif
+
+            </div>
+
+        </div>
+
+        <div class="indicator-card">
+
+            <h3>💰 Para Girişi</h3>
+
+            <div>
+
+                Güçlü
+
+            </div>
+
+        </div>
+
+        <div class="indicator-card">
+
+            <h3>📉 Risk</h3>
+
+            <div>
+
+                Düşük
+
+            </div>
+
+        </div>
+
+        <div class="indicator-card">
+
+            <h3>🏛️ Sektör</h3>
+
+            <div>
+
+                Güçlü
+
+            </div>
+
+        </div>
+
+        <div class="indicator-card">
+
+            <h3>⭐ AI Skoru</h3>
+
+            <div>
+
+                9.4 / 10
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===========================
+     AI NEDEN BU KARARI VERDİ?
+=========================== -->
+
+<div class="reason-panel">
+
+    <div class="analysis-header">
+
+        <h2>🔍 AI Bu Sonuca Nasıl Ulaştı?</h2>
+
+    </div>
+
+    <div class="analysis-card">
+
+        <ul>
+
+            <li>✅ Teknik göstergeler pozitif sinyal üretiyor.</li>
+
+            <li>✅ Son haber akışı olumlu.</li>
+
+            <li>✅ Hacim ortalamanın üzerinde.</li>
+
+            <li>✅ Para girişi devam ediyor.</li>
+
+            <li>✅ Uzun vadeli trend yukarı yönlü.</li>
+
+            <li>✅ Finansal veriler sektör ortalamasının üzerinde.</li>
+
+        </ul>
+
+    </div>
+
+</div>
+
+<!-- ===========================
+     AYARLAR
+=========================== -->
+
+<div class="settings-panel">
+
+    <div class="analysis-header">
+
+        <h2>⚙️ Ayarlar</h2>
+
+    </div>
+
+    <div class="settings-grid">
+
+        <button class="setting-btn">
+
+            🌙 Koyu Tema
+
+        </button>
+
+        <button class="setting-btn">
+
+            ☀️ Açık Tema
+
+        </button>
+
+        <button class="setting-btn">
+
+            🔔 Bildirimleri Aç
+
+        </button>
+
+        <button class="setting-btn">
+
+            🌍 Dil: Türkçe
+
+        </button>
+
+        <button class="setting-btn">
+
+            📈 Grafik Kalitesi
+
+        </button>
+
+        <button class="setting-btn">
+
+            💾 Verileri Yenile
+
+        </button>
+
+    </div>
+
+</div>
+
+<!-- ===========================
+     PREMIUM
+=========================== -->
+
+<div class="premium-panel">
+
+    <div class="analysis-header">
+
+        <h2>⭐ AL ANALİZ PRO</h2>
+
+    </div>
+
+    <div class="premium-card">
+
+        <h3>
+
+            Premium Özellikler
+
+        </h3>
+
+        <ul>
+
+            <li>✔ Sınırsız AI Analizi</li>
+
+            <li>✔ Gerçek zamanlı haber tarama</li>
+
+            <li>✔ Canlı teknik analiz</li>
+
+            <li>✔ Hedef fiyat tahminleri</li>
+
+            <li>✔ Portföy optimizasyonu</li>
+
+            <li>✔ Erken sinyal sistemi</li>
+
+            <li>✔ Yapay zeka destekli al/sat önerileri</li>
+
+            <li>✔ ABD ve Avrupa borsaları desteği</li>
+
+        </ul>
+
+        <button class="premium-button">
+
+            PRO Sürümü İncele
+
+        </button>
+
+    </div>
+
+</div>
+
+<!-- ===========================
+     SİSTEM DURUMU
+=========================== -->
+
+<div class="system-panel">
+
+    <div class="analysis-header">
+
+        <h2>🖥 Sistem Durumu</h2>
+
+    </div>
+
+    <table class="stock-table">
+
+        <tbody>
+
+            <tr>
+
+                <td>AI Motoru</td>
+
+                <td>🟢 Aktif</td>
+
+            </tr>
+
+            <tr>
+
+                <td>Canlı Veri</td>
+
+                <td>🟢 Bağlı</td>
+
+            </tr>
+
+            <tr>
+
+                <td>Haber Servisi</td>
+
+                <td>🟢 Çalışıyor</td>
+
+            </tr>
+
+            <tr>
+
+                <td>Grafik Servisi</td>
+
+                <td>🟢 Aktif</td>
+
+            </tr>
+
+            <tr>
+
+                <td>Son Güncelleme</td>
+
+                <td id="systemTime">
+
+                    Şimdi
+
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<!-- ===========================
+     FOOTER
+=========================== -->
+
+<footer class="footer">
+
+    <h2>
+
+        📈 BIST AI Tracker
+
+    </h2>
+
+    <p>
+
+        Yapay zeka destekli yatırım analiz platformu.
+
+    </p>
+
+    <br>
+
+    <p>
+
+        © 2026 BIST AI Tracker
+
+    </p>
+
+    <p>
+
+        Developed by
+
+        <strong>
+
+            Ahmet Eymen Bakraç
+
+        </strong>
+
+    </p>
+
+    <br>
+
+    <small>
+
+        Buradaki analizler yatırım tavsiyesi değildir.
+        Tüm değerlendirmeler yapay zeka algoritmaları tarafından oluşturulmaktadır.
+
+    </small>
+
+</footer>
+
+<script>
+
+setInterval(() => {
+
+    const el = document.getElementById("systemTime");
+
+    if(el){
+
+        el.textContent = new Date().toLocaleTimeString("tr-TR");
+
+    }
+
+},1000);
+
+</script>
