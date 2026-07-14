@@ -1,44 +1,243 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
-    <title>Portföy</title>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adın Soyadın | Full Stack Developer</title>
+    <meta name="description" content="Full Stack Developer - React, Node.js, Python uzmanı. Modern web projeleri.">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <style>
+        :root {
+            --primary: #6366f1;
+            --dark: #0f172a;
+            --light: #f8fafc;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 20px;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--dark);
+            color: #e2e8f0;
+            line-height: 1.6;
+            overflow-x: hidden;
         }
-
-        .card {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            border-left: 5px solid #1e3a8a;
+        
+        /* Navbar */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(12px);
+            z-index: 1000;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(99, 102, 241, 0.2);
         }
-
-        a {
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        .nav-links a {
+            color: #e2e8f0;
             text-decoration: none;
-            color: #1e3a8a;
-            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .nav-links a:hover { color: var(--primary); }
+
+        /* Hero */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: linear-gradient(135deg, #1e2937 0%, #0f172a 100%);
+            position: relative;
+        }
+        .hero-content h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        .hero-content .highlight { color: var(--primary); }
+        .hero-content p {
+            font-size: 1.4rem;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+        .btn {
+            display: inline-block;
+            padding: 14px 32px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Sections */
+        section {
+            padding: 100px 5%;
+        }
+        h2 {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 4rem;
+            color: white;
+        }
+        .about, .projects, .skills, .contact {
+            background: #1e2937;
+        }
+
+        /* Projects */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 2rem;
+        }
+        .project-card {
+            background: #334155;
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.4s;
+        }
+        .project-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.4);
+        }
+        .project-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+        .project-info {
+            padding: 1.5rem;
+        }
+        .project-info h3 {
+            margin-bottom: 0.8rem;
+        }
+        .tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+        .tag {
+            background: #475569;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+        }
+
+        /* Skills */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem;
+            background: #0f172a;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-content h1 { font-size: 2.8rem; }
+            .nav-links { display: none; } /* İstersen hamburger menü ekleriz */
         }
     </style>
 </head>
-
 <body>
 
-    <a href="index.html">← Ana Sayfaya Dön</a>
+    <!-- Navbar -->
+    <nav>
+        <div class="logo">Adın Soyadın</div>
+        <div class="nav-links">
+            <a href="#about">Hakkımda</a>
+            <a href="#projects">Projeler</a>
+            <a href="#skills">Yetenekler</a>
+            <a href="#contact">İletişim</a>
+        </div>
+    </nav>
 
-    <h1>💼 Portföyüm</h1>
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Merhaba, Ben <span class="highlight">Adın Soyadın</span></h1>
+            <p>Full Stack Developer &amp; Yazılım Mühendisi</p>
+            <p>Modern web teknolojileriyle etkileyici dijital deneyimler yaratıyorum.</p>
+            <a href="#projects" class="btn">Projelerimi İncele</a>
+        </div>
+    </section>
 
-    <div class="card">
-        <p>Nakit: 3.000 TL</p>
-        <p>RYSAS: 2.000 TL</p>
-        <p>HLGYO: 2.000 TL</p>
-        <hr>
-        <p><strong>Toplam Değer: 7.000 TL</strong></p>
-    </div>
+    <!-- Hakkımda -->
+    <section id="about" class="about">
+        <h2>Hakkımda</h2>
+        <p style="max-width: 800px; margin: 0 auto; text-align: center; font-size: 1.2rem;">
+            X yıldır yazılım geliştiriyorum. Backend'de Python & Node.js, frontend'de React ve Tailwind ile çalışıyorum. 
+            Temiz kod, performans ve kullanıcı deneyimine önem veriyorum.
+        </p>
+    </section>
+
+    <!-- Projeler -->
+    <section id="projects" class="projects">
+        <h2>Öne Çıkan Projeler</h2>
+        <div class="projects-grid">
+            
+            <div class="project-card">
+                <img src="https://via.placeholder.com/600x400/4f46e5/ffffff?text=Proje+1" alt="Proje 1">
+                <div class="project-info">
+                    <h3>E-Ticaret Platformu</h3>
+                    <p>Next.js, Tailwind, Stripe entegrasyonu ile tam kapsamlı e-ticaret sitesi.</p>
+                    <div class="tags">
+                        <span class="tag">Next.js</span>
+                        <span class="tag">TypeScript</span>
+                        <span class="tag">Stripe</span>
+                    </div>
+                    <a href="#" style="margin-top: 1rem; display: inline-block; color: var(--primary);">Projeyi Gör →</a>
+                </div>
+            </div>
+
+            <!-- Diğer projelerini buraya aynı yapıda ekle -->
+            
+        </div>
+    </section>
+
+    <!-- Yetenekler -->
+    <section id="skills" class="skills">
+        <h2>Yeteneklerim</h2>
+        <div class="skills-grid">
+            <div><strong>Frontend:</strong> React, Next.js, Tailwind, TypeScript</div>
+            <div><strong>Backend:</strong> Node.js, Python (FastAPI/Django), Express</div>
+            <div><strong>Veritabanı:</strong> PostgreSQL, MongoDB, Redis</div>
+            <div><strong>Diğer:</strong> Docker, AWS, Git, CI/CD</div>
+        </div>
+    </section>
+
+    <!-- İletişim -->
+    <section id="contact" class="contact">
+        <h2>İletişime Geç</h2>
+        <form style="max-width: 600px; margin: 0 auto;">
+            <input type="text" placeholder="Adın" style="width:100%; padding:14px; margin-bottom:1rem; background:#334155; border:none; border-radius:8px; color:white;">
+            <input type="email" placeholder="E-posta" style="width:100%; padding:14px; margin-bottom:1rem; background:#334155; border:none; border-radius:8px; color:white;">
+            <textarea placeholder="Mesajın..." rows="6" style="width:100%; padding:14px; background:#334155; border:none; border-radius:8px; color:white;"></textarea>
+            <button type="submit" class="btn" style="margin-top:1rem; width:100%;">Gönder</button>
+        </form>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Adın Soyadın. Tüm hakları saklıdır.</p>
+    </footer>
 
 </body>
 </html>
