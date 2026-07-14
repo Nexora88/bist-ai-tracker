@@ -1350,3 +1350,802 @@ AI.Decision = {
     }
 
 };
+
+/*=========================================================
+BÖLÜM 11
+Risk Analiz Motoru
+=========================================================*/
+
+AI.Risk = {
+
+    analyze(history) {
+
+        if (!history || history.length < 30) {
+
+            return {
+
+                level: "Bilinmiyor",
+
+                score: 50,
+
+                volatility: 0,
+
+                drawdown: 0
+
+            };
+
+        }
+
+        const closes = history.map(item => Number(item.close));
+
+        const volatility = AI.Utils.volatility(closes);
+
+        const drawdown = AI.Utils.maxDrawdown(closes);
+
+        let level = "";
+
+        let score = 50;
+
+        if (volatility < 1.5 && drawdown < 8) {
+
+            level = "Çok Düşük";
+
+            score = 95;
+
+        }
+
+        else if (volatility < 3 && drawdown < 12) {
+
+            level = "Düşük";
+
+            score = 85;
+
+        }
+
+        else if (volatility < 5 && drawdown < 18) {
+
+            level = "Orta";
+
+            score = 65;
+
+        }
+
+        else if (volatility < 8 && drawdown < 25) {
+
+            level = "Yüksek";
+
+            score = 40;
+
+        }
+
+        else {
+
+            level = "Çok Yüksek";
+
+            score = 15;
+
+        }
+
+        AI.SCORE.risk = score;
+
+        AI.RESULT.reasons.push(
+
+            `Risk Seviyesi: ${level}`
+
+        );
+
+        return {
+
+            level,
+
+            score,
+
+            volatility: AI.Utils.round(volatility),
+
+            drawdown: AI.Utils.round(drawdown)
+
+        };
+
+    }
+
+};
+
+/*=========================================================
+BÖLÜM 12
+Hedef Fiyat Motoru
+=========================================================*/
+
+AI.Target = {
+
+    calculate(history) {
+
+        if (!history || history.length < 30) {
+
+            return {
+
+                currentPrice: 0,
+
+                targetPrice: 0,
+
+                stopLoss: 0,
+
+                upside: 0,
+
+                riskReward: 0
+
+            };
+
+        }
+
+        const closes = history.map(item => Number(item.close));
+
+        const currentPrice = closes[closes.length - 1];
+
+        const average = AI.Utils.average(closes);
+
+        const volatility = AI.Utils.volatility(closes);
+
+        let targetPrice = average + (volatility * 3);
+
+        let stopLoss = average - (volatility * 2);
+
+        if (stopLoss >= currentPrice) {
+
+            stopLoss = currentPrice * 0.95;
+
+        }
+
+        const upside =
+
+            AI.Utils.percentChange(
+
+                currentPrice,
+
+                targetPrice
+
+            );
+
+        const risk =
+
+            currentPrice - stopLoss;
+
+        const reward =
+
+            targetPrice - currentPrice;
+
+        let riskReward = 0;
+
+        if (risk > 0) {
+
+            riskReward = reward / risk;
+
+        }
+
+        AI.RESULT.targetPrice =
+
+            AI.Utils.round(targetPrice);
+
+        AI.RESULT.stopLoss =
+
+            AI.Utils.round(stopLoss);
+
+        AI.RESULT.reasons.push(
+
+            `Hedef Fiyat: ${AI.Utils.round(targetPrice)} ₺`
+
+        );
+
+        AI.RESULT.reasons.push(
+
+            `Stop Loss: ${AI.Utils.round(stopLoss)} ₺`
+
+        );
+
+        return {
+
+            currentPrice:
+
+                AI.Utils.round(currentPrice),
+
+            targetPrice:
+
+                AI.Utils.round(targetPrice),
+
+            stopLoss:
+
+                AI.Utils.round(stopLoss),
+
+            upside:
+
+                AI.Utils.round(upside),
+
+            riskReward:
+
+                AI.Utils.round(riskReward)
+
+        };
+
+    }
+
+};
+
+/*=========================================================
+BÖLÜM 13
+AI Güven Skoru (Confidence Engine)
+=========================================================*/
+
+AI.Confidence = {
+
+    calculate() {
+
+        let confidence = 50;
+
+        const trend = AI.SCORE.trend;
+        const technical = AI.SCORE.technical;
+        const volume = AI.SCORE.volume;
+        const news = AI.SCORE.news;
+        const risk = AI.SCORE.risk;
+
+        confidence += (trend - 50) * 0.18;
+        confidence += (technical - 50) * 0.28;
+        confidence += (volume - 50) * 0.12;
+        confidence += (news - 50) * 0.12;
+        confidence += (risk - 50) * 0.10;
+
+        if (AI.RESULT.recommendation === "GÜÇLÜ AL")
+            confidence += 8;
+
+        if (AI.RESULT.recommendation === "AL")
+            confidence += 5;
+
+        if (AI.RESULT.recommendation === "GÜÇLÜ SAT")
+            confidence += 8;
+
+        if (AI.RESULT.recommendation === "SAT")
+            confidence += 5;
+
+        confidence = Math.max(0, confidence);
+        confidence = Math.min(100, confidence);
+
+        AI.SCORE.confidence =
+            AI.Utils.round(confidence);
+
+        AI.RESULT.probability =
+            AI.Utils.round(confidence);
+
+        AI.RESULT.reasons.push(
+
+            `AI Güven Skoru: ${AI.Utils.round(confidence)}%`
+
+        );
+
+        return {
+
+            score: AI.Utils.round(confidence),
+
+            level: this.getLevel(confidence)
+
+        };
+
+    },
+
+    getLevel(score) {
+
+        if (score >= 90)
+            return "Çok Yüksek";
+
+        if (score >= 80)
+            return "Yüksek";
+
+        if (score >= 65)
+            return "İyi";
+
+        if (score >= 50)
+            return "Orta";
+
+        return "Düşük";
+
+    }
+
+};
+
+/*=========================================================
+BÖLÜM 14
+Profesyonel AI Rapor Motoru
+=========================================================*/
+
+AI.Report = {
+
+    create(result) {
+
+        const report = {
+
+            title: `${AI.NAME} Analiz Raporu`,
+
+            symbol: AI.SYMBOL,
+
+            createdAt: new Date().toLocaleString("tr-TR"),
+
+            recommendation: result.recommendation,
+
+            confidence: result.confidence,
+
+            score: result.totalScore,
+
+            targetPrice: AI.RESULT.targetPrice,
+
+            stopLoss: AI.RESULT.stopLoss,
+
+            summary: AI.RESULT.summary,
+
+            reasons: [...AI.RESULT.reasons],
+
+            strengths: [],
+
+            weaknesses: [],
+
+            warnings: []
+
+        };
+
+        if (result.totalScore >= 80) {
+
+            report.strengths.push(
+                "Genel teknik görünüm güçlü."
+            );
+
+        }
+
+        if (AI.SCORE.trend >= 80) {
+
+            report.strengths.push(
+                "Trend yukarı yönlü."
+            );
+
+        }
+
+        if (AI.SCORE.volume >= 75) {
+
+            report.strengths.push(
+                "Hacim desteği güçlü."
+            );
+
+        }
+
+        if (AI.SCORE.news >= 70) {
+
+            report.strengths.push(
+                "Haber akışı olumlu."
+            );
+
+        }
+
+        if (AI.SCORE.risk <= 40) {
+
+            report.weaknesses.push(
+                "Risk seviyesi yüksek."
+            );
+
+        }
+
+        if (AI.SCORE.news <= 35) {
+
+            report.weaknesses.push(
+                "Negatif haber akışı bulunuyor."
+            );
+
+        }
+
+        if (AI.SCORE.trend <= 40) {
+
+            report.weaknesses.push(
+                "Trend zayıf görünüyor."
+            );
+
+        }
+
+        if (result.recommendation === "SAT" ||
+            result.recommendation === "GÜÇLÜ SAT") {
+
+            report.warnings.push(
+
+                "İşlem öncesinde dikkatli olun."
+
+            );
+
+        }
+
+        if (report.warnings.length === 0) {
+
+            report.warnings.push(
+
+                "Analiz yalnızca bilgi amaçlıdır."
+
+            );
+
+        }
+
+        return report;
+
+    }
+
+};
+
+/*=========================================================
+BÖLÜM 15
+AI Engine
+=========================================================*/
+
+AI.Engine = {
+
+    async run(symbol, history = [], news = []) {
+
+        AI.SYMBOL = symbol;
+
+        AI.RESULT = {
+
+            reasons: []
+
+        };
+
+        AI.SCORE = {
+
+            trend: 50,
+            technical: 50,
+            volume: 50,
+            news: 50,
+            risk: 50,
+            confidence: 50,
+            total: 50
+
+        };
+
+        const trend =
+            AI.Trend.analyze(history);
+
+        const rsi =
+            AI.RSI.analyze(history);
+
+        const macd =
+            AI.MACD.analyze(history);
+
+        const movingAverage =
+            AI.MovingAverage.analyze(history);
+
+        const volume =
+            AI.Volume.analyze(history);
+
+        const support =
+            AI.SupportResistance.analyze(history);
+
+        const newsResult =
+            AI.News.analyze(news);
+
+        const risk =
+            AI.Risk.analyze(history);
+
+        const target =
+            AI.Target.calculate(history);
+
+        const decision =
+            AI.Decision.analyze(history, news);
+
+        const confidence =
+            AI.Confidence.calculate();
+
+        const report =
+            AI.Report.create(decision);
+
+        return {
+
+            symbol,
+
+            trend,
+
+            rsi,
+
+            macd,
+
+            movingAverage,
+
+            volume,
+
+            support,
+
+            news: newsResult,
+
+            risk,
+
+            target,
+
+            decision,
+
+            confidence,
+
+            report
+
+        };
+
+    }
+
+};
+
+/*=========================================================
+BÖLÜM 16
+AI Güvenlik Katmanı
+=========================================================*/
+
+AI.Security = {
+
+    isNumber(value) {
+
+        return typeof value === "number" &&
+               !isNaN(value) &&
+               isFinite(value);
+
+    },
+
+    sanitizeNumber(value, fallback = 0) {
+
+        const number = Number(value);
+
+        if (!this.isNumber(number)) {
+
+            return fallback;
+
+        }
+
+        return number;
+
+    },
+
+    sanitizeHistory(history) {
+
+        if (!Array.isArray(history)) {
+
+            return [];
+
+        }
+
+        return history.filter(item => {
+
+            return item &&
+                   this.isNumber(Number(item.close));
+
+        });
+
+    },
+
+    sanitizeNews(news) {
+
+        if (!Array.isArray(news)) {
+
+            return [];
+
+        }
+
+        return news.filter(item => {
+
+            return item &&
+                   typeof item.title === "string";
+
+        });
+
+    },
+
+    validateSymbol(symbol) {
+
+        if (typeof symbol !== "string") {
+
+            return false;
+
+        }
+
+        return /^[A-Z0-9]{2,10}$/.test(symbol);
+
+    },
+
+    validate(history, news, symbol) {
+
+        return {
+
+            symbol: this.validateSymbol(symbol),
+
+            history: this.sanitizeHistory(history),
+
+            news: this.sanitizeNews(news)
+
+        };
+
+    }
+
+};
+
+/*=========================================================
+BÖLÜM 17
+Performans ve Cache Sistemi
+=========================================================*/
+
+AI.Cache = {
+
+    enabled: true,
+
+    lifetime: 60000,
+
+    storage: {},
+
+    get(key) {
+
+        if (!this.enabled)
+            return null;
+
+        const item = this.storage[key];
+
+        if (!item)
+            return null;
+
+        const expired =
+
+            Date.now() - item.time >
+
+            this.lifetime;
+
+        if (expired) {
+
+            delete this.storage[key];
+
+            return null;
+
+        }
+
+        return item.value;
+
+    },
+
+    set(key, value) {
+
+        if (!this.enabled)
+            return;
+
+        this.storage[key] = {
+
+            value,
+
+            time: Date.now()
+
+        };
+
+    },
+
+    remove(key) {
+
+        delete this.storage[key];
+
+    },
+
+    clear() {
+
+        this.storage = {};
+
+    },
+
+    size() {
+
+        return Object.keys(
+
+            this.storage
+
+        ).length;
+
+    }
+
+};
+
+AI.Performance = {
+
+    startTime: 0,
+
+    start() {
+
+        this.startTime = performance.now();
+
+    },
+
+    stop() {
+
+        return AI.Utils.round(
+
+            performance.now() -
+
+            this.startTime
+
+        );
+
+    }
+
+};
+
+/*=========================================================
+BÖLÜM 18
+Final
+=========================================================*/
+
+AI.VERSION = "3.0.0";
+
+AI.init = function () {
+
+    console.log(
+
+        `%c${this.NAME} ${this.VERSION} hazır.`,
+
+        "color:#10b981;font-weight:bold;font-size:14px;"
+
+    );
+
+    this.Cache.clear();
+
+    return true;
+
+};
+
+AI.reset = function () {
+
+    this.RESULT = {
+
+        reasons: []
+
+    };
+
+    this.SCORE = {
+
+        trend: 50,
+
+        technical: 50,
+
+        volume: 50,
+
+        news: 50,
+
+        risk: 50,
+
+        confidence: 50,
+
+        total: 50
+
+    };
+
+    this.Cache.clear();
+
+};
+
+AI.destroy = function () {
+
+    this.reset();
+
+    this.Cache.clear();
+
+    console.log(
+
+        `${this.NAME} kapatıldı.`
+
+    );
+
+};
+
+AI.getVersion = function () {
+
+    return this.VERSION;
+
+};
+
+AI.isReady = function () {
+
+    return true;
+
+};
+
+Object.freeze(AI.SETTINGS);
+
+window.AI = AI;
+
+AI.init();
