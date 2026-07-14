@@ -387,3 +387,648 @@ Engine.init=function(symbol){
 };
 
 window.Engine=Engine;
+
+/*=========================================================
+BÖLÜM 1
+AI Motor Bağlantısı
+=========================================================*/
+
+Engine.updateAI = async function(history, news) {
+
+    if (!window.AI) {
+
+        console.warn("AI Motoru yüklenmedi.");
+
+        return;
+
+    }
+
+    try {
+
+        const analysis = await AI.Engine.run(
+
+            this.currentSymbol,
+
+            history,
+
+            news
+
+        );
+
+        this.lastAnalysis = analysis;
+
+        this.updateAIWidgets(analysis);
+
+    }
+
+    catch(error) {
+
+        console.error(
+
+            "AI Analiz Hatası:",
+
+            error
+
+        );
+
+    }
+
+};
+
+Engine.updateAIWidgets = function(result) {
+
+    this.setText(
+
+        "aiRecommendation",
+
+        result.decision.recommendation
+
+    );
+
+    this.setText(
+
+        "aiConfidence",
+
+        result.confidence.score + "%"
+
+    );
+
+    this.setText(
+
+        "targetPrice",
+
+        result.target.targetPrice + " ₺"
+
+    );
+
+    this.setText(
+
+        "stopLoss",
+
+        result.target.stopLoss + " ₺"
+
+    );
+
+    this.setText(
+
+        "riskLevel",
+
+        result.risk.level
+
+    );
+
+};
+
+/*=========================================================
+BÖLÜM 2
+News.js Bağlantısı
+=========================================================*/
+
+Engine.updateNews = async function() {
+
+    if (!window.News) {
+
+        console.warn("News Engine yüklenmedi.");
+
+        return;
+
+    }
+
+    try {
+
+        const news = await News.get(
+
+            this.currentSymbol
+
+        );
+
+        this.lastNews = news;
+
+        this.renderNews(news);
+
+    }
+
+    catch(error) {
+
+        console.error(
+
+            "News Engine Hatası:",
+
+            error
+
+        );
+
+    }
+
+};
+
+Engine.renderNews = function(news) {
+
+    const container =
+
+        document.getElementById("newsContainer");
+
+    if (!container)
+        return;
+
+    News.render(
+
+        news,
+
+        "newsContainer"
+
+    );
+
+    const stats =
+
+        News.Statistics.generate(news);
+
+    this.setText(
+
+        "newsCount",
+
+        stats.total
+
+    );
+
+    this.setText(
+
+        "newsPositive",
+
+        stats.positive
+
+    );
+
+    this.setText(
+
+        "newsNegative",
+
+        stats.negative
+
+    );
+
+    this.setText(
+
+        "newsAverage",
+
+        stats.averageScore + "/100"
+
+    );
+
+};
+
+/*=========================================================
+BÖLÜM 3
+Portföy Bağlantısı
+=========================================================*/
+
+Engine.updatePortfolio = function(price) {
+
+    if (!window.Portfolio) {
+
+        return;
+
+    }
+
+    try {
+
+        const portfolio =
+
+            Portfolio.get(this.currentSymbol);
+
+        if (!portfolio)
+            return;
+
+        const currentValue =
+
+            portfolio.lot * price;
+
+        const costValue =
+
+            portfolio.lot * portfolio.averageCost;
+
+        const profit =
+
+            currentValue - costValue;
+
+        const percent =
+
+            ((profit / costValue) * 100) || 0;
+
+        this.setText(
+
+            "portfolioLot",
+
+            portfolio.lot
+
+        );
+
+        this.setText(
+
+            "portfolioCost",
+
+            portfolio.averageCost.toFixed(2) + " ₺"
+
+        );
+
+        this.setText(
+
+            "portfolioValue",
+
+            currentValue.toFixed(2) + " ₺"
+
+        );
+
+        this.setText(
+
+            "portfolioProfit",
+
+            profit.toFixed(2) + " ₺"
+
+        );
+
+        this.setText(
+
+            "portfolioPercent",
+
+            percent.toFixed(2) + "%"
+
+        );
+
+    }
+
+    catch(error) {
+
+        console.error(
+
+            "Portfolio Engine Hatası:",
+
+            error
+
+        );
+
+    }
+
+};
+
+Engine.refreshDashboard = function(price) {
+
+    this.updatePortfolio(price);
+
+};
+
+/*=========================================================
+BÖLÜM 4
+Dashboard Manager
+=========================================================*/
+
+Engine.updateDashboard = async function(history = [], price = 0) {
+
+    try {
+
+        await this.updateNews();
+
+        await this.updateAI(
+
+            history,
+
+            this.lastNews || []
+
+        );
+
+        this.updatePortfolio(price);
+
+        this.updateMarketStatus();
+
+        this.updateCountdown();
+
+        this.updateConnection();
+
+        this.setText(
+
+            "engineStatus",
+
+            "🟢 Sistem Aktif"
+
+        );
+
+        console.log(
+
+            "[Engine] Dashboard güncellendi."
+
+        );
+
+    }
+
+    catch(error) {
+
+        console.error(
+
+            "Dashboard Güncelleme Hatası:",
+
+            error
+
+        );
+
+        this.setText(
+
+            "engineStatus",
+
+            "🔴 Sistem Hatası"
+
+        );
+
+    }
+
+};
+
+/*=========================================================
+BÖLÜM 5
+Gelişmiş Hata Yönetimi
+=========================================================*/
+
+Engine.ErrorManager = {
+
+    errors: [],
+
+    maxErrors: 100,
+
+    log(type, message, details = null) {
+
+        const error = {
+
+            type,
+
+            message,
+
+            details,
+
+            time: new Date().toLocaleString("tr-TR")
+
+        };
+
+        this.errors.unshift(error);
+
+        if (this.errors.length > this.maxErrors) {
+
+            this.errors.pop();
+
+        }
+
+        console.error(
+
+            `[${type}] ${message}`,
+
+            details
+
+        );
+
+    },
+
+    getLast() {
+
+        return this.errors[0] || null;
+
+    },
+
+    getAll() {
+
+        return [...this.errors];
+
+    },
+
+    clear() {
+
+        this.errors = [];
+
+    }
+
+};
+
+Engine.safeRun = async function(task) {
+
+    try {
+
+        return await task();
+
+    }
+
+    catch(error) {
+
+        Engine.ErrorManager.log(
+
+            "ENGINE",
+
+            error.message,
+
+            error
+
+        );
+
+        return null;
+
+    }
+
+};
+
+/*=========================================================
+BÖLÜM 6
+Performans ve Cache
+=========================================================*/
+
+Engine.Performance = {
+
+    cache: new Map(),
+
+    maxCacheSize: 50,
+
+    stats: {
+
+        requests: 0,
+
+        cacheHits: 0,
+
+        cacheMisses: 0,
+
+        lastUpdate: null
+
+    },
+
+    set(key, value) {
+
+        if (this.cache.size >= this.maxCacheSize) {
+
+            const firstKey = this.cache.keys().next().value;
+
+            this.cache.delete(firstKey);
+
+        }
+
+        this.cache.set(key, {
+
+            value,
+
+            time: Date.now()
+
+        });
+
+    },
+
+    get(key, maxAge = 30000) {
+
+        const item = this.cache.get(key);
+
+        if (!item) {
+
+            this.stats.cacheMisses++;
+
+            return null;
+
+        }
+
+        if (Date.now() - item.time > maxAge) {
+
+            this.cache.delete(key);
+
+            this.stats.cacheMisses++;
+
+            return null;
+
+        }
+
+        this.stats.cacheHits++;
+
+        return item.value;
+
+    },
+
+    clear() {
+
+        this.cache.clear();
+
+    },
+
+    request() {
+
+        this.stats.requests++;
+
+        this.stats.lastUpdate = new Date();
+
+    }
+
+};
+
+Engine.optimize = function() {
+
+    this.Performance.request();
+
+    if (this.Performance.cache.size > this.Performance.maxCacheSize) {
+
+        this.Performance.clear();
+
+    }
+
+};
+
+/*=========================================================
+BÖLÜM 7
+Engine Final
+=========================================================*/
+
+Engine.VERSION = "3.0.0";
+
+Engine.APP_NAME = "BIST AI Tracker";
+
+Engine.AUTHOR = "Ahmet Eymen Bakraç";
+
+Engine.COPYRIGHT =
+"© 2026 Ahmet Eymen Bakraç. Tüm Hakları Saklıdır.";
+
+Engine.DISCLAIMER =
+"Bu uygulama yalnızca eğitim ve bilgilendirme amacıyla geliştirilmiştir. Sunulan analizler, haberler, yapay zekâ yorumları ve grafikler yatırım tavsiyesi değildir. Kullanıcılar finansal kararlarından tamamen kendileri sorumludur.";
+
+Engine.about = function () {
+
+    return {
+
+        application: this.APP_NAME,
+
+        version: this.VERSION,
+
+        author: this.AUTHOR,
+
+        copyright: this.COPYRIGHT,
+
+        disclaimer: this.DISCLAIMER,
+
+        currentSymbol: this.currentSymbol,
+
+        marketOpen: this.isMarketOpen(),
+
+        online: navigator.onLine
+
+    };
+
+};
+
+Engine.reset = function () {
+
+    this.previousPrice = null;
+
+    this.currentSymbol = "";
+
+    this.lastNews = [];
+
+    this.lastAnalysis = null;
+
+    if (this.Performance) {
+
+        this.Performance.clear();
+
+    }
+
+    if (window.News) {
+
+        News.clearCache();
+
+    }
+
+};
+
+Engine.restart = async function(symbol) {
+
+    this.reset();
+
+    await this.init(symbol);
+
+};
+
+Engine.destroy = function() {
+
+    if (this.timer) {
+
+        clearInterval(this.timer);
+
+        this.timer = null;
+
+    }
+
+    this.reset();
+
+    console.log(
+
+        `${this.APP_NAME} Engine durduruldu.`
+
+    );
+
+};
+
+Object.freeze(Engine);
+
+console.log(
+
+`%c${Engine.APP_NAME} Engine v${Engine.VERSION} Hazır`,
+
+"color:#22c55e;font-size:15px;font-weight:bold;"
+
+);
