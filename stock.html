@@ -2198,8 +2198,266 @@ document.addEventListener("DOMContentLoaded",()=>{
 
 });
 
-</script>
+/*=========================================================
+BÖLÜM 11
+Watchlists
+=========================================================*/
 
-</body>
+StockPage.watchlists={
 
-</html>
+gainers:[],
+
+losers:[],
+
+volume:[],
+
+favorites:[],
+
+aiTop:[]
+
+};
+
+StockPage.updateWatchlists=function(){
+
+const list=this.currentStocks||[];
+
+this.watchlists.gainers=[
+
+...list
+
+].sort(
+
+(a,b)=>b.change-a.change
+
+).slice(0,10);
+
+this.watchlists.losers=[
+
+...list
+
+].sort(
+
+(a,b)=>a.change-b.change
+
+).slice(0,10);
+
+this.watchlists.aiTop=[
+
+...list
+
+].sort(
+
+(a,b)=>b.ai-a.ai
+
+).slice(0,10);
+
+};
+
+StockPage.updateWatchlists();
+
+/*=========================================================
+BÖLÜM 12
+Market Scanner
+=========================================================*/
+
+StockPage.scanner={
+
+    marketCap:"",
+
+    sector:"",
+
+    search:"",
+
+    minAI:0,
+
+    maxAI:100,
+
+    onlyFavorites:false,
+
+    onlyPositive:false,
+
+    sort:"volume"
+
+};
+
+StockPage.scan=function(){
+
+    let list=[...this.currentStocks];
+
+    if(this.scanner.search){
+
+        const text=this.scanner.search.toUpperCase();
+
+        list=list.filter(stock=>
+
+            stock.symbol.includes(text)
+
+            ||
+
+            stock.name.toUpperCase().includes(text)
+
+        );
+
+    }
+
+    if(this.scanner.onlyPositive){
+
+        list=list.filter(
+
+            stock=>stock.change>0
+
+        );
+
+    }
+
+    list=list.filter(
+
+        stock=>
+
+        stock.ai>=this.scanner.minAI
+
+        &&
+
+        stock.ai<=this.scanner.maxAI
+
+    );
+
+    this.renderStocks(list);
+
+};
+
+/*=========================================================
+BÖLÜM 13
+Market Overview
+=========================================================*/
+
+StockPage.overview={
+
+    totalMarketValue:0,
+
+    totalVolume:0,
+
+    advancing:0,
+
+    declining:0,
+
+    unchanged:0
+
+};
+
+StockPage.calculateOverview=function(){
+
+    const list=this.currentStocks;
+
+    this.overview.advancing=
+
+    list.filter(
+
+        x=>x.change>0
+
+    ).length;
+
+    this.overview.declining=
+
+    list.filter(
+
+        x=>x.change<0
+
+    ).length;
+
+    this.overview.unchanged=
+
+    list.filter(
+
+        x=>x.change===0
+
+    ).length;
+
+};
+
+/*=========================================================
+BÖLÜM 14
+Quick Actions
+=========================================================*/
+
+StockPage.actions={
+
+refresh(){
+
+    StockPage.loadMarket();
+
+},
+
+refreshAI(){
+
+    console.log(
+
+        "AI Güncelleniyor"
+
+    );
+
+},
+
+refreshNews(){
+
+    console.log(
+
+        "Haberler Güncelleniyor"
+
+    );
+
+},
+
+exportWatchlist(){
+
+    console.log(
+
+        "Watchlist Export"
+
+    );
+
+}
+
+};
+
+/*=========================================================
+BÖLÜM 15
+Future Modules
+=========================================================*/
+
+StockPage.modules={
+
+AI:true,
+
+NEWS:true,
+
+TECHNICAL:true,
+
+FINANCIAL:true,
+
+DIVIDEND:true,
+
+KAP:true,
+
+SCREENER:true,
+
+PORTFOLIO:true,
+
+ALARM:true,
+
+BACKTEST:false,
+
+SIMULATOR:false,
+
+HEATMAP:false,
+
+OPTIONS:false
+
+};
+
+console.log(
+
+"BIST AI Tracker Stock Engine Loaded"
+
+);
+
