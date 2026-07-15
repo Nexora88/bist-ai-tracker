@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 
 <head>
 
@@ -19,14 +19,26 @@ href="https://fonts.googleapis.com">
 href="https://fonts.gstatic.com"
 crossorigin>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
 rel="stylesheet">
 
 <style>
 
 *{
 
-font-family:Inter,sans-serif;
+margin:0;
+
+padding:0;
+
+box-sizing:border-box;
+
+font-family:"Inter",sans-serif;
+
+}
+
+html{
+
+scroll-behavior:smooth;
 
 }
 
@@ -40,51 +52,179 @@ overflow-x:hidden;
 
 }
 
-.glass{
+/*=============================
+ARKA PLAN
+=============================*/
 
-background:rgba(15,23,42,.75);
+body::before{
 
-backdrop-filter:blur(18px);
+content:"";
 
-border:1px solid rgba(255,255,255,.08);
+position:fixed;
 
-box-shadow:0 15px 40px rgba(0,0,0,.35);
-
-}
-
-.hero{
+inset:0;
 
 background:
 
-radial-gradient(circle at top left,#10b98122,transparent 40%),
+radial-gradient(circle at top left,#10b98122,transparent 35%),
 
-radial-gradient(circle at bottom right,#3b82f622,transparent 40%);
+radial-gradient(circle at bottom right,#3b82f622,transparent 40%),
+
+radial-gradient(circle at center,#ffffff08,transparent 70%);
+
+z-index:-2;
+
+}
+
+body::after{
+
+content:"";
+
+position:fixed;
+
+inset:0;
+
+backdrop-filter:blur(2px);
+
+z-index:-1;
 
 }
 
-.price{
+/*=============================
+GLASS
+=============================*/
 
-font-size:72px;
+.glass{
 
-font-weight:800;
+background:rgba(15,23,42,.72);
 
-color:#10b981;
+border:1px solid rgba(255,255,255,.08);
+
+backdrop-filter:blur(18px);
+
+box-shadow:
+
+0 20px 50px rgba(0,0,0,.35);
 
 }
+
+/*=============================
+GRADIENT
+=============================*/
+
+.gradient{
+
+background:linear-gradient(
+
+135deg,
+
+#10b981,
+
+#22c55e,
+
+#14b8a6
+
+);
+
+-webkit-background-clip:text;
+
+-webkit-text-fill-color:transparent;
+
+}
+
+/*=============================
+BADGE
+=============================*/
 
 .badge{
+
+display:inline-flex;
+
+align-items:center;
+
+gap:10px;
+
+padding:10px 18px;
+
+border-radius:999px;
+
+background:#10b98122;
+
+border:1px solid #10b98155;
+
+color:#6ee7b7;
+
+font-weight:700;
+
+}
+
+/*=============================
+BUTTON
+=============================*/
+
+.btnPremium{
 
 background:#10b981;
 
 color:black;
 
-padding:6px 14px;
+padding:18px 36px;
 
-border-radius:999px;
+border-radius:18px;
 
-font-weight:700;
+font-weight:800;
 
-display:inline-block;
+transition:.30s;
+
+}
+
+.btnPremium:hover{
+
+transform:translateY(-4px);
+
+box-shadow:
+
+0 15px 35px rgba(16,185,129,.45);
+
+}
+
+.btnGhost{
+
+background:transparent;
+
+border:1px solid #334155;
+
+padding:18px 36px;
+
+border-radius:18px;
+
+transition:.30s;
+
+}
+
+.btnGhost:hover{
+
+background:#0f172a;
+
+}
+
+/*=============================
+NAVBAR
+=============================*/
+
+nav{
+
+position:sticky;
+
+top:0;
+
+z-index:999;
+
+backdrop-filter:blur(18px);
+
+background:rgba(2,6,23,.75);
+
+border-bottom:1px solid rgba(255,255,255,.06);
 
 }
 
@@ -94,125 +234,199 @@ display:inline-block;
 
 <body>
 
-<section class="hero min-h-screen flex items-center">
+<!--============================
+NAVBAR
+=============================-->
 
-<div class="max-w-7xl mx-auto px-6 w-full">
+<nav>
 
-<div class="grid lg:grid-cols-2 gap-16 items-center">
+<div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+
+<a href="index.html"
+class="text-2xl font-black">
+
+NEXORA
+
+<span class="gradient">
+
+AI
+
+</span>
+
+</a>
+
+<div class="hidden lg:flex gap-8 text-slate-300">
+
+<a href="index.html">
+
+Ana Sayfa
+
+</a>
+
+<a href="stock.html">
+
+Hisseler
+
+</a>
+
+<a href="#premium">
+
+Premium
+
+</a>
+
+<a href="#sss">
+
+SSS
+
+</a>
+
+</div>
+
+<div class="flex gap-3">
+
+<button class="btnGhost">
+
+Giriş Yap
+
+</button>
+
+<button class="btnPremium">
+
+Premium'a Geç
+
+</button>
+
+</div>
+
+</div>
+
+</nav>
+
+<!--============================
+HERO
+=============================-->
+
+<section
+class="max-w-7xl mx-auto px-6 py-24">
+
+<div class="grid lg:grid-cols-2 gap-20 items-center">
 
 <div>
 
 <div class="badge">
 
-🚀 Founder Pricing
+🚀 Founder Fırsatı
 
 </div>
 
-<h1 class="text-6xl font-extrabold mt-8 leading-tight">
+<h1
+class="text-6xl lg:text-7xl font-black leading-tight mt-8">
 
-Unlock the Full Power of
+Nexora AI'ın
 
-<span class="text-emerald-400">
+<span class="gradient">
 
-Nexora AI
+Tüm Gücünü
 
 </span>
 
+Keşfedin
+
 </h1>
 
-<p class="text-slate-300 text-xl mt-8 leading-9">
+<p
+class="text-slate-400 text-xl leading-9 mt-8">
 
-Advanced AI investing tools,
+Gerçek zamanlı piyasa verileri,
 
-real-time market intelligence,
+sınırsız yapay zeka analizi,
 
-premium charts,
+akıllı portföy yönetimi,
 
-portfolio analysis
+profesyonel grafikler
 
-and much more.
+ve çok daha fazlası tek üyelikte.
 
 </p>
 
-<div class="mt-10">
+<div class="flex gap-5 mt-12">
 
-<div class="text-slate-400">
+<button class="btnPremium">
 
-Starting from
-
-</div>
-
-<div class="price">
-
-$4.99
-
-</div>
-
-<div class="text-slate-400">
-
-per month
-
-</div>
-
-</div>
-
-<div class="flex gap-5 mt-10">
-
-<button
-class="bg-emerald-500 text-black px-10 py-5 rounded-2xl font-bold text-lg">
-
-🚀 Start Premium
+🚀 Premium'u Başlat
 
 </button>
 
-<button
-class="glass px-10 py-5 rounded-2xl">
+<button class="btnGhost">
 
-Compare Plans
+Paketleri İncele
 
 </button>
 
 </div>
 
-<p class="text-yellow-400 mt-8">
+<div
+class="mt-10 flex flex-wrap gap-6 text-slate-300">
 
-🔥 Limited Time Founder Offer
+<div>
 
-Only <b>$4.99/month</b>
-
-for early users.
-
-</p>
+✅ Günlük sınırsız AI
 
 </div>
 
 <div>
 
-<div class="glass rounded-3xl p-8">
+✅ Global Piyasalar
 
-<h2 class="text-3xl font-bold">
+</div>
 
-Why Premium?
+<div>
 
-</h2>
+✅ Portföy AI
 
-<div class="space-y-5 mt-8">
+</div>
 
-<div>✅ Unlimited AI Analysis</div>
+</div>
 
-<div>✅ Advanced Charts</div>
+</div>
 
-<div>✅ Portfolio AI</div>
+<div>
 
-<div>✅ NASDAQ & NYSE</div>
+<div class="glass rounded-3xl p-10">
 
-<div>✅ OTC Stocks</div>
+<div class="text-center">
 
-<div>✅ Smart Alerts</div>
+<div class="text-slate-400">
 
-<div>✅ Premium News</div>
+Founder Fiyatı
 
-<div>✅ Early Features</div>
+</div>
+
+<div
+class="text-7xl font-black text-emerald-400 mt-4">
+
+$4.99
+
+</div>
+
+<div
+class="text-slate-400 mt-3">
+
+/ ay
+
+</div>
+
+<div
+class="mt-8 bg-emerald-500/20 rounded-2xl p-5 border border-emerald-500/30">
+
+🔥 İlk kullanıcılar için özel fiyat.
+
+Aboneliğiniz aktif kaldığı sürece
+
+<strong>$4.99/ay</strong>
+
+fiyatınız korunur.
 
 </div>
 
@@ -226,92 +440,112 @@ Why Premium?
 
 </section>
 
-<!-- ==========================================
+<!--=========================================
 FREE vs PREMIUM
-=========================================== -->
+==========================================-->
 
-<section class="max-w-7xl mx-auto px-6 py-24">
+<section id="premium" class="max-w-7xl mx-auto px-6 py-24">
 
-<div class="text-center mb-16">
+<div class="text-center">
 
-<span class="badge">
+<div class="badge">
 
-Compare Plans
+👑 Premium Karşılaştırması
 
-</span>
+</div>
 
-<h2 class="text-5xl font-bold mt-6">
+<h2 class="text-5xl font-black mt-8">
 
-Choose Your Plan
+Size En Uygun Paketi Seçin
 
 </h2>
 
-<p class="text-slate-400 mt-6 text-xl">
+<p class="text-slate-400 text-xl mt-6 max-w-3xl mx-auto">
 
-Start free and upgrade anytime.
+İstediğiniz kadar ücretsiz kullanın.
+Daha gelişmiş analizlere ihtiyaç duyduğunuzda
+tek tıkla Premium'a geçebilirsiniz.
 
 </p>
 
 </div>
 
-<div class="grid lg:grid-cols-2 gap-10">
+<div class="grid lg:grid-cols-2 gap-10 mt-20">
 
 <!-- FREE -->
 
 <div class="glass rounded-3xl p-10">
 
-<h3 class="text-4xl font-bold">
+<div class="flex justify-between items-center">
 
-🆓 Free
+<h3 class="text-4xl font-black">
+
+🆓 Ücretsiz
 
 </h3>
 
-<p class="text-slate-400 mt-3">
+<span class="text-emerald-400">
 
-Perfect for getting started.
+Başlangıç
 
-</p>
+</span>
 
-<div class="text-6xl font-extrabold mt-8">
+</div>
 
-$0
+<div class="mt-8">
+
+<div class="text-6xl font-black">
+
+0$
 
 </div>
 
 <div class="text-slate-400">
 
-Forever
+Sonsuza kadar ücretsiz
 
 </div>
 
-<div class="space-y-5 mt-10 text-lg">
+</div>
 
-<div>✅ Daily 3 AI Analysis</div>
+<div class="space-y-5 mt-12">
 
-<div>✅ Basic Charts</div>
+<div>✅ Günlük 3 AI Analizi</div>
 
-<div>✅ BIST Support</div>
+<div>✅ Temel Hisse Takibi</div>
 
-<div>✅ Market News</div>
+<div>✅ BIST Verileri</div>
 
-<div>✅ Watchlist (10 Stocks)</div>
+<div>✅ Temel Grafikler</div>
 
-<div>✅ One Portfolio</div>
+<div>✅ Günlük Haberler</div>
 
-<div>❌ Portfolio AI</div>
+<div>✅ 10 Favori Hisse</div>
 
-<div>❌ Unlimited AI</div>
+<div>✅ 1 Portföy</div>
 
-<div>❌ OTC Stocks</div>
+<div>❌ OTC Piyasası</div>
 
-<div>❌ Premium Indicators</div>
+<div>❌ NASDAQ AI</div>
+
+<div>❌ NYSE AI</div>
+
+<div>❌ Portföy AI</div>
+
+<div>❌ Temettü Takvimi</div>
+
+<div>❌ Halka Arz Takvimi</div>
+
+<div>❌ Akıllı Bildirimler</div>
+
+<div>❌ Sınırsız AI</div>
 
 </div>
 
 <button
-class="w-full mt-10 bg-slate-700 py-5 rounded-2xl font-bold">
+class="btnGhost w-full mt-12">
 
-Current Plan
+Ücretsiz Devam Et
 
 </button>
 
@@ -319,66 +553,92 @@ Current Plan
 
 <!-- PREMIUM -->
 
-<div class="rounded-3xl p-10 bg-gradient-to-br from-emerald-500 to-green-600 text-black relative">
+<div class="rounded-3xl p-10 relative overflow-hidden"
 
-<div class="absolute top-5 right-5 bg-black text-white px-4 py-2 rounded-full">
+style="background:linear-gradient(135deg,#10b981,#059669);">
 
-🔥 Most Popular
+<div class="absolute top-5 right-5">
+
+<div class="bg-black text-white px-4 py-2 rounded-full">
+
+🔥 En Popüler
 
 </div>
 
-<h3 class="text-4xl font-bold">
+</div>
+
+<h3 class="text-4xl font-black text-black">
 
 👑 Premium
 
 </h3>
 
-<p class="mt-3">
+<div class="mt-8">
 
-Everything you need.
+<div class="text-6xl font-black text-black">
 
-</p>
-
-<div class="text-6xl font-extrabold mt-8">
-
-$4.99
+4.99$
 
 </div>
 
-<div>
+<div class="text-black/70">
 
-per month
+Aylık
 
 </div>
 
-<div class="space-y-5 mt-10 text-lg">
+</div>
 
-<div>♾ Unlimited AI Analysis</div>
+<div class="mt-6 bg-black/10 rounded-2xl p-5">
 
-<div>📈 Professional Charts</div>
+⏳ Founder Fırsatı
+
+<br><br>
+
+Bugün Premium olursanız
+
+<strong>4.99$</strong>
+
+fiyatınız gelecekte de korunur.
+
+</div>
+
+<div class="space-y-5 mt-10 text-black font-semibold">
+
+<div>♾️ Sınırsız AI Analizi</div>
+
+<div>📊 Profesyonel Grafikler</div>
+
+<div>🤖 Portföy AI</div>
+
+<div>📈 Teknik Analiz AI</div>
 
 <div>🌍 BIST + NASDAQ + NYSE + OTC</div>
 
-<div>🤖 Portfolio AI</div>
+<div>💼 Sınırsız Portföy</div>
 
-<div>💼 Unlimited Portfolios</div>
+<div>🔔 Akıllı Bildirimler</div>
 
-<div>🔔 Smart Alerts</div>
+<div>📰 Premium Haberler</div>
 
-<div>📰 Premium News</div>
+<div>📅 Temettü Takvimi</div>
 
-<div>⭐ Priority Features</div>
+<div>🏢 Halka Arz Takvimi</div>
 
-<div>📊 Advanced Indicators</div>
+<div>📊 Bilanço Takvimi</div>
 
-<div>🚀 Early Access</div>
+<div>⚡ Öncelikli Yeni Özellikler</div>
+
+<div>⭐ Premium Rozeti</div>
+
+<div>🛡️ Öncelikli Destek</div>
 
 </div>
 
 <button
-class="w-full mt-10 bg-black text-white py-5 rounded-2xl font-bold text-lg">
+class="w-full bg-black text-white py-5 rounded-2xl font-bold text-lg mt-12">
 
-Upgrade Now
+🚀 Premium'a Geç
 
 </button>
 
@@ -388,3 +648,877 @@ Upgrade Now
 
 </section>
 
+<!--=========================================
+NEDEN NEXORA PREMIUM
+==========================================-->
+
+<section class="max-w-7xl mx-auto px-6 py-24">
+
+<div class="text-center">
+
+<div class="badge">
+
+✨ Premium Avantajları
+
+</div>
+
+<h2 class="text-5xl font-black mt-8">
+
+Neden Nexora Premium?
+
+</h2>
+
+<p class="text-slate-400 text-xl mt-6 max-w-3xl mx-auto">
+
+Sadece hisse fiyatlarını değil,
+yatırım kararınızı destekleyen
+akıllı araçları da kullanın.
+
+</p>
+
+</div>
+
+<div class="grid lg:grid-cols-3 md:grid-cols-2 gap-8 mt-20">
+
+<div class="glass rounded-3xl p-8">
+
+<div class="text-5xl">
+
+🧠
+
+</div>
+
+<h3 class="text-2xl font-bold mt-6">
+
+Sınırsız Yapay Zeka
+
+</h3>
+
+<p class="text-slate-400 mt-5 leading-8">
+
+İstediğiniz kadar hisse analizi yapın.
+
+Şirketleri karşılaştırın.
+
+Portföyünüzü yorumlatın.
+
+Sorularınıza saniyeler içinde cevap alın.
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8">
+
+<div class="text-5xl">
+
+📈
+
+</div>
+
+<h3 class="text-2xl font-bold mt-6">
+
+Profesyonel Grafikler
+
+</h3>
+
+<p class="text-slate-400 mt-5 leading-8">
+
+TradingView benzeri gelişmiş grafikler,
+
+çoklu zaman aralığı,
+
+teknik göstergeler
+
+ve canlı fiyat hareketleri.
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8">
+
+<div class="text-5xl">
+
+🌍
+
+</div>
+
+<h3 class="text-2xl font-bold mt-6">
+
+Küresel Piyasalar
+
+</h3>
+
+<p class="text-slate-400 mt-5 leading-8">
+
+BIST,
+
+NASDAQ,
+
+NYSE,
+
+OTC
+
+ve gelecekte Crypto
+
+tek platformda.
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8">
+
+<div class="text-5xl">
+
+💼
+
+</div>
+
+<h3 class="text-2xl font-bold mt-6">
+
+Akıllı Portföy
+
+</h3>
+
+<p class="text-slate-400 mt-5 leading-8">
+
+Kar/Zarar,
+
+Risk,
+
+Sektör Dağılımı,
+
+AI Tavsiyeleri
+
+tek ekranda.
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8">
+
+<div class="text-5xl">
+
+📅
+
+</div>
+
+<h3 class="text-2xl font-bold mt-6">
+
+Yatırım Takvimi
+
+</h3>
+
+<p class="text-slate-400 mt-5 leading-8">
+
+Temettüler,
+
+Halka Arzlar,
+
+Bilançolar,
+
+Fed,
+
+TCMB,
+
+Ekonomik Takvim.
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8">
+
+<div class="text-5xl">
+
+🔔
+
+</div>
+
+<h3 class="text-2xl font-bold mt-6">
+
+Akıllı Bildirimler
+
+</h3>
+
+<p class="text-slate-400 mt-5 leading-8">
+
+Fiyat hedefleri,
+
+AI uyarıları,
+
+haberler,
+
+temettüler
+
+ve önemli gelişmeler anında.
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!--=========================================
+NEXORA HER YERDE
+==========================================-->
+
+<section class="max-w-7xl mx-auto px-6 py-24">
+
+<div class="text-center">
+
+<div class="badge">
+
+📱 Her Cihazda Kullan
+
+</div>
+
+<h2 class="text-5xl font-black mt-8">
+
+Nexora AI Her An Yanınızda
+
+</h2>
+
+<p class="text-slate-400 text-xl mt-6">
+
+Telefon, tablet ve bilgisayarınızdan
+aynı Premium deneyimini yaşayın.
+
+</p>
+
+</div>
+
+<div class="grid lg:grid-cols-3 gap-8 mt-20">
+
+<div class="glass rounded-3xl p-8 text-center">
+
+<div class="text-7xl">
+
+📱
+
+</div>
+
+<h3 class="text-3xl font-bold mt-8">
+
+Mobil
+
+</h3>
+
+<p class="text-slate-400 mt-5">
+
+Anlık bildirimler
+
+AI analizleri
+
+Portföy takibi
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8 text-center">
+
+<div class="text-7xl">
+
+💻
+
+</div>
+
+<h3 class="text-3xl font-bold mt-8">
+
+Masaüstü
+
+</h3>
+
+<p class="text-slate-400 mt-5">
+
+Profesyonel grafikler
+
+Çoklu ekran
+
+Hızlı analiz
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8 text-center">
+
+<div class="text-7xl">
+
+📊
+
+</div>
+
+<h3 class="text-3xl font-bold mt-8">
+
+Tablet
+
+</h3>
+
+<p class="text-slate-400 mt-5">
+
+Toplantılarda
+
+Seyahatte
+
+Her yerde yatırım
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!--=========================================
+YAKINDA
+==========================================-->
+
+<section class="max-w-7xl mx-auto px-6 pb-24">
+
+<div class="glass rounded-3xl p-12">
+
+<div class="badge">
+
+🚀 Yakında
+
+</div>
+
+<h2 class="text-4xl font-black mt-8">
+
+Premium'a Sürekli Yeni Özellikler Geliyor
+
+</h2>
+
+<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
+
+<div>✅ Kripto Takibi</div>
+
+<div>✅ AI Hedef Fiyat</div>
+
+<div>✅ Opsiyon Analizi</div>
+
+<div>✅ PDF Raporları</div>
+
+<div>✅ AI Screener</div>
+
+<div>✅ Kurumsal Hesaplar</div>
+
+<div>✅ API Desteği</div>
+
+<div>✅ Yapay Zeka Portföy Yöneticisi</div>
+
+<div>✅ Mobil Uygulama</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!--=========================================
+NEXORA RAKAMLARLA
+==========================================-->
+
+<section class="max-w-7xl mx-auto px-6 py-24">
+
+<div class="text-center">
+
+<div class="badge">
+
+📊 Nexora
+
+</div>
+
+<h2 class="text-5xl font-black mt-8">
+
+Yatırımcılar İçin Geliştiriliyor
+
+</h2>
+
+<p class="text-slate-400 text-xl mt-6">
+
+Her gün gelişen, sürekli güncellenen bir yatırım platformu.
+
+</p>
+
+</div>
+
+<div class="grid lg:grid-cols-4 md:grid-cols-2 gap-8 mt-20">
+
+<div class="glass rounded-3xl p-10 text-center">
+
+<div class="text-6xl font-black gradient">
+
+1000+
+
+</div>
+
+<p class="mt-5 text-slate-400">
+
+Takip Edilebilecek Hisse
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-10 text-center">
+
+<div class="text-6xl font-black gradient">
+
+4
+
+</div>
+
+<p class="mt-5 text-slate-400">
+
+Desteklenen Piyasa
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-10 text-center">
+
+<div class="text-6xl font-black gradient">
+
+24/7
+
+</div>
+
+<p class="mt-5 text-slate-400">
+
+Yapay Zeka Desteği
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-10 text-center">
+
+<div class="text-6xl font-black gradient">
+
+∞
+
+</div>
+
+<p class="mt-5 text-slate-400">
+
+Premium AI Analizi
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!--=========================================
+SON ÇAĞRI
+==========================================-->
+
+<section class="max-w-6xl mx-auto px-6 pb-24">
+
+<div class="glass rounded-[40px] p-14 text-center">
+
+<div class="badge">
+
+🚀 Founder Kampanyası
+
+</div>
+
+<h2 class="text-6xl font-black mt-8">
+
+Bugün Katıl,
+
+Fiyatın Hep Aynı Kalsın.
+
+</h2>
+
+<p class="text-slate-400 text-xl mt-8 max-w-3xl mx-auto">
+
+Founder döneminde Premium olan kullanıcılar
+
+abonelikleri devam ettiği sürece
+
+4.99 USD fiyatını koruyacaktır.
+
+</p>
+
+<div class="mt-12 flex flex-wrap justify-center gap-5">
+
+<button class="btnPremium">
+
+👑 Premium'a Geç
+
+</button>
+
+<button class="btnGhost">
+
+Özellikleri Karşılaştır
+
+</button>
+
+</div>
+
+<div class="mt-12 text-yellow-400 text-lg">
+
+⏳ Founder Fırsatı Sınırlı Süre İçin Geçerlidir.
+
+</div>
+
+</div>
+
+</section>
+
+<!--=========================================
+NEXORA CANLI İSTATİSTİKLER
+==========================================-->
+
+<section class="max-w-7xl mx-auto px-6 py-24">
+
+<div class="text-center">
+
+<div class="badge">
+
+📊 Canlı İstatistikler
+
+</div>
+
+<h2 class="text-5xl font-black mt-8">
+
+Nexora Her Gün Büyüyor
+
+</h2>
+
+<p class="text-slate-400 text-xl mt-6">
+
+Platform büyüdükçe istatistikler gerçek zamanlı olarak güncellenecektir.
+
+</p>
+
+</div>
+
+<div class="grid lg:grid-cols-3 md:grid-cols-2 gap-8 mt-20">
+
+<div class="glass rounded-3xl p-8 text-center">
+
+<div id="onlineUsers"
+class="text-6xl font-black text-emerald-400">
+
+127
+
+</div>
+
+<p class="mt-5 text-slate-400">
+
+🟢 Çevrimiçi Kullanıcı
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8 text-center">
+
+<div id="premiumUsers"
+class="text-6xl font-black text-emerald-400">
+
+2481
+
+</div>
+
+<p class="mt-5 text-slate-400">
+
+👑 Premium Üye
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8 text-center">
+
+<div id="aiRequests"
+class="text-6xl font-black text-emerald-400">
+
+18294
+
+</div>
+
+<p class="mt-5 text-slate-400">
+
+🤖 Bugünkü AI Analizi
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8 text-center">
+
+<div
+class="text-6xl font-black text-emerald-400">
+
+1000+
+
+</div>
+
+<p class="mt-5 text-slate-400">
+
+📈 Desteklenen Hisseler
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8 text-center">
+
+<div
+class="text-6xl font-black text-emerald-400">
+
+4.9★
+
+</div>
+
+<p class="mt-5 text-slate-400">
+
+⭐ Ortalama Puan
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8 text-center">
+
+<div
+class="text-6xl font-black text-emerald-400">
+
+99.9%
+
+</div>
+
+<p class="mt-5 text-slate-400">
+
+⚡ Uptime
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!--=========================================
+FOUNDER
+==========================================-->
+
+<section class="max-w-6xl mx-auto px-6 pb-24">
+
+<div class="glass rounded-[40px] p-14">
+
+<div class="text-center">
+
+<div class="badge">
+
+👑 Founder Programı
+
+</div>
+
+<h2 class="text-5xl font-black mt-8">
+
+İlk Premium Kullanıcılardan Olun
+
+</h2>
+
+<p class="text-slate-400 text-xl mt-8 max-w-3xl mx-auto">
+
+Founder kullanıcıları abonelikleri devam ettiği sürece
+4.99 USD fiyatını korur ve yeni özelliklere herkesten önce erişir.
+
+</p>
+
+</div>
+
+<div class="grid md:grid-cols-2 gap-8 mt-16">
+
+<div class="glass rounded-3xl p-8">
+
+<h3 class="text-2xl font-bold">
+
+🎁 Founder Avantajları
+
+</h3>
+
+<div class="space-y-4 mt-8">
+
+<div>✅ Ömür Boyu 4.99 USD</div>
+
+<div>✅ Founder Rozeti</div>
+
+<div>✅ Yeni Özelliklere Erken Erişim</div>
+
+<div>✅ Öncelikli Destek</div>
+
+<div>✅ Beta Özellikleri Kullanma</div>
+
+<div>✅ Özel Etkinlikler (Yakında)</div>
+
+</div>
+
+</div>
+
+<div class="glass rounded-3xl p-8">
+
+<h3 class="text-2xl font-bold">
+
+🚀 Nexora Premium
+
+</h3>
+
+<p class="text-slate-400 mt-6">
+
+Yapay zekanın tüm gücünü kullanın.
+
+Profesyonel grafikler,
+
+portföy analizi,
+
+küresel piyasalar
+
+ve çok daha fazlası sizi bekliyor.
+
+</p>
+
+<button
+class="btnPremium w-full mt-10">
+
+👑 Premium'a Geç
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!--=========================================
+FOOTER
+==========================================-->
+
+<footer class="border-t border-slate-800">
+
+<div class="max-w-7xl mx-auto px-6 py-12">
+
+<div class="grid lg:grid-cols-4 gap-10">
+
+<div>
+
+<h3 class="text-2xl font-black">
+
+NEXORA AI
+
+</h3>
+
+<p class="text-slate-400 mt-5">
+
+Akıllı yatırımın yeni nesli.
+
+</p>
+
+</div>
+
+<div>
+
+<h4 class="font-bold">
+
+Platform
+
+</h4>
+
+<div class="space-y-3 mt-5 text-slate-400">
+
+<div>Ana Sayfa</div>
+
+<div>Hisseler</div>
+
+<div>Premium</div>
+
+<div>Portföy</div>
+
+</div>
+
+</div>
+
+<div>
+
+<h4 class="font-bold">
+
+Destek
+
+</h4>
+
+<div class="space-y-3 mt-5 text-slate-400">
+
+<div>SSS</div>
+
+<div>İletişim</div>
+
+<div>Gizlilik Politikası</div>
+
+<div>Kullanım Koşulları</div>
+
+</div>
+
+</div>
+
+<div>
+
+<h4 class="font-bold">
+
+Yasal Uyarı</h4>
+
+<p class="text-slate-400 mt-5 text-sm leading-7">
+
+Nexora AI tarafından sunulan içerikler yalnızca bilgilendirme amaçlıdır.
+Hiçbir içerik yatırım tavsiyesi değildir.
+Yatırım kararlarınızı kendi araştırmanız doğrultusunda vermeniz önerilir.
+
+</p>
+
+</div>
+
+</div>
+
+<div class="border-t border-slate-800 mt-10 pt-8 text-center text-slate-500">
+
+© 2026 Nexora AI. Tüm Hakları Saklıdır.
+
+</div>
+
+</div>
+
+</footer>
+
+<script>
+
+setInterval(()=>{
+
+document.getElementById("onlineUsers").textContent=
+120+Math.floor(Math.random()*20);
+
+},5000);
+
+</script>
+
+</body>
+</html>
