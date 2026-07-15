@@ -2050,3 +2050,156 @@ document
 
 StockPage.updateStatistics();
 
+/*=========================================================
+BÖLÜM 9
+Dashboard Counters
+=========================================================*/
+
+StockPage.dashboard = {
+
+    totalStocks:0,
+
+    rising:0,
+
+    falling:0,
+
+    aiStrongBuy:0
+
+};
+
+StockPage.calculateDashboard=function(){
+
+    const list=this.currentStocks||[];
+
+    this.dashboard.totalStocks=list.length;
+
+    this.dashboard.rising=list.filter(x=>x.change>0).length;
+
+    this.dashboard.falling=list.filter(x=>x.change<0).length;
+
+    this.dashboard.aiStrongBuy=list.filter(x=>x.ai>=90).length;
+
+};
+
+StockPage.renderDashboard=function(){
+
+    this.calculateDashboard();
+
+    let panel=document.getElementById("dashboardPanel");
+
+    if(!panel){
+
+        panel=document.createElement("div");
+
+        panel.id="dashboardPanel";
+
+        panel.className="grid grid-cols-2 gap-3 mt-4";
+
+        document.getElementById("rightSidebar").prepend(panel);
+
+    }
+
+    panel.innerHTML=`
+
+<div class="bg-slate-800 rounded-xl p-3">
+
+<div class="text-slate-400 text-sm">
+
+Hisse
+
+</div>
+
+<div class="text-2xl font-bold">
+
+${this.dashboard.totalStocks}
+
+</div>
+
+</div>
+
+<div class="bg-slate-800 rounded-xl p-3">
+
+<div class="text-slate-400 text-sm">
+
+Yükselen
+
+</div>
+
+<div class="text-2xl text-emerald-400 font-bold">
+
+${this.dashboard.rising}
+
+</div>
+
+</div>
+
+<div class="bg-slate-800 rounded-xl p-3">
+
+<div class="text-slate-400 text-sm">
+
+Düşen
+
+</div>
+
+<div class="text-2xl text-red-400 font-bold">
+
+${this.dashboard.falling}
+
+</div>
+
+</div>
+
+<div class="bg-slate-800 rounded-xl p-3">
+
+<div class="text-slate-400 text-sm">
+
+Güçlü AL
+
+</div>
+
+<div class="text-2xl text-cyan-400 font-bold">
+
+${this.dashboard.aiStrongBuy}
+
+</div>
+
+</div>
+
+`;
+
+};
+
+const oldRender=StockPage.renderStocks;
+
+StockPage.renderStocks=function(list){
+
+    oldRender.call(this,list);
+
+    this.renderDashboard();
+
+};
+
+/*=========================================================
+BÖLÜM 10
+Page Ready
+=========================================================*/
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+    StockPage.init();
+
+    StockPage.changeMarket("BIST30");
+
+    console.log(
+
+        "✅ BIST AI Tracker Stock v3 Ready"
+
+    );
+
+});
+
+</script>
+
+</body>
+
+</html>
