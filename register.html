@@ -1,0 +1,1703 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Ücretsiz Hesap Oluştur | Nexora AI</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:"Inter",sans-serif;
+}
+
+html{
+scroll-behavior:smooth;
+}
+
+body{
+background:#020617;
+color:white;
+overflow-x:hidden;
+}
+
+body::before{
+
+content:"";
+
+position:fixed;
+
+inset:0;
+
+background:
+
+radial-gradient(circle at top left,#10b98122,transparent 35%),
+
+radial-gradient(circle at bottom right,#3b82f622,transparent 35%),
+
+radial-gradient(circle at center,#ffffff08,transparent 70%);
+
+z-index:-2;
+
+}
+
+.glass{
+
+background:rgba(15,23,42,.72);
+
+border:1px solid rgba(255,255,255,.08);
+
+backdrop-filter:blur(18px);
+
+box-shadow:0 20px 60px rgba(0,0,0,.35);
+
+}
+
+.gradient{
+
+background:linear-gradient(135deg,#10b981,#22c55e,#14b8a6);
+
+-webkit-background-clip:text;
+
+-webkit-text-fill-color:transparent;
+
+}
+
+.inputBox{
+
+width:100%;
+
+background:#0f172a;
+
+border:1px solid #334155;
+
+border-radius:18px;
+
+padding:18px;
+
+color:white;
+
+outline:none;
+
+transition:.25s;
+
+}
+
+.inputBox:focus{
+
+border-color:#10b981;
+
+box-shadow:0 0 25px rgba(16,185,129,.25);
+
+}
+
+.btnPrimary{
+
+width:100%;
+
+background:#10b981;
+
+color:black;
+
+padding:18px;
+
+border-radius:18px;
+
+font-weight:800;
+
+transition:.30s;
+
+}
+
+.btnPrimary:hover{
+
+transform:translateY(-3px);
+
+box-shadow:0 18px 40px rgba(16,185,129,.35);
+
+}
+
+.badge{
+
+display:inline-flex;
+
+align-items:center;
+
+gap:8px;
+
+padding:8px 16px;
+
+border-radius:999px;
+
+background:#10b98122;
+
+border:1px solid #10b98155;
+
+color:#6ee7b7;
+
+font-weight:700;
+
+}
+
+.link{
+
+color:#10b981;
+
+font-weight:700;
+
+transition:.25s;
+
+}
+
+.link:hover{
+
+color:#34d399;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<section class="min-h-screen flex items-center justify-center px-6 py-14">
+
+<div class="grid lg:grid-cols-2 gap-16 max-w-7xl w-full">
+
+<div class="hidden lg:flex flex-col justify-center">
+
+<div class="badge">
+
+🚀 Nexora AI'a Hoş Geldiniz
+
+</div>
+
+<h1 class="text-6xl font-black mt-8 leading-tight">
+
+Yatırımın
+
+<span class="gradient">
+
+Yeni Nesline
+
+</span>
+
+Katılın
+
+</h1>
+
+<p class="text-slate-400 text-xl mt-8 leading-9">
+
+Ücretsiz hesabınızı oluşturun,
+
+favori hisselerinizi takip edin,
+
+günlük ücretsiz AI analizlerinden yararlanın
+
+ve yatırım yolculuğunuza bugün başlayın.
+
+</p>
+
+<div class="space-y-5 mt-12 text-lg">
+
+<div>✅ Günlük 3 ücretsiz AI analizi</div>
+
+<div>✅ Portföy oluşturma</div>
+
+<div>✅ Favori hisseler</div>
+
+<div>✅ Alarm sistemi</div>
+
+<div>✅ BIST • NASDAQ • NYSE • OTC desteği</div>
+
+<div>👑 Premium ile sınırsız AI</div>
+
+</div>
+
+</div>
+
+<div class="glass rounded-[34px] p-10">
+
+<div class="text-center">
+
+<a href="index.html" class="text-4xl font-black">
+
+NEXORA
+
+<span class="gradient">
+
+AI
+
+</span>
+
+</a>
+
+<h2 class="text-3xl font-bold mt-8">
+
+Ücretsiz Hesap Oluştur
+
+</h2>
+
+<p class="text-slate-400 mt-4">
+
+Sadece birkaç dakika içinde yatırım hesabınızı oluşturabilirsiniz.
+
+</p>
+
+</div>
+
+<form id="registerForm" class="mt-10">
+
+<div class="grid md:grid-cols-2 gap-6">
+
+<div>
+
+<label class="block mb-3 font-semibold">
+
+Ad
+
+</label>
+
+<input
+type="text"
+id="firstName"
+class="inputBox"
+placeholder="Adınız"
+maxlength="40"
+required>
+
+</div>
+
+<div>
+
+<label class="block mb-3 font-semibold">
+
+Soyad
+
+</label>
+
+<input
+type="text"
+id="lastName"
+class="inputBox"
+placeholder="Soyadınız"
+maxlength="40"
+required>
+
+</div>
+
+</div>
+
+<div class="mt-8">
+
+<label class="block mb-3 font-semibold">
+
+Kullanıcı Adı
+
+</label>
+
+<input
+type="text"
+id="username"
+class="inputBox"
+placeholder="@kullaniciadi"
+maxlength="25"
+autocomplete="username"
+required>
+
+<p class="text-slate-500 text-sm mt-3">
+
+Bu kullanıcı adı profil bağlantınızda kullanılacaktır.
+
+</p>
+
+</div>
+
+<div class="mt-8">
+
+<label class="block mb-3 font-semibold">
+
+E-posta Adresi
+
+</label>
+
+<input
+type="email"
+id="email"
+class="inputBox"
+placeholder="ornek@mail.com"
+autocomplete="email"
+required>
+
+<p class="text-slate-500 text-sm mt-3">
+
+Kayıttan sonra doğrulama e-postası gönderilecektir.
+
+</p>
+
+</div>
+
+<div class="mt-8">
+
+<label class="block mb-3 font-semibold">
+
+Şifre
+
+</label>
+
+<div class="relative">
+
+<input
+type="password"
+id="password"
+class="inputBox pr-16"
+placeholder="En az 8 karakter"
+autocomplete="new-password"
+required>
+
+<button
+type="button"
+id="togglePassword"
+class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400">
+
+👁️
+
+</button>
+
+</div>
+
+</div>
+
+<div class="mt-8">
+
+<label class="block mb-3 font-semibold">
+
+Şifre Tekrar
+
+</label>
+
+<div class="relative">
+
+<input
+type="password"
+id="confirmPassword"
+class="inputBox pr-16"
+placeholder="Şifrenizi tekrar girin"
+autocomplete="new-password"
+required>
+
+<button
+type="button"
+id="toggleConfirmPassword"
+class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400">
+
+👁️
+
+</button>
+
+</div>
+
+</div>
+
+<div class="glass rounded-2xl p-6 mt-10">
+
+<h3 class="font-bold text-lg">
+
+🔐 Şifre Güvenliği
+
+</h3>
+
+<div class="mt-6 space-y-3 text-slate-300">
+
+<div id="ruleLength">
+
+❌ En az 8 karakter
+
+</div>
+
+<div id="ruleUpper">
+
+❌ En az 1 büyük harf
+
+</div>
+
+<div id="ruleLower">
+
+❌ En az 1 küçük harf
+
+</div>
+
+<div id="ruleNumber">
+
+❌ En az 1 rakam
+
+</div>
+
+<div id="ruleSpecial">
+
+❌ En az 1 özel karakter
+
+</div>
+
+</div>
+
+</div>
+
+<div class="glass rounded-2xl p-6 mt-8">
+
+<label class="flex items-start gap-4">
+
+<input
+type="checkbox"
+id="terms"
+class="mt-1"
+required>
+
+<span class="text-slate-300 leading-8">
+
+Kullanım Koşulları'nı ve Gizlilik Politikası'nı okudum, kabul ediyorum.
+
+</span>
+
+</label>
+
+</div>
+
+<button
+type="submit"
+class="btnPrimary mt-10">
+
+🚀 Ücretsiz Hesap Oluştur
+
+</button>
+
+<div class="text-center mt-8">
+
+<span class="text-slate-400">
+
+Zaten hesabınız var mı?
+
+</span>
+
+<a
+href="login.html"
+class="link ml-2">
+
+Giriş Yap
+
+</a>
+
+</div>
+
+<!--=========================================
+ŞİFRE GÜCÜ + PREMIUM KARŞILAŞTIRMA
+==========================================-->
+
+<div class="grid lg:grid-cols-2 gap-8 mt-10">
+
+<div class="glass rounded-3xl p-8">
+
+<h3 class="text-2xl font-bold">
+
+🛡️ Şifre Güvenlik Seviyesi
+
+</h3>
+
+<div class="w-full bg-slate-800 rounded-full h-4 mt-8">
+
+<div
+id="passwordStrengthBar"
+class="bg-red-500 h-4 rounded-full transition-all duration-500"
+style="width:0%">
+
+</div>
+
+</div>
+
+<h4
+id="passwordStrengthText"
+class="text-xl font-bold mt-6 text-red-400">
+
+Şifre Girilmedi
+
+</h4>
+
+<p class="text-slate-400 mt-4">
+
+Güçlü bir şifre hesabınızı korumanın ilk adımıdır.
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8">
+
+<div class="badge">
+
+👑 Premium Avantajı
+
+</div>
+
+<h3 class="text-3xl font-black mt-8">
+
+Ücretsiz Başla
+
+İstediğin Zaman Premium'a Geç
+
+</h3>
+
+<div class="space-y-5 mt-8">
+
+<div class="flex justify-between">
+
+<span>🤖 Günlük AI Analizi</span>
+
+<strong>3</strong>
+
+</div>
+
+<div class="flex justify-between">
+
+<span>📈 Hisse Takibi</span>
+
+<strong>✓</strong>
+
+</div>
+
+<div class="flex justify-between">
+
+<span>⭐ Favori Hisseler</span>
+
+<strong>✓</strong>
+
+</div>
+
+<div class="flex justify-between">
+
+<span>👑 Premium AI</span>
+
+<strong class="text-yellow-400">
+
+Sınırsız
+
+</strong>
+
+</div>
+
+<div class="flex justify-between">
+
+<span>🌍 Küresel Piyasalar</span>
+
+<strong>
+
+Premium
+
+</strong>
+
+</div>
+
+<div class="flex justify-between">
+
+<span>📊 Gelişmiş Grafikler</span>
+
+<strong>
+
+Premium
+
+</strong>
+
+</div>
+
+</div>
+
+<a
+href="premium.html"
+class="btnPrimary block text-center mt-10">
+
+👑 Premium'u İncele
+
+</a>
+
+</div>
+
+</div>
+
+<div class="glass rounded-3xl p-8 mt-10">
+
+<div class="flex items-center justify-between">
+
+<div>
+
+<h3 class="text-2xl font-bold">
+
+🤖 Robot Doğrulaması
+
+</h3>
+
+<p class="text-slate-400 mt-3">
+
+Kayıt sırasında güvenlik doğrulaması yapılacaktır.
+
+</p>
+
+</div>
+
+<div class="text-5xl">
+
+🛡️
+
+</div>
+
+</div>
+
+<div class="mt-8 flex items-center gap-4">
+
+<input
+type="checkbox"
+id="robotCheck"
+class="scale-125">
+
+<label for="robotCheck">
+
+Ben robot değilim
+
+</label>
+
+</div>
+
+<p class="text-slate-500 text-sm mt-5">
+
+Backend bağlandığında Cloudflare Turnstile veya Google reCAPTCHA kullanılacaktır.
+
+</p>
+
+</div>
+
+<script>
+
+/*=========================================
+ŞİFRE GÖSTER / GİZLE
+=========================================*/
+
+const password =
+document.getElementById("password");
+
+const confirmPassword =
+document.getElementById("confirmPassword");
+
+document.getElementById("togglePassword")
+.addEventListener("click",()=>{
+
+password.type=
+password.type==="password"
+?
+"text"
+:
+"password";
+
+});
+
+document.getElementById("toggleConfirmPassword")
+.addEventListener("click",()=>{
+
+confirmPassword.type=
+confirmPassword.type==="password"
+?
+"text"
+:
+"password";
+
+});
+
+/*=========================================
+ŞİFRE GÜCÜ
+=========================================*/
+
+const bar=
+document.getElementById("passwordStrengthBar");
+
+const text=
+document.getElementById("passwordStrengthText");
+
+password.addEventListener("input",()=>{
+
+let value=password.value;
+
+let score=0;
+
+if(value.length>=8) score++;
+
+if(/[A-Z]/.test(value)) score++;
+
+if(/[a-z]/.test(value)) score++;
+
+if(/[0-9]/.test(value)) score++;
+
+if(/[^A-Za-z0-9]/.test(value)) score++;
+
+let width=score*20;
+
+bar.style.width=width+"%";
+
+if(score<=2){
+
+bar.className="bg-red-500 h-4 rounded-full";
+
+text.innerHTML="Zayıf Şifre";
+
+text.className="text-red-400 text-xl font-bold mt-6";
+
+}
+
+else if(score<=4){
+
+bar.className="bg-yellow-400 h-4 rounded-full";
+
+text.innerHTML="Orta Güçte";
+
+text.className="text-yellow-400 text-xl font-bold mt-6";
+
+}
+
+else{
+
+bar.className="bg-emerald-500 h-4 rounded-full";
+
+text.innerHTML="Güçlü Şifre";
+
+text.className="text-emerald-400 text-xl font-bold mt-6";
+
+}
+
+});
+
+/*=========================================
+ŞİFRE KURALLARI
+=========================================*/
+
+password.addEventListener("input",()=>{
+
+const v=password.value;
+
+document.getElementById("ruleLength").innerHTML=
+(v.length>=8?"✅":"❌")+" En az 8 karakter";
+
+document.getElementById("ruleUpper").innerHTML=
+(/[A-Z]/.test(v)?"✅":"❌")+" En az 1 büyük harf";
+
+document.getElementById("ruleLower").innerHTML=
+(/[a-z]/.test(v)?"✅":"❌")+" En az 1 küçük harf";
+
+document.getElementById("ruleNumber").innerHTML=
+(/[0-9]/.test(v)?"✅":"❌")+" En az 1 rakam";
+
+document.getElementById("ruleSpecial").innerHTML=
+(/[^A-Za-z0-9]/.test(v)?"✅":"❌")+" En az 1 özel karakter";
+
+});
+
+/*=========================================
+EMAİL KONTROL
+=========================================*/
+
+function validateEmail(email){
+
+return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+}
+
+/*=========================================
+FORM DOĞRULAMA
+=========================================*/
+
+document
+.getElementById("registerForm")
+.addEventListener("submit",(e)=>{
+
+e.preventDefault();
+
+const email=
+document.getElementById("email").value.trim();
+
+if(!validateEmail(email)){
+
+alert("Geçerli bir e-posta giriniz.");
+
+return;
+
+}
+
+if(password.value!==confirmPassword.value){
+
+alert("Şifreler eşleşmiyor.");
+
+return;
+
+}
+
+if(!document.getElementById("terms").checked){
+
+alert("Kullanım koşullarını kabul etmelisiniz.");
+
+return;
+
+}
+
+if(!document.getElementById("robotCheck").checked){
+
+alert("Robot doğrulamasını tamamlayın.");
+
+return;
+
+}
+
+/*=========================================
+GELECEK API
+=========================================*/
+
+// POST /api/register
+
+// Email Verification
+
+// JWT
+
+// MongoDB
+
+// Premium=false
+
+alert("Kayıt doğrulandı. Backend bağlanınca hesap oluşturulacaktır.");
+
+});
+
+</script>
+
+<!--=========================================
+HESAP GÜVENLİĞİ
+==========================================-->
+
+<section class="mt-14">
+
+<div class="glass rounded-3xl p-8">
+
+<div class="badge">
+
+🛡️ Hesabınız Güvende
+
+</div>
+
+<h2 class="text-3xl font-black mt-8">
+
+Nexora AI Hesabınızı Nasıl Koruyor?
+
+</h2>
+
+<p class="text-slate-400 mt-6 leading-8">
+
+Nexora AI, kullanıcı hesaplarını korumak için modern güvenlik standartlarını
+kullanacak şekilde tasarlanmıştır.
+
+</p>
+
+<div class="grid md:grid-cols-2 gap-8 mt-10">
+
+<div class="glass rounded-2xl p-6">
+
+<div class="text-4xl">
+
+📧
+
+</div>
+
+<h3 class="text-xl font-bold mt-5">
+
+E-posta Doğrulaması
+
+</h3>
+
+<p class="text-slate-400 mt-4">
+
+Kayıt olduktan sonra hesabınızı doğrulamanız için
+e-posta adresinize doğrulama bağlantısı gönderilecektir.
+
+</p>
+
+</div>
+
+<div class="glass rounded-2xl p-6">
+
+<div class="text-4xl">
+
+🔑
+
+</div>
+
+<h3 class="text-xl font-bold mt-5">
+
+Şifre Sıfırlama
+
+</h3>
+
+<p class="text-slate-400 mt-4">
+
+Şifrenizi unutmanız durumunda
+güvenli bağlantıyla yeni şifre oluşturabilirsiniz.
+
+</p>
+
+</div>
+
+<div class="glass rounded-2xl p-6">
+
+<div class="text-4xl">
+
+📱
+
+</div>
+
+<h3 class="text-xl font-bold mt-5">
+
+Yeni Cihaz Bildirimi
+
+</h3>
+
+<p class="text-slate-400 mt-4">
+
+Hesabınıza yeni bir cihazdan giriş yapılırsa
+size e-posta bildirimi gönderilecektir.
+
+</p>
+
+</div>
+
+<div class="glass rounded-2xl p-6">
+
+<div class="text-4xl">
+
+🕒
+
+</div>
+
+<h3 class="text-xl font-bold mt-5">
+
+Giriş Geçmişi
+
+</h3>
+
+<p class="text-slate-400 mt-4">
+
+Profilinizden son giriş yaptığınız cihazları
+ve oturum geçmişinizi görüntüleyebilirsiniz.
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!--=========================================
+FOUNDER PROGRAMI
+==========================================-->
+
+<section class="mt-14">
+
+<div class="glass rounded-3xl p-10">
+
+<div class="badge">
+
+👑 Founder Programı
+
+</div>
+
+<h2 class="text-4xl font-black mt-8">
+
+İlk Kullanıcılardan Biri Olun
+
+</h2>
+
+<p class="text-slate-400 text-lg mt-6">
+
+Nexora AI henüz büyüme aşamasındadır.
+
+Bugün kayıt olan kullanıcılar gelecekte açılacak
+birçok özelliğe erken erişim fırsatı elde edecektir.
+
+</p>
+
+<div class="grid md:grid-cols-2 gap-6 mt-10">
+
+<div>
+
+✅ Founder Rozeti
+
+</div>
+
+<div>
+
+✅ Yeni Özelliklere Erken Erişim
+
+</div>
+
+<div>
+
+✅ Beta Testlerine Katılım
+
+</div>
+
+<div>
+
+✅ Özel Kampanyalar
+
+</div>
+
+<div>
+
+✅ Premium İndirimleri
+
+</div>
+
+<div>
+
+✅ Öncelikli Destek
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!--=========================================
+GÜVENLİK BİLGİSİ
+==========================================-->
+
+<section class="mt-14">
+
+<div class="glass rounded-3xl p-8">
+
+<h2 class="text-2xl font-bold">
+
+🔒 Güvenlik Bilgilendirmesi
+
+</h2>
+
+<div class="space-y-5 mt-8 text-slate-300 leading-8">
+
+<div>✅ Şifreler güvenli algoritmalarla saklanacaktır.</div>
+
+<div>✅ SSL/TLS şifreleme kullanılacaktır.</div>
+
+<div>✅ Kişisel bilgiler üçüncü kişilerle paylaşılmaz.</div>
+
+<div>✅ Premium ödemeleri güvenli ödeme altyapıları üzerinden gerçekleştirilecektir.</div>
+
+<div>✅ Şüpheli giriş denemeleri otomatik olarak tespit edilip engellenecektir.</div>
+
+<div>✅ Gelecekte iki adımlı doğrulama (2FA) desteği eklenecektir.</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!--=========================================
+SOSYAL GİRİŞLER
+==========================================-->
+
+<section class="mt-14">
+
+<div class="glass rounded-3xl p-10">
+
+<div class="text-center">
+
+<div class="badge">
+
+🌍 Hızlı Kayıt
+
+</div>
+
+<h2 class="text-4xl font-black mt-8">
+
+Sosyal Hesabınla Devam Et
+
+</h2>
+
+<p class="text-slate-400 mt-5">
+
+Yakında Google, Apple, GitHub ve Microsoft hesaplarınla
+tek tıkla kayıt olabileceksin.
+
+</p>
+
+</div>
+
+<div class="grid md:grid-cols-2 gap-5 mt-12">
+
+<button class="glass rounded-2xl p-5 hover:border-emerald-400 transition">
+
+🔵 Google ile Devam Et
+
+</button>
+
+<button class="glass rounded-2xl p-5 hover:border-emerald-400 transition">
+
+⚫ Apple ile Devam Et
+
+</button>
+
+<button class="glass rounded-2xl p-5 hover:border-emerald-400 transition">
+
+⚫ GitHub ile Devam Et
+
+</button>
+
+<button class="glass rounded-2xl p-5 hover:border-emerald-400 transition">
+
+🟦 Microsoft ile Devam Et
+
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+<!--=========================================
+ÜCRETSİZ HESAP AVANTAJLARI
+==========================================-->
+
+<section class="mt-14">
+
+<div class="glass rounded-3xl p-10">
+
+<div class="badge">
+
+🎁 Ücretsiz Başlangıç
+
+</div>
+
+<h2 class="text-4xl font-black mt-8">
+
+Kayıt Olduğunda Seni Neler Bekliyor?
+
+</h2>
+
+<div class="grid md:grid-cols-2 gap-8 mt-12">
+
+<div>
+
+✅ Günlük 3 AI analizi
+
+</div>
+
+<div>
+
+✅ Sınırsız hisse takibi
+
+</div>
+
+<div>
+
+✅ Portföy oluşturma
+
+</div>
+
+<div>
+
+✅ Favori hisseler
+
+</div>
+
+<div>
+
+✅ Alarm sistemi
+
+</div>
+
+<div>
+
+✅ Temettü ve halka arz takvimi
+
+</div>
+
+<div>
+
+✅ Dünya piyasalarını takip et
+
+</div>
+
+<div>
+
+✅ Yapay zekâ destekli yatırım deneyimi
+
+</div>
+
+</div>
+
+<div class="glass rounded-2xl p-6 mt-10">
+
+<h3 class="text-xl font-bold">
+
+👑 Premium ile Kilidi Aç
+
+</h3>
+
+<p class="text-slate-400 mt-4 leading-8">
+
+Premium üyelik ile günlük AI limiti kaldırılır,
+profesyonel grafikler, gelişmiş analiz araçları,
+küresel piyasa ekranları ve gelecekte eklenecek birçok özelliğe erişebilirsin.
+
+</p>
+
+<a href="premium.html"
+class="btnPrimary block text-center mt-8">
+
+Premium'u İncele
+
+</a>
+
+</div>
+
+</div>
+
+</section>
+
+<!--=========================================
+DESTEK - DİL - TEMA
+==========================================-->
+
+<section class="mt-14">
+
+<div class="glass rounded-3xl p-10">
+
+<div class="grid lg:grid-cols-3 gap-10">
+
+<div>
+
+<div class="text-5xl">
+
+🌍
+
+</div>
+
+<h3 class="text-2xl font-bold mt-5">
+
+Çoklu Dil Desteği
+
+</h3>
+
+<p class="text-slate-400 mt-5 leading-8">
+
+Yakında Nexora AI birçok dili destekleyecektir.
+
+Hesabınıza giriş yaptığınızda seçtiğiniz dil
+otomatik olarak uygulanacaktır.
+
+</p>
+
+<div class="mt-8 space-y-2 text-slate-300">
+
+<div>🇹🇷 Türkçe</div>
+
+<div>🇺🇸 English</div>
+
+<div>🇩🇪 Deutsch</div>
+
+<div>🇫🇷 Français</div>
+
+<div>🇪🇸 Español</div>
+
+<div>+ Yakında daha fazlası...</div>
+
+</div>
+
+</div>
+
+<div>
+
+<div class="text-5xl">
+
+🎨
+
+</div>
+
+<h3 class="text-2xl font-bold mt-5">
+
+Tema Seçenekleri
+
+</h3>
+
+<p class="text-slate-400 mt-5">
+
+İstediğiniz görünümü seçin.
+
+</p>
+
+<div class="space-y-4 mt-8">
+
+<button class="glass w-full rounded-2xl p-4">
+
+🌙 Koyu Tema
+
+</button>
+
+<button class="glass w-full rounded-2xl p-4">
+
+☀️ Açık Tema
+
+</button>
+
+<button class="glass w-full rounded-2xl p-4">
+
+💻 Sistem Teması
+
+</button>
+
+</div>
+
+</div>
+
+<div>
+
+<div class="text-5xl">
+
+💬
+
+</div>
+
+<h3 class="text-2xl font-bold mt-5">
+
+Yardıma mı ihtiyacın var?
+
+</h3>
+
+<p class="text-slate-400 mt-5 leading-8">
+
+Herhangi bir sorun yaşarsan
+destek ekibimiz sana yardımcı olacaktır.
+
+</p>
+
+<div class="space-y-4 mt-8">
+
+<a href="#" class="link block">
+
+📧 Destek Merkezi
+
+</a>
+
+<a href="#" class="link block">
+
+❓ Sık Sorulan Sorular
+
+</a>
+
+<a href="#" class="link block">
+
+🛡️ Güvenlik Merkezi
+
+</a>
+
+<a href="#" class="link block">
+
+📄 Gizlilik Politikası
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!--=========================================
+FOOTER
+==========================================-->
+
+<footer class="border-t border-slate-800 mt-20">
+
+<div class="max-w-7xl mx-auto px-6 py-10">
+
+<div class="flex flex-col lg:flex-row justify-between items-center gap-6">
+
+<div>
+
+<h3 class="text-3xl font-black">
+
+NEXORA
+
+<span class="gradient">
+
+AI
+
+</span>
+
+</h3>
+
+<p class="text-slate-500 mt-3">
+
+© 2026 Nexora AI • Tüm Hakları Saklıdır.
+
+</p>
+
+</div>
+
+<div class="flex flex-wrap gap-6 text-slate-400">
+
+<a href="index.html" class="hover:text-white">
+
+Ana Sayfa
+
+</a>
+
+<a href="login.html" class="hover:text-white">
+
+Giriş Yap
+
+</a>
+
+<a href="premium.html" class="hover:text-white">
+
+Premium
+
+</a>
+
+<a href="stock.html" class="hover:text-white">
+
+Hisseler
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</footer>
+
+<script>
+
+/*=========================================
+ŞİFRE GÖSTER / GİZLE
+=========================================*/
+
+["password","confirmPassword"].forEach(id=>{
+
+const input=document.getElementById(id);
+
+const btn=input.parentElement.querySelector("button");
+
+btn.addEventListener("click",()=>{
+
+input.type=input.type==="password"?"text":"password";
+
+btn.innerHTML=input.type==="password"?"👁️":"🙈";
+
+});
+
+});
+
+/*=========================================
+EMAİL DOĞRULAMA
+=========================================*/
+
+function validateEmail(email){
+
+return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+}
+
+/*=========================================
+KULLANICI ADI
+=========================================*/
+
+const username=document.getElementById("username");
+
+username.addEventListener("input",()=>{
+
+username.value=username.value
+
+.toLowerCase()
+
+.replace(/[^a-z0-9_]/g,"");
+
+});
+
+/*=========================================
+ŞİFRE GÜCÜ
+=========================================*/
+
+password.addEventListener("input",()=>{
+
+let score=0;
+
+const value=password.value;
+
+if(value.length>=8) score++;
+
+if(/[A-Z]/.test(value)) score++;
+
+if(/[a-z]/.test(value)) score++;
+
+if(/[0-9]/.test(value)) score++;
+
+if(/[^A-Za-z0-9]/.test(value)) score++;
+
+const width=score*20;
+
+passwordStrengthBar.style.width=width+"%";
+
+const colors=["bg-red-500","bg-red-500","bg-yellow-500","bg-yellow-500","bg-emerald-500","bg-emerald-500"];
+
+passwordStrengthBar.className="h-4 rounded-full "+colors[score];
+
+const texts=[
+
+"Şifre Girilmedi",
+
+"Zayıf",
+
+"Zayıf",
+
+"Orta",
+
+"İyi",
+
+"Güçlü"
+
+];
+
+passwordStrengthText.innerHTML=texts[score];
+
+});
+
+/*=========================================
+FORM
+=========================================*/
+
+registerForm.addEventListener("submit",(e)=>{
+
+e.preventDefault();
+
+if(!validateEmail(email.value)){
+
+alert("Geçerli e-posta giriniz.");
+
+return;
+
+}
+
+if(password.value!==confirmPassword.value){
+
+alert("Şifreler uyuşmuyor.");
+
+return;
+
+}
+
+if(!robotCheck.checked){
+
+alert("Robot doğrulamasını tamamlayın.");
+
+return;
+
+}
+
+if(!terms.checked){
+
+alert("Kullanım koşullarını kabul etmelisiniz.");
+
+return;
+
+}
+
+/*
+==========================================
+BURASI BACKEND BAĞLANTI NOKTASI
+==========================================
+
+POST /api/register
+
+MongoDB
+
+JWT
+
+Mail Verification
+
+Premium:false
+
+AI Limit:3
+
+Language:tr
+
+Theme:dark
+
+*/
+
+alert(
+
+"Hesabınız başarıyla oluşturulmaya hazır.\n\nBackend bağlandığında doğrulama e-postası gönderilecektir."
+
+);
+
+});
+
+/*=========================================
+GELECEK
+=========================================*/
+
+// Google Login
+
+// Apple Login
+
+// Github Login
+
+// Microsoft Login
+
+// Email Verification
+
+// 2FA
+
+// Login History
+
+// Device History
+
+// Cloudflare Turnstile
+
+// Premium Check
+
+// AI Usage Counter
+
+</script>
+
+</body>
+
+</html>
