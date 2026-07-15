@@ -1,0 +1,1637 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Ayarlar | Nexora AI</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link rel="preconnect"
+href="https://fonts.googleapis.com">
+
+<link rel="preconnect"
+href="https://fonts.gstatic.com"
+crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+rel="stylesheet">
+
+<style>
+
+*{
+
+margin:0;
+
+padding:0;
+
+box-sizing:border-box;
+
+font-family:Inter,sans-serif;
+
+}
+
+html{
+
+scroll-behavior:smooth;
+
+}
+
+body{
+
+background:#020617;
+
+color:white;
+
+overflow-x:hidden;
+
+}
+
+body::before{
+
+content:"";
+
+position:fixed;
+
+inset:0;
+
+background:
+
+radial-gradient(circle at top left,#10b98122,transparent 35%),
+
+radial-gradient(circle at bottom right,#2563eb22,transparent 35%),
+
+radial-gradient(circle at center,#ffffff08,transparent 70%);
+
+z-index:-2;
+
+}
+
+.glass{
+
+background:rgba(15,23,42,.72);
+
+border:1px solid rgba(255,255,255,.08);
+
+backdrop-filter:blur(18px);
+
+border-radius:30px;
+
+}
+
+.gradient{
+
+background:linear-gradient(135deg,#10b981,#22c55e,#14b8a6);
+
+-webkit-background-clip:text;
+
+-webkit-text-fill-color:transparent;
+
+}
+
+.settingCard{
+
+background:#0f172a;
+
+border:1px solid #1e293b;
+
+border-radius:24px;
+
+padding:28px;
+
+transition:.30s;
+
+cursor:pointer;
+
+}
+
+.settingCard:hover{
+
+border-color:#10b981;
+
+transform:translateY(-6px);
+
+box-shadow:0 25px 45px rgba(16,185,129,.20);
+
+}
+
+.badge{
+
+display:inline-flex;
+
+align-items:center;
+
+gap:8px;
+
+padding:8px 16px;
+
+border-radius:999px;
+
+background:#10b98122;
+
+border:1px solid #10b98155;
+
+color:#6ee7b7;
+
+font-weight:700;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<section class="max-w-7xl mx-auto px-6 py-14">
+
+<div class="text-center">
+
+<div class="badge">
+
+⚙️ Nexora Settings
+
+</div>
+
+<h1 class="text-6xl font-black mt-8">
+
+Ayarlar
+
+<span class="gradient">
+
+Merkezi
+
+</span>
+
+</h1>
+
+<p class="text-slate-400 text-xl max-w-3xl mx-auto mt-8 leading-9">
+
+Nexora AI hesabınızı, görünümünüzü, güvenliğinizi,
+bildirimlerinizi ve yatırım deneyiminizi tek bir yerden yönetin.
+
+</p>
+
+</div>
+
+<div class="grid md:grid-cols-2 xl:grid-cols-3 gap-8 mt-16">
+
+<div class="settingCard">
+
+<div class="text-5xl">
+
+👤
+
+</div>
+
+<h2 class="text-2xl font-bold mt-6">
+
+Profil
+
+</h2>
+
+<p class="text-slate-400 mt-4">
+
+Adınız, kullanıcı adınız, profil fotoğrafınız ve kişisel bilgilerinizi yönetin.
+
+</p>
+
+<a href="profile.html"
+class="inline-block mt-6 text-emerald-400 font-bold">
+
+Profili Aç →
+
+</a>
+
+</div>
+
+<div class="settingCard">
+
+<div class="text-5xl">
+
+🌍
+
+</div>
+
+<h2 class="text-2xl font-bold mt-6">
+
+Dil ve Bölge
+
+</h2>
+
+<p class="text-slate-400 mt-4">
+
+Türkçe, English, Português (Brasil), Español ve diğer dilleri seçin.
+
+</p>
+
+<a href="language.html"
+class="inline-block mt-6 text-emerald-400 font-bold">
+
+Dil Ayarları →
+
+</a>
+
+</div>
+
+<div class="settingCard">
+
+<div class="text-5xl">
+
+🎨
+
+</div>
+
+<h2 class="text-2xl font-bold mt-6">
+
+Tema
+
+</h2>
+
+<p class="text-slate-400 mt-4">
+
+Koyu tema, açık tema, sistem teması ve renk seçenekleri.
+
+</p>
+
+<a href="#"
+class="inline-block mt-6 text-emerald-400 font-bold">
+
+Tema Ayarları →
+
+</a>
+
+</div>
+
+<div class="settingCard">
+
+<div class="text-5xl">
+
+🔔
+
+</div>
+
+<h2 class="text-2xl font-bold mt-6">
+
+Bildirimler
+
+</h2>
+
+<p class="text-slate-400 mt-4">
+
+Fiyat alarmları, haberler, temettüler ve halka arz bildirimlerini yönetin.
+
+</p>
+
+<a href="#"
+class="inline-block mt-6 text-emerald-400 font-bold">
+
+Bildirimler →
+
+</a>
+
+</div>
+
+<div class="settingCard">
+
+<div class="text-5xl">
+
+🤖
+
+</div>
+
+<h2 class="text-2xl font-bold mt-6">
+
+Yapay Zekâ
+
+</h2>
+
+<p class="text-slate-400 mt-4">
+
+AI yanıt dili, analiz stili ve kişisel tercihlerinizi belirleyin.
+
+</p>
+
+<a href="#"
+class="inline-block mt-6 text-emerald-400 font-bold">
+
+AI Ayarları →
+
+</a>
+
+</div>
+
+<div class="settingCard">
+
+<div class="text-5xl">
+
+🔒
+
+</div>
+
+<h2 class="text-2xl font-bold mt-6">
+
+Güvenlik
+
+</h2>
+
+<p class="text-slate-400 mt-4">
+
+Şifre değişikliği, iki adımlı doğrulama ve oturum yönetimi.
+
+</p>
+
+<a href="#"
+class="inline-block mt-6 text-emerald-400 font-bold">
+
+Güvenlik →
+
+</a>
+
+</div>
+
+<div class="settingCard">
+
+<div class="text-5xl">
+
+📈
+
+</div>
+
+<h2 class="text-2xl font-bold mt-6">
+
+Yatırım Tercihleri
+
+</h2>
+
+<p class="text-slate-400 mt-4">
+
+Varsayılan borsa, favori sektörler, para birimi ve yatırım tercihlerinizi belirleyin.
+
+</p>
+
+<a href="#"
+class="inline-block mt-6 text-emerald-400 font-bold">
+
+Tercihleri Yönet →
+
+</a>
+
+</div>
+
+<div class="settingCard">
+
+<div class="text-5xl">
+
+📊
+
+</div>
+
+<h2 class="text-2xl font-bold mt-6">
+
+Grafik Ayarları
+
+</h2>
+
+<p class="text-slate-400 mt-4">
+
+Mum grafik tipi, indikatörler, varsayılan zaman aralığı ve görünümü özelleştirin.
+
+</p>
+
+<a href="#"
+class="inline-block mt-6 text-emerald-400 font-bold">
+
+Grafik Ayarları →
+
+</a>
+
+</div>
+
+<div class="settingCard">
+
+<div class="text-5xl">
+
+💳
+
+</div>
+
+<h2 class="text-2xl font-bold mt-6">
+
+Premium
+
+</h2>
+
+<p class="text-slate-400 mt-4">
+
+Premium üyeliğinizi görüntüleyin, yönetin veya yeni avantajları keşfedin.
+
+</p>
+
+<a href="premium.html"
+class="inline-block mt-6 text-emerald-400 font-bold">
+
+Premium'u Yönet →
+
+</a>
+
+</div>
+
+<div class="settingCard">
+
+<div class="text-5xl">
+
+📱
+
+</div>
+
+<h2 class="text-2xl font-bold mt-6">
+
+Cihazlar
+
+</h2>
+
+<p class="text-slate-400 mt-4">
+
+Hesabınıza giriş yapılan cihazları görüntüleyin ve güvenliğinizi yönetin.
+
+</p>
+
+<a href="#"
+class="inline-block mt-6 text-emerald-400 font-bold">
+
+Cihazları Gör →
+
+</a>
+
+</div>
+
+<div class="settingCard">
+
+<div class="text-5xl">
+
+📧
+
+</div>
+
+<h2 class="text-2xl font-bold mt-6">
+
+Hesap ve E-posta
+
+</h2>
+
+<p class="text-slate-400 mt-4">
+
+E-posta adresinizi değiştirin, doğrulama durumunu kontrol edin ve hesap bilgilerinizi güncelleyin.
+
+</p>
+
+<a href="#"
+class="inline-block mt-6 text-emerald-400 font-bold">
+
+Hesabı Yönet →
+
+</a>
+
+</div>
+
+<div class="settingCard">
+
+<div class="text-5xl">
+
+🗑️
+
+</div>
+
+<h2 class="text-2xl font-bold mt-6">
+
+Hesap Yönetimi
+
+</h2>
+
+<p class="text-slate-400 mt-4">
+
+Verilerinizi dışa aktarın, hesabınızı geçici olarak dondurun veya kalıcı olarak silin.
+
+</p>
+
+<a href="#"
+class="inline-block mt-6 text-red-400 font-bold">
+
+Hesap İşlemleri →
+
+</a>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="mt-14">
+
+<div class="glass p-10">
+
+<div class="badge">
+
+⚡ Hızlı Ayarlar
+
+</div>
+
+<h2 class="text-4xl font-black mt-8">
+
+Tek Dokunuşla Kontrol
+
+</h2>
+
+<p class="text-slate-400 mt-5 leading-8">
+
+En sık kullanılan ayarlarınızı buradan hızlıca değiştirebilirsiniz.
+
+</p>
+
+<div class="grid lg:grid-cols-2 gap-8 mt-12">
+
+<div class="settingCard">
+
+<div class="flex justify-between items-center">
+
+<div>
+
+<h3 class="text-2xl font-bold">
+
+🌙 Karanlık Mod
+
+</h3>
+
+<p class="text-slate-400 mt-3">
+
+Nexora görünümünü değiştir.
+
+</p>
+
+</div>
+
+<label class="relative inline-flex items-center cursor-pointer">
+
+<input type="checkbox"
+
+class="sr-only"
+
+checked>
+
+<div class="w-14 h-8 bg-slate-700 rounded-full"></div>
+
+</label>
+
+</div>
+
+</div>
+
+<div class="settingCard">
+
+<div class="flex justify-between items-center">
+
+<div>
+
+<h3 class="text-2xl font-bold">
+
+🔔 Bildirimler
+
+</h3>
+
+<p class="text-slate-400 mt-3">
+
+Anlık fiyat bildirimleri.
+
+</p>
+
+</div>
+
+<label class="relative inline-flex items-center cursor-pointer">
+
+<input type="checkbox"
+
+class="sr-only"
+
+checked>
+
+<div class="w-14 h-8 bg-slate-700 rounded-full"></div>
+
+</label>
+
+</div>
+
+</div>
+
+<div class="settingCard">
+
+<div class="flex justify-between items-center">
+
+<div>
+
+<h3 class="text-2xl font-bold">
+
+🤖 AI Önerileri
+
+</h3>
+
+<p class="text-slate-400 mt-3">
+
+AI yatırım önerileri ve analizleri.
+
+</p>
+
+</div>
+
+<label class="relative inline-flex items-center cursor-pointer">
+
+<input type="checkbox"
+
+class="sr-only"
+
+checked>
+
+<div class="w-14 h-8 bg-slate-700 rounded-full"></div>
+
+</label>
+
+</div>
+
+</div>
+
+<div class="settingCard">
+
+<div class="flex justify-between items-center">
+
+<div>
+
+<h3 class="text-2xl font-bold">
+
+📈 Canlı Veri
+
+</h3>
+
+<p class="text-slate-400 mt-3">
+
+Gerçek zamanlı piyasa verileri.
+
+</p>
+
+</div>
+
+<label class="relative inline-flex items-center cursor-pointer">
+
+<input type="checkbox"
+
+class="sr-only"
+
+checked>
+
+<div class="w-14 h-8 bg-slate-700 rounded-full"></div>
+
+</label>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="mt-14">
+
+<div class="glass p-10">
+
+<div class="badge">
+
+👑 Premium
+
+</div>
+
+<h2 class="text-4xl font-black mt-8">
+
+Premium Durumu
+
+</h2>
+
+<p class="text-slate-400 mt-5">
+
+Premium üyeliğinizi buradan yönetebilirsiniz.
+
+</p>
+
+<div class="grid md:grid-cols-3 gap-6 mt-10">
+
+<div class="settingCard">
+
+<div class="text-5xl">
+
+🚀
+
+</div>
+
+<h3 class="text-xl font-bold mt-5">
+
+Mevcut Plan
+
+</h3>
+
+<p class="text-slate-400 mt-4">
+
+Free Plan
+
+</p>
+
+</div>
+
+<div class="settingCard">
+
+<div class="text-5xl">
+
+⭐
+
+</div>
+
+<h3 class="text-xl font-bold mt-5">
+
+Yükselt
+
+</h3>
+
+<p class="text-slate-400 mt-4">
+
+Premium 4.99 USD
+
+</p>
+
+</div>
+
+<div class="settingCard">
+
+<div class="text-5xl">
+
+🎁
+
+</div>
+
+<h3 class="text-xl font-bold mt-5">
+
+Avantajlar
+
+</h3>
+
+<p class="text-slate-400 mt-4">
+
+Sınırsız AI • Reklamsız • Profesyonel Analiz
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="mt-14">
+
+<div class="glass p-10">
+
+<div class="badge">
+
+🧪 Nexora Labs
+
+</div>
+
+<h2 class="text-4xl font-black mt-8">
+
+Deneysel Özellikler
+
+</h2>
+
+<p class="text-slate-400 mt-5 leading-8">
+
+Henüz geliştirme aşamasında olan özellikleri herkesten önce deneyin.
+Bu özellikler zamanla değişebilir veya kaldırılabilir.
+
+</p>
+
+<div class="grid lg:grid-cols-2 gap-8 mt-12">
+
+<div class="settingCard">
+
+<div class="flex justify-between items-center">
+
+<div>
+
+<h3 class="text-2xl font-bold">
+
+🤖 AI Vision
+
+</h3>
+
+<p class="text-slate-400 mt-3">
+
+Grafik ve ekran görüntülerini yorumlayan yeni yapay zekâ.
+
+</p>
+
+</div>
+
+<span class="badge">
+
+BETA
+
+</span>
+
+</div>
+
+</div>
+
+<div class="settingCard">
+
+<div class="flex justify-between items-center">
+
+<div>
+
+<h3 class="text-2xl font-bold">
+
+🎤 Sesli AI
+
+</h3>
+
+<p class="text-slate-400 mt-3">
+
+Nexora ile sesli sohbet edin.
+
+</p>
+
+</div>
+
+<span class="badge">
+
+Yakında
+
+</span>
+
+</div>
+
+</div>
+
+<div class="settingCard">
+
+<div class="flex justify-between items-center">
+
+<div>
+
+<h3 class="text-2xl font-bold">
+
+📊 Yeni Grafik Motoru
+
+</h3>
+
+<p class="text-slate-400 mt-3">
+
+TradingView benzeri gelişmiş grafik sistemi.
+
+</p>
+
+</div>
+
+<span class="badge">
+
+Yakında
+
+</span>
+
+</div>
+
+</div>
+
+<div class="settingCard">
+
+<div class="flex justify-between items-center">
+
+<div>
+
+<h3 class="text-2xl font-bold">
+
+🌍 Küresel Haber Merkezi
+
+</h3>
+
+<p class="text-slate-400 mt-3">
+
+Ülkeye göre filtrelenmiş finans haberleri.
+
+</p>
+
+</div>
+
+<span class="badge">
+
+Geliştiriliyor
+
+</span>
+
+</div>
+
+</div>
+
+<div class="settingCard">
+
+<div class="flex justify-between items-center">
+
+<div>
+
+<h3 class="text-2xl font-bold">
+
+📈 Akıllı Portföy
+
+</h3>
+
+<p class="text-slate-400 mt-3">
+
+AI destekli portföy optimizasyonu.
+
+</p>
+
+</div>
+
+<span class="badge">
+
+Premium
+
+</span>
+
+</div>
+
+</div>
+
+<div class="settingCard">
+
+<div class="flex justify-between items-center">
+
+<div>
+
+<h3 class="text-2xl font-bold">
+
+🛰️ Canlı Borsa Merkezi
+
+</h3>
+
+<p class="text-slate-400 mt-3">
+
+Gerçek zamanlı dünya borsaları ve gelişmiş veri akışı.
+
+</p>
+
+</div>
+
+<span class="badge">
+
+Yakında
+
+</span>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="mt-14">
+
+<div class="glass p-10">
+
+<div class="badge">
+
+📢 Nexora Güncellemeleri
+
+</div>
+
+<h2 class="text-4xl font-black mt-8">
+
+Güncelleme Merkezi
+
+</h2>
+
+<p class="text-slate-400 mt-5 leading-8">
+
+Nexora AI'a eklenen yeni özellikleri, hata düzeltmelerini ve bakım duyurularını buradan takip edebilirsiniz.
+
+</p>
+
+<div class="space-y-6 mt-12">
+
+<div class="settingCard">
+
+<div class="flex justify-between items-center">
+
+<h3 class="text-2xl font-bold">
+
+🚀 Sürüm 1.0.0
+
+</h3>
+
+<span class="badge">
+
+En Yeni
+
+</span>
+
+</div>
+
+<ul class="mt-6 space-y-3 text-slate-300">
+
+<li>✅ Yeni Ayarlar Merkezi eklendi.</li>
+
+<li>✅ Çoklu Dil Sistemi geliştirildi.</li>
+
+<li>✅ Premium sayfası yenilendi.</li>
+
+<li>✅ Güvenlik altyapısı güçlendirildi.</li>
+
+<li>✅ Yapay zekâ ayarları geliştirildi.</li>
+
+</ul>
+
+</div>
+
+<div class="settingCard">
+
+<div class="flex justify-between items-center">
+
+<h3 class="text-2xl font-bold">
+
+🛠️ Planlanan Özellikler
+
+</h3>
+
+<span class="badge">
+
+Yakında
+
+</span>
+
+</div>
+
+<ul class="mt-6 space-y-3 text-slate-300">
+
+<li>📈 Gerçek zamanlı grafik sistemi</li>
+
+<li>🌎 Dünya borsaları</li>
+
+<li>🤖 Sesli Nexora AI</li>
+
+<li>📊 Akıllı portföy analizi</li>
+
+<li>💹 Temettü ve halka arz takvimi</li>
+
+<li>📱 Mobil uygulama</li>
+
+<li>⌚ Akıllı saat desteği</li>
+
+</ul>
+
+</div>
+
+<div class="settingCard">
+
+<div class="flex justify-between items-center">
+
+<h3 class="text-2xl font-bold">
+
+📡 Sistem Durumu
+
+</h3>
+
+<span class="badge">
+
+Çevrimiçi
+
+</span>
+
+</div>
+
+<div class="grid md:grid-cols-2 gap-6 mt-8">
+
+<div>
+
+<p class="text-slate-400">
+
+🌐 Sunucular
+
+</p>
+
+<p class="text-emerald-400 font-bold">
+
+Normal Çalışıyor
+
+</p>
+
+</div>
+
+<div>
+
+<p class="text-slate-400">
+
+🤖 AI Servisi
+
+</p>
+
+<p class="text-emerald-400 font-bold">
+
+Aktif
+
+</p>
+
+</div>
+
+<div>
+
+<p class="text-slate-400">
+
+📈 Piyasa Verileri
+
+</p>
+
+<p class="text-emerald-400 font-bold">
+
+Canlı
+
+</p>
+
+</div>
+
+<div>
+
+<p class="text-slate-400">
+
+🔒 Güvenlik
+
+</p>
+
+<p class="text-emerald-400 font-bold">
+
+Koruma Aktif
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="mt-14">
+
+<div class="glass p-10">
+
+<div class="badge">
+
+🛡️ Gizlilik ve Veri
+
+</div>
+
+<h2 class="text-4xl font-black mt-8">
+
+Verileriniz Güvende
+
+</h2>
+
+<p class="text-slate-400 mt-5 leading-8">
+
+Nexora AI, gizliliğinizi ön planda tutar. Hesabınız ve verileriniz üzerinde tam kontrole sahip olursunuz.
+
+</p>
+
+<div class="grid lg:grid-cols-2 gap-8 mt-12">
+
+<div class="settingCard">
+
+<h3 class="text-2xl font-bold">
+
+📥 Verilerimi İndir
+
+</h3>
+
+<p class="text-slate-400 mt-4">
+
+Profiliniz, portföyünüz, favorileriniz ve ayarlarınızı tek dosya halinde dışa aktarın.
+
+</p>
+
+<button class="mt-6 w-full bg-slate-800 hover:bg-slate-700 rounded-xl py-4 transition">
+
+Verileri İndir
+
+</button>
+
+</div>
+
+<div class="settingCard">
+
+<h3 class="text-2xl font-bold">
+
+🗑️ Hesabı Sil
+
+</h3>
+
+<p class="text-slate-400 mt-4">
+
+Hesabınızı kalıcı olarak silebilir veya geçici olarak dondurabilirsiniz.
+
+</p>
+
+<button class="mt-6 w-full bg-red-600 hover:bg-red-500 rounded-xl py-4 transition font-bold">
+
+Hesabı Yönet
+
+</button>
+
+</div>
+
+<div class="settingCard">
+
+<h3 class="text-2xl font-bold">
+
+🔑 Giriş Geçmişi
+
+</h3>
+
+<p class="text-slate-400 mt-4">
+
+Hesabınıza giriş yapılan cihazları ve IP geçmişini görüntüleyin.
+
+</p>
+
+<button class="mt-6 w-full bg-slate-800 hover:bg-slate-700 rounded-xl py-4 transition">
+
+Geçmişi Gör
+
+</button>
+
+</div>
+
+<div class="settingCard">
+
+<h3 class="text-2xl font-bold">
+
+📧 E-posta Doğrulama
+
+</h3>
+
+<p class="text-slate-400 mt-4">
+
+E-posta adresinizin doğrulama durumunu kontrol edin veya yeniden doğrulama isteyin.
+
+</p>
+
+<button class="mt-6 w-full bg-emerald-500 hover:bg-emerald-400 text-black rounded-xl py-4 font-bold transition">
+
+Doğrulama Gönder
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="mt-14">
+
+<div class="glass p-10">
+
+<div class="badge">
+
+⚡ Gelişmiş Ayarlar
+
+</div>
+
+<h2 class="text-4xl font-black mt-8">
+
+Performans ve Geliştirici
+
+</h2>
+
+<p class="text-slate-400 mt-5 leading-8">
+
+Nexora AI'ın performansını, veri kullanımını ve deneysel geliştirici özelliklerini buradan yönetebilirsiniz.
+
+</p>
+
+<div class="grid lg:grid-cols-2 gap-8 mt-12">
+
+<div class="settingCard">
+
+<div class="flex justify-between items-center">
+
+<div>
+
+<h3 class="text-2xl font-bold">
+
+🚀 Performans Modu
+
+</h3>
+
+<p class="text-slate-400 mt-3">
+
+Daha hızlı yükleme ve daha düşük kaynak kullanımı.
+
+</p>
+
+</div>
+
+<label class="relative inline-flex items-center cursor-pointer">
+
+<input type="checkbox" class="sr-only" checked>
+
+<div class="w-14 h-8 bg-slate-700 rounded-full"></div>
+
+</label>
+
+</div>
+
+</div>
+
+<div class="settingCard">
+
+<div class="flex justify-between items-center">
+
+<div>
+
+<h3 class="text-2xl font-bold">
+
+📡 Arka Plan Senkronizasyonu
+
+</h3>
+
+<p class="text-slate-400 mt-3">
+
+Verileri uygulama açık değilken de güncelle.
+
+</p>
+
+</div>
+
+<label class="relative inline-flex items-center cursor-pointer">
+
+<input type="checkbox" class="sr-only" checked>
+
+<div class="w-14 h-8 bg-slate-700 rounded-full"></div>
+
+</label>
+
+</div>
+
+</div>
+
+<div class="settingCard">
+
+<div class="flex justify-between items-center">
+
+<div>
+
+<h3 class="text-2xl font-bold">
+
+🧪 Geliştirici Modu
+
+</h3>
+
+<p class="text-slate-400 mt-3">
+
+Beta özelliklerini ve test araçlarını etkinleştir.
+
+</p>
+
+</div>
+
+<label class="relative inline-flex items-center cursor-pointer">
+
+<input type="checkbox" class="sr-only">
+
+<div class="w-14 h-8 bg-slate-700 rounded-full"></div>
+
+</label>
+
+</div>
+
+</div>
+
+<div class="settingCard">
+
+<div class="flex justify-between items-center">
+
+<div>
+
+<h3 class="text-2xl font-bold">
+
+📊 Tanılama Verileri
+
+</h3>
+
+<p class="text-slate-400 mt-3">
+
+Anonim kullanım verilerini paylaşarak Nexora'nın gelişmesine katkı sağlayın.
+
+</p>
+
+</div>
+
+<label class="relative inline-flex items-center cursor-pointer">
+
+<input type="checkbox" class="sr-only">
+
+<div class="w-14 h-8 bg-slate-700 rounded-full"></div>
+
+</label>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="grid md:grid-cols-3 gap-6 mt-12">
+
+<button class="bg-emerald-500 hover:bg-emerald-400 text-black rounded-2xl py-5 font-black transition">
+
+💾 Tüm Ayarları Kaydet
+
+</button>
+
+<button class="bg-slate-800 hover:bg-slate-700 rounded-2xl py-5 transition">
+
+🔄 Varsayılanlara Dön
+
+</button>
+
+<button class="bg-red-600 hover:bg-red-500 rounded-2xl py-5 transition font-bold">
+
+🗑️ Tüm Ayarları Sıfırla
+
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+<footer class="mt-20 border-t border-slate-800">
+
+<div class="max-w-7xl mx-auto px-6 py-12">
+
+<div class="flex flex-col lg:flex-row justify-between items-center gap-8">
+
+<div>
+
+<h2 class="text-3xl font-black">
+
+NEXORA
+
+<span class="gradient">
+
+AI
+
+</span>
+
+</h2>
+
+<p class="text-slate-500 mt-3">
+
+Settings Center • Version 1.0.0
+
+</p>
+
+</div>
+
+<div class="flex flex-wrap gap-6 text-slate-400">
+
+<a href="index.html" class="hover:text-emerald-400 transition">
+
+Ana Sayfa
+
+</a>
+
+<a href="profile.html" class="hover:text-emerald-400 transition">
+
+Profil
+
+</a>
+
+<a href="language.html" class="hover:text-emerald-400 transition">
+
+Dil
+
+</a>
+
+<a href="premium.html" class="hover:text-emerald-400 transition">
+
+Premium
+
+</a>
+
+</div>
+
+</div>
+
+<div class="border-t border-slate-800 mt-10 pt-8 text-center text-slate-500">
+
+© 2026 Nexora AI • Tüm Hakları Saklıdır
+
+</div>
+
+</div>
+
+</footer>
+
+<script>
+
+const switches=document.querySelectorAll('input[type="checkbox"]');
+
+switches.forEach((item,index)=>{
+
+const key="switch_"+index;
+
+const saved=localStorage.getItem(key);
+
+if(saved==="true") item.checked=true;
+
+if(saved==="false") item.checked=false;
+
+item.addEventListener("change",()=>{
+
+localStorage.setItem(key,item.checked);
+
+});
+
+});
+
+const selects=document.querySelectorAll("select");
+
+selects.forEach((select,index)=>{
+
+const key="select_"+index;
+
+const saved=localStorage.getItem(key);
+
+if(saved){
+
+select.value=saved;
+
+}
+
+select.addEventListener("change",()=>{
+
+localStorage.setItem(key,select.value);
+
+});
+
+});
+
+document.querySelectorAll(".settingCard").forEach(card=>{
+
+card.addEventListener("mouseenter",()=>{
+
+card.style.transform="translateY(-8px)";
+
+});
+
+card.addEventListener("mouseleave",()=>{
+
+card.style.transform="translateY(0px)";
+
+});
+
+});
+
+</script>
+
+</body>
+
+</html>
