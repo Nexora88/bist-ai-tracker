@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dil ve Bölge Ayarları | Nexora AI</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:"Inter",sans-serif;
+}
+
+html{
+scroll-behavior:smooth;
+}
+
+body{
+background:#020617;
+color:white;
+overflow-x:hidden;
+}
+
+body::before{
+
+content:"";
+
+position:fixed;
+
+inset:0;
+
+background:
+radial-gradient(circle at top left,#10b98122,transparent 35%),
+radial-gradient(circle at bottom right,#3b82f622,transparent 35%),
+radial-gradient(circle at center,#ffffff08,transparent 70%);
+
+z-index:-2;
+
+}
+
+.glass{
+
+background:rgba(15,23,42,.72);
+
+border:1px solid rgba(255,255,255,.08);
+
+backdrop-filter:blur(18px);
+
+box-shadow:0 20px 60px rgba(0,0,0,.35);
+
+}
+
+.gradient{
+
+background:linear-gradient(135deg,#10b981,#22c55e,#14b8a6);
+
+-webkit-background-clip:text;
+
+-webkit-text-fill-color:transparent;
+
+}
+
+.languageCard{
+
+background:#0f172a;
+
+border:1px solid #1e293b;
+
+border-radius:28px;
+
+padding:28px;
+
+transition:.30s;
+
+cursor:pointer;
+
+}
+
+.languageCard:hover{
+
+transform:translateY(-8px);
+
+border-color:#10b981;
+
+box-shadow:0 25px 45px rgba(16,185,129,.25);
+
+}
+
+.badge{
+
+display:inline-flex;
+
+align-items:center;
+
+gap:8px;
+
+padding:8px 16px;
+
+border-radius:999px;
+
+background:#10b98122;
+
+border:1px solid #10b98155;
+
+color:#6ee7b7;
+
+font-weight:700;
+
+}
+
+.selectButton{
+
+width:100%;
+
+margin-top:24px;
+
+padding:14px;
+
+border-radius:16px;
+
+background:#1e293b;
+
+transition:.30s;
+
+font-weight:700;
+
+}
+
+.selectButton:hover{
+
+background:#10b981;
+
+color:black;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<section class="max-w-7xl mx-auto px-6 py-14">
+
+<div class="text-center">
+
+<div class="badge">
+
+🌍 Nexora Global
+
+</div>
+
+<h1 class="text-6xl font-black mt-8">
+
+Dil ve
+
+<span class="gradient">
+
+Bölge Merkezi
+
+</span>
+
+</h1>
+
+<p class="text-slate-400 text-xl mt-8 max-w-3xl mx-auto leading-9">
+
+Nexora AI'ı istediğiniz dilde kullanın.
+
+Yapay zekâ, haberler, analizler ve tüm arayüz
+tercih ettiğiniz dile göre çalışacaktır.
+
+</p>
+
+</div>
+
+<div class="glass rounded-[34px] p-10 mt-14">
+
+<div class="flex flex-col lg:flex-row justify-between items-center gap-8">
+
+<div>
+
+<h2 class="text-3xl font-bold">
+
+🌐 Desteklenen Diller
+
+</h2>
+
+<p class="text-slate-400 mt-4">
+
+İstediğiniz dili seçebilir ve daha sonra istediğiniz zaman değiştirebilirsiniz.
+
+</p>
+
+</div>
+
+<div class="text-center">
+
+<div class="text-6xl font-black gradient">
+
+15+
+
+</div>
+
+<div class="text-slate-400 mt-2">
+
+Küresel Dil Desteği
+
+</div>
+
+</div>
+
+</div>
+
+<div class="grid md:grid-cols-2 xl:grid-cols-3 gap-6 mt-12">
+
+<div class="languageCard">
+
+<div class="flex justify-between items-center">
+
+<div class="text-5xl">🇹🇷</div>
+
+<div class="badge">
+
+Varsayılan
+
+</div>
+
+</div>
+
+<h3 class="text-2xl font-bold mt-6">
+
+Türkçe
+
+</h3>
+
+<p class="text-slate-400 mt-2">
+
+Türkiye
+
+</p>
+
+<p class="text-slate-500 mt-5">
+
+Arayüz, AI, haberler ve analizler Türkçe gösterilir.
+
+</p>
+
+<button class="selectButton bg-emerald-500 text-black">
+
+Seçili
+
+</button>
+
+</div>
+
+<div class="languageCard">
+
+<div class="text-5xl">
+
+🇺🇸
+
+</div>
+
+<h3 class="text-2xl font-bold mt-6">
+
+English
+
+</h3>
+
+<p class="text-slate-400 mt-2">
+
+United States / Global
+
+</p>
+
+<p class="text-slate-500 mt-5">
+
+Interface, AI and market news will be displayed in English.
+
+</p>
+
+<button class="selectButton">
+
+Set as Default
+
+</button>
+
+</div>
+
+<div class="languageCard">
+
+<div class="text-5xl">
+
+🇧🇷
+
+</div>
+
+<h3 class="text-2xl font-bold mt-6">
+
+Português (Brasil)
+
+</h3>
+
+<p class="text-slate-400 mt-2">
+
+Brasil
+
+</p>
+
+<p class="text-slate-500 mt-5">
+
+Interface, AI e notícias em Português Brasileiro.
+
+</p>
+
+<button class="selectButton">
+
+Definir como padrão
+
+</button>
+
+</div>
+
+<div class="languageCard">
+
+<div class="text-5xl">
+
+🇵🇹
+
+</div>
+
+<h3 class="text-2xl font-bold mt-6">
+
+Português
+
+</h3>
+
+<p class="text-slate-400 mt-2">
+
+Portugal
+
+</p>
+
+<p class="text-slate-500 mt-5">
+
+Interface e inteligência artificial em Português Europeu.
+
+</p>
+
+<button class="selectButton">
+
+Selecionar
+
+</button>
+
+</div>
+
+<div class="languageCard">
+
+<div class="text-5xl">
+
+🇪🇸
+
+</div>
+
+<h3 class="text-2xl font-bold mt-6">
+
+Español
+
+</h3>
+
+<p class="text-slate-400 mt-2">
+
+España / Latinoamérica
+
+</p>
+
+<p class="text-slate-500 mt-5">
+
+Toda la plataforma estará disponible en Español.
+
+</p>
+
+<button class="selectButton">
+
+Seleccionar
+
+</button>
+
+</div>
+
+<div class="languageCard">
+
+<div class="text-5xl">
+
+🇫🇷
+
+</div>
+
+<h3 class="text-2xl font-bold mt-6">
+
+Français
+
+</h3>
+
+<p class="text-slate-400 mt-2">
+
+France
+
+</p>
+
+<p class="text-slate-500 mt-5">
+
+Toute la plateforme sera disponible en Français.
+
+</p>
+
+<button class="selectButton">
+
+Choisir
+
+</button>
+
+</div>
+
+<div class="languageCard">
+
+<div class="text-5xl">
+
+🇩🇪
+
+</div>
+
+<h3 class="text-2xl font-bold mt-6">
+
+Deutsch
+
+</h3>
+
+<p class="text-slate-400 mt-2">
+
+Deutschland
+
+</p>
+
+<p class="text-slate-500 mt-5">
+
+Benutzeroberfläche, KI und Nachrichten werden auf Deutsch angezeigt.
+
+</p>
+
+<button class="selectButton">
+
+Auswählen
+
+</button>
+
+</div>
+
+<div class="languageCard">
+
+<div class="text-5xl">
+
+🇮🇹
+
+</div>
+
+<h3 class="text-2xl font-bold mt-6">
+
+Italiano
+
+</h3>
+
+<p class="text-slate-400 mt-2">
+
+Italia
+
+</p>
+
+<p class="text-slate-500 mt-5">
+
+Interfaccia, AI e notizie saranno disponibili in Italiano.
+
+</p>
+
+<button class="selectButton">
+
+Seleziona
+
+</button>
+
+</div>
+
+<div class="languageCard">
+
+<div class="text-5xl">
+
+🇯🇵
+
+</div>
+
+<h3 class="text-2xl font-bold mt-6">
+
+日本語
+
+</h3>
+
+<p class="text-slate-400 mt-2">
+
+日本
+
+</p>
+
+<p class="text-slate-500 mt-5">
+
+AI・ニュース・画面表示を日本語で利用できます。
+
+</p>
+
+<button class="selectButton">
+
+選択
+
+</button>
+
+</div>
+
+<div class="languageCard">
+
+<div class="text-5xl">
+
+🇰🇷
+
+</div>
+
+<h3 class="text-2xl font-bold mt-6">
+
+한국어
+
+</h3>
+
+<p class="text-slate-400 mt-2">
+
+대한민국
+
+</p>
+
+<p class="text-slate-500 mt-5">
+
+AI 및 모든 인터페이스를 한국어로 사용할 수 있습니다.
+
+</p>
+
+<button class="selectButton">
+
+선택
+
+</button>
+
+</div>
+
+<div class="languageCard">
+
+<div class="text-5xl">
+
+🇨🇳
+
+</div>
+
+<h3 class="text-2xl font-bold mt-6">
+
+简体中文
+
+</h3>
+
+<p class="text-slate-400 mt-2">
+
+中国
+
+</p>
+
+<p class="text-slate-500 mt-5">
+
+界面、人工智能和新闻将以简体中文显示。
+
+</p>
+
+<button class="selectButton">
+
+设为默认
+
+</button>
+
+</div>
+
+<div class="languageCard">
+
+<div class="text-5xl">
+
+🇮🇳
+
+</div>
+
+<h3 class="text-2xl font-bold mt-6">
+
+हिन्दी
+
+</h3>
+
+<p class="text-slate-400 mt-2">
+
+भारत
+
+</p>
+
+<p class="text-slate-500 mt-5">
+
+इंटरफ़ेस, AI और समाचार हिन्दी में उपलब्ध होंगे।
+
+</p>
+
+<button class="selectButton">
+
+चुनें
+
+</button>
+
+</div>
+
+<div class="languageCard">
+
+<div class="text-5xl">
+
+🇸🇦
+
+</div>
+
+<h3 class="text-2xl font-bold mt-6">
+
+العربية
+
+</h3>
+
+<p class="text-slate-400 mt-2">
+
+الشرق الأوسط
+
+</p>
+
+<p class="text-slate-500 mt-5">
+
+الواجهة والذكاء الاصطناعي والأخبار باللغة العربية.
+
+</p>
+
+<button class="selectButton">
+
+اختر
+
+</button>
+
+</div>
+
+<div class="languageCard">
+
+<div class="text-5xl">
+
+🇷🇺
+
+</div>
+
+<h3 class="text-2xl font-bold mt-6">
+
+Русский
+
+</h3>
+
+<p class="text-slate-400 mt-2">
+
+Россия
+
+</p>
+
+<p class="text-slate-500 mt-5">
+
+Интерфейс, ИИ и новости будут отображаться на русском языке.
+
+</p>
+
+<button class="selectButton">
+
+Выбрать
+
+</button>
+
+</div>
+
+<div class="languageCard">
+
+<div class="text-5xl">
+
+🇹🇼
+
+</div>
+
+<h3 class="text-2xl font-bold mt-6">
+
+繁體中文
+
+</h3>
+
+<p class="text-slate-400 mt-2">
+
+台灣
+
+</p>
+
+<p class="text-slate-500 mt-5">
+
+介面、AI 與新聞將以繁體中文顯示。
+
+</p>
+
+<button class="selectButton">
+
+設為預設
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<section class="mt-14">
+
+<div class="glass rounded-[34px] p-10">
+
+<div class="badge">
+
+🌎 Bölgesel Ayarlar
+
+</div>
+
+<h2 class="text-4xl font-black mt-8">
+
+Bölgenizi Özelleştirin
+
+</h2>
+
+<p class="text-slate-400 mt-6 leading-8">
+
+Seçtiğiniz bölgeye göre saat, tarih, para birimi ve piyasa tercihleri otomatik olarak ayarlanacaktır.
+
+</p>
+
+<div class="grid lg:grid-cols-2 gap-8 mt-12">
+
+<div>
+
+<label class="block mb-3 font-bold">
+
+🌍 Bölge
+
+</label>
+
+<select class="inputBox">
+
+<option>Türkiye</option>
+
+<option>United States</option>
+
+<option>Brazil</option>
+
+<option>Portugal</option>
+
+<option>Germany</option>
+
+<option>France</option>
+
+<option>Spain</option>
+
+<option>Italy</option>
+
+<option>Japan</option>
+
+<option>China</option>
+
+<option>India</option>
+
+<option>Middle East</option>
+
+</select>
+
+</div>
+
+<div>
+
+<label class="block mb-3 font-bold">
+
+💵 Varsayılan Para Birimi
+
+</label>
+
+<select class="inputBox">
+
+<option>TRY - Türk Lirası</option>
+
+<option>USD - US Dollar</option>
+
+<option>EUR - Euro</option>
+
+<option>GBP - Pound Sterling</option>
+
+<option>JPY - Japanese Yen</option>
+
+<option>CNY - Chinese Yuan</option>
+
+<option>BRL - Brazilian Real</option>
+
+<option>AED - UAE Dirham</option>
+
+</select>
+
+</div>
+
+<div>
+
+<label class="block mb-3 font-bold">
+
+📅 Tarih Formatı
+
+</label>
+
+<select class="inputBox">
+
+<option>GG/AA/YYYY</option>
+
+<option>AA/GG/YYYY</option>
+
+<option>YYYY-AA-GG</option>
+
+</select>
+
+</div>
+
+<div>
+
+<label class="block mb-3 font-bold">
+
+🕒 Saat Formatı
+
+</label>
+
+<select class="inputBox">
+
+<option>24 Saat</option>
+
+<option>12 Saat (AM / PM)</option>
+
+</select>
+
+</div>
+
+<div>
+
+<label class="block mb-3 font-bold">
+
+🤖 Yapay Zekâ Yanıt Dili
+
+</label>
+
+<select class="inputBox">
+
+<option>Otomatik (Seçilen Dil)</option>
+
+<option>Türkçe</option>
+
+<option>English</option>
+
+<option>Português (Brasil)</option>
+
+<option>Español</option>
+
+<option>Français</option>
+
+<option>Deutsch</option>
+
+<option>Italiano</option>
+
+<option>日本語</option>
+
+<option>한국어</option>
+
+<option>العربية</option>
+
+</select>
+
+</div>
+
+<div>
+
+<label class="block mb-3 font-bold">
+
+📰 Haber Dili
+
+</label>
+
+<select class="inputBox">
+
+<option>Otomatik</option>
+
+<option>Türkçe</option>
+
+<option>English</option>
+
+<option>Português</option>
+
+<option>Español</option>
+
+<option>Français</option>
+
+<option>Deutsch</option>
+
+</select>
+
+</div>
+
+<div>
+
+<label class="block mb-3 font-bold">
+
+📈 Varsayılan Piyasa
+
+</label>
+
+<select class="inputBox">
+
+<option>BIST</option>
+
+<option>NASDAQ</option>
+
+<option>NYSE</option>
+
+<option>OTC Markets</option>
+
+<option>Tüm Piyasalar</option>
+
+</select>
+
+</div>
+
+<div>
+
+<label class="block mb-3 font-bold">
+
+🌐 Otomatik Çeviri
+
+</label>
+
+<select class="inputBox">
+
+<option>Açık</option>
+
+<option>Kapalı</option>
+
+</select>
+
+</div>
+
+</div>
+
+<div class="glass rounded-3xl p-8 mt-10">
+
+<h3 class="text-2xl font-bold">
+
+💡 Dil Sistemi Nasıl Çalışır?
+
+</h3>
+
+<div class="space-y-4 mt-6 text-slate-300">
+
+<p>✅ Tüm menüler seçtiğiniz dile çevrilir.</p>
+
+<p>✅ Nexora AI sizin seçtiğiniz dilde cevap verir.</p>
+
+<p>✅ Haberler mümkün olduğunca seçilen dilde gösterilir.</p>
+
+<p>✅ Tarih, saat ve para birimi otomatik uyarlanır.</p>
+
+<p>✅ Bu ayarlar hesabınıza kaydedilir ve tüm cihazlarda senkronize edilir.</p>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="mt-14">
+
+<div class="glass rounded-[34px] p-10">
+
+<div class="badge">
+
+🎨 Görünüm Ayarları
+
+</div>
+
+<h2 class="text-4xl font-black mt-8">
+
+Tema ve Deneyim
+
+</h2>
+
+<p class="text-slate-400 mt-6 leading-8">
+
+Nexora AI'ın görünümünü ve kullanım deneyimini
+kişisel tercihlerinize göre özelleştirebilirsiniz.
+
+</p>
+
+<div class="grid lg:grid-cols-2 gap-8 mt-12">
+
+<div>
+
+<label class="block mb-3 font-bold">
+
+🎨 Tema
+
+</label>
+
+<select class="inputBox">
+
+<option>Koyu Tema (Önerilen)</option>
+
+<option>Açık Tema</option>
+
+<option>Sistem Teması</option>
+
+</select>
+
+</div>
+
+<div>
+
+<label class="block mb-3 font-bold">
+
+🎭 Renk Teması
+
+</label>
+
+<select class="inputBox">
+
+<option>Emerald (Nexora)</option>
+
+<option>Mavi</option>
+
+<option>Mor</option>
+
+<option>Turuncu</option>
+
+<option>Kırmızı</option>
+
+</select>
+
+</div>
+
+<div>
+
+<label class="block mb-3 font-bold">
+
+✨ Animasyonlar
+
+</label>
+
+<select class="inputBox">
+
+<option>Açık</option>
+
+<option>Azaltılmış</option>
+
+<option>Kapalı</option>
+
+</select>
+
+</div>
+
+<div>
+
+<label class="block mb-3 font-bold">
+
+📱 Kompakt Görünüm
+
+</label>
+
+<select class="inputBox">
+
+<option>Kapalı</option>
+
+<option>Açık</option>
+
+</select>
+
+</div>
+
+</div>
+
+<div class="grid md:grid-cols-2 gap-6 mt-12">
+
+<button
+class="bg-emerald-500 hover:bg-emerald-400 text-black font-black rounded-2xl py-5 transition">
+
+💾 Ayarları Kaydet
+
+</button>
+
+<button
+class="bg-slate-800 hover:bg-slate-700 rounded-2xl py-5 transition">
+
+🔄 Varsayılan Ayarlara Dön
+
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="mt-14">
+
+<div class="glass rounded-[34px] p-8">
+
+<h2 class="text-2xl font-bold">
+
+🚀 Yakında Gelecek Özellikler
+
+</h2>
+
+<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+
+<div>🤖 AI Sesli Konuşma</div>
+
+<div>🎙️ Sesli Komutlar</div>
+
+<div>🌍 30+ Dil Desteği</div>
+
+<div>📈 Bölgesel Haber Akışı</div>
+
+<div>💱 Otomatik Döviz Çevirisi</div>
+
+<div>🗺️ Bölgesel Finans Takvimi</div>
+
+</div>
+
+</div>
+
+</section>
+
+<footer class="mt-20 border-t border-slate-800">
+
+<div class="max-w-7xl mx-auto px-6 py-12">
+
+<div class="flex flex-col lg:flex-row justify-between items-center gap-8">
+
+<div>
+
+<h2 class="text-3xl font-black">
+
+NEXORA
+
+<span class="gradient">
+
+AI
+
+</span>
+
+</h2>
+
+<p class="text-slate-500 mt-3">
+
+Language & Region Center
+
+</p>
+
+</div>
+
+<div class="flex flex-wrap gap-6 text-slate-400">
+
+<a href="index.html" class="hover:text-emerald-400 transition">
+
+Ana Sayfa
+
+</a>
+
+<a href="settings.html" class="hover:text-emerald-400 transition">
+
+Ayarlar
+
+</a>
+
+<a href="premium.html" class="hover:text-emerald-400 transition">
+
+Premium
+
+</a>
+
+<a href="profile.html" class="hover:text-emerald-400 transition">
+
+Profil
+
+</a>
+
+</div>
+
+</div>
+
+<div class="border-t border-slate-800 mt-10 pt-8 text-center text-slate-500">
+
+© 2026 Nexora AI • All Rights Reserved.
+
+</div>
+
+</div>
+
+</footer>
+
+<script>
+
+const selects=document.querySelectorAll("select");
+
+selects.forEach(select=>{
+
+const key="nexora_"+select.previousElementSibling.innerText;
+
+const saved=localStorage.getItem(key);
+
+if(saved){
+
+select.value=saved;
+
+}
+
+select.addEventListener("change",()=>{
+
+localStorage.setItem(key,select.value);
+
+});
+
+});
+
+document.querySelectorAll(".languageCard").forEach(card=>{
+
+card.addEventListener("click",()=>{
+
+document.querySelectorAll(".languageCard").forEach(c=>{
+
+c.style.borderColor="#1e293b";
+
+});
+
+card.style.borderColor="#10b981";
+
+});
+
+});
+
+</script>
+
+</body>
+
+</html>
