@@ -882,11 +882,1171 @@ price+
 
 }
 
+/*=========================================================
+BÖLÜM 1
+Stock Layout Engine
+=========================================================*/
 
+const StockPage = {
 
-</script>
+    symbol: SYMBOL,
 
+    market: "BIST",
 
-</body>
+    category: "ALL",
 
-</html>
+    favorites: [],
+
+    aiQuestionsToday: 0,
+
+    freeQuestionLimit: 3,
+
+    init() {
+
+        this.loadFavorites();
+
+        this.loadUsage();
+
+        this.createLeftSidebar();
+
+        this.createRightSidebar();
+
+    },
+
+    createLeftSidebar() {
+
+        document.getElementById("leftSidebar").innerHTML = `
+
+<div class="space-y-3">
+
+<div class="bg-slate-800 rounded-2xl p-4">
+
+<h3 class="font-bold text-lg mb-4">
+
+🌍 Marketler
+
+</h3>
+
+<button class="market-btn" data-market="BIST30">
+
+🇹🇷 BIST30
+
+</button>
+
+<button class="market-btn" data-market="BIST50">
+
+🇹🇷 BIST50
+
+</button>
+
+<button class="market-btn" data-market="BIST100">
+
+🇹🇷 BIST100
+
+</button>
+
+<button class="market-btn" data-market="BISTALL">
+
+🇹🇷 TÜM BIST
+
+</button>
+
+<button class="market-btn" data-market="NASDAQ">
+
+🇺🇸 NASDAQ
+
+</button>
+
+<button class="market-btn" data-market="NYSE">
+
+🇺🇸 NYSE
+
+</button>
+
+<button class="market-btn" data-market="OTC">
+
+🌍 OTC
+
+</button>
+
+<button class="market-btn" data-market="CRYPTO">
+
+₿ KRİPTO
+
+</button>
+
+</div>
+
+<div class="bg-slate-800 rounded-2xl p-4">
+
+<h3 class="font-bold">
+
+⭐ Favoriler
+
+</h3>
+
+<div id="favoriteList">
+
+Henüz favori yok.
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+    },
+
+    createRightSidebar() {
+
+        document.getElementById("rightSidebar").innerHTML = `
+
+<div class="space-y-4">
+
+<div class="bg-slate-800 rounded-2xl p-4">
+
+<h3 class="font-bold">
+
+🤖 AI Kullanımı
+
+</h3>
+
+<p>
+
+Bugün
+
+<span id="aiUsage">
+
+0 / 3
+
+</span>
+
+</p>
+
+</div>
+
+<div class="bg-slate-800 rounded-2xl p-4">
+
+<h3 class="font-bold">
+
+🔥 AI Radar
+
+</h3>
+
+<div id="aiRadar">
+
+Yakında...
+
+</div>
+
+</div>
+
+<div class="bg-slate-800 rounded-2xl p-4">
+
+<h3 class="font-bold">
+
+📅 Yaklaşan Bilançolar
+
+</h3>
+
+<div id="earningsList">
+
+Yakında...
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+    },
+
+    loadFavorites() {
+
+        this.favorites = JSON.parse(
+
+            localStorage.getItem("favorites") || "[]"
+
+        );
+
+    },
+
+    loadUsage() {
+
+        const today = new Date()
+
+            .toISOString()
+
+            .split("T")[0];
+
+        const saved = JSON.parse(
+
+            localStorage.getItem("aiUsage") || "{}"
+
+        );
+
+        if(saved.date !== today){
+
+            saved.date = today;
+
+            saved.count = 0;
+
+            localStorage.setItem(
+
+                "aiUsage",
+
+                JSON.stringify(saved)
+
+            );
+
+        }
+
+        this.aiQuestionsToday =
+
+            saved.count || 0;
+
+    }
+
+};
+
+StockPage.init();
+
+/*=========================================================
+BÖLÜM 2
+Market Navigation
+=========================================================*/
+
+StockPage.markets = {
+
+    BIST30: [],
+
+    BIST50: [],
+
+    BIST100: [],
+
+    BISTALL: [],
+
+    NASDAQ: [],
+
+    NYSE: [],
+
+    OTC: [],
+
+    CRYPTO: []
+
+};
+
+StockPage.bindMarketButtons = function(){
+
+    document
+    .querySelectorAll(".market-btn")
+    .forEach(button=>{
+
+        button.addEventListener("click",()=>{
+
+            document
+            .querySelectorAll(".market-btn")
+            .forEach(btn=>{
+
+                btn.classList.remove(
+                    "bg-emerald-500",
+                    "text-black"
+                );
+
+            });
+
+            button.classList.add(
+                "bg-emerald-500",
+                "text-black"
+            );
+
+            this.market =
+                button.dataset.market;
+
+            this.loadMarket();
+
+        });
+
+    });
+
+};
+
+StockPage.loadMarket=function(){
+
+    console.log(
+
+        "Market:",
+
+        this.market
+
+    );
+
+    switch(this.market){
+
+        case "BIST30":
+
+            this.loadBIST30();
+
+            break;
+
+        case "BIST50":
+
+            this.loadBIST50();
+
+            break;
+
+        case "BIST100":
+
+            this.loadBIST100();
+
+            break;
+
+        case "BISTALL":
+
+            this.loadBISTALL();
+
+            break;
+
+        case "NASDAQ":
+
+            this.loadNASDAQ();
+
+            break;
+
+        case "NYSE":
+
+            this.loadNYSE();
+
+            break;
+
+        case "OTC":
+
+            this.loadOTC();
+
+            break;
+
+        case "CRYPTO":
+
+            this.loadCrypto();
+
+            break;
+
+    }
+
+};
+
+StockPage.loadBIST30=function(){
+
+    console.log("BIST30");
+
+};
+
+StockPage.loadBIST50=function(){
+
+    console.log("BIST50");
+
+};
+
+StockPage.loadBIST100=function(){
+
+    console.log("BIST100");
+
+};
+
+StockPage.loadBISTALL=function(){
+
+    console.log("Tüm BIST");
+
+};
+
+StockPage.loadNASDAQ=function(){
+
+    console.log("NASDAQ");
+
+};
+
+StockPage.loadNYSE=function(){
+
+    console.log("NYSE");
+
+};
+
+StockPage.loadOTC=function(){
+
+    console.log("OTC");
+
+};
+
+StockPage.loadCrypto=function(){
+
+    console.log("CRYPTO");
+
+};
+
+StockPage.bindMarketButtons();
+
+/*=========================================================
+BÖLÜM 3
+Stock Cards
+=========================================================*/
+
+StockPage.stockContainer = null;
+
+StockPage.createStockContainer = function(){
+
+    if(document.getElementById("stockCards")) return;
+
+    const left = document.getElementById("leftSidebar");
+
+    const container = document.createElement("div");
+
+    container.id = "stockCards";
+
+    container.className =
+        "mt-4 space-y-3";
+
+    left.appendChild(container);
+
+    this.stockContainer = container;
+
+};
+
+StockPage.renderStocks = function(list){
+
+    this.createStockContainer();
+
+    const container =
+        document.getElementById("stockCards");
+
+    container.innerHTML = "";
+
+    list.forEach(stock=>{
+
+        const card =
+        document.createElement("div");
+
+        card.className =
+        "bg-slate-800 rounded-2xl p-4 cursor-pointer hover:bg-slate-700 transition";
+
+        card.innerHTML = `
+
+<div class="flex justify-between items-center">
+
+<div>
+
+<div class="font-bold text-lg">
+
+${stock.symbol}
+
+</div>
+
+<div class="text-xs text-slate-400">
+
+${stock.name}
+
+</div>
+
+</div>
+
+<div class="text-right">
+
+<div class="font-bold">
+
+${stock.price}
+
+</div>
+
+<div class="${
+stock.change>=0
+?
+'text-emerald-400'
+:
+'text-red-400'
+}">
+
+${stock.change>=0?'+':''}${stock.change}%
+
+</div>
+
+</div>
+
+</div>
+
+<div class="mt-3 flex justify-between">
+
+<div>
+
+🤖 AI
+
+<b>${stock.ai}</b>
+
+</div>
+
+<div>
+
+⭐
+
+</div>
+
+</div>
+
+`;
+
+        card.onclick=()=>{
+
+            location.href=
+
+            `stock.html?symbol=${stock.symbol}`;
+
+        };
+
+        container.appendChild(card);
+
+    });
+
+};
+
+StockPage.demoBIST30=[
+
+{
+
+symbol:"THYAO",
+
+name:"Türk Hava Yolları",
+
+price:"324.80 ₺",
+
+change:2.34,
+
+ai:94
+
+},
+
+{
+
+symbol:"ASELS",
+
+name:"Aselsan",
+
+price:"188.20 ₺",
+
+change:1.85,
+
+ai:95
+
+},
+
+{
+
+symbol:"FROTO",
+
+name:"Ford Otosan",
+
+price:"1254.00 ₺",
+
+change:-0.42,
+
+ai:90
+
+},
+
+{
+
+symbol:"TUPRS",
+
+name:"Tüpraş",
+
+price:"198.30 ₺",
+
+change:1.12,
+
+ai:88
+
+}
+
+];
+
+StockPage.loadBIST30=function(){
+
+    this.renderStocks(
+
+        this.demoBIST30
+
+    );
+
+};
+
+StockPage.loadBIST30();
+
+/*=========================================================
+BÖLÜM 4
+Search & Sort System
+=========================================================*/
+
+StockPage.currentStocks = [];
+
+StockPage.renderStocks = function(list){
+
+    this.currentStocks = [...list];
+
+    this.createStockContainer();
+
+    const container =
+        document.getElementById("stockCards");
+
+    container.innerHTML = "";
+
+    list.forEach(stock=>{
+
+        const card=document.createElement("div");
+
+        card.className=
+        "bg-slate-800 rounded-2xl p-4 cursor-pointer hover:bg-slate-700 transition";
+
+        card.innerHTML=`
+
+<div class="flex justify-between">
+
+<div>
+
+<div class="font-bold text-lg">
+
+${stock.symbol}
+
+</div>
+
+<div class="text-xs text-slate-400">
+
+${stock.name}
+
+</div>
+
+</div>
+
+<div class="text-right">
+
+<div class="font-bold">
+
+${stock.price}
+
+</div>
+
+<div class="${
+stock.change>=0
+?
+'text-emerald-400'
+:
+'text-red-400'
+}">
+
+${stock.change>=0?'+':''}${stock.change}%
+
+</div>
+
+</div>
+
+</div>
+
+<div class="mt-3 flex justify-between">
+
+<div>
+
+🤖 AI <b>${stock.ai}</b>
+
+</div>
+
+<div>
+
+⭐
+
+</div>
+
+</div>
+
+`;
+
+        card.onclick=()=>{
+
+            location.href=
+            `stock.html?symbol=${stock.symbol}`;
+
+        };
+
+        container.appendChild(card);
+
+    });
+
+};
+
+StockPage.filterStocks=function(text){
+
+    text=text.toUpperCase();
+
+    const filtered=
+
+    this.currentStocks.filter(stock=>
+
+        stock.symbol.includes(text)
+
+        ||
+
+        stock.name.toUpperCase().includes(text)
+
+    );
+
+    this.renderStocks(filtered);
+
+};
+
+StockPage.sortByAI=function(){
+
+    this.currentStocks.sort(
+
+        (a,b)=>b.ai-a.ai
+
+    );
+
+    this.renderStocks(this.currentStocks);
+
+};
+
+StockPage.sortAlphabetic=function(){
+
+    this.currentStocks.sort(
+
+        (a,b)=>
+
+        a.symbol.localeCompare(b.symbol)
+
+    );
+
+    this.renderStocks(this.currentStocks);
+
+};
+
+const searchInput=
+
+document.getElementById("stockSearch");
+
+if(searchInput){
+
+    searchInput.addEventListener(
+
+        "input",
+
+        e=>{
+
+            StockPage.filterStocks(
+
+                e.target.value
+
+            );
+
+        }
+
+    );
+
+}
+
+/*=========================================================
+BÖLÜM 5
+BIST30 Database
+=========================================================*/
+
+StockPage.demoBIST30 = [
+
+{symbol:"AEFES",name:"Anadolu Efes",price:"--",change:0,ai:89},
+{symbol:"AKBNK",name:"Akbank",price:"--",change:0,ai:91},
+{symbol:"ASELS",name:"Aselsan",price:"--",change:0,ai:95},
+{symbol:"ASTOR",name:"Astor Enerji",price:"--",change:0,ai:90},
+{symbol:"BIMAS",name:"BİM",price:"--",change:0,ai:88},
+{symbol:"DOAS",name:"Doğuş Otomotiv",price:"--",change:0,ai:87},
+{symbol:"EKGYO",name:"Emlak Konut GYO",price:"--",change:0,ai:84},
+{symbol:"ENKAI",name:"Enka İnşaat",price:"--",change:0,ai:86},
+{symbol:"EREGL",name:"Ereğli Demir Çelik",price:"--",change:0,ai:89},
+{symbol:"FROTO",name:"Ford Otosan",price:"--",change:0,ai:93},
+{symbol:"GARAN",name:"Garanti BBVA",price:"--",change:0,ai:92},
+{symbol:"GUBRF",name:"Gübre Fabrikaları",price:"--",change:0,ai:83},
+{symbol:"HEKTS",name:"Hektaş",price:"--",change:0,ai:79},
+{symbol:"ISCTR",name:"İş Bankası",price:"--",change:0,ai:90},
+{symbol:"KCHOL",name:"Koç Holding",price:"--",change:0,ai:93},
+{symbol:"KOZAL",name:"Koza Altın",price:"--",change:0,ai:82},
+{symbol:"PETKM",name:"Petkim",price:"--",change:0,ai:80},
+{symbol:"PGSUS",name:"Pegasus",price:"--",change:0,ai:91},
+{symbol:"SAHOL",name:"Sabancı Holding",price:"--",change:0,ai:90},
+{symbol:"SASA",name:"SASA Polyester",price:"--",change:0,ai:85},
+{symbol:"SISE",name:"Şişecam",price:"--",change:0,ai:88},
+{symbol:"TCELL",name:"Turkcell",price:"--",change:0,ai:89},
+{symbol:"THYAO",name:"Türk Hava Yolları",price:"--",change:0,ai:94},
+{symbol:"TOASO",name:"Tofaş",price:"--",change:0,ai:89},
+{symbol:"TUPRS",name:"Tüpraş",price:"--",change:0,ai:92},
+{symbol:"YKBNK",name:"Yapı Kredi",price:"--",change:0,ai:88},
+{symbol:"ALARK",name:"Alarko Holding",price:"--",change:0,ai:87},
+{symbol:"HALKB",name:"Halkbank",price:"--",change:0,ai:81},
+{symbol:"VAKBN",name:"Vakıfbank",price:"--",change:0,ai:82},
+{symbol:"OYAKC",name:"OYAK Çimento",price:"--",change:0,ai:86}
+
+];
+
+StockPage.loadBIST30 = function(){
+
+    this.renderStocks(this.demoBIST30);
+
+};
+
+/*=========================================================
+BÖLÜM 6
+Professional Stock Cards
+=========================================================*/
+
+StockPage.getRecommendation=function(ai){
+
+    if(ai>=90){
+
+        return{
+
+            text:"🟢 GÜÇLÜ AL",
+
+            color:"text-emerald-400"
+
+        };
+
+    }
+
+    if(ai>=80){
+
+        return{
+
+            text:"🟡 AL",
+
+            color:"text-yellow-400"
+
+        };
+
+    }
+
+    if(ai>=70){
+
+        return{
+
+            text:"🟠 TUT",
+
+            color:"text-orange-400"
+
+        };
+
+    }
+
+    return{
+
+        text:"🔴 SAT",
+
+        color:"text-red-400"
+
+    };
+
+};
+
+StockPage.renderStocks=function(list){
+
+    this.currentStocks=[...list];
+
+    this.createStockContainer();
+
+    const container=document.getElementById("stockCards");
+
+    container.innerHTML="";
+
+    list.forEach(stock=>{
+
+        const signal=this.getRecommendation(stock.ai);
+
+        const card=document.createElement("div");
+
+        card.className=
+        "bg-slate-800 rounded-2xl p-4 cursor-pointer hover:bg-slate-700 transition border border-slate-700";
+
+        card.innerHTML=`
+
+<div class="flex justify-between">
+
+<div>
+
+<div class="text-lg font-bold">
+
+${stock.symbol}
+
+</div>
+
+<div class="text-xs text-slate-400">
+
+${stock.name}
+
+</div>
+
+</div>
+
+<div class="text-right">
+
+<div class="font-bold">
+
+${stock.price}
+
+</div>
+
+<div class="${
+stock.change>=0
+?
+'text-emerald-400'
+:
+'text-red-400'
+}">
+
+${stock.change>=0?'+':''}${stock.change}%
+
+</div>
+
+</div>
+
+</div>
+
+<div class="mt-4">
+
+<div class="flex justify-between">
+
+<span>
+
+🤖 AI
+
+</span>
+
+<b>
+
+${stock.ai}/100
+
+</b>
+
+</div>
+
+<div class="w-full bg-slate-700 rounded-full h-2 mt-2">
+
+<div
+
+class="bg-emerald-500 h-2 rounded-full"
+
+style="width:${stock.ai}%">
+
+</div>
+
+</div>
+
+</div>
+
+<div class="mt-4 h-12 bg-slate-900 rounded-xl flex items-center justify-center text-slate-500 text-xs">
+
+📈 Mini Grafik
+
+</div>
+
+<div class="mt-4 flex justify-between items-center">
+
+<span class="${signal.color} font-bold">
+
+${signal.text}
+
+</span>
+
+<button
+
+class="favorite-btn"
+
+data-symbol="${stock.symbol}">
+
+⭐
+
+</button>
+
+</div>
+
+`;
+
+        card.onclick=()=>{
+
+            location.href=
+
+            `stock.html?symbol=${stock.symbol}`;
+
+        };
+
+        container.appendChild(card);
+
+    });
+
+};
+
+/*=========================================================
+BÖLÜM 7
+Universal Market Loader
+=========================================================*/
+
+StockPage.marketData = {
+
+    BIST30: StockPage.demoBIST30,
+
+    BIST50: [],
+
+    BIST100: [],
+
+    BISTALL: [],
+
+    NASDAQ: [],
+
+    NYSE: [],
+
+    OTC: [],
+
+    CRYPTO: []
+
+};
+
+StockPage.loadMarket=function(){
+
+    const data=
+
+        this.marketData[this.market] || [];
+
+    this.renderStocks(data);
+
+    this.updateMarketTitle();
+
+};
+
+StockPage.updateMarketTitle=function(){
+
+    const titles={
+
+        BIST30:"🇹🇷 BIST 30",
+
+        BIST50:"🇹🇷 BIST 50",
+
+        BIST100:"🇹🇷 BIST 100",
+
+        BISTALL:"🇹🇷 TÜM BIST",
+
+        NASDAQ:"🇺🇸 NASDAQ",
+
+        NYSE:"🇺🇸 NYSE",
+
+        OTC:"🌍 OTC MARKET",
+
+        CRYPTO:"₿ KRİPTO"
+
+    };
+
+    const title=
+
+        document.getElementById("companyName");
+
+    if(title){
+
+        title.textContent=
+
+        titles[this.market] ||
+
+        "Piyasalar";
+
+    }
+
+};
+
+StockPage.changeMarket=function(market){
+
+    this.market=market;
+
+    this.loadMarket();
+
+};
+
+StockPage.loadMarket();
+
+/*=========================================================
+BÖLÜM 8
+Market Statistics
+=========================================================*/
+
+StockPage.marketStatistics = {
+
+    BIST30:30,
+
+    BIST50:50,
+
+    BIST100:100,
+
+    BISTALL:0,
+
+    NASDAQ:0,
+
+    NYSE:0,
+
+    OTC:0,
+
+    CRYPTO:0
+
+};
+
+StockPage.updateStatistics=function(){
+
+    const stats=this.marketStatistics;
+
+    const total=document.getElementById("marketTotal");
+
+    if(!total) return;
+
+    const value=stats[this.market]||0;
+
+    if(value===0){
+
+        total.textContent="Yakında";
+
+        return;
+
+    }
+
+    total.textContent=value+" Hisse";
+
+};
+
+const info=document.createElement("div");
+
+info.className=
+
+"bg-slate-900 rounded-2xl p-4 mt-4";
+
+info.innerHTML=`
+
+<div class="text-slate-400">
+
+Seçili Market
+
+</div>
+
+<div id="marketTotal"
+
+class="text-2xl font-bold mt-2">
+
+--
+
+</div>
+
+`;
+
+document
+.getElementById("leftSidebar")
+.appendChild(info);
+
+StockPage.updateStatistics();
+
