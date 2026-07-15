@@ -2033,6 +2033,1757 @@ updateTakip();
 
 };
 
+/*=========================================================
+INDEX V4
+NEXORA AI HOME
+BÖLÜM 1
+=========================================================*/
+
+const Nexora={
+
+version:"4.0",
+
+theme:
+
+localStorage.getItem("theme")
+
+||
+
+"dark",
+
+dailyQuestions:3,
+
+usedQuestions:0,
+
+userName:"Yatırımcı",
+
+init(){
+
+this.loadTheme();
+
+this.renderGreeting();
+
+this.updateQuestionCounter();
+
+}
+
+};
+
+Nexora.loadTheme=function(){
+
+document.body.classList.remove(
+
+"theme-dark",
+
+"theme-light"
+
+);
+
+document.body.classList.add(
+
+"theme-"+this.theme
+
+);
+
+};
+
+Nexora.toggleTheme=function(){
+
+this.theme=
+
+this.theme==="dark"
+
+?
+
+"light"
+
+:
+
+"dark";
+
+localStorage.setItem(
+
+"theme",
+
+this.theme
+
+);
+
+this.loadTheme();
+
+};
+
+Nexora.renderGreeting=function(){
+
+const hour=
+
+new Date().getHours();
+
+let text="";
+
+if(hour<12){
+
+text="Günaydın";
+
+}
+
+else if(hour<18){
+
+text="İyi Günler";
+
+}
+
+else{
+
+text="İyi Akşamlar";
+
+}
+
+const el=
+
+document.getElementById(
+
+"nexoraGreeting"
+
+);
+
+if(el){
+
+el.innerHTML=`
+
+<h2 class="text-4xl font-bold">
+
+${text} 👋
+
+</h2>
+
+<p class="text-slate-400 mt-3">
+
+Ben <span class="text-emerald-400 font-bold">
+
+Nexora AI
+
+</span>.
+
+Bugün size nasıl yardımcı olabilirim?
+
+</p>
+
+`;
+
+}
+
+};
+
+Nexora.updateQuestionCounter=function(){
+
+const el=
+
+document.getElementById(
+
+"questionCounter"
+
+);
+
+if(!el) return;
+
+const remain=
+
+this.dailyQuestions-
+
+this.usedQuestions;
+
+el.textContent=
+
+remain+
+
+" / "+
+
+this.dailyQuestions;
+
+};
+
+document.addEventListener(
+
+"DOMContentLoaded",
+
+()=>{
+
+Nexora.init();
+
+});
+
+/*=========================================================
+INDEX V4
+BÖLÜM 2
+NEXORA HERO
+=========================================================*/
+
+Nexora.createHero=function(){
+
+const hero=document.createElement("section");
+
+hero.className=
+"max-w-7xl mx-auto px-6 mt-12 mb-16";
+
+hero.innerHTML=`
+
+<div class="glass rounded-3xl p-10">
+
+<div class="grid lg:grid-cols-2 gap-10 items-center">
+
+<div>
+
+<div id="nexoraGreeting"></div>
+
+<div class="mt-8">
+
+<input
+
+id="aiSearch"
+
+type="text"
+
+placeholder="Hisse, şirket veya sorunuzu yazın..."
+
+class="w-full bg-slate-900 border border-slate-700 rounded-2xl p-5 outline-none focus:border-emerald-400">
+
+</div>
+
+<div class="flex flex-wrap gap-4 mt-6">
+
+<button
+
+id="askAI"
+
+class="bg-emerald-500 text-black font-bold px-8 py-4 rounded-2xl">
+
+🤖 AI Analiz Et
+
+</button>
+
+<button
+
+class="bg-slate-800 px-8 py-4 rounded-2xl">
+
+📈 Hisseleri Keşfet
+
+</button>
+
+</div>
+
+</div>
+
+<div>
+
+<div class="glass rounded-3xl p-6">
+
+<div class="flex justify-between items-center">
+
+<h3 class="text-xl font-bold">
+
+👑 Premium
+
+</h3>
+
+<span
+
+class="text-yellow-400">
+
+PRO
+
+</span>
+
+</div>
+
+<div class="mt-6 space-y-3 text-slate-300">
+
+<p>✓ Sınırsız AI Analizi</p>
+
+<p>✓ Gelişmiş Teknik Analiz</p>
+
+<p>✓ Portföy Risk Analizi</p>
+
+<p>✓ OTC & NASDAQ AI</p>
+
+</div>
+
+<div class="mt-8">
+
+<div class="text-sm text-slate-400">
+
+Günlük AI Hakkı
+
+</div>
+
+<div
+
+id="questionCounter"
+
+class="text-3xl font-bold mt-2">
+
+3 / 3
+
+</div>
+
+</div>
+
+<button
+
+class="w-full mt-8 bg-yellow-400 text-black font-bold rounded-2xl p-4">
+
+Premium'u Keşfet
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+const heroSection=document.querySelector("section");
+
+heroSection.insertAdjacentElement(
+
+"afterend",
+
+hero
+
+);
+
+};
+
+document.addEventListener(
+
+"DOMContentLoaded",
+
+()=>{
+
+Nexora.createHero();
+
+});
+
+/*=========================================================
+INDEX V4
+BÖLÜM 3
+LIVE MARKET DASHBOARD
+=========================================================*/
+
+Nexora.dashboard={
+
+gainers:[],
+
+losers:[],
+
+volume:[],
+
+aiRadar:[]
+
+};
+
+Nexora.createDashboard=function(){
+
+const section=document.createElement("section");
+
+section.className=
+
+"max-w-7xl mx-auto px-6 mt-12";
+
+section.innerHTML=`
+
+<h2 class="text-3xl font-bold mb-8">
+
+📊 Bugün Piyasada Neler Oluyor?
+
+</h2>
+
+<div class="grid lg:grid-cols-2 gap-6">
+
+<div id="gainersCard"
+class="glass rounded-3xl p-6"></div>
+
+<div id="losersCard"
+class="glass rounded-3xl p-6"></div>
+
+<div id="volumeCard"
+class="glass rounded-3xl p-6"></div>
+
+<div id="aiRadarCard"
+class="glass rounded-3xl p-6"></div>
+
+</div>
+
+`;
+
+document.body.appendChild(section);
+
+};
+
+Nexora.renderSimpleList=function(id,title,icon,list){
+
+const el=document.getElementById(id);
+
+if(!el) return;
+
+el.innerHTML=`
+
+<h3 class="text-xl font-bold mb-5">
+
+${icon} ${title}
+
+</h3>
+
+<div class="space-y-3">
+
+${list.map(stock=>`
+
+<div class="flex justify-between">
+
+<div>
+
+<b>${stock.symbol}</b>
+
+</div>
+
+<div>
+
+${stock.change>=0?"+":""}${stock.change}%
+
+</div>
+
+</div>
+
+`).join("")}
+
+</div>
+
+`;
+
+};
+
+document.addEventListener(
+
+"DOMContentLoaded",
+
+()=>{
+
+Nexora.createDashboard();
+
+});
+
+/*=========================================================
+INDEX V4
+BÖLÜM 4
+COMMON STOCK DATABASE
+=========================================================*/
+
+Nexora.market={
+
+BIST30:[],
+
+BIST50:[],
+
+BIST100:[],
+
+BISTALL:[],
+
+NASDAQ:[],
+
+NYSE:[],
+
+OTC:[]
+
+};
+
+Nexora.loadStockDatabase=function(){
+
+if(window.StockPage){
+
+this.market.BIST30=
+
+StockPage.demoBIST30||[];
+
+}
+
+};
+
+Nexora.buildDashboard=function(){
+
+const list=this.market.BIST30;
+
+if(!list.length) return;
+
+const gainers=[
+
+...list
+
+].sort(
+
+(a,b)=>b.change-a.change
+
+).slice(0,5);
+
+const losers=[
+
+...list
+
+].sort(
+
+(a,b)=>a.change-b.change
+
+).slice(0,5);
+
+const ai=[
+
+...list
+
+].sort(
+
+(a,b)=>b.ai-a.ai
+
+).slice(0,5);
+
+const volume=[
+
+...list
+
+].slice(0,5);
+
+this.renderSimpleList(
+
+"gainersCard",
+
+"Bugün En Çok Kazandıranlar",
+
+"📈",
+
+gainers
+
+);
+
+this.renderSimpleList(
+
+"losersCard",
+
+"Bugün En Çok Kaybettirenler",
+
+"📉",
+
+losers
+
+);
+
+this.renderSimpleList(
+
+"volumeCard",
+
+"En Çok İşlem Görenler",
+
+"🔥",
+
+volume
+
+);
+
+this.renderSimpleList(
+
+"aiRadarCard",
+
+"AI Radar",
+
+"🤖",
+
+ai
+
+);
+
+};
+
+document.addEventListener(
+
+"DOMContentLoaded",
+
+()=>{
+
+Nexora.loadStockDatabase();
+
+Nexora.buildDashboard();
+
+});
+
+/*=========================================================
+INDEX V4
+BÖLÜM 5
+PREMIUM UI
+=========================================================*/
+
+Nexora.createFloatingWidgets=function(){
+
+const container=document.createElement("div");
+
+container.id="floatingWidgets";
+
+container.style.cssText=`
+
+position:fixed;
+right:20px;
+bottom:20px;
+display:flex;
+flex-direction:column;
+gap:15px;
+z-index:9999;
+
+`;
+
+container.innerHTML=`
+
+<button
+id="themeButton"
+title="Tema"
+style="
+width:58px;
+height:58px;
+border:none;
+border-radius:50%;
+background:#111827;
+color:white;
+font-size:22px;
+cursor:pointer;
+box-shadow:0 10px 25px rgba(0,0,0,.35);
+">
+
+🌙
+
+</button>
+
+<button
+id="aiButton"
+title="Nexora AI"
+style="
+width:58px;
+height:58px;
+border:none;
+border-radius:50%;
+background:#10b981;
+color:white;
+font-size:22px;
+cursor:pointer;
+box-shadow:0 10px 25px rgba(16,185,129,.4);
+">
+
+🤖
+
+</button>
+
+`;
+
+document.body.appendChild(container);
+
+document
+
+.getElementById("themeButton")
+
+.onclick=()=>{
+
+Nexora.toggleTheme();
+
+};
+
+document
+
+.getElementById("aiButton")
+
+.onclick=()=>{
+
+document
+
+.getElementById("aiSearch")
+
+?.focus();
+
+};
+
+};
+
+document.addEventListener(
+
+"DOMContentLoaded",
+
+()=>{
+
+Nexora.createFloatingWidgets();
+
+});
+
+/*=========================================================
+INDEX V4
+BÖLÜM 6
+LIVE HEADER
+=========================================================*/
+
+Nexora.createTopBar=function(){
+
+const top=document.createElement("section");
+
+top.className="max-w-7xl mx-auto px-6 mt-8";
+
+top.innerHTML=`
+
+<div class="glass rounded-3xl p-6">
+
+<div class="flex flex-col lg:flex-row justify-between items-center gap-6">
+
+<div>
+
+<div class="text-slate-400">
+
+Canlı Piyasalar
+
+</div>
+
+<div class="flex flex-wrap gap-6 mt-3">
+
+<div>
+
+<div class="text-xs text-slate-500">
+
+🇹🇷 BIST100
+
+</div>
+
+<div id="bistIndex"
+
+class="text-2xl font-bold">
+
+--
+
+</div>
+
+</div>
+
+<div>
+
+<div class="text-xs text-slate-500">
+
+🇺🇸 NASDAQ
+
+</div>
+
+<div id="nasdaqIndex"
+
+class="text-2xl font-bold">
+
+--
+
+</div>
+
+</div>
+
+<div>
+
+<div class="text-xs text-slate-500">
+
+🇺🇸 NYSE
+
+</div>
+
+<div id="nyseIndex"
+
+class="text-2xl font-bold">
+
+--
+
+</div>
+
+</div>
+
+<div>
+
+<div class="text-xs text-slate-500">
+
+₿ BTC
+
+</div>
+
+<div id="btcPrice"
+
+class="text-2xl font-bold">
+
+--
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div>
+
+<button
+
+class="bg-emerald-500 text-black px-8 py-4 rounded-2xl font-bold">
+
+📈 Tüm Hisseler
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+document.body.prepend(top);
+
+};
+
+document.addEventListener(
+
+"DOMContentLoaded",
+
+()=>{
+
+Nexora.createTopBar();
+
+});
+
+/*=========================================================
+INDEX V4
+BÖLÜM 7
+QUICK ACCESS PANEL
+=========================================================*/
+
+Nexora.createQuickAccess=function(){
+
+const section=document.createElement("section");
+
+section.className="max-w-7xl mx-auto px-6 mt-10";
+
+section.innerHTML=`
+
+<div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
+
+<div class="glass rounded-3xl p-6 hover:scale-105 transition cursor-pointer">
+
+<div class="text-4xl">📈</div>
+
+<h3 class="mt-4 text-xl font-bold">
+
+Tüm Hisseler
+
+</h3>
+
+<p class="text-slate-400 mt-2">
+
+BIST, NASDAQ, NYSE ve OTC hisselerini inceleyin.
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-6 hover:scale-105 transition cursor-pointer">
+
+<div class="text-4xl">🤖</div>
+
+<h3 class="mt-4 text-xl font-bold">
+
+AI Analizi
+
+</h3>
+
+<p class="text-slate-400 mt-2">
+
+Yapay zeka ile detaylı hisse analizi alın.
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-6 hover:scale-105 transition cursor-pointer">
+
+<div class="text-4xl">📰</div>
+
+<h3 class="mt-4 text-xl font-bold">
+
+Son Haberler
+
+</h3>
+
+<p class="text-slate-400 mt-2">
+
+Piyasayı etkileyen son gelişmeleri takip edin.
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-6 hover:scale-105 transition cursor-pointer">
+
+<div class="text-4xl">💼</div>
+
+<h3 class="mt-4 text-xl font-bold">
+
+Portföyüm
+
+</h3>
+
+<p class="text-slate-400 mt-2">
+
+Portföyünüzü yönetin ve AI ile analiz edin.
+
+</p>
+
+</div>
+
+</div>
+
+`;
+
+document.body.appendChild(section);
+
+};
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+Nexora.createQuickAccess();
+
+});
+
+/*=========================================================
+INDEX V4
+BÖLÜM 8
+NEXORA AI DAILY INSIGHT
+=========================================================*/
+
+Nexora.dailyInsights=[
+
+{
+title:"Bankacılık Sektörü",
+text:"Bankacılık hisselerinde hacim artışı dikkat çekiyor. Gün içi hareketlilik yüksek olabilir.",
+confidence:91
+},
+
+{
+title:"Enerji Sektörü",
+text:"Enerji hisselerinde pozitif teknik görünüm devam ediyor.",
+confidence:87
+},
+
+{
+title:"Savunma Sanayi",
+text:"Savunma sektöründe momentum korunuyor. Haber akışı takip edilmeli.",
+confidence:89
+},
+
+{
+title:"Genel Piyasa",
+text:"BIST endeksinde volatilite artabilir. Risk yönetimi önemlidir.",
+confidence:84
+}
+
+];
+
+Nexora.createDailyInsight=function(){
+
+const random=
+
+this.dailyInsights[
+Math.floor(
+Math.random()*
+this.dailyInsights.length
+)
+];
+
+const section=document.createElement("section");
+
+section.className="max-w-7xl mx-auto px-6 mt-12";
+
+section.innerHTML=`
+
+<div class="glass rounded-3xl p-8">
+
+<div class="flex justify-between items-center">
+
+<div>
+
+<h2 class="text-3xl font-bold">
+
+🤖 Nexora AI Bugünkü Yorumu
+
+</h2>
+
+<p class="text-slate-400 mt-2">
+
+Yapay zekanın günlük piyasa değerlendirmesi
+
+</p>
+
+</div>
+
+<div class="text-right">
+
+<div class="text-slate-400">
+
+Güven Skoru
+
+</div>
+
+<div class="text-3xl font-bold text-emerald-400">
+
+%${random.confidence}
+
+</div>
+
+</div>
+
+</div>
+
+<div class="mt-8">
+
+<h3 class="text-xl font-bold">
+
+${random.title}
+
+</h3>
+
+<p class="mt-4 text-slate-300 leading-8">
+
+${random.text}
+
+</p>
+
+</div>
+
+<div class="mt-8">
+
+<button
+class="bg-emerald-500 text-black px-8 py-4 rounded-2xl font-bold">
+
+📊 Detaylı AI Analizi
+
+</button>
+
+</div>
+
+</div>
+
+`;
+
+document.body.appendChild(section);
+
+};
+
+document.addEventListener(
+
+"DOMContentLoaded",
+
+()=>{
+
+Nexora.createDailyInsight();
+
+});
+
+/*=========================================================
+INDEX V4
+BÖLÜM 9
+TOP GAINERS
+=========================================================*/
+
+Nexora.createTopMovers=function(){
+
+const section=document.createElement("section");
+
+section.className="max-w-7xl mx-auto px-6 mt-12";
+
+section.innerHTML=`
+
+<div class="flex justify-between items-center mb-6">
+
+<h2 class="text-3xl font-bold">
+
+📈 Bugünün En Çok Kazandıranları
+
+</h2>
+
+<a href="stock.html"
+
+class="text-emerald-400">
+
+Tümünü Gör →
+
+</a>
+
+</div>
+
+<div id="topGainers"
+
+class="grid lg:grid-cols-5 md:grid-cols-3 grid-cols-2 gap-5">
+
+</div>
+
+`;
+
+document.body.appendChild(section);
+
+const container=document.getElementById("topGainers");
+
+const data=(Nexora.market.BIST30||[])
+.sort((a,b)=>b.change-a.change)
+.slice(0,5);
+
+data.forEach(stock=>{
+
+const card=document.createElement("div");
+
+card.className=
+"glass rounded-3xl p-5 hover:scale-105 transition cursor-pointer";
+
+card.innerHTML=`
+
+<div class="text-lg font-bold">
+
+${stock.symbol}
+
+</div>
+
+<div class="text-slate-400 mt-1">
+
+${stock.name}
+
+</div>
+
+<div class="mt-5 text-3xl font-bold">
+
+${stock.price}
+
+</div>
+
+<div class="text-emerald-400 mt-2">
+
+▲ +${stock.change}%
+
+</div>
+
+<div class="mt-4">
+
+🤖 AI ${stock.ai}/100
+
+</div>
+
+`;
+
+card.onclick=()=>{
+
+location.href=
+
+"stock.html?symbol="+stock.symbol;
+
+};
+
+container.appendChild(card);
+
+});
+
+};
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+Nexora.createTopMovers();
+
+});
+
+/*=========================================================
+INDEX V4
+BÖLÜM 10
+TOP LOSERS
+=========================================================*/
+
+Nexora.createTopLosers=function(){
+
+const section=document.createElement("section");
+
+section.className="max-w-7xl mx-auto px-6 mt-12";
+
+section.innerHTML=`
+
+<div class="flex justify-between items-center mb-6">
+
+<h2 class="text-3xl font-bold">
+
+📉 Bugünün En Çok Kaybettirenleri
+
+</h2>
+
+<a href="stock.html"
+
+class="text-red-400">
+
+Tümünü Gör →
+
+</a>
+
+</div>
+
+<div id="topLosers"
+
+class="grid lg:grid-cols-5 md:grid-cols-3 grid-cols-2 gap-5">
+
+</div>
+
+`;
+
+document.body.appendChild(section);
+
+const container=document.getElementById("topLosers");
+
+const data=[...(Nexora.market.BIST30||[])]
+
+.sort((a,b)=>a.change-b.change)
+
+.slice(0,5);
+
+data.forEach(stock=>{
+
+const card=document.createElement("div");
+
+card.className="glass rounded-3xl p-5 hover:scale-105 transition cursor-pointer";
+
+card.innerHTML=`
+
+<div class="text-lg font-bold">${stock.symbol}</div>
+
+<div class="text-slate-400 mt-1">${stock.name}</div>
+
+<div class="mt-5 text-3xl font-bold">${stock.price}</div>
+
+<div class="text-red-400 mt-2">
+
+▼ ${stock.change}%
+
+</div>
+
+<div class="mt-4">
+
+🤖 AI ${stock.ai}/100
+
+</div>
+
+`;
+
+card.onclick=()=>{
+
+location.href="stock.html?symbol="+stock.symbol;
+
+};
+
+container.appendChild(card);
+
+});
+
+};
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+Nexora.createTopLosers();
+
+});
+
+/*=========================================================
+INDEX V4
+BÖLÜM 11
+MOST ACTIVE
+=========================================================*/
+
+Nexora.createMostActive=function(){
+
+const section=document.createElement("section");
+
+section.className="max-w-7xl mx-auto px-6 mt-12";
+
+section.innerHTML=`
+
+<div class="flex justify-between items-center mb-6">
+
+<h2 class="text-3xl font-bold">
+
+🔥 En Çok İşlem Görenler
+
+</h2>
+
+</div>
+
+<div id="mostActive"
+
+class="grid lg:grid-cols-5 md:grid-cols-3 grid-cols-2 gap-5">
+
+</div>
+
+`;
+
+document.body.appendChild(section);
+
+};
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+Nexora.createMostActive();
+
+});
+
+/*=========================================================
+INDEX V4
+BÖLÜM 12
+LATEST NEWS
+=========================================================*/
+
+Nexora.createNewsPanel=function(){
+
+const section=document.createElement("section");
+
+section.className="max-w-7xl mx-auto px-6 mt-12";
+
+section.innerHTML=`
+
+<div class="flex justify-between items-center mb-6">
+
+<h2 class="text-3xl font-bold">
+
+📰 Son Dakika Haberleri
+
+</h2>
+
+<a href="news.html"
+
+class="text-emerald-400">
+
+Tüm Haberler →
+
+</a>
+
+</div>
+
+<div id="newsContainer"
+
+class="grid lg:grid-cols-3 gap-5">
+
+<div class="glass rounded-3xl p-6">
+
+<h3 class="font-bold">
+
+Yükleniyor...
+
+</h3>
+
+<p class="text-slate-400 mt-3">
+
+Haberler hazırlanıyor.
+
+</p>
+
+</div>
+
+</div>
+
+`;
+
+document.body.appendChild(section);
+
+};
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+Nexora.createNewsPanel();
+
+});
+
+/*=========================================================
+INDEX V4
+BÖLÜM 13
+WORLD MARKETS
+=========================================================*/
+
+Nexora.createWorldMarkets=function(){
+
+const section=document.createElement("section");
+
+section.className="max-w-7xl mx-auto px-6 mt-12";
+
+section.innerHTML=`
+
+<h2 class="text-3xl font-bold mb-6">
+
+🌍 Dünya Endeksleri
+
+</h2>
+
+<div class="grid lg:grid-cols-6 md:grid-cols-3 grid-cols-2 gap-5">
+
+${["BIST100","NASDAQ","NYSE","DAX","NIKKEI","S&P500"].map(name=>`
+
+<div class="glass rounded-3xl p-5 text-center">
+
+<div class="font-bold text-lg">
+
+${name}
+
+</div>
+
+<div class="text-emerald-400 text-2xl mt-3">
+
+--
+
+</div>
+
+</div>
+
+`).join("")}
+
+</div>
+
+`;
+
+document.body.appendChild(section);
+
+};
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+Nexora.createWorldMarkets();
+
+});
+
+/*=========================================================
+INDEX V4
+BÖLÜM 14
+AI RADAR
+=========================================================*/
+
+Nexora.createAIRadar=function(){
+
+const section=document.createElement("section");
+
+section.className="max-w-7xl mx-auto px-6 mt-12";
+
+section.innerHTML=`
+
+<div class="glass rounded-3xl p-8">
+
+<div class="flex justify-between items-center">
+
+<div>
+
+<h2 class="text-3xl font-bold">
+
+🤖 Nexora AI Radar
+
+</h2>
+
+<p class="text-slate-400 mt-2">
+
+Yapay zekanın bugün dikkat çektiği hisseler
+
+</p>
+
+</div>
+
+<button class="bg-emerald-500 text-black px-6 py-3 rounded-xl font-bold">
+
+AI Taramasını Aç
+
+</button>
+
+</div>
+
+<div id="aiRadarGrid"
+
+class="grid lg:grid-cols-4 md:grid-cols-2 gap-5 mt-8">
+
+</div>
+
+</div>
+
+`;
+
+document.body.appendChild(section);
+
+};
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+Nexora.createAIRadar();
+
+});
+
+/*=========================================================
+INDEX V4
+BÖLÜM 15
+PREMIUM SECTION
+=========================================================*/
+
+Nexora.createPremium=function(){
+
+const section=document.createElement("section");
+
+section.className="max-w-7xl mx-auto px-6 mt-14 mb-14";
+
+section.innerHTML=`
+
+<div class="rounded-3xl p-10 bg-gradient-to-r from-yellow-500 to-amber-400 text-black">
+
+<div class="flex flex-col lg:flex-row justify-between items-center gap-8">
+
+<div>
+
+<h2 class="text-4xl font-bold">
+
+👑 Nexora Premium
+
+</h2>
+
+<p class="mt-4 text-lg">
+
+Sınırsız AI analizi, gelişmiş grafikler,
+
+OTC desteği, portföy analizi ve daha fazlası.
+
+</p>
+
+<div class="mt-6 space-y-2">
+
+<div>✔ Sınırsız AI</div>
+
+<div>✔ Gelişmiş Grafik</div>
+
+<div>✔ OTC Analizi</div>
+
+<div>✔ Portföy Takibi</div>
+
+</div>
+
+</div>
+
+<div>
+
+<button
+
+class="bg-black text-white px-10 py-5 rounded-2xl text-xl font-bold">
+
+Premium'a Geç
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+document.body.appendChild(section);
+
+};
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+Nexora.createPremium();
+
+});
+
+/*=========================================================
+INDEX V4
+BÖLÜM 16
+RESPONSIVE HELPERS
+=========================================================*/
+
+Nexora.responsive=function(){
+
+const mobile=
+
+window.innerWidth<768;
+
+document.body.classList.toggle(
+
+"mobile-layout",
+
+mobile
+
+);
+
+};
+
+window.addEventListener(
+
+"resize",
+
+()=>{
+
+Nexora.responsive();
+
+});
+
+document.addEventListener(
+
+"DOMContentLoaded",
+
+()=>{
+
+Nexora.responsive();
+
+});
+
+/*=========================================================
+INDEX V4
+BÖLÜM 17
+FOOTER
+=========================================================*/
+
+Nexora.createFooter=function(){
+
+const footer=document.createElement("footer");
+
+footer.className="mt-24 border-t border-slate-800";
+
+footer.innerHTML=`
+
+<div class="max-w-7xl mx-auto px-6 py-12">
+
+<div class="grid lg:grid-cols-4 gap-10">
+
+<div>
+
+<h3 class="text-2xl font-bold">
+
+NEXORA AI
+
+</h3>
+
+<p class="text-slate-400 mt-4">
+
+Akıllı yatırım kararları için geliştirilen
+yeni nesil finans platformu.
+
+</p>
+
+</div>
+
+<div>
+
+<h4 class="font-bold">
+
+Piyasalar
+
+</h4>
+
+<div class="space-y-2 mt-4">
+
+<div>BIST</div>
+
+<div>NASDAQ</div>
+
+<div>NYSE</div>
+
+<div>OTC</div>
+
+</div>
+
+</div>
+
+<div>
+
+<h4 class="font-bold">
+
+Araçlar
+
+</h4>
+
+<div class="space-y-2 mt-4">
+
+<div>AI Analizi</div>
+
+<div>Portföy</div>
+
+<div>Haberler</div>
+
+<div>Alarm</div>
+
+</div>
+
+</div>
+
+<div>
+
+<h4 class="font-bold">
+
+Yasal
+
+</h4>
+
+<p class="text-slate-400 mt-4">
+
+Bu platformdaki içerikler yatırım tavsiyesi değildir.
+
+</p>
+
+<p class="mt-6 text-sm text-slate-500">
+
+© 2026 Nexora AI
+
+Tüm hakları saklıdır.
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+document.body.appendChild(footer);
+
+};
+
+document.addEventListener(
+
+"DOMContentLoaded",
+
+()=>{
+
+Nexora.createFooter();
+
+});
+
+/*=========================================================
+INDEX V4
+BÖLÜM 18
+FINAL INITIALIZATION
+=========================================================*/
+
+document.addEventListener(
+
+"DOMContentLoaded",
+
+()=>{
+
+console.log(
+
+"🚀 Nexora AI Home Ready"
+
+);
+
+});
+
 </script>
 
 </body>
