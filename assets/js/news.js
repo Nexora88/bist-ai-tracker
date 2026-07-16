@@ -968,3 +968,705 @@ Object.freeze(News);
 
 News.init();
 
+/* ==========================================================
+   NEXORA AI
+   NEWS ENGINE
+   Version 1.0.0
+   ========================================================== */
+
+import client from "./client.js";
+import market from "./market.js";
+import {
+    API_PRIORITY,
+    CACHE
+} from "./config.js";
+
+/* ==========================================================
+   NEWS ENGINE
+   ========================================================== */
+
+class NewsEngine {
+
+    constructor(){
+
+        this.cache = new Map();
+
+        this.categories = [
+
+            "market",
+
+            "stocks",
+
+            "economy",
+
+            "crypto",
+
+            "forex",
+
+            "commodities",
+
+            "earnings",
+
+            "ipo",
+
+            "dividend",
+
+            "technology"
+
+        ];
+
+    }
+
+    /* ======================================
+       PROVIDER
+    ====================================== */
+
+    provider(){
+
+        return API_PRIORITY.news[0];
+
+    }
+
+    /* ======================================
+       MARKET NEWS
+    ====================================== */
+
+    async marketNews(
+
+        limit = 20
+
+    ){
+
+        return await client.smartGet(
+
+            this.provider(),
+
+            "/news/all",
+
+            {
+
+                limit
+
+            },
+
+            60000
+
+        );
+
+    }
+
+    /* ======================================
+       COMPANY NEWS
+    ====================================== */
+
+    async companyNews(
+
+        symbol,
+
+        limit = 20
+
+    ){
+
+        symbol = market.normalizeSymbol(symbol);
+
+        return await client.smartGet(
+
+            this.provider(),
+
+            "/news/all",
+
+            {
+
+                symbols: symbol,
+
+                limit
+
+            },
+
+            60000
+
+        );
+
+    }
+
+    /* ======================================
+       CATEGORY
+    ====================================== */
+
+    async category(
+
+        category,
+
+        limit = 20
+
+    ){
+
+        return await client.smartGet(
+
+            this.provider(),
+
+            "/news/all",
+
+            {
+
+                categories: category,
+
+                limit
+
+            },
+
+            60000
+
+        );
+
+    }
+
+    /* ======================================
+       CRYPTO NEWS
+    ====================================== */
+
+    crypto(limit=20){
+
+        return this.category(
+
+            "crypto",
+
+            limit
+
+        );
+
+    }
+
+    /* ======================================
+       ECONOMY
+    ====================================== */
+
+    economy(limit=20){
+
+        return this.category(
+
+            "economy",
+
+            limit
+
+        );
+
+    }
+
+    /* ======================================
+       TECHNOLOGY
+    ====================================== */
+
+    technology(limit=20){
+
+        return this.category(
+
+            "technology",
+
+            limit
+
+        );
+
+    }
+
+    /* ======================================
+       IPO
+    ====================================== */
+
+    ipo(limit=20){
+
+        return this.category(
+
+            "ipo",
+
+            limit
+
+        );
+
+    }
+
+    /* ======================================
+       DIVIDEND
+    ====================================== */
+
+    dividend(limit=20){
+
+        return this.category(
+
+            "dividend",
+
+            limit
+
+        );
+
+    }
+
+    /* ======================================
+       EARNINGS
+    ====================================== */
+
+    earnings(limit=20){
+
+        return this.category(
+
+            "earnings",
+
+            limit
+
+        );
+
+    }
+
+    /* ======================================
+       SEARCH
+    ====================================== */
+
+    async search(
+
+        keyword,
+
+        limit = 20
+
+    ){
+
+        return await client.smartGet(
+
+            this.provider(),
+
+            "/news/all",
+
+            {
+
+                search: keyword,
+
+                limit
+
+            },
+
+            60000
+
+        );
+
+    }
+
+}
+
+const news = new NewsEngine();
+
+/* ==========================================================
+   AI NEWS INTELLIGENCE
+   PART 2
+   ========================================================== */
+
+NewsEngine.prototype.sentiment = function(article = {}) {
+
+    const text = `${article.title || ""} ${article.description || ""}`.toLowerCase();
+
+    const positive = [
+        "growth","record","profit","beat","upgrade","bullish",
+        "strong","surge","increase","expansion","buyback",
+        "approval","innovation","partnership","contract"
+    ];
+
+    const negative = [
+        "loss","lawsuit","downgrade","bearish","decline",
+        "bankruptcy","fraud","fall","miss","investigation",
+        "debt","warning","risk","layoffs","recall"
+    ];
+
+    let score = 50;
+
+    positive.forEach(word=>{
+        if(text.includes(word)) score += 5;
+    });
+
+    negative.forEach(word=>{
+        if(text.includes(word)) score -= 5;
+    });
+
+    score = Math.max(0,Math.min(100,score));
+
+    let sentiment="Neutral";
+
+    if(score>=65) sentiment="Positive";
+
+    if(score<=35) sentiment="Negative";
+
+    return{
+
+        sentiment,
+
+        score
+
+    };
+
+};
+
+/* ======================================
+   IMPACT SCORE
+====================================== */
+
+NewsEngine.prototype.impact = function(article={}){
+
+    let score=0;
+
+    if(article.symbols?.length) score+=20;
+
+    if(article.description) score+=20;
+
+    if(article.title) score+=20;
+
+    if(article.source) score+=10;
+
+    if(article.image_url) score+=10;
+
+    if(article.url) score+=10;
+
+    if(article.published_at) score+=10;
+
+    return{
+
+        score,
+
+        level:
+
+            score>=80 ? "Very High":
+
+            score>=60 ? "High":
+
+            score>=40 ? "Medium":
+
+            "Low"
+
+    };
+
+};
+
+/* ======================================
+   KEYWORDS
+====================================== */
+
+NewsEngine.prototype.keywords=function(article={}){
+
+    const text=
+
+    `${article.title||""} ${article.description||""}`;
+
+    return text
+
+        .replace(/[^\w\s]/g,"")
+
+        .split(" ")
+
+        .filter(w=>w.length>4)
+
+        .slice(0,15);
+
+};
+
+/* ======================================
+   AI SUMMARY
+====================================== */
+
+NewsEngine.prototype.summary=function(article={}){
+
+    return{
+
+        title:article.title,
+
+        summary:
+
+        article.description ||
+
+        "Summary unavailable."
+
+    };
+
+};
+
+/* ======================================
+   NORMALIZE
+====================================== */
+
+NewsEngine.prototype.normalize=function(article={}){
+
+    return{
+
+        ...article,
+
+        sentiment:
+
+            this.sentiment(article),
+
+        impact:
+
+            this.impact(article),
+
+        keywords:
+
+            this.keywords(article),
+
+        ai:
+
+            this.summary(article)
+
+    };
+
+};
+
+/* ======================================
+   NORMALIZE LIST
+====================================== */
+
+NewsEngine.prototype.normalizeList=function(
+
+    articles=[]
+
+){
+
+    return articles.map(article=>
+
+        this.normalize(article)
+
+    );
+
+};
+
+/* ==========================================================
+   END OF PART 2
+   ========================================================== */
+
+   /* ==========================================================
+   CACHE • TREND • EXPORT
+   PART 3
+   ========================================================== */
+
+/* ======================================
+   NEWS CACHE
+====================================== */
+
+NewsEngine.prototype.saveCache = function (
+
+    key,
+
+    data,
+
+    ttl = 60000
+
+){
+
+    this.cache.set(key,{
+
+        data,
+
+        expire:Date.now()+ttl
+
+    });
+
+};
+
+NewsEngine.prototype.getCache = function (
+
+    key
+
+){
+
+    const item=this.cache.get(key);
+
+    if(!item) return null;
+
+    if(Date.now()>item.expire){
+
+        this.cache.delete(key);
+
+        return null;
+
+    }
+
+    return item.data;
+
+};
+
+NewsEngine.prototype.clearCache=function(){
+
+    this.cache.clear();
+
+};
+
+/* ======================================
+   TREND NEWS
+====================================== */
+
+NewsEngine.prototype.trending=function(
+
+    articles=[]
+
+){
+
+    return [...articles]
+
+        .sort((a,b)=>
+
+            b.impact.score-
+
+            a.impact.score
+
+        )
+
+        .slice(0,10);
+
+};
+
+/* ======================================
+   REMOVE DUPLICATES
+====================================== */
+
+NewsEngine.prototype.unique=function(
+
+    articles=[]
+
+){
+
+    const map=new Map();
+
+    articles.forEach(article=>{
+
+        const key=(article.title||"").toLowerCase();
+
+        if(!map.has(key)){
+
+            map.set(key,article);
+
+        }
+
+    });
+
+    return [...map.values()];
+
+};
+
+/* ======================================
+   WATCHLIST NEWS
+====================================== */
+
+NewsEngine.prototype.watchlistNews=async function(
+
+    symbols=[]
+
+){
+
+    const result=[];
+
+    for(const symbol of symbols){
+
+        const news=
+
+            await this.companyNews(
+
+                symbol,
+
+                5
+
+            );
+
+        result.push({
+
+            symbol,
+
+            news
+
+        });
+
+    }
+
+    return result;
+
+};
+
+/* ======================================
+   PORTFOLIO NEWS
+====================================== */
+
+NewsEngine.prototype.portfolioNews=function(
+
+    portfolio=[]
+
+){
+
+    return this.watchlistNews(
+
+        portfolio.map(
+
+            x=>x.symbol
+
+        )
+
+    );
+
+};
+
+/* ======================================
+   MARKET DASHBOARD
+====================================== */
+
+NewsEngine.prototype.dashboard=async function(){
+
+    const [
+
+        market,
+
+        economy,
+
+        crypto
+
+    ]=await Promise.all([
+
+        this.marketNews(10),
+
+        this.economy(10),
+
+        this.crypto(10)
+
+    ]);
+
+    return{
+
+        market,
+
+        economy,
+
+        crypto
+
+    };
+
+};
+
+/* ======================================
+   EXPORT
+====================================== */
+
+export default news;
+
+export const marketNews=news.marketNews.bind(news);
+
+export const companyNews=news.companyNews.bind(news);
+
+export const category=news.category.bind(news);
+
+export const searchNews=news.search.bind(news);
+
+export const dashboard=news.dashboard.bind(news);
+
+export const normalizeNews=news.normalize.bind(news);
+
+export const normalizeList=news.normalizeList.bind(news);
+
+export const trendingNews=news.trending.bind(news);
+
+export const watchlistNews=news.watchlistNews.bind(news);
+
+export const portfolioNews=news.portfolioNews.bind(news);
+
+/* ==========================================================
+   END OF NEWS.JS
+   ========================================================== */
