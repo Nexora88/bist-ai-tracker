@@ -1,0 +1,3593 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Nexora AI | News</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+}
+
+body{
+
+background:#020617;
+
+color:white;
+
+overflow-x:hidden;
+
+}
+
+.hero{
+
+background:
+
+radial-gradient(circle at top,#10b98122,transparent 45%),
+
+linear-gradient(180deg,#020617,#0f172a);
+
+}
+
+.glass{
+
+background:rgba(15,23,42,.70);
+
+backdrop-filter:blur(18px);
+
+border:1px solid rgba(255,255,255,.08);
+
+}
+
+.newsCard{
+
+transition:.35s;
+
+cursor:pointer;
+
+}
+
+.newsCard:hover{
+
+transform:translateY(-6px);
+
+border-color:#10b981;
+
+box-shadow:0 20px 40px rgba(16,185,129,.15);
+
+}
+
+.badge{
+
+display:inline-flex;
+
+align-items:center;
+
+padding:8px 18px;
+
+border-radius:999px;
+
+background:#10b98122;
+
+color:#34d399;
+
+font-weight:700;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<section class="hero min-h-screen flex items-center">
+
+<div class="max-w-7xl mx-auto px-8 w-full">
+
+<div class="grid xl:grid-cols-2 gap-16 items-center">
+
+<div>
+
+<div class="badge">
+
+📰 Nexora AI News
+
+</div>
+
+<h1 class="text-7xl font-black leading-tight mt-8">
+
+Akıllı Finans Haber Merkezi
+
+</h1>
+
+<p class="text-slate-400 text-xl mt-8 leading-9">
+
+Yapay zekâ destekli haber analizi, şirket gelişmeleri, ekonomik takvim ve yatırımcılar için gerçek zamanlı finans dünyası.
+
+</p>
+
+<div class="flex flex-wrap gap-5 mt-12">
+
+<button class="bg-emerald-500 hover:bg-emerald-400 text-black px-8 py-5 rounded-2xl font-black transition">
+
+📰 Haberleri Keşfet
+
+</button>
+
+<button class="glass px-8 py-5 rounded-2xl font-bold hover:border-emerald-500 transition">
+
+🤖 AI Günlük Özet
+
+</button>
+
+</div>
+
+</div>
+
+<div>
+
+<div class="glass rounded-[36px] p-10">
+
+<div class="flex justify-between items-center">
+
+<h2 class="text-3xl font-black">
+
+🔥 Son Dakika
+
+</h2>
+
+<span class="text-red-400 font-bold animate-pulse">
+
+● CANLI
+
+</span>
+
+</div>
+
+<div class="space-y-6 mt-10">
+
+<div class="newsCard glass rounded-2xl p-5">
+
+<h3 class="text-xl font-bold">
+
+📈 Piyasalarda Son Durum
+
+</h3>
+
+<p class="text-slate-400 mt-3">
+
+Canlı veriler bağlandığında en son gelişmeler burada görüntülenecek.
+
+</p>
+
+</div>
+
+<div class="newsCard glass rounded-2xl p-5">
+
+<h3 class="text-xl font-bold">
+
+🏦 Merkez Bankaları
+
+</h3>
+
+<p class="text-slate-400 mt-3">
+
+FED, TCMB ve ECB kararları burada öne çıkarılacak.
+
+</p>
+
+</div>
+
+<div class="newsCard glass rounded-2xl p-5">
+
+<h3 class="text-xl font-bold">
+
+🌍 Küresel Piyasalar
+
+</h3>
+
+<p class="text-slate-400 mt-3">
+
+ABD, Avrupa ve Asya piyasalarındaki önemli gelişmeler.
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="py-24">
+
+<div class="max-w-7xl mx-auto px-8">
+
+<div class="flex flex-wrap justify-between items-center gap-6 mb-12">
+
+<div>
+
+<div class="badge">
+
+🌍 Global Markets
+
+</div>
+
+<h2 class="text-5xl font-black mt-5">
+
+Dünya Piyasaları
+
+</h2>
+
+<p class="text-slate-400 mt-5">
+
+Ülke ve borsalara göre filtrelenmiş haber akışı.
+
+</p>
+
+</div>
+
+<div class="flex flex-wrap gap-3">
+
+<button class="bg-emerald-500 text-black px-6 py-3 rounded-xl font-bold">
+
+Tümü
+
+</button>
+
+<button class="glass px-6 py-3 rounded-xl hover:border-emerald-500 transition">
+
+🇹🇷 BIST
+
+</button>
+
+<button class="glass px-6 py-3 rounded-xl hover:border-emerald-500 transition">
+
+🇺🇸 NASDAQ
+
+</button>
+
+<button class="glass px-6 py-3 rounded-xl hover:border-emerald-500 transition">
+
+🇺🇸 NYSE
+
+</button>
+
+<button class="glass px-6 py-3 rounded-xl hover:border-emerald-500 transition">
+
+🌍 Avrupa
+
+</button>
+
+<button class="glass px-6 py-3 rounded-xl hover:border-emerald-500 transition">
+
+🇯🇵 Japonya
+
+</button>
+
+<button class="glass px-6 py-3 rounded-xl hover:border-emerald-500 transition">
+
+🇨🇳 Çin
+
+</button>
+
+<button class="glass px-6 py-3 rounded-xl hover:border-emerald-500 transition">
+
+📈 OTC
+
+</button>
+
+</div>
+
+</div>
+
+<div class="grid xl:grid-cols-3 gap-8">
+
+<div class="newsCard glass rounded-[30px] p-8">
+
+<div class="flex justify-between items-center">
+
+<span class="badge">
+
+🇹🇷 BIST
+
+</span>
+
+<span class="text-slate-400">
+
+2 dk önce
+
+</span>
+
+</div>
+
+<h3 class="text-2xl font-black mt-6">
+
+BIST Son Dakika
+
+</h3>
+
+<p class="text-slate-400 mt-5 leading-8">
+
+Borsa İstanbul ile ilgili son gelişmeler burada görüntülenecek.
+
+</p>
+
+<button class="mt-8 text-emerald-400 font-bold">
+
+Haberi Oku →
+
+</button>
+
+</div>
+
+<div class="newsCard glass rounded-[30px] p-8">
+
+<div class="flex justify-between items-center">
+
+<span class="badge">
+
+🇺🇸 NASDAQ
+
+</span>
+
+<span class="text-slate-400">
+
+5 dk önce
+
+</span>
+
+</div>
+
+<h3 class="text-2xl font-black mt-6">
+
+NASDAQ Haberleri
+
+</h3>
+
+<p class="text-slate-400 mt-5 leading-8">
+
+ABD teknoloji şirketlerine ait son haberler.
+
+</p>
+
+<button class="mt-8 text-emerald-400 font-bold">
+
+Haberi Oku →
+
+</button>
+
+</div>
+
+<div class="newsCard glass rounded-[30px] p-8">
+
+<div class="flex justify-between items-center">
+
+<span class="badge">
+
+📈 OTC Markets
+
+</span>
+
+<span class="text-slate-400">
+
+8 dk önce
+
+</span>
+
+</div>
+
+<h3 class="text-2xl font-black mt-6">
+
+OTC Gelişmeleri
+
+</h3>
+
+<p class="text-slate-400 mt-5 leading-8">
+
+OTCQX, OTCQB ve Pink Market haberleri.
+
+</p>
+
+<button class="mt-8 text-emerald-400 font-bold">
+
+Haberi Oku →
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="py-24">
+
+<div class="max-w-7xl mx-auto px-8">
+
+<div class="flex flex-wrap justify-between items-center gap-6 mb-12">
+
+<div>
+
+<div class="badge">
+
+🔥 Trending News
+
+</div>
+
+<h2 class="text-5xl font-black mt-5">
+
+Trend Haberler
+
+</h2>
+
+<p class="text-slate-400 mt-5">
+
+En çok okunan haberler ve yapay zekânın öne çıkardığı gelişmeler.
+
+</p>
+
+</div>
+
+<button class="bg-emerald-500 text-black px-7 py-4 rounded-2xl font-black hover:bg-emerald-400 transition">
+
+🤖 AI Günlük Gündem
+
+</button>
+
+</div>
+
+<div class="grid xl:grid-cols-3 gap-8">
+
+<div class="glass rounded-[30px] p-8 newsCard">
+
+<div class="flex justify-between">
+
+<span class="badge">
+
+🔥 Trend #1
+
+</span>
+
+<span class="text-slate-400">
+
+125K Okunma
+
+</span>
+
+</div>
+
+<h3 class="text-3xl font-black mt-6">
+
+NVIDIA Yeni Rekor Kırdı
+
+</h3>
+
+<p class="text-slate-400 mt-5 leading-8">
+
+Yapay zekâ sektöründeki büyüme ile birlikte NVIDIA hisseleri yeni zirveler gördü.
+
+</p>
+
+<div class="flex gap-3 flex-wrap mt-8">
+
+<span class="badge">NVDA</span>
+
+<span class="badge">AI</span>
+
+<span class="badge">NASDAQ</span>
+
+</div>
+
+<button class="mt-8 text-emerald-400 font-bold">
+
+Haberi Oku →
+
+</button>
+
+</div>
+
+<div class="glass rounded-[30px] p-8 newsCard">
+
+<div class="flex justify-between">
+
+<span class="badge">
+
+📈 AI Önerisi
+
+</span>
+
+<span class="text-slate-400">
+
+Bugün
+
+</span>
+
+</div>
+
+<h3 class="text-3xl font-black mt-6">
+
+Savunma Sektörü İzlenmeli
+
+</h3>
+
+<p class="text-slate-400 mt-5 leading-8">
+
+Nexora AI bugün savunma hisselerinde haber yoğunluğu bekliyor.
+
+</p>
+
+<div class="space-y-3 mt-8">
+
+<div class="flex justify-between">
+
+<span>ASELS</span>
+
+<span class="text-emerald-400">Pozitif</span>
+
+</div>
+
+<div class="flex justify-between">
+
+<span>PAPIL</span>
+
+<span class="text-emerald-400">Pozitif</span>
+
+</div>
+
+<div class="flex justify-between">
+
+<span>SDTTR</span>
+
+<span class="text-yellow-400">İzleniyor</span>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="glass rounded-[30px] p-8 newsCard">
+
+<div class="flex justify-between">
+
+<span class="badge">
+
+🌍 Dünya
+
+</span>
+
+<span class="text-slate-400">
+
+Canlı
+
+</span>
+
+</div>
+
+<h3 class="text-3xl font-black mt-6">
+
+Bugünün Öne Çıkanları
+
+</h3>
+
+<div class="space-y-5 mt-8">
+
+<div class="flex justify-between">
+
+<span>🇺🇸 ABD</span>
+
+<span class="text-emerald-400">+12 Haber</span>
+
+</div>
+
+<div class="flex justify-between">
+
+<span>🇹🇷 Türkiye</span>
+
+<span class="text-emerald-400">+9 Haber</span>
+
+</div>
+
+<div class="flex justify-between">
+
+<span>🇯🇵 Japonya</span>
+
+<span>+4 Haber</span>
+
+</div>
+
+<div class="flex justify-between">
+
+<span>🇨🇳 Çin</span>
+
+<span>+6 Haber</span>
+
+</div>
+
+<div class="flex justify-between">
+
+<span>🌍 Avrupa</span>
+
+<span>+8 Haber</span>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="grid xl:grid-cols-6 lg:grid-cols-3 md:grid-cols-2 gap-4 mt-10">
+
+<button class="glass py-4 rounded-2xl hover:border-emerald-500 transition">
+
+⚡ Enerji
+
+</button>
+
+<button class="glass py-4 rounded-2xl hover:border-emerald-500 transition">
+
+🛡️ Savunma
+
+</button>
+
+<button class="glass py-4 rounded-2xl hover:border-emerald-500 transition">
+
+💻 Teknoloji
+
+</button>
+
+<button class="glass py-4 rounded-2xl hover:border-emerald-500 transition">
+
+🏦 Bankacılık
+
+</button>
+
+<button class="glass py-4 rounded-2xl hover:border-emerald-500 transition">
+
+🏠 GYO
+
+</button>
+
+<button class="glass py-4 rounded-2xl hover:border-emerald-500 transition">
+
+🤖 Yapay Zekâ
+
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="py-24">
+
+<div class="max-w-7xl mx-auto px-8">
+
+<div class="glass rounded-[34px] p-10">
+
+<div class="flex flex-wrap justify-between items-center gap-6">
+
+<div>
+
+<div class="badge">
+
+📰 News Details
+
+</div>
+
+<h2 class="text-5xl font-black mt-5">
+
+Haber Detayı
+
+</h2>
+
+<p class="text-slate-400 mt-5">
+
+Seçilen haberin tam metni ve yapay zekâ analizi.
+
+</p>
+
+</div>
+
+<div class="flex gap-3">
+
+<button class="bg-slate-800 px-6 py-3 rounded-xl hover:bg-emerald-500 hover:text-black transition">
+
+⭐ Kaydet
+
+</button>
+
+<button class="bg-emerald-500 text-black px-6 py-3 rounded-xl font-bold hover:bg-emerald-400 transition">
+
+📤 Paylaş
+
+</button>
+
+</div>
+
+</div>
+
+<div class="grid xl:grid-cols-3 gap-10 mt-12">
+
+<div class="xl:col-span-2">
+
+<div class="glass rounded-3xl p-8">
+
+<div class="flex gap-3 flex-wrap">
+
+<span class="badge">🇺🇸 NASDAQ</span>
+
+<span class="badge">🤖 AI</span>
+
+<span class="badge">💻 Teknoloji</span>
+
+<span class="badge">NVDA</span>
+
+</div>
+
+<h2 class="text-4xl font-black mt-8">
+
+NVIDIA Yeni Yapay Zekâ Çipini Tanıttı
+
+</h2>
+
+<div class="flex flex-wrap gap-6 mt-6 text-slate-400">
+
+<span>🕒 15 dakika önce</span>
+
+<span>🌍 Reuters</span>
+
+<span>👁️ 152.000 görüntülenme</span>
+
+</div>
+
+<p class="text-slate-300 leading-9 mt-10">
+
+Haber metni bu alanda görüntülenecek.
+
+Gerçek API bağlandığında tam haber burada yer alacaktır.
+
+Kullanıcı isterse orijinal kaynağa da gidebilir.
+
+</p>
+
+<button class="mt-10 bg-slate-800 hover:bg-emerald-500 hover:text-black transition px-8 py-4 rounded-2xl">
+
+🌍 Orijinal Habere Git
+
+</button>
+
+</div>
+
+</div>
+
+<div>
+
+<div class="glass rounded-3xl p-8">
+
+<h3 class="text-2xl font-black mb-8">
+
+🤖 Nexora AI Özeti
+
+</h3>
+
+<p class="text-slate-300 leading-8">
+
+Bu bölümde yapay zekâ haberi 4-5 cümlede özetleyecek.
+
+Kullanıcı uzun haberi okumadan önemli noktaları öğrenebilecek.
+
+</p>
+
+<hr class="border-slate-700 my-8">
+
+<div class="space-y-5">
+
+<div class="flex justify-between">
+
+<span>Etki</span>
+
+<span class="text-emerald-400 font-bold">
+
+Pozitif
+
+</span>
+
+</div>
+
+<div class="flex justify-between">
+
+<span>Risk</span>
+
+<span class="text-yellow-400 font-bold">
+
+Orta
+
+</span>
+
+</div>
+
+<div class="flex justify-between">
+
+<span>AI Güveni</span>
+
+<span class="text-emerald-400 font-bold">
+
+95%
+
+</span>
+
+</div>
+
+</div>
+
+<button class="w-full mt-10 bg-emerald-500 hover:bg-emerald-400 text-black py-4 rounded-2xl font-black">
+
+💬 AI'ya Sor
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="grid xl:grid-cols-3 gap-8 mt-10">
+
+<div class="glass rounded-3xl p-8">
+
+<h3 class="font-black text-2xl mb-6">
+
+📈 Etkilenen Hisseler
+
+</h3>
+
+<div class="space-y-4">
+
+<div class="flex justify-between">
+
+<span>NVDA</span>
+
+<span class="text-emerald-400">
+
++ Pozitif
+
+</span>
+
+</div>
+
+<div class="flex justify-between">
+
+<span>AMD</span>
+
+<span class="text-yellow-400">
+
+İzleniyor
+
+</span>
+
+</div>
+
+<div class="flex justify-between">
+
+<span>TSM</span>
+
+<span class="text-emerald-400">
+
+Pozitif
+
+</span>
+
+</div>
+
+<div class="flex justify-between">
+
+<span>AVGO</span>
+
+<span class="text-emerald-400">
+
+Pozitif
+
+</span>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="glass rounded-3xl p-8">
+
+<h3 class="font-black text-2xl mb-6">
+
+🏭 Etkilenen Sektörler
+
+</h3>
+
+<div class="space-y-4">
+
+<p>💻 Teknoloji</p>
+
+<p>🤖 Yapay Zekâ</p>
+
+<p>🖥️ Yarı İletken</p>
+
+<p>☁️ Bulut</p>
+
+</div>
+
+</div>
+
+<div class="glass rounded-3xl p-8">
+
+<h3 class="font-black text-2xl mb-6">
+
+⭐ Benzer Haberler
+
+</h3>
+
+<div class="space-y-5">
+
+<p>• NVIDIA bilanço beklentileri</p>
+
+<p>• AMD yeni işlemci tanıttı</p>
+
+<p>• Yapay zekâ sektörü büyüyor</p>
+
+<p>• ABD teknoloji hisseleri yükselişte</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="py-24">
+
+<div class="max-w-7xl mx-auto px-8">
+
+<div class="glass rounded-[34px] p-10">
+
+<div class="flex flex-wrap justify-between items-center gap-6">
+
+<div>
+
+<div class="badge">
+
+🤖 Nexora AI Daily Brief
+
+</div>
+
+<h2 class="text-5xl font-black mt-5">
+
+AI Günlük Haber Özeti
+
+</h2>
+
+<p class="text-slate-400 mt-5">
+
+Yapay zekâ bugün piyasalarda öne çıkan gelişmeleri sizin için analiz etti.
+
+</p>
+
+</div>
+
+<button class="bg-emerald-500 hover:bg-emerald-400 text-black px-8 py-4 rounded-2xl font-black transition">
+
+🔄 Özeti Güncelle
+
+</button>
+
+</div>
+
+<div class="grid xl:grid-cols-2 gap-10 mt-12">
+
+<div class="glass rounded-3xl p-8">
+
+<h3 class="text-3xl font-black">
+
+🌅 Günaydın
+
+</h3>
+
+<p class="text-slate-300 leading-9 mt-8">
+
+Bugün teknoloji, savunma ve enerji sektörlerinde haber yoğunluğu bekleniyor.
+
+ABD vadeli işlemleri hafif pozitif.
+
+Avrupa piyasaları karışık.
+
+BIST için açılış öncesinde haber akışı olumlu.
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8">
+
+<h3 class="text-3xl font-black">
+
+🎯 Bugünün Takip Listesi
+
+</h3>
+
+<div class="grid grid-cols-2 gap-4 mt-8">
+
+<button class="bg-slate-800 py-4 rounded-xl hover:bg-emerald-500 hover:text-black transition">
+
+ASELS
+
+</button>
+
+<button class="bg-slate-800 py-4 rounded-xl hover:bg-emerald-500 hover:text-black transition">
+
+THYAO
+
+</button>
+
+<button class="bg-slate-800 py-4 rounded-xl hover:bg-emerald-500 hover:text-black transition">
+
+NVDA
+
+</button>
+
+<button class="bg-slate-800 py-4 rounded-xl hover:bg-emerald-500 hover:text-black transition">
+
+AAPL
+
+</button>
+
+<button class="bg-slate-800 py-4 rounded-xl hover:bg-emerald-500 hover:text-black transition">
+
+PLTR
+
+</button>
+
+<button class="bg-slate-800 py-4 rounded-xl hover:bg-emerald-500 hover:text-black transition">
+
+AMD
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="grid xl:grid-cols-3 gap-8 mt-10">
+
+<div class="glass rounded-3xl p-8">
+
+<h3 class="text-2xl font-black mb-6">
+
+📈 Pozitif Gelişmeler
+
+</h3>
+
+<ul class="space-y-4 text-slate-300">
+
+<li>✅ Şirket kârlılık artışı</li>
+
+<li>✅ Yeni yatırım haberleri</li>
+
+<li>✅ İhracat sözleşmeleri</li>
+
+<li>✅ Not artırımları</li>
+
+</ul>
+
+</div>
+
+<div class="glass rounded-3xl p-8">
+
+<h3 class="text-2xl font-black mb-6">
+
+⚠️ Riskler
+
+</h3>
+
+<ul class="space-y-4 text-slate-300">
+
+<li>⚠️ Faiz kararları</li>
+
+<li>⚠️ Jeopolitik gelişmeler</li>
+
+<li>⚠️ Enflasyon verileri</li>
+
+<li>⚠️ Döviz hareketleri</li>
+
+</ul>
+
+</div>
+
+<div class="glass rounded-3xl p-8">
+
+<h3 class="text-2xl font-black mb-6">
+
+🤖 AI Piyasa Yorumu
+
+</h3>
+
+<p class="text-slate-300 leading-8">
+
+Bugünkü haber akışına göre teknoloji ve savunma hisseleri öne çıkabilir. Makroekonomik veriler açıklanana kadar volatilitenin artma ihtimali bulunuyor.
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="py-24">
+
+<div class="max-w-7xl mx-auto px-8">
+
+<div class="glass rounded-[34px] p-10">
+
+<div class="flex flex-wrap justify-between items-center gap-6">
+
+<div>
+
+<div class="badge">
+
+📅 Economic Calendar
+
+</div>
+
+<h2 class="text-5xl font-black mt-5">
+
+Küresel Ekonomik Takvim
+
+</h2>
+
+<p class="text-slate-400 mt-5">
+
+Bugün açıklanacak ekonomik veriler ve merkez bankası kararları.
+
+</p>
+
+</div>
+
+<button class="bg-emerald-500 hover:bg-emerald-400 text-black px-8 py-4 rounded-2xl font-black transition">
+
+📅 Takvimi Yenile
+
+</button>
+
+</div>
+
+<div class="overflow-x-auto mt-12">
+
+<table class="w-full">
+
+<thead>
+
+<tr class="border-b border-slate-700">
+
+<th class="text-left py-5">Saat</th>
+
+<th class="text-left">Ülke</th>
+
+<th class="text-left">Veri</th>
+
+<th class="text-left">Beklenti</th>
+
+<th class="text-left">Önceki</th>
+
+<th class="text-left">Etki</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr class="border-b border-slate-800 hover:bg-slate-900 transition">
+
+<td class="py-5">15:30</td>
+
+<td>🇺🇸 ABD</td>
+
+<td>Tarım Dışı İstihdam</td>
+
+<td>0</td>
+
+<td>0</td>
+
+<td><span class="text-red-400 font-bold">Yüksek</span></td>
+
+</tr>
+
+<tr class="border-b border-slate-800 hover:bg-slate-900 transition">
+
+<td class="py-5">16:00</td>
+
+<td>🇹🇷 Türkiye</td>
+
+<td>TCMB Faiz Kararı</td>
+
+<td>0%</td>
+
+<td>0%</td>
+
+<td><span class="text-red-400 font-bold">Yüksek</span></td>
+
+</tr>
+
+<tr class="border-b border-slate-800 hover:bg-slate-900 transition">
+
+<td class="py-5">21:00</td>
+
+<td>🇺🇸 ABD</td>
+
+<td>FED Toplantısı</td>
+
+<td>-</td>
+
+<td>-</td>
+
+<td><span class="text-red-400 font-bold">Çok Yüksek</span></td>
+
+</tr>
+
+<tr class="hover:bg-slate-900 transition">
+
+<td class="py-5">12:00</td>
+
+<td>🇪🇺 Avrupa</td>
+
+<td>Enflasyon</td>
+
+<td>0%</td>
+
+<td>0%</td>
+
+<td><span class="text-yellow-400 font-bold">Orta</span></td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<div class="grid xl:grid-cols-4 gap-6 mt-12">
+
+<div class="glass rounded-2xl p-6 text-center">
+
+<div class="text-5xl">🏦</div>
+
+<h3 class="text-xl font-bold mt-5">
+
+FED
+
+</h3>
+
+<p class="text-slate-400 mt-3">
+
+Faiz Kararı
+
+</p>
+
+</div>
+
+<div class="glass rounded-2xl p-6 text-center">
+
+<div class="text-5xl">🇹🇷</div>
+
+<h3 class="text-xl font-bold mt-5">
+
+TCMB
+
+</h3>
+
+<p class="text-slate-400 mt-3">
+
+Politika Faizi
+
+</p>
+
+</div>
+
+<div class="glass rounded-2xl p-6 text-center">
+
+<div class="text-5xl">🇪🇺</div>
+
+<h3 class="text-xl font-bold mt-5">
+
+ECB
+
+</h3>
+
+<p class="text-slate-400 mt-3">
+
+Faiz Kararı
+
+</p>
+
+</div>
+
+<div class="glass rounded-2xl p-6 text-center">
+
+<div class="text-5xl">📊</div>
+
+<h3 class="text-xl font-bold mt-5">
+
+Enflasyon
+
+</h3>
+
+<p class="text-slate-400 mt-3">
+
+TÜFE • ÜFE • CPI
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="py-24">
+
+<div class="max-w-7xl mx-auto px-8">
+
+<div class="glass rounded-[34px] p-10">
+
+<div class="flex justify-between items-center flex-wrap gap-6">
+
+<div>
+
+<div class="badge">
+
+💰 Dividend Center
+
+</div>
+
+<h2 class="text-5xl font-black mt-5">
+
+Temettü Merkezi
+
+</h2>
+
+<p class="text-slate-400 mt-5">
+
+Yaklaşan temettüler, ödeme tarihleri ve AI destekli temettü analizleri.
+
+</p>
+
+</div>
+
+<button class="bg-emerald-500 text-black px-8 py-4 rounded-2xl font-black hover:bg-emerald-400 transition">
+
+💵 Tüm Temettüler
+
+</button>
+
+</div>
+
+<div class="overflow-x-auto mt-12">
+
+<table class="w-full">
+
+<thead>
+
+<tr class="border-b border-slate-700">
+
+<th class="text-left py-5">Şirket</th>
+
+<th>Temettü</th>
+
+<th>Verim</th>
+
+<th>Ex-Date</th>
+
+<th>Ödeme</th>
+
+<th>AI</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr class="border-b border-slate-800 hover:bg-slate-900 transition">
+
+<td class="py-5 font-bold">ASELS</td>
+
+<td>₺0.00</td>
+
+<td>0%</td>
+
+<td>-</td>
+
+<td>-</td>
+
+<td class="text-emerald-400">★★★★☆</td>
+
+</tr>
+
+<tr class="border-b border-slate-800 hover:bg-slate-900 transition">
+
+<td class="py-5 font-bold">THYAO</td>
+
+<td>₺0.00</td>
+
+<td>0%</td>
+
+<td>-</td>
+
+<td>-</td>
+
+<td class="text-yellow-400">★★★☆☆</td>
+
+</tr>
+
+<tr class="border-b border-slate-800 hover:bg-slate-900 transition">
+
+<td class="py-5 font-bold">AAPL</td>
+
+<td>$0.00</td>
+
+<td>0%</td>
+
+<td>-</td>
+
+<td>-</td>
+
+<td class="text-emerald-400">★★★★★</td>
+
+</tr>
+
+<tr>
+
+<td class="py-5 font-bold">MSFT</td>
+
+<td>$0.00</td>
+
+<td>0%</td>
+
+<td>-</td>
+
+<td>-</td>
+
+<td class="text-emerald-400">★★★★★</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<div class="grid xl:grid-cols-4 gap-6 mt-12">
+
+<div class="glass rounded-2xl p-6 text-center">
+
+<div class="text-5xl">
+
+🏆
+
+</div>
+
+<h3 class="text-2xl font-black mt-5">
+
+En Yüksek Verim
+
+</h3>
+
+<p class="text-slate-400 mt-4">
+
+Yakında
+
+</p>
+
+</div>
+
+<div class="glass rounded-2xl p-6 text-center">
+
+<div class="text-5xl">
+
+👑
+
+</div>
+
+<h3 class="text-2xl font-black mt-5">
+
+Dividend Aristocrats
+
+</h3>
+
+<p class="text-slate-400 mt-4">
+
+Yakında
+
+</p>
+
+</div>
+
+<div class="glass rounded-2xl p-6 text-center">
+
+<div class="text-5xl">
+
+📈
+
+</div>
+
+<h3 class="text-2xl font-black mt-5">
+
+10Y Büyüme
+
+</h3>
+
+<p class="text-slate-400 mt-4">
+
+Yakında
+
+</p>
+
+</div>
+
+<div class="glass rounded-2xl p-6 text-center">
+
+<div class="text-5xl">
+
+🤖
+
+</div>
+
+<h3 class="text-2xl font-black mt-5">
+
+AI Seçimi
+
+</h3>
+
+<p class="text-slate-400 mt-4">
+
+Bugünün Temettü Fırsatları
+
+</p>
+
+</div>
+
+</div>
+
+<div class="glass rounded-3xl p-8 mt-12">
+
+<h3 class="text-3xl font-black">
+
+🤖 AI Temettü Yorumu
+
+</h3>
+
+<p class="text-slate-300 leading-9 mt-8">
+
+Yapay zekâ, temettü geçmişi, ödeme istikrarı, büyüme oranı ve şirketin finansal gücünü analiz ederek uzun vadeli temettü yatırımcıları için uygun şirketleri burada öne çıkaracaktır.
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="py-24">
+
+<div class="max-w-7xl mx-auto px-8">
+
+<div class="glass rounded-[34px] p-10">
+
+<div class="flex flex-wrap justify-between items-center gap-6">
+
+<div>
+
+<div class="badge">
+
+📊 Earnings Center
+
+</div>
+
+<h2 class="text-5xl font-black mt-5">
+
+Bilanço Merkezi
+
+</h2>
+
+<p class="text-slate-400 mt-5">
+
+Türkiye, ABD ve dünya şirketlerinin bilanço takvimi ve AI analizleri.
+
+</p>
+
+</div>
+
+<button class="bg-emerald-500 text-black px-8 py-4 rounded-2xl font-black hover:bg-emerald-400 transition">
+
+📅 Takvimi Aç
+
+</button>
+
+</div>
+
+<div class="overflow-x-auto mt-12">
+
+<table class="w-full">
+
+<thead>
+
+<tr class="border-b border-slate-700">
+
+<th class="text-left py-5">Şirket</th>
+
+<th>Tarih</th>
+
+<th>EPS Beklenti</th>
+
+<th>EPS Gerçekleşen</th>
+
+<th>Gelir</th>
+
+<th>AI</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr class="border-b border-slate-800 hover:bg-slate-900 transition">
+
+<td class="py-5 font-bold">ASELS</td>
+
+<td>--/--/----</td>
+
+<td>0.00</td>
+
+<td>0.00</td>
+
+<td>₺0</td>
+
+<td class="text-emerald-400">★★★★☆</td>
+
+</tr>
+
+<tr class="border-b border-slate-800 hover:bg-slate-900 transition">
+
+<td class="py-5 font-bold">THYAO</td>
+
+<td>--/--/----</td>
+
+<td>0.00</td>
+
+<td>0.00</td>
+
+<td>₺0</td>
+
+<td class="text-yellow-400">★★★☆☆</td>
+
+</tr>
+
+<tr class="border-b border-slate-800 hover:bg-slate-900 transition">
+
+<td class="py-5 font-bold">AAPL</td>
+
+<td>--/--/----</td>
+
+<td>$0.00</td>
+
+<td>$0.00</td>
+
+<td>$0</td>
+
+<td class="text-emerald-400">★★★★★</td>
+
+</tr>
+
+<tr>
+
+<td class="py-5 font-bold">NVDA</td>
+
+<td>--/--/----</td>
+
+<td>$0.00</td>
+
+<td>$0.00</td>
+
+<td>$0</td>
+
+<td class="text-emerald-400">★★★★★</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<div class="grid xl:grid-cols-3 gap-8 mt-12">
+
+<div class="glass rounded-3xl p-8">
+
+<h3 class="text-2xl font-black">
+
+📈 AI Bilanço Yorumu
+
+</h3>
+
+<p class="text-slate-300 mt-6 leading-8">
+
+Yapay zekâ gelir, FAVÖK, net kâr, borçluluk, marjlar ve büyüme oranlarını analiz ederek şirketin bilançosunu değerlendirecek.
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8">
+
+<h3 class="text-2xl font-black">
+
+🏆 En Güçlü Bilançolar
+
+</h3>
+
+<div class="space-y-4 mt-6">
+
+<p>🥇 Apple</p>
+
+<p>🥈 Microsoft</p>
+
+<p>🥉 NVIDIA</p>
+
+<p>🏅 ASELSAN</p>
+
+</div>
+
+</div>
+
+<div class="glass rounded-3xl p-8">
+
+<h3 class="text-2xl font-black">
+
+⚠️ Riskli Bilançolar
+
+</h3>
+
+<p class="text-slate-300 mt-6 leading-8">
+
+Beklentinin altında kalan şirketler burada AI tarafından işaretlenecek.
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="py-24">
+
+<div class="max-w-7xl mx-auto px-8">
+
+<div class="glass rounded-[34px] p-10">
+
+<div class="flex flex-wrap justify-between items-center gap-6">
+
+<div>
+
+<div class="badge">
+
+🚀 IPO Center
+
+</div>
+
+<h2 class="text-5xl font-black mt-5">
+
+Küresel Halka Arz Merkezi
+
+</h2>
+
+<p class="text-slate-400 mt-5">
+
+Yaklaşan halka arzlar, SPAC birleşmeleri ve AI değerlendirmeleri.
+
+</p>
+
+</div>
+
+<button class="bg-emerald-500 text-black px-8 py-4 rounded-2xl font-black hover:bg-emerald-400 transition">
+
+🚀 Tüm Halka Arzlar
+
+</button>
+
+</div>
+
+<div class="grid xl:grid-cols-5 gap-4 mt-10">
+
+<button class="glass py-4 rounded-xl hover:border-emerald-500 transition">
+
+🇹🇷 SPK
+
+</button>
+
+<button class="glass py-4 rounded-xl hover:border-emerald-500 transition">
+
+🇺🇸 NASDAQ
+
+</button>
+
+<button class="glass py-4 rounded-xl hover:border-emerald-500 transition">
+
+🇺🇸 NYSE
+
+</button>
+
+<button class="glass py-4 rounded-xl hover:border-emerald-500 transition">
+
+🌍 Avrupa
+
+</button>
+
+<button class="glass py-4 rounded-xl hover:border-emerald-500 transition">
+
+📈 OTC
+
+</button>
+
+</div>
+
+<div class="overflow-x-auto mt-12">
+
+<table class="w-full">
+
+<thead>
+
+<tr class="border-b border-slate-700">
+
+<th class="text-left py-5">Şirket</th>
+
+<th>Borsa</th>
+
+<th>Tarih</th>
+
+<th>Büyüklük</th>
+
+<th>AI</th>
+
+<th>Durum</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr class="border-b border-slate-800 hover:bg-slate-900 transition">
+
+<td class="py-5 font-bold">
+
+Yakında
+
+</td>
+
+<td>NASDAQ</td>
+
+<td>--/--/----</td>
+
+<td>$0</td>
+
+<td class="text-emerald-400">
+
+★★★★★
+
+</td>
+
+<td>
+
+<span class="badge">
+
+Yaklaşıyor
+
+</span>
+
+</td>
+
+</tr>
+
+<tr class="border-b border-slate-800 hover:bg-slate-900 transition">
+
+<td class="py-5 font-bold">
+
+Yakında
+
+</td>
+
+<td>BIST</td>
+
+<td>--/--/----</td>
+
+<td>₺0</td>
+
+<td class="text-yellow-400">
+
+★★★★☆
+
+</td>
+
+<td>
+
+<span class="badge">
+
+SPK
+
+</span>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td class="py-5 font-bold">
+
+Yakında
+
+</td>
+
+<td>NYSE</td>
+
+<td>--/--/----</td>
+
+<td>$0</td>
+
+<td class="text-emerald-400">
+
+★★★★★
+
+</td>
+
+<td>
+
+<span class="badge">
+
+Hazırlanıyor
+
+</span>
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<div class="grid xl:grid-cols-4 gap-8 mt-12">
+
+<div class="glass rounded-3xl p-8">
+
+<div class="text-5xl">
+
+🤖
+
+</div>
+
+<h3 class="text-2xl font-black mt-6">
+
+AI IPO Puanı
+
+</h3>
+
+<p class="text-slate-400 mt-5">
+
+Karlılık
+
+Risk
+
+Sektör
+
+Talep
+
+Büyüme
+
+analizi.
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8">
+
+<div class="text-5xl">
+
+📄
+
+</div>
+
+<h3 class="text-2xl font-black mt-6">
+
+İzahname
+
+</h3>
+
+<p class="text-slate-400 mt-5">
+
+PDF dokümanları görüntüle.
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8">
+
+<div class="text-5xl">
+
+👥
+
+</div>
+
+<h3 class="text-2xl font-black mt-6">
+
+Talep Durumu
+
+</h3>
+
+<p class="text-slate-400 mt-5">
+
+Yatırımcı ilgisi ve dağıtım bilgileri.
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8">
+
+<div class="text-5xl">
+
+📰
+
+</div>
+
+<h3 class="text-2xl font-black mt-6">
+
+IPO Haberleri
+
+</h3>
+
+<p class="text-slate-400 mt-5">
+
+Son gelişmeler burada görüntülenecek.
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="py-24">
+
+<div class="max-w-7xl mx-auto px-8">
+
+<div class="glass rounded-[36px] p-10">
+
+<div class="text-center">
+
+<div class="badge">
+
+🔍 Smart Search
+
+</div>
+
+<h2 class="text-5xl font-black mt-5">
+
+Akıllı Haber Arama
+
+</h2>
+
+<p class="text-slate-400 text-xl mt-5">
+
+Şirket, sektör, ülke veya anahtar kelime ile milyonlarca haberi saniyeler içinde bulun.
+
+</p>
+
+</div>
+
+<div class="mt-12">
+
+<input
+type="text"
+placeholder="Şirket, sektör, haber veya anahtar kelime ara..."
+class="w-full bg-slate-900 border border-slate-700 rounded-2xl p-6 text-xl focus:outline-none focus:border-emerald-500">
+
+</div>
+
+<div class="grid xl:grid-cols-5 lg:grid-cols-3 md:grid-cols-2 gap-5 mt-12">
+
+<button class="glass rounded-2xl py-5 hover:bg-emerald-500 hover:text-black transition">
+
+🌍 Ülke
+
+</button>
+
+<button class="glass rounded-2xl py-5 hover:bg-emerald-500 hover:text-black transition">
+
+📈 Borsa
+
+</button>
+
+<button class="glass rounded-2xl py-5 hover:bg-emerald-500 hover:text-black transition">
+
+🏭 Sektör
+
+</button>
+
+<button class="glass rounded-2xl py-5 hover:bg-emerald-500 hover:text-black transition">
+
+📅 Tarih
+
+</button>
+
+<button class="glass rounded-2xl py-5 hover:bg-emerald-500 hover:text-black transition">
+
+⭐ Önem
+
+</button>
+
+<button class="glass rounded-2xl py-5 hover:bg-emerald-500 hover:text-black transition">
+
+🤖 AI Etkisi
+
+</button>
+
+<button class="glass rounded-2xl py-5 hover:bg-emerald-500 hover:text-black transition">
+
+💰 Temettü
+
+</button>
+
+<button class="glass rounded-2xl py-5 hover:bg-emerald-500 hover:text-black transition">
+
+📊 Bilanço
+
+</button>
+
+<button class="glass rounded-2xl py-5 hover:bg-emerald-500 hover:text-black transition">
+
+🚀 IPO
+
+</button>
+
+<button class="glass rounded-2xl py-5 hover:bg-emerald-500 hover:text-black transition">
+
+⚠️ Risk
+
+</button>
+
+</div>
+
+<div class="mt-14">
+
+<h3 class="text-3xl font-black">
+
+🔥 Popüler Aramalar
+
+</h3>
+
+<div class="flex flex-wrap gap-4 mt-8">
+
+<span class="badge">ASELS</span>
+
+<span class="badge">NVDA</span>
+
+<span class="badge">AAPL</span>
+
+<span class="badge">PLTR</span>
+
+<span class="badge">Yapay Zekâ</span>
+
+<span class="badge">Savunma</span>
+
+<span class="badge">BIST 100</span>
+
+<span class="badge">NASDAQ</span>
+
+<span class="badge">SPK</span>
+
+<span class="badge">FED</span>
+
+<span class="badge">Enflasyon</span>
+
+<span class="badge">Faiz</span>
+
+</div>
+
+</div>
+
+<div class="glass rounded-3xl p-8 mt-12">
+
+<h3 class="text-3xl font-black">
+
+🤖 AI Akıllı Arama
+
+</h3>
+
+<p class="text-slate-300 leading-9 mt-8">
+
+Normal anahtar kelime yerine doğal dil kullanabilirsiniz.
+
+Örneğin:
+
+• Son 1 haftada ASELSAN hakkında olumlu haberleri göster
+
+• Bugün NASDAQ teknoloji haberlerini getir
+
+• Son temettü açıklayan bankaları listele
+
+• Yapay zekâ sektöründeki önemli gelişmeleri göster
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="py-24">
+
+<div class="max-w-7xl mx-auto px-8">
+
+<div class="glass rounded-[36px] p-10">
+
+<div class="flex flex-wrap justify-between items-center gap-6">
+
+<div>
+
+<div class="badge">
+
+⭐ Favorites & Alerts
+
+</div>
+
+<h2 class="text-5xl font-black mt-5">
+
+Favoriler ve Bildirim Merkezi
+
+</h2>
+
+<p class="text-slate-400 mt-5">
+
+Takip ettiğiniz şirketler, haberler ve AI tarafından oluşturulan kişisel bildirimler.
+
+</p>
+
+</div>
+
+<button class="bg-emerald-500 text-black px-8 py-4 rounded-2xl font-black hover:bg-emerald-400 transition">
+
+➕ Yeni Alarm
+
+</button>
+
+</div>
+
+<div class="grid xl:grid-cols-3 gap-8 mt-12">
+
+<div class="glass rounded-3xl p-8">
+
+<div class="text-5xl">
+
+⭐
+
+</div>
+
+<h3 class="text-2xl font-black mt-6">
+
+Favori Şirketler
+
+</h3>
+
+<div class="space-y-4 mt-8">
+
+<p>ASELS</p>
+
+<p>THYAO</p>
+
+<p>NVDA</p>
+
+<p>AAPL</p>
+
+<p>PLTR</p>
+
+<p>MSFT</p>
+
+</div>
+
+</div>
+
+<div class="glass rounded-3xl p-8">
+
+<div class="text-5xl">
+
+🔔
+
+</div>
+
+<h3 class="text-2xl font-black mt-6">
+
+Aktif Alarmlar
+
+</h3>
+
+<div class="space-y-4 mt-8">
+
+<p>📈 ASELS %5 yükselirse</p>
+
+<p>📰 NVIDIA haberi gelirse</p>
+
+<p>💰 Temettü açıklanırsa</p>
+
+<p>📊 Bilanço yayımlanırsa</p>
+
+</div>
+
+</div>
+
+<div class="glass rounded-3xl p-8">
+
+<div class="text-5xl">
+
+🤖
+
+</div>
+
+<h3 class="text-2xl font-black mt-6">
+
+AI Önerileri
+
+</h3>
+
+<p class="text-slate-300 leading-8 mt-6">
+
+Yapay zekâ ilgi alanlarınıza göre önemli haberleri otomatik olarak önerir.
+
+</p>
+
+</div>
+
+</div>
+
+<div class="glass rounded-3xl p-8 mt-12">
+
+<h3 class="text-3xl font-black">
+
+📬 Son Bildirimler
+
+</h3>
+
+<div class="space-y-6 mt-8">
+
+<div class="flex justify-between border-b border-slate-800 pb-4">
+
+<span>📰 ASELS hakkında yeni haber</span>
+
+<span class="text-slate-400">2 dk</span>
+
+</div>
+
+<div class="flex justify-between border-b border-slate-800 pb-4">
+
+<span>📊 Apple bilançosu açıklandı</span>
+
+<span class="text-slate-400">12 dk</span>
+
+</div>
+
+<div class="flex justify-between border-b border-slate-800 pb-4">
+
+<span>💰 Microsoft temettü açıkladı</span>
+
+<span class="text-slate-400">34 dk</span>
+
+</div>
+
+<div class="flex justify-between">
+
+<span>🚀 Yeni NASDAQ IPO</span>
+
+<span class="text-slate-400">1 sa</span>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="py-24">
+
+<div class="max-w-7xl mx-auto px-8">
+
+<div class="glass rounded-[38px] p-10">
+
+<div class="flex flex-wrap justify-between items-center">
+
+<div>
+
+<div class="badge">
+
+🏢 Company News Hub
+
+</div>
+
+<h2 class="text-5xl font-black mt-5">
+
+Şirket Haber Merkezi
+
+</h2>
+
+<p class="text-slate-400 mt-5">
+
+Bir hisseye ait tüm bilgiler tek ekranda.
+
+</p>
+
+</div>
+
+<button class="bg-emerald-500 text-black px-8 py-4 rounded-2xl font-black hover:bg-emerald-400 transition">
+
+⭐ Takip Et
+
+</button>
+
+</div>
+
+<div class="grid xl:grid-cols-4 gap-6 mt-12">
+
+<button class="glass rounded-2xl py-5 hover:bg-emerald-500 hover:text-black transition">
+
+📈 Grafik
+
+</button>
+
+<button class="glass rounded-2xl py-5 hover:bg-emerald-500 hover:text-black transition">
+
+📰 Haberler
+
+</button>
+
+<button class="glass rounded-2xl py-5 hover:bg-emerald-500 hover:text-black transition">
+
+📊 Finansallar
+
+</button>
+
+<button class="glass rounded-2xl py-5 hover:bg-emerald-500 hover:text-black transition">
+
+🤖 AI Analizi
+
+</button>
+
+<button class="glass rounded-2xl py-5 hover:bg-emerald-500 hover:text-black transition">
+
+📄 KAP / SEC
+
+</button>
+
+<button class="glass rounded-2xl py-5 hover:bg-emerald-500 hover:text-black transition">
+
+💰 Temettü
+
+</button>
+
+<button class="glass rounded-2xl py-5 hover:bg-emerald-500 hover:text-black transition">
+
+📅 Bilanço
+
+</button>
+
+<button class="glass rounded-2xl py-5 hover:bg-emerald-500 hover:text-black transition">
+
+👥 Ortaklık
+
+</button>
+
+<button class="glass rounded-2xl py-5 hover:bg-emerald-500 hover:text-black transition">
+
+🏭 Rakipler
+
+</button>
+
+<button class="glass rounded-2xl py-5 hover:bg-emerald-500 hover:text-black transition">
+
+🌍 İhracat
+
+</button>
+
+<button class="glass rounded-2xl py-5 hover:bg-emerald-500 hover:text-black transition">
+
+📚 Faaliyet Raporları
+
+</button>
+
+<button class="glass rounded-2xl py-5 hover:bg-emerald-500 hover:text-black transition">
+
+🎥 Sunumlar
+
+</button>
+
+</div>
+
+<div class="grid xl:grid-cols-2 gap-10 mt-12">
+
+<div class="glass rounded-3xl p-8">
+
+<h3 class="text-3xl font-black">
+
+📰 Son Haberler
+
+</h3>
+
+<div class="space-y-6 mt-8">
+
+<div>
+
+<h4 class="font-bold">
+
+Yeni yatırım haberi
+
+</h4>
+
+<p class="text-slate-400">
+
+2 dakika önce
+
+</p>
+
+</div>
+
+<div>
+
+<h4 class="font-bold">
+
+Bilanço açıklandı
+
+</h4>
+
+<p class="text-slate-400">
+
+1 saat önce
+
+</p>
+
+</div>
+
+<div>
+
+<h4 class="font-bold">
+
+Yeni sözleşme imzalandı
+
+</h4>
+
+<p class="text-slate-400">
+
+Bugün
+
+</p>
+
+</div>
+
+<div>
+
+<h4 class="font-bold">
+
+KAP bildirimi yayımlandı
+
+</h4>
+
+<p class="text-slate-400">
+
+Dün
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="glass rounded-3xl p-8">
+
+<h3 class="text-3xl font-black">
+
+🤖 AI Yorumu
+
+</h3>
+
+<p class="text-slate-300 leading-9 mt-8">
+
+Yapay zekâ bu şirkete ait bütün haberleri analiz eder.
+
+Olumlu ve olumsuz gelişmeleri puanlar.
+
+Risk seviyesini hesaplar.
+
+Sektördeki rakipleriyle karşılaştırır.
+
+Yatırımcıya anlaşılır bir özet sunar.
+
+</p>
+
+<div class="grid grid-cols-2 gap-5 mt-10">
+
+<div class="glass rounded-2xl p-5 text-center">
+
+<div class="text-4xl">
+
+📈
+
+</div>
+
+<h4 class="font-bold mt-3">
+
+Pozitif
+
+</h4>
+
+</div>
+
+<div class="glass rounded-2xl p-5 text-center">
+
+<div class="text-4xl">
+
+⚠️
+
+</div>
+
+<h4 class="font-bold mt-3">
+
+Orta Risk
+
+</h4>
+
+</div>
+
+</div>
+
+<button class="w-full mt-10 bg-emerald-500 hover:bg-emerald-400 text-black py-5 rounded-2xl font-black">
+
+💬 AI'ya Bu Şirketi Sor
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="py-24">
+
+<div class="max-w-7xl mx-auto px-8">
+
+<div class="glass rounded-[36px] p-10">
+
+<div class="flex flex-wrap justify-between items-center gap-6">
+
+<div>
+
+<div class="badge">
+
+🌍 World Economy Center
+
+</div>
+
+<h2 class="text-5xl font-black mt-5">
+
+Dünya Ekonomi Merkezi
+
+</h2>
+
+<p class="text-slate-400 mt-5">
+
+Küresel piyasaları, emtiaları, tahvilleri ve makroekonomik verileri tek ekranda takip edin.
+
+</p>
+
+</div>
+
+<button class="bg-emerald-500 text-black px-8 py-4 rounded-2xl font-black hover:bg-emerald-400 transition">
+
+🌍 Canlı Veriler
+
+</button>
+
+</div>
+
+<div class="grid xl:grid-cols-4 lg:grid-cols-2 gap-8 mt-14">
+
+<div class="glass rounded-3xl p-8 text-center">
+
+<div class="text-5xl">🇺🇸</div>
+
+<h3 class="text-2xl font-black mt-5">
+
+Dolar Endeksi
+
+</h3>
+
+<p class="text-slate-400 mt-4">
+
+DXY
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8 text-center">
+
+<div class="text-5xl">🪙</div>
+
+<h3 class="text-2xl font-black mt-5">
+
+Altın
+
+</h3>
+
+<p class="text-slate-400 mt-4">
+
+XAU/USD
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8 text-center">
+
+<div class="text-5xl">🛢️</div>
+
+<h3 class="text-2xl font-black mt-5">
+
+Petrol
+
+</h3>
+
+<p class="text-slate-400 mt-4">
+
+Brent & WTI
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8 text-center">
+
+<div class="text-5xl">₿</div>
+
+<h3 class="text-2xl font-black mt-5">
+
+Bitcoin
+
+</h3>
+
+<p class="text-slate-400 mt-4">
+
+BTC/USD
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8 text-center">
+
+<div class="text-5xl">♦</div>
+
+<h3 class="text-2xl font-black mt-5">
+
+Ethereum
+
+</h3>
+
+<p class="text-slate-400 mt-4">
+
+ETH/USD
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8 text-center">
+
+<div class="text-5xl">📈</div>
+
+<h3 class="text-2xl font-black mt-5">
+
+ABD Tahvili
+
+</h3>
+
+<p class="text-slate-400 mt-4">
+
+10Y Treasury
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8 text-center">
+
+<div class="text-5xl">🇹🇷</div>
+
+<h3 class="text-2xl font-black mt-5">
+
+Türkiye CDS
+
+</h3>
+
+<p class="text-slate-400 mt-4">
+
+5Y CDS
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8 text-center">
+
+<div class="text-5xl">🏦</div>
+
+<h3 class="text-2xl font-black mt-5">
+
+Merkez Bankaları
+
+</h3>
+
+<p class="text-slate-400 mt-4">
+
+FED • ECB • TCMB
+
+</p>
+
+</div>
+
+</div>
+
+<hr class="border-slate-800 my-14">
+
+<h2 class="text-4xl font-black mb-10">
+
+📊 Makroekonomik Göstergeler
+
+</h2>
+
+<div class="grid xl:grid-cols-3 gap-8">
+
+<div class="glass rounded-3xl p-8">
+
+<h3 class="text-2xl font-black">
+
+📉 Enflasyon
+
+</h3>
+
+<p class="text-slate-400 mt-5">
+
+ABD, Türkiye, Avrupa ve diğer ülkelerin TÜFE / ÜFE verileri.
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8">
+
+<h3 class="text-2xl font-black">
+
+💰 Faiz
+
+</h3>
+
+<p class="text-slate-400 mt-5">
+
+Merkez bankalarının politika faizleri.
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8">
+
+<h3 class="text-2xl font-black">
+
+👷 İşsizlik
+
+</h3>
+
+<p class="text-slate-400 mt-5">
+
+İşsizlik oranları ve istihdam verileri.
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8">
+
+<h3 class="text-2xl font-black">
+
+🏭 PMI
+
+</h3>
+
+<p class="text-slate-400 mt-5">
+
+İmalat ve Hizmet PMI verileri.
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8">
+
+<h3 class="text-2xl font-black">
+
+📦 GSYH
+
+</h3>
+
+<p class="text-slate-400 mt-5">
+
+Ülkelerin büyüme verileri.
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8">
+
+<h3 class="text-2xl font-black">
+
+🤖 AI Makro Analizi
+
+</h3>
+
+<p class="text-slate-400 mt-5">
+
+Makro verilerin piyasalara olası etkileri.
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="py-24">
+
+<div class="max-w-7xl mx-auto px-8">
+
+<div class="glass rounded-[36px] p-10">
+
+<div class="flex flex-wrap justify-between items-center">
+
+<div>
+
+<div class="badge">
+
+🤖 Nexora Research
+
+</div>
+
+<h2 class="text-5xl font-black mt-5">
+
+AI Araştırma Merkezi
+
+</h2>
+
+<p class="text-slate-400 mt-5">
+
+Yapay zekâ tarafından hazırlanan profesyonel piyasa raporları.
+
+</p>
+
+</div>
+
+<button class="bg-emerald-500 text-black px-8 py-4 rounded-2xl font-black hover:bg-emerald-400 transition">
+
+📑 Son Rapor
+
+</button>
+
+</div>
+
+<div class="grid xl:grid-cols-4 gap-8 mt-12">
+
+<div class="glass rounded-3xl p-8 newsCard">
+
+<div class="text-5xl">
+
+📅
+
+</div>
+
+<h3 class="text-2xl font-black mt-6">
+
+Günlük Rapor
+
+</h3>
+
+<p class="text-slate-400 mt-5">
+
+Bugünkü piyasa özeti.
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8 newsCard">
+
+<div class="text-5xl">
+
+📆
+
+</div>
+
+<h3 class="text-2xl font-black mt-6">
+
+Haftalık
+
+</h3>
+
+<p class="text-slate-400 mt-5">
+
+Haftanın en önemli gelişmeleri.
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8 newsCard">
+
+<div class="text-5xl">
+
+📈
+
+</div>
+
+<h3 class="text-2xl font-black mt-6">
+
+Aylık
+
+</h3>
+
+<p class="text-slate-400 mt-5">
+
+Aylık piyasa raporu.
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8 newsCard">
+
+<div class="text-5xl">
+
+🌍
+
+</div>
+
+<h3 class="text-2xl font-black mt-6">
+
+Küresel
+
+</h3>
+
+<p class="text-slate-400 mt-5">
+
+Dünya piyasaları analizi.
+
+</p>
+
+</div>
+
+</div>
+
+<hr class="border-slate-800 my-14">
+
+<h2 class="text-4xl font-black">
+
+🏆 AI Sektör Analizleri
+
+</h2>
+
+<div class="grid xl:grid-cols-3 gap-8 mt-10">
+
+<div class="glass rounded-3xl p-8">
+
+<h3 class="text-2xl font-black">
+
+🛡️ Savunma
+
+</h3>
+
+<p class="text-slate-400 mt-5">
+
+ASELS
+
+PAPIL
+
+SDTTR
+
+ALTNY
+
+ONRYT
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8">
+
+<h3 class="text-2xl font-black">
+
+🤖 Yapay Zekâ
+
+</h3>
+
+<p class="text-slate-400 mt-5">
+
+NVDA
+
+AMD
+
+PLTR
+
+MSFT
+
+GOOGL
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8">
+
+<h3 class="text-2xl font-black">
+
+⚡ Enerji
+
+</h3>
+
+<p class="text-slate-400 mt-5">
+
+ASTOR
+
+YEO
+
+SMRTG
+
+CWENE
+
+GESAN
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8">
+
+<h3 class="text-2xl font-black">
+
+🏦 Bankacılık
+
+</h3>
+
+<p class="text-slate-400 mt-5">
+
+AKBNK
+
+YKBNK
+
+GARAN
+
+ISCTR
+
+HALKB
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8">
+
+<h3 class="text-2xl font-black">
+
+🚗 Otomotiv
+
+</h3>
+
+<p class="text-slate-400 mt-5">
+
+TOASO
+
+FROTO
+
+TSLA
+
+RIVN
+
+NIO
+
+</p>
+
+</div>
+
+<div class="glass rounded-3xl p-8">
+
+<h3 class="text-2xl font-black">
+
+💊 Sağlık
+
+</h3>
+
+<p class="text-slate-400 mt-5">
+
+LLY
+
+JNJ
+
+PFE
+
+MRK
+
+ABBV
+
+</p>
+
+</div>
+
+</div>
+
+<div class="glass rounded-3xl p-8 mt-14">
+
+<h2 class="text-3xl font-black">
+
+⭐ AI'nin Haftanın Favorileri
+
+</h2>
+
+<div class="grid grid-cols-2 xl:grid-cols-5 gap-5 mt-8">
+
+<button class="glass py-4 rounded-xl">ASELS</button>
+
+<button class="glass py-4 rounded-xl">NVDA</button>
+
+<button class="glass py-4 rounded-xl">PLTR</button>
+
+<button class="glass py-4 rounded-xl">THYAO</button>
+
+<button class="glass py-4 rounded-xl">MSFT</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="py-24">
+
+<div class="max-w-7xl mx-auto px-8">
+
+<div class="glass rounded-[40px] p-12">
+
+<div class="grid xl:grid-cols-4 gap-12">
+
+<div>
+
+<div class="badge">
+
+🚀 Nexora
+
+</div>
+
+<h2 class="text-4xl font-black mt-6">
+
+Nexora AI
+
+</h2>
+
+<p class="text-slate-400 leading-8 mt-6">
+
+Profesyonel yatırım platformu.
+
+Canlı piyasalar, AI analizleri, grafikler, finansallar, haberler ve portföy yönetimi tek uygulamada.
+
+</p>
+
+</div>
+
+<div>
+
+<h3 class="text-2xl font-black mb-8">
+
+⚙️ Platform
+
+</h3>
+
+<div class="space-y-5">
+
+<p>🏠 Ana Sayfa</p>
+
+<p>📈 Stocks</p>
+
+<p>📰 News</p>
+
+<p>📊 Charts</p>
+
+<p>💼 Portfolio</p>
+
+<p>🤖 Nexora AI</p>
+
+<p>💎 Premium</p>
+
+</div>
+
+</div>
+
+<div>
+
+<h3 class="text-2xl font-black mb-8">
+
+🌍 Servisler
+
+</h3>
+
+<div class="space-y-5">
+
+<p>📡 API Durumu <span class="text-emerald-400">●</span></p>
+
+<p>🟢 Sunucu Durumu</p>
+
+<p>📈 Piyasa Durumu</p>
+
+<p>📅 Ekonomik Takvim</p>
+
+<p>💰 Temettüler</p>
+
+<p>📊 Bilançolar</p>
+
+<p>🚀 IPO Merkezi</p>
+
+</div>
+
+</div>
+
+<div>
+
+<h3 class="text-2xl font-black mb-8">
+
+📬 İletişim
+
+</h3>
+
+<input
+type="email"
+placeholder="E-posta adresiniz"
+class="w-full bg-slate-900 border border-slate-700 rounded-xl p-4 focus:outline-none focus:border-emerald-500">
+
+<button class="w-full mt-5 bg-emerald-500 hover:bg-emerald-400 text-black py-4 rounded-xl font-black">
+
+📧 Newsletter'a Katıl
+
+</button>
+
+<div class="flex gap-4 mt-8">
+
+<button class="glass p-4 rounded-xl">𝕏</button>
+
+<button class="glass p-4 rounded-xl">📘</button>
+
+<button class="glass p-4 rounded-xl">▶️</button>
+
+<button class="glass p-4 rounded-xl">💼</button>
+
+</div>
+
+</div>
+
+</div>
+
+<hr class="border-slate-800 my-14">
+
+<div class="grid xl:grid-cols-4 gap-8">
+
+<div class="glass rounded-2xl p-6 text-center">
+
+<div class="text-4xl">
+
+🌙
+
+</div>
+
+<h4 class="font-bold mt-4">
+
+Dark Mode
+
+</h4>
+
+</div>
+
+<div class="glass rounded-2xl p-6 text-center">
+
+<div class="text-4xl">
+
+🌍
+
+</div>
+
+<h4 class="font-bold mt-4">
+
+Dil
+
+</h4>
+
+</div>
+
+<div class="glass rounded-2xl p-6 text-center">
+
+<div class="text-4xl">
+
+📱
+
+</div>
+
+<h4 class="font-bold mt-4">
+
+Mobil Uygulama
+
+</h4>
+
+</div>
+
+<div class="glass rounded-2xl p-6 text-center">
+
+<div class="text-4xl">
+
+💎
+
+</div>
+
+<h4 class="font-bold mt-4">
+
+Premium
+
+</h4>
+
+</div>
+
+</div>
+
+<hr class="border-slate-800 my-12">
+
+<div class="flex flex-wrap justify-between items-center gap-6">
+
+<p class="text-slate-500">
+
+© 2026 Nexora AI • All Rights Reserved
+
+</p>
+
+<div class="flex flex-wrap gap-6 text-slate-500">
+
+<span>Privacy</span>
+
+<span>Terms</span>
+
+<span>Cookies</span>
+
+<span>API Status</span>
+
+<span>Version 1.0</span>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+</body>
+
+</html>
