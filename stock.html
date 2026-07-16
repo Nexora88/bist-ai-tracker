@@ -7,987 +7,317 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>BIST AI Tracker</title>
+<title>Nexora Markets | Global Hisse Merkezi</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
 
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+body{
+
+background:#020617;
+
+color:white;
+
+font-family:Inter,Arial,sans-serif;
+
+}
+
+.glass{
+
+background:rgba(15,23,42,0.75);
+
+backdrop-filter:blur(20px);
+
+border:1px solid rgba(255,255,255,0.08);
+
+}
+
+.gradient{
+
+background:linear-gradient(90deg,#10b981,#06b6d4);
+
+-webkit-background-clip:text;
+
+color:transparent;
+
+}
+
+.badge{
+
+display:inline-block;
+
+padding:8px 16px;
+
+border-radius:999px;
+
+background:rgba(16,185,129,.15);
+
+color:#10b981;
+
+font-weight:700;
+
+}
+
+.settingCard{
+
+background:#0f172a;
+
+border:1px solid #1e293b;
+
+border-radius:24px;
+
+padding:24px;
+
+transition:.3s;
+
+}
+
+.settingCard:hover{
+
+transform:translateY(-5px);
+
+border-color:#10b981;
+
+}
+
+</style>
 
 </head>
 
 
-<body class="bg-slate-950 text-slate-200">
+<body>
 
 
-<div class="max-w-7xl mx-auto p-6">
+<nav class="glass fixed top-0 left-0 right-0 z-50">
 
+<div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
 
-<!-- ÜST BAR -->
-
-<div class="flex justify-between items-center mb-8">
 
 <a href="index.html"
-class="text-emerald-400 text-lg">
+class="text-3xl font-black">
 
-← Tüm Hisseler
+NEXORA
+<span class="gradient">
+AI
+</span>
 
 </a>
 
 
-<div class="text-right">
+<div class="hidden md:flex gap-8 text-slate-300">
 
-<div id="liveClock"
-class="font-mono text-2xl font-bold">
-
---:--:--
-
-</div>
-
-<div id="todayDate"
-class="text-slate-400">
-
---
-
-</div>
-
-</div>
-
-
-</div>
-
-
-
-
-
-<!-- PİYASA PANELİ -->
-
-
-<div class="bg-slate-900 rounded-3xl p-6 mb-8">
-
-
-<h2 class="text-2xl font-bold mb-6">
-
-🌍 Piyasalar
-
-</h2>
-
-
-
-<div class="grid md:grid-cols-3 gap-5">
-
-
-
-<!-- BIST -->
-
-<div class="bg-slate-800 rounded-3xl p-5">
-
-
-<div class="flex justify-between">
-
-
-<h3 class="text-xl font-bold">
-
-🇹🇷 BIST
-
-</h3>
-
-
-<span id="bistStatus"
+<a href="stocks.html"
 class="text-emerald-400">
 
---
+Hisseler
+
+</a>
+
+<a href="portfolio.html">
+
+Portföy
+
+</a>
+
+<a href="chat.html">
+
+AI
+
+</a>
+
+<a href="premium.html">
+
+Premium
+
+</a>
+
+</div>
+
+
+<a href="login.html"
+
+class="bg-emerald-500 text-black px-6 py-3 rounded-xl font-bold">
+
+Giriş
+
+</a>
+
+
+</div>
+
+</nav>
+
+
+<main class="max-w-7xl mx-auto px-6 pt-36">
+
+
+<section>
+
+
+<div class="badge">
+
+🌍 Global Markets
+
+</div>
+
+
+<h1 class="text-6xl font-black mt-8">
+
+Tüm Dünya
+
+<span class="gradient">
+
+Hisseleri
 
 </span>
 
-
-</div>
-
-
-
-<p class="text-slate-400 mt-4">
-
-Durum
-
-</p>
-
-
-<div id="bistTimer"
-class="text-2xl font-mono">
-
---
-
-</div>
-
-
-</div>
-
-
-
-
-
-<!-- NASDAQ -->
-
-
-<div class="bg-slate-800 rounded-3xl p-5">
-
-
-<div class="flex justify-between">
-
-
-<h3 class="text-xl font-bold">
-
-🇺🇸 NASDAQ
-
-</h3>
-
-
-<span id="nasdaqStatus"
-class="text-emerald-400">
-
---
-
-</span>
-
-
-</div>
-
-
-
-<p class="text-slate-400 mt-4">
-
-Durum
-
-</p>
-
-
-<div id="nasdaqTimer"
-class="text-2xl font-mono">
-
---
-
-</div>
-
-
-
-</div>
-
-
-
-
-
-<!-- NYSE -->
-
-
-<div class="bg-slate-800 rounded-3xl p-5">
-
-
-<div class="flex justify-between">
-
-
-<h3 class="text-xl font-bold">
-
-🇺🇸 NYSE
-
-</h3>
-
-
-<span id="nyseStatus"
-class="text-emerald-400">
-
---
-
-</span>
-
-
-</div>
-
-
-
-<p class="text-slate-400 mt-4">
-
-Durum
-
-</p>
-
-
-<div id="nyseTimer"
-class="text-2xl font-mono">
-
---
-
-</div>
-
-
-</div>
-
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-
-<!-- HİSSE BAŞLIK -->
-
-
-<div class="flex flex-col lg:flex-row justify-between mb-8">
-
-
-<div>
-
-
-<h1 id="symbol"
-class="text-6xl font-bold">
-
-AEFES
+Tek Yerde
 
 </h1>
 
 
-<p id="companyName"
-class="text-xl text-slate-400">
+<p class="text-slate-400 text-xl mt-6 max-w-3xl">
 
-BIST AI Tracker
+BIST, NASDAQ, NYSE, OTC ve dünya borsalarındaki hisseleri takip edin.
+Yakında gerçek zamanlı fiyatlar ve gelişmiş grafiklerle güçlenecek.
 
 </p>
 
 
-</div>
+</section>
 
+<section class="mt-20">
 
+<div class="glass rounded-[34px] p-10">
 
+<div class="flex flex-wrap justify-between items-center gap-6">
 
-<div class="text-right">
+<div>
 
+<div class="badge">
 
-<div id="currentPrice"
-class="text-6xl font-bold">
-
---
-
-</div>
-
-
-
-<div id="changePercent"
-class="text-3xl">
-
---
+🌍 Piyasa Merkezi
 
 </div>
 
+<h2 class="text-5xl font-black mt-5">
 
-</div>
-
-
-</div>
-
-
-
-
-
-
-
-<!-- GRAFİK -->
-
-
-<div class="bg-slate-900 rounded-3xl p-6 mb-8">
-
-
-<h2 class="text-xl mb-5">
-
-📈 Fiyat Grafiği
+Küresel Borsalar
 
 </h2>
 
+<p class="text-slate-400 mt-5">
 
-<canvas id="priceChart"></canvas>
-
-
-</div>
-
-
-
-
-
-
-<!-- BİLGİ KARTLARI -->
-
-
-<div class="grid md:grid-cols-4 gap-5">
-
-
-<div class="bg-slate-900 rounded-3xl p-5">
-
-<p class="text-slate-400">
-
-Önceki Kapanış
+İstediğin piyasayı seç, hisseleri filtrele ve gerçek zamanlı verilere ulaş.
 
 </p>
 
-<h3 id="prevClose"
-class="text-2xl">
+</div>
 
---
+</div>
+
+<div class="grid lg:grid-cols-4 gap-6 mt-12">
+
+<!-- Türkiye -->
+
+<div class="settingCard">
+
+<h3 class="text-2xl font-bold mb-5">
+
+🇹🇷 Türkiye
 
 </h3>
-
-</div>
-
-
-
-<div class="bg-slate-900 rounded-3xl p-5">
-
-<p class="text-slate-400">
-
-En Yüksek
-
-</p>
-
-<h3 id="dayHigh"
-class="text-2xl text-emerald-400">
-
---
-
-</h3>
-
-</div>
-
-
-
-<div class="bg-slate-900 rounded-3xl p-5">
-
-<p class="text-slate-400">
-
-En Düşük
-
-</p>
-
-<h3 id="dayLow"
-class="text-2xl text-red-400">
-
---
-
-</h3>
-
-</div>
-
-
-
-<div class="bg-slate-900 rounded-3xl p-5">
-
-<p class="text-slate-400">
-
-Hacim
-
-</p>
-
-<h3 id="volume"
-class="text-2xl">
-
---
-
-</h3>
-
-</div>
-
-
-
-</div>
-
-
-
-
-
-<!-- SAĞ PANEL -->
-
-
-<div class="grid lg:grid-cols-2 gap-6 mt-8">
-
-
-
-<div class="bg-slate-900 rounded-3xl p-6">
-
-
-<h2 class="text-xl mb-5">
-
-🤖 AI Analizi
-
-</h2>
-
-
-<div id="aiAnalysis">
-
-Veriler bekleniyor...
-
-</div>
-
-
-
-</div>
-
-
-
-
-
-<div class="bg-slate-900 rounded-3xl p-6">
-
-
-<h2 class="text-xl mb-5">
-
-🔔 Alarm
-
-</h2>
-
-
-<input id="alarmPrice"
-type="number"
-placeholder="Alarm fiyatı"
-class="w-full bg-slate-800 rounded-xl p-4 mb-4">
-
-
-
-<button onclick="setAlarm()"
-class="w-full bg-amber-500 text-black p-4 rounded-xl">
-
-Alarm Kur
-
-</button>
-
-
-
-</div>
-
-
-
-</div>
-
-<script>
-
-// ================= AYARLAR =================
-
-const SYMBOL =
-new URLSearchParams(window.location.search)
-.get("symbol")
-?.toUpperCase() || "AEFES";
-
-
-
-document.getElementById("symbol").textContent = SYMBOL;
-
-
-
-
-
-// ================= SAAT VE PİYASA =================
-
-
-function formatTime(ms){
-
-    if(ms < 0) ms = 0;
-
-    let total = Math.floor(ms / 1000);
-
-    let h = Math.floor(total / 3600);
-
-    let m = Math.floor((total % 3600) / 60);
-
-    let s = total % 60;
-
-
-    return `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
-
-}
-
-
-
-
-function market(openHour,openMinute,closeHour,closeMinute){
-
-
-    let now = new Date();
-
-
-    let open = new Date(now);
-
-    open.setHours(openHour,openMinute,0,0);
-
-
-
-    let close = new Date(now);
-
-    close.setHours(closeHour,closeMinute,0,0);
-
-
-
-    if(now < open){
-
-        return {
-
-            status:"🟡 Açılışa Kalan",
-
-            time:formatTime(open-now)
-
-        };
-
-    }
-
-
-
-    if(now >= open && now < close){
-
-        return {
-
-            status:"🟢 Açık",
-
-            time:"Kapanışa "+formatTime(close-now)
-
-        };
-
-    }
-
-
-
-    open.setDate(open.getDate()+1);
-
-
-
-    return {
-
-        status:"🔴 Kapalı",
-
-        time:"Açılışa "+formatTime(open-now)
-
-    };
-
-}
-
-
-
-
-function updateMarket(){
-
-
-    let now = new Date();
-
-
-    document.getElementById("liveClock")
-    .textContent =
-    now.toLocaleTimeString("tr-TR");
-
-
-
-    document.getElementById("todayDate")
-    .textContent =
-    now.toLocaleDateString("tr-TR");
-
-
-
-
-    let bist =
-    market(10,0,18,0);
-
-
-    document.getElementById("bistStatus")
-    .textContent=bist.status;
-
-
-    document.getElementById("bistTimer")
-    .textContent=bist.time;
-
-
-
-
-    let nasdaq =
-    market(16,30,23,0);
-
-
-    document.getElementById("nasdaqStatus")
-    .textContent=nasdaq.status;
-
-
-    document.getElementById("nasdaqTimer")
-    .textContent=nasdaq.time;
-
-
-
-
-    let nyse =
-    market(16,30,23,0);
-
-
-    document.getElementById("nyseStatus")
-    .textContent=nyse.status;
-
-
-    document.getElementById("nyseTimer")
-    .textContent=nyse.time;
-
-
-}
-
-
-
-setInterval(updateMarket,1000);
-
-updateMarket();
-
-
-
-
-
-
-
-
-// ================= GRAFİK =================
-
-
-let chart;
-
-
-function createChart(){
-
-
-chart = new Chart(
-document.getElementById("priceChart"),
-
-{
-
-type:"line",
-
-
-data:{
-
-
-labels:[
-
-"09:00",
-"10:00",
-"11:00",
-"12:00",
-"13:00",
-"14:00",
-"15:00",
-"16:00"
-
-],
-
-
-datasets:[{
-
-label:SYMBOL,
-
-
-data:[
-
-100,
-102,
-101,
-105,
-107,
-106,
-109,
-110
-
-],
-
-
-borderWidth:3,
-
-tension:.4
-
-
-}]
-
-
-},
-
-
-options:{
-
-
-responsive:true,
-
-
-plugins:{
-
-
-legend:{
-
-
-display:true
-
-
-}
-
-
-}
-
-
-}
-
-
-
-});
-
-
-}
-
-
-createChart();
-
-
-
-
-
-
-
-
-// ================= DEMO VERİ =================
-
-
-function loadDemo(){
-
-
-document.getElementById("companyName")
-.textContent =
-SYMBOL+" Şirket Analizi";
-
-
-
-document.getElementById("currentPrice")
-.textContent =
-"145.20 ₺";
-
-
-
-document.getElementById("changePercent")
-.textContent =
-"▲ +2.45%";
-
-
-
-document.getElementById("changePercent")
-.className =
-"text-3xl text-emerald-400";
-
-
-
-document.getElementById("prevClose")
-.textContent =
-"141.70 ₺";
-
-
-
-document.getElementById("dayHigh")
-.textContent =
-"146.80 ₺";
-
-
-
-document.getElementById("dayLow")
-.textContent =
-"140.90 ₺";
-
-
-
-document.getElementById("volume")
-.textContent =
-"12.4M";
-
-
-
-document.getElementById("aiAnalysis")
-.innerHTML=`
 
 <div class="space-y-3">
 
-<p>
-📊 Trend:
-<span class="text-emerald-400">
-Pozitif
-</span>
-</p>
+<button class="w-full bg-slate-800 rounded-xl py-3 hover:bg-emerald-500 hover:text-black transition">BIST 30</button>
 
+<button class="w-full bg-slate-800 rounded-xl py-3 hover:bg-emerald-500 hover:text-black transition">BIST 50</button>
 
-<p>
-⚡ Momentum:
-Güçlü
-</p>
+<button class="w-full bg-slate-800 rounded-xl py-3 hover:bg-emerald-500 hover:text-black transition">BIST 100</button>
 
+<button class="w-full bg-slate-800 rounded-xl py-3 hover:bg-emerald-500 hover:text-black transition">BIST 500</button>
 
-<p>
-⚠ Risk:
-Orta
-</p>
-
-
-<p>
-🎯 AI Yorumu:
-Hisse takip listesinde tutulabilir.
-</p>
-
+<button class="w-full bg-slate-800 rounded-xl py-3 hover:bg-emerald-500 hover:text-black transition">Tüm Hisseler</button>
 
 </div>
 
-`;
+</div>
 
+<!-- Amerika -->
 
+<div class="settingCard">
 
-}
+<h3 class="text-2xl font-bold mb-5">
 
+🇺🇸 Amerika
 
-loadDemo();
-
-
-
-
-
-
-
-// ================= ALARM =================
-
-
-function setAlarm(){
-
-
-let price =
-document.getElementById("alarmPrice").value;
-
-
-
-if(price){
-
-
-alert(
-SYMBOL+
-" için "+
-price+
-" ₺ alarm kuruldu!"
-);
-
-
-}
-
-
-
-}
-
-/*=========================================================
-BÖLÜM 1
-Stock Layout Engine
-=========================================================*/
-
-const StockPage = {
-
-    symbol: SYMBOL,
-
-    market: "BIST",
-
-    category: "ALL",
-
-    favorites: [],
-
-    aiQuestionsToday: 0,
-
-    freeQuestionLimit: 3,
-
-    init() {
-
-        this.loadFavorites();
-
-        this.loadUsage();
-
-        this.createLeftSidebar();
-
-        this.createRightSidebar();
-
-    },
-
-    createLeftSidebar() {
-
-        document.getElementById("leftSidebar").innerHTML = `
+</h3>
 
 <div class="space-y-3">
 
-<div class="bg-slate-800 rounded-2xl p-4">
+<button class="w-full bg-slate-800 rounded-xl py-3 hover:bg-emerald-500 hover:text-black transition">NASDAQ</button>
 
-<h3 class="font-bold text-lg mb-4">
+<button class="w-full bg-slate-800 rounded-xl py-3 hover:bg-emerald-500 hover:text-black transition">NYSE</button>
 
-🌍 Marketler
+<button class="w-full bg-slate-800 rounded-xl py-3 hover:bg-emerald-500 hover:text-black transition">S&P 500</button>
+
+<button class="w-full bg-slate-800 rounded-xl py-3 hover:bg-emerald-500 hover:text-black transition">Dow Jones</button>
+
+<button class="w-full bg-slate-800 rounded-xl py-3 hover:bg-emerald-500 hover:text-black transition">Russell 2000</button>
+
+</div>
+
+</div>
+
+<!-- Dünya -->
+
+<div class="settingCard">
+
+<h3 class="text-2xl font-bold mb-5">
+
+🌍 Dünya
 
 </h3>
 
-<button class="market-btn" data-market="BIST30">
+<div class="space-y-3">
 
-🇹🇷 BIST30
+<button class="w-full bg-slate-800 rounded-xl py-3 hover:bg-emerald-500 hover:text-black transition">OTC Markets</button>
 
-</button>
+<button class="w-full bg-slate-800 rounded-xl py-3 hover:bg-emerald-500 hover:text-black transition">DAX</button>
 
-<button class="market-btn" data-market="BIST50">
+<button class="w-full bg-slate-800 rounded-xl py-3 hover:bg-emerald-500 hover:text-black transition">FTSE 100</button>
 
-🇹🇷 BIST50
+<button class="w-full bg-slate-800 rounded-xl py-3 hover:bg-emerald-500 hover:text-black transition">Nikkei 225</button>
 
-</button>
-
-<button class="market-btn" data-market="BIST100">
-
-🇹🇷 BIST100
-
-</button>
-
-<button class="market-btn" data-market="BISTALL">
-
-🇹🇷 TÜM BIST
-
-</button>
-
-<button class="market-btn" data-market="NASDAQ">
-
-🇺🇸 NASDAQ
-
-</button>
-
-<button class="market-btn" data-market="NYSE">
-
-🇺🇸 NYSE
-
-</button>
-
-<button class="market-btn" data-market="OTC">
-
-🌍 OTC
-
-</button>
-
-<button class="market-btn" data-market="CRYPTO">
-
-₿ KRİPTO
-
-</button>
+<button class="w-full bg-slate-800 rounded-xl py-3 hover:bg-emerald-500 hover:text-black transition">Shanghai</button>
 
 </div>
 
-<div class="bg-slate-800 rounded-2xl p-4">
+</div>
 
-<h3 class="font-bold">
+<!-- Diğer -->
 
-⭐ Favoriler
+<div class="settingCard">
+
+<h3 class="text-2xl font-bold mb-5">
+
+📊 Diğer
 
 </h3>
 
-<div id="favoriteList">
+<div class="space-y-3">
 
-Henüz favori yok.
+<button class="w-full bg-slate-800 rounded-xl py-3 hover:bg-emerald-500 hover:text-black transition">ETF</button>
+
+<button class="w-full bg-slate-800 rounded-xl py-3 hover:bg-emerald-500 hover:text-black transition">REIT</button>
+
+<button class="w-full bg-slate-800 rounded-xl py-3 hover:bg-emerald-500 hover:text-black transition">Fonlar</button>
+
+<button class="w-full bg-slate-800 rounded-xl py-3 hover:bg-emerald-500 hover:text-black transition">IPO</button>
+
+<button class="w-full bg-slate-800 rounded-xl py-3 hover:bg-emerald-500 hover:text-black transition">Kripto (Yakında)</button>
 
 </div>
 
@@ -995,818 +325,657 @@ Henüz favori yok.
 
 </div>
 
-`;
+</div>
 
-    },
+</section>
 
-    createRightSidebar() {
+<section class="mt-20">
 
-        document.getElementById("rightSidebar").innerHTML = `
+<div class="glass rounded-[34px] p-10">
+
+<div class="flex flex-wrap justify-between items-center gap-6 mb-10">
+
+<div>
+
+<div class="badge">
+
+🔎 Akıllı Arama
+
+</div>
+
+<h2 class="text-5xl font-black mt-5">
+
+Hisse Ara ve Filtrele
+
+</h2>
+
+<p class="text-slate-400 mt-5">
+
+İsme, sembole, sektöre veya ülkeye göre binlerce hisse arasında arama yap.
+
+</p>
+
+</div>
+
+</div>
+
+<div class="grid lg:grid-cols-5 gap-5">
+
+<input
+type="text"
+placeholder="🔍 Hisse adı veya kodu (ASELS, AAPL...)"
+class="lg:col-span-2 bg-slate-900 rounded-2xl px-6 py-4 border border-slate-700 focus:border-emerald-500 outline-none transition">
+
+<select class="bg-slate-900 rounded-2xl px-5 py-4 border border-slate-700">
+
+<option>Tüm Ülkeler</option>
+
+<option>🇹🇷 Türkiye</option>
+
+<option>🇺🇸 Amerika</option>
+
+<option>🇩🇪 Almanya</option>
+
+<option>🇯🇵 Japonya</option>
+
+<option>🇨🇳 Çin</option>
+
+<option>🌍 Diğer</option>
+
+</select>
+
+<select class="bg-slate-900 rounded-2xl px-5 py-4 border border-slate-700">
+
+<option>Tüm Sektörler</option>
+
+<option>🏦 Bankacılık</option>
+
+<option>⚡ Enerji</option>
+
+<option>🛡️ Savunma</option>
+
+<option>💻 Teknoloji</option>
+
+<option>🏗️ Sanayi</option>
+
+<option>🏠 GYO</option>
+
+<option>🛒 Perakende</option>
+
+<option>💊 Sağlık</option>
+
+</select>
+
+<button
+class="bg-emerald-500 hover:bg-emerald-400 text-black rounded-2xl font-black transition">
+
+Ara
+
+</button>
+
+</div>
+
+<div class="grid md:grid-cols-4 gap-5 mt-10">
+
+<div class="settingCard text-center">
+
+<div class="text-5xl">⭐</div>
+
+<h3 class="font-bold text-xl mt-4">
+
+Favoriler
+
+</h3>
+
+</div>
+
+<div class="settingCard text-center">
+
+<div class="text-5xl">🔥</div>
+
+<h3 class="font-bold text-xl mt-4">
+
+Trend Hisseler
+
+</h3>
+
+</div>
+
+<div class="settingCard text-center">
+
+<div class="text-5xl">💎</div>
+
+<h3 class="font-bold text-xl mt-4">
+
+Temettü Devleri
+
+</h3>
+
+</div>
+
+<div class="settingCard text-center">
+
+<div class="text-5xl">🚀</div>
+
+<h3 class="font-bold text-xl mt-4">
+
+Büyüme Hisseleri
+
+</h3>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="mt-20">
+
+<div class="grid xl:grid-cols-2 gap-8">
+
+<!-- En Çok Kazandıranlar -->
+
+<div class="glass rounded-[34px] p-8">
+
+<div class="flex justify-between items-center mb-8">
+
+<div>
+
+<div class="badge">
+
+🚀 Top Gainers
+
+</div>
+
+<h2 class="text-4xl font-black mt-4">
+
+En Çok Kazandıranlar
+
+</h2>
+
+</div>
+
+<button class="text-emerald-400 font-bold">
+
+Tümünü Gör →
+
+</button>
+
+</div>
 
 <div class="space-y-4">
 
-<div class="bg-slate-800 rounded-2xl p-4">
+<div class="settingCard flex justify-between items-center">
 
-<h3 class="font-bold">
+<div>
 
-🤖 AI Kullanımı
+<h3 class="font-bold text-xl">ASELS</h3>
 
-</h3>
+<p class="text-slate-400">ASELSAN</p>
 
-<p>
+</div>
 
-Bugün
+<div class="text-right">
 
-<span id="aiUsage">
+<h3 class="font-bold">₺0.00</h3>
 
-0 / 3
+<p class="text-emerald-400 font-bold">▲ +0.00%</p>
+
+</div>
+
+</div>
+
+<div class="settingCard flex justify-between items-center">
+
+<div>
+
+<h3 class="font-bold text-xl">NVDA</h3>
+
+<p class="text-slate-400">NVIDIA</p>
+
+</div>
+
+<div class="text-right">
+
+<h3 class="font-bold">$0.00</h3>
+
+<p class="text-emerald-400 font-bold">▲ +0.00%</p>
+
+</div>
+
+</div>
+
+<div class="settingCard flex justify-between items-center">
+
+<div>
+
+<h3 class="font-bold text-xl">AAPL</h3>
+
+<p class="text-slate-400">Apple</p>
+
+</div>
+
+<div class="text-right">
+
+<h3 class="font-bold">$0.00</h3>
+
+<p class="text-emerald-400 font-bold">▲ +0.00%</p>
+
+</div>
+
+</div>
+
+<div class="settingCard flex justify-between items-center">
+
+<div>
+
+<h3 class="font-bold text-xl">THYAO</h3>
+
+<p class="text-slate-400">Türk Hava Yolları</p>
+
+</div>
+
+<div class="text-right">
+
+<h3 class="font-bold">₺0.00</h3>
+
+<p class="text-emerald-400 font-bold">▲ +0.00%</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- En Çok Kaybettirenler -->
+
+<div class="glass rounded-[34px] p-8">
+
+<div class="flex justify-between items-center mb-8">
+
+<div>
+
+<div class="badge">
+
+📉 Top Losers
+
+</div>
+
+<h2 class="text-4xl font-black mt-4">
+
+En Çok Kaybettirenler
+
+</h2>
+
+</div>
+
+<button class="text-red-400 font-bold">
+
+Tümünü Gör →
+
+</button>
+
+</div>
+
+<div class="space-y-4">
+
+<div class="settingCard flex justify-between items-center">
+
+<div>
+
+<h3 class="font-bold text-xl">TSLA</h3>
+
+<p class="text-slate-400">Tesla</p>
+
+</div>
+
+<div class="text-right">
+
+<h3 class="font-bold">$0.00</h3>
+
+<p class="text-red-400 font-bold">▼ -0.00%</p>
+
+</div>
+
+</div>
+
+<div class="settingCard flex justify-between items-center">
+
+<div>
+
+<h3 class="font-bold text-xl">SASA</h3>
+
+<p class="text-slate-400">SASA Polyester</p>
+
+</div>
+
+<div class="text-right">
+
+<h3 class="font-bold">₺0.00</h3>
+
+<p class="text-red-400 font-bold">▼ -0.00%</p>
+
+</div>
+
+</div>
+
+<div class="settingCard flex justify-between items-center">
+
+<div>
+
+<h3 class="font-bold text-xl">AMD</h3>
+
+<p class="text-slate-400">Advanced Micro Devices</p>
+
+</div>
+
+<div class="text-right">
+
+<h3 class="font-bold">$0.00</h3>
+
+<p class="text-red-400 font-bold">▼ -0.00%</p>
+
+</div>
+
+</div>
+
+<div class="settingCard flex justify-between items-center">
+
+<div>
+
+<h3 class="font-bold text-xl">EREGL</h3>
+
+<p class="text-slate-400">Ereğli Demir Çelik</p>
+
+</div>
+
+<div class="text-right">
+
+<h3 class="font-bold">₺0.00</h3>
+
+<p class="text-red-400 font-bold">▼ -0.00%</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="mt-20">
+
+<div class="glass rounded-[34px] p-8">
+
+<div class="flex flex-wrap justify-between items-center gap-5 mb-8">
+
+<div>
+
+<div class="badge">
+
+📊 Canlı Hisse Listesi
+
+</div>
+
+<h2 class="text-4xl font-black mt-4">
+
+Global Hisse Terminali
+
+</h2>
+
+</div>
+
+<div class="flex gap-3">
+
+<button class="bg-slate-800 px-5 py-3 rounded-xl hover:bg-emerald-500 hover:text-black transition">
+
+⭐ Favoriler
+
+</button>
+
+<button class="bg-slate-800 px-5 py-3 rounded-xl hover:bg-emerald-500 hover:text-black transition">
+
+👑 Premium Filtre
+
+</button>
+
+</div>
+
+</div>
+
+<div class="overflow-x-auto">
+
+<table class="w-full text-left">
+
+<thead>
+
+<tr class="border-b border-slate-700 text-slate-400">
+
+<th class="py-4">⭐</th>
+<th>Kod</th>
+<th>Şirket</th>
+<th>Ülke</th>
+<th>Fiyat</th>
+<th>Günlük %</th>
+<th>Hacim</th>
+<th>Piyasa Değeri</th>
+<th>AI</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr class="border-b border-slate-800 hover:bg-slate-900 transition cursor-pointer">
+
+<td>☆</td>
+<td class="font-bold">ASELS</td>
+<td>ASELSAN</td>
+<td>🇹🇷</td>
+<td>₺0.00</td>
+<td class="text-emerald-400">▲ +0.00%</td>
+<td>0</td>
+<td>₺0</td>
+<td>
+
+<span class="badge">
+
+92
 
 </span>
+
+</td>
+
+</tr>
+
+<tr class="border-b border-slate-800 hover:bg-slate-900 transition cursor-pointer">
+
+<td>☆</td>
+<td class="font-bold">AAPL</td>
+<td>Apple</td>
+<td>🇺🇸</td>
+<td>$0.00</td>
+<td class="text-red-400">▼ -0.00%</td>
+<td>0</td>
+<td>$0</td>
+<td>
+
+<span class="badge">
+
+95
+
+</span>
+
+</td>
+
+</tr>
+
+<tr class="border-b border-slate-800 hover:bg-slate-900 transition cursor-pointer">
+
+<td>☆</td>
+<td class="font-bold">NVDA</td>
+<td>NVIDIA</td>
+<td>🇺🇸</td>
+<td>$0.00</td>
+<td class="text-emerald-400">▲ +0.00%</td>
+<td>0</td>
+<td>$0</td>
+<td>
+
+<span class="badge">
+
+98
+
+</span>
+
+</td>
+
+</tr>
+
+<tr class="border-b border-slate-800 hover:bg-slate-900 transition cursor-pointer">
+
+<td>☆</td>
+<td class="font-bold">THYAO</td>
+<td>Türk Hava Yolları</td>
+<td>🇹🇷</td>
+<td>₺0.00</td>
+<td class="text-emerald-400">▲ +0.00%</td>
+<td>0</td>
+<td>₺0</td>
+<td>
+
+<span class="badge">
+
+87
+
+</span>
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="mt-20">
+
+<div class="glass rounded-[34px] p-10">
+
+<div class="flex flex-wrap justify-between items-center gap-6">
+
+<div>
+
+<div class="badge">
+
+🏢 Hisse Detayı
+
+</div>
+
+<h2 class="text-5xl font-black mt-5">
+
+Seçilen Hisse
+
+</h2>
+
+<p class="text-slate-400 mt-5">
+
+Bir hisseye tıkladığında bu alan otomatik olarak güncellenecektir.
 
 </p>
 
 </div>
 
-<div class="bg-slate-800 rounded-2xl p-4">
+<button class="bg-emerald-500 text-black px-8 py-4 rounded-2xl font-black hover:scale-105 transition">
 
-<h3 class="font-bold">
+🤖 AI Analizi Başlat
 
-🔥 AI Radar
-
-</h3>
-
-<div id="aiRadar">
-
-Yakında...
+</button>
 
 </div>
 
-</div>
+<div class="grid xl:grid-cols-2 gap-10 mt-12">
 
-<div class="bg-slate-800 rounded-2xl p-4">
+<div>
 
-<h3 class="font-bold">
-
-📅 Yaklaşan Bilançolar
-
-</h3>
-
-<div id="earningsList">
-
-Yakında...
-
-</div>
-
-</div>
-
-</div>
-
-`;
-
-    },
-
-    loadFavorites() {
-
-        this.favorites = JSON.parse(
-
-            localStorage.getItem("favorites") || "[]"
-
-        );
-
-    },
-
-    loadUsage() {
-
-        const today = new Date()
-
-            .toISOString()
-
-            .split("T")[0];
-
-        const saved = JSON.parse(
-
-            localStorage.getItem("aiUsage") || "{}"
-
-        );
-
-        if(saved.date !== today){
-
-            saved.date = today;
-
-            saved.count = 0;
-
-            localStorage.setItem(
-
-                "aiUsage",
-
-                JSON.stringify(saved)
-
-            );
-
-        }
-
-        this.aiQuestionsToday =
-
-            saved.count || 0;
-
-    }
-
-};
-
-StockPage.init();
-
-/*=========================================================
-BÖLÜM 2
-Market Navigation
-=========================================================*/
-
-StockPage.markets = {
-
-    BIST30: [],
-
-    BIST50: [],
-
-    BIST100: [],
-
-    BISTALL: [],
-
-    NASDAQ: [],
-
-    NYSE: [],
-
-    OTC: [],
-
-    CRYPTO: []
-
-};
-
-StockPage.bindMarketButtons = function(){
-
-    document
-    .querySelectorAll(".market-btn")
-    .forEach(button=>{
-
-        button.addEventListener("click",()=>{
-
-            document
-            .querySelectorAll(".market-btn")
-            .forEach(btn=>{
-
-                btn.classList.remove(
-                    "bg-emerald-500",
-                    "text-black"
-                );
-
-            });
-
-            button.classList.add(
-                "bg-emerald-500",
-                "text-black"
-            );
-
-            this.market =
-                button.dataset.market;
-
-            this.loadMarket();
-
-        });
-
-    });
-
-};
-
-StockPage.loadMarket=function(){
-
-    console.log(
-
-        "Market:",
-
-        this.market
-
-    );
-
-    switch(this.market){
-
-        case "BIST30":
-
-            this.loadBIST30();
-
-            break;
-
-        case "BIST50":
-
-            this.loadBIST50();
-
-            break;
-
-        case "BIST100":
-
-            this.loadBIST100();
-
-            break;
-
-        case "BISTALL":
-
-            this.loadBISTALL();
-
-            break;
-
-        case "NASDAQ":
-
-            this.loadNASDAQ();
-
-            break;
-
-        case "NYSE":
-
-            this.loadNYSE();
-
-            break;
-
-        case "OTC":
-
-            this.loadOTC();
-
-            break;
-
-        case "CRYPTO":
-
-            this.loadCrypto();
-
-            break;
-
-    }
-
-};
-
-StockPage.loadBIST30=function(){
-
-    console.log("BIST30");
-
-};
-
-StockPage.loadBIST50=function(){
-
-    console.log("BIST50");
-
-};
-
-StockPage.loadBIST100=function(){
-
-    console.log("BIST100");
-
-};
-
-StockPage.loadBISTALL=function(){
-
-    console.log("Tüm BIST");
-
-};
-
-StockPage.loadNASDAQ=function(){
-
-    console.log("NASDAQ");
-
-};
-
-StockPage.loadNYSE=function(){
-
-    console.log("NYSE");
-
-};
-
-StockPage.loadOTC=function(){
-
-    console.log("OTC");
-
-};
-
-StockPage.loadCrypto=function(){
-
-    console.log("CRYPTO");
-
-};
-
-StockPage.bindMarketButtons();
-
-/*=========================================================
-BÖLÜM 3
-Stock Cards
-=========================================================*/
-
-StockPage.stockContainer = null;
-
-StockPage.createStockContainer = function(){
-
-    if(document.getElementById("stockCards")) return;
-
-    const left = document.getElementById("leftSidebar");
-
-    const container = document.createElement("div");
-
-    container.id = "stockCards";
-
-    container.className =
-        "mt-4 space-y-3";
-
-    left.appendChild(container);
-
-    this.stockContainer = container;
-
-};
-
-StockPage.renderStocks = function(list){
-
-    this.createStockContainer();
-
-    const container =
-        document.getElementById("stockCards");
-
-    container.innerHTML = "";
-
-    list.forEach(stock=>{
-
-        const card =
-        document.createElement("div");
-
-        card.className =
-        "bg-slate-800 rounded-2xl p-4 cursor-pointer hover:bg-slate-700 transition";
-
-        card.innerHTML = `
+<div class="settingCard">
 
 <div class="flex justify-between items-center">
 
 <div>
 
-<div class="font-bold text-lg">
+<h2 class="text-4xl font-black">
 
-${stock.symbol}
+ASELS
 
-</div>
+</h2>
 
-<div class="text-xs text-slate-400">
+<p class="text-slate-400 mt-2">
 
-${stock.name}
+ASELSAN A.Ş.
 
-</div>
-
-</div>
-
-<div class="text-right">
-
-<div class="font-bold">
-
-${stock.price}
+</p>
 
 </div>
 
-<div class="${
-stock.change>=0
-?
-'text-emerald-400'
-:
-'text-red-400'
-}">
+<div class="text-6xl">
 
-${stock.change>=0?'+':''}${stock.change}%
+🛡️
 
 </div>
 
 </div>
 
-</div>
-
-<div class="mt-3 flex justify-between">
+<div class="grid grid-cols-2 gap-6 mt-8">
 
 <div>
 
-🤖 AI
+<p class="text-slate-400">Son Fiyat</p>
 
-<b>${stock.ai}</b>
+<h3 class="text-3xl font-black mt-2">₺0.00</h3>
 
 </div>
 
 <div>
 
-⭐
+<p class="text-slate-400">Günlük Değişim</p>
 
-</div>
+<h3 class="text-3xl font-black text-emerald-400 mt-2">
 
-</div>
+▲ +0.00%
 
-`;
-
-        card.onclick=()=>{
-
-            location.href=
-
-            `stock.html?symbol=${stock.symbol}`;
-
-        };
-
-        container.appendChild(card);
-
-    });
-
-};
-
-StockPage.demoBIST30=[
-
-{
-
-symbol:"THYAO",
-
-name:"Türk Hava Yolları",
-
-price:"324.80 ₺",
-
-change:2.34,
-
-ai:94
-
-},
-
-{
-
-symbol:"ASELS",
-
-name:"Aselsan",
-
-price:"188.20 ₺",
-
-change:1.85,
-
-ai:95
-
-},
-
-{
-
-symbol:"FROTO",
-
-name:"Ford Otosan",
-
-price:"1254.00 ₺",
-
-change:-0.42,
-
-ai:90
-
-},
-
-{
-
-symbol:"TUPRS",
-
-name:"Tüpraş",
-
-price:"198.30 ₺",
-
-change:1.12,
-
-ai:88
-
-}
-
-];
-
-StockPage.loadBIST30=function(){
-
-    this.renderStocks(
-
-        this.demoBIST30
-
-    );
-
-};
-
-StockPage.loadBIST30();
-
-/*=========================================================
-BÖLÜM 4
-Search & Sort System
-=========================================================*/
-
-StockPage.currentStocks = [];
-
-StockPage.renderStocks = function(list){
-
-    this.currentStocks = [...list];
-
-    this.createStockContainer();
-
-    const container =
-        document.getElementById("stockCards");
-
-    container.innerHTML = "";
-
-    list.forEach(stock=>{
-
-        const card=document.createElement("div");
-
-        card.className=
-        "bg-slate-800 rounded-2xl p-4 cursor-pointer hover:bg-slate-700 transition";
-
-        card.innerHTML=`
-
-<div class="flex justify-between">
-
-<div>
-
-<div class="font-bold text-lg">
-
-${stock.symbol}
-
-</div>
-
-<div class="text-xs text-slate-400">
-
-${stock.name}
-
-</div>
-
-</div>
-
-<div class="text-right">
-
-<div class="font-bold">
-
-${stock.price}
-
-</div>
-
-<div class="${
-stock.change>=0
-?
-'text-emerald-400'
-:
-'text-red-400'
-}">
-
-${stock.change>=0?'+':''}${stock.change}%
-
-</div>
-
-</div>
-
-</div>
-
-<div class="mt-3 flex justify-between">
-
-<div>
-
-🤖 AI <b>${stock.ai}</b>
+</h3>
 
 </div>
 
 <div>
 
-⭐
+<p class="text-slate-400">Piyasa Değeri</p>
+
+<h3 class="text-2xl font-bold mt-2">₺0</h3>
 
 </div>
-
-</div>
-
-`;
-
-        card.onclick=()=>{
-
-            location.href=
-            `stock.html?symbol=${stock.symbol}`;
-
-        };
-
-        container.appendChild(card);
-
-    });
-
-};
-
-StockPage.filterStocks=function(text){
-
-    text=text.toUpperCase();
-
-    const filtered=
-
-    this.currentStocks.filter(stock=>
-
-        stock.symbol.includes(text)
-
-        ||
-
-        stock.name.toUpperCase().includes(text)
-
-    );
-
-    this.renderStocks(filtered);
-
-};
-
-StockPage.sortByAI=function(){
-
-    this.currentStocks.sort(
-
-        (a,b)=>b.ai-a.ai
-
-    );
-
-    this.renderStocks(this.currentStocks);
-
-};
-
-StockPage.sortAlphabetic=function(){
-
-    this.currentStocks.sort(
-
-        (a,b)=>
-
-        a.symbol.localeCompare(b.symbol)
-
-    );
-
-    this.renderStocks(this.currentStocks);
-
-};
-
-const searchInput=
-
-document.getElementById("stockSearch");
-
-if(searchInput){
-
-    searchInput.addEventListener(
-
-        "input",
-
-        e=>{
-
-            StockPage.filterStocks(
-
-                e.target.value
-
-            );
-
-        }
-
-    );
-
-}
-
-/*=========================================================
-BÖLÜM 5
-BIST30 Database
-=========================================================*/
-
-StockPage.demoBIST30 = [
-
-{symbol:"AEFES",name:"Anadolu Efes",price:"--",change:0,ai:89},
-{symbol:"AKBNK",name:"Akbank",price:"--",change:0,ai:91},
-{symbol:"ASELS",name:"Aselsan",price:"--",change:0,ai:95},
-{symbol:"ASTOR",name:"Astor Enerji",price:"--",change:0,ai:90},
-{symbol:"BIMAS",name:"BİM",price:"--",change:0,ai:88},
-{symbol:"DOAS",name:"Doğuş Otomotiv",price:"--",change:0,ai:87},
-{symbol:"EKGYO",name:"Emlak Konut GYO",price:"--",change:0,ai:84},
-{symbol:"ENKAI",name:"Enka İnşaat",price:"--",change:0,ai:86},
-{symbol:"EREGL",name:"Ereğli Demir Çelik",price:"--",change:0,ai:89},
-{symbol:"FROTO",name:"Ford Otosan",price:"--",change:0,ai:93},
-{symbol:"GARAN",name:"Garanti BBVA",price:"--",change:0,ai:92},
-{symbol:"GUBRF",name:"Gübre Fabrikaları",price:"--",change:0,ai:83},
-{symbol:"HEKTS",name:"Hektaş",price:"--",change:0,ai:79},
-{symbol:"ISCTR",name:"İş Bankası",price:"--",change:0,ai:90},
-{symbol:"KCHOL",name:"Koç Holding",price:"--",change:0,ai:93},
-{symbol:"KOZAL",name:"Koza Altın",price:"--",change:0,ai:82},
-{symbol:"PETKM",name:"Petkim",price:"--",change:0,ai:80},
-{symbol:"PGSUS",name:"Pegasus",price:"--",change:0,ai:91},
-{symbol:"SAHOL",name:"Sabancı Holding",price:"--",change:0,ai:90},
-{symbol:"SASA",name:"SASA Polyester",price:"--",change:0,ai:85},
-{symbol:"SISE",name:"Şişecam",price:"--",change:0,ai:88},
-{symbol:"TCELL",name:"Turkcell",price:"--",change:0,ai:89},
-{symbol:"THYAO",name:"Türk Hava Yolları",price:"--",change:0,ai:94},
-{symbol:"TOASO",name:"Tofaş",price:"--",change:0,ai:89},
-{symbol:"TUPRS",name:"Tüpraş",price:"--",change:0,ai:92},
-{symbol:"YKBNK",name:"Yapı Kredi",price:"--",change:0,ai:88},
-{symbol:"ALARK",name:"Alarko Holding",price:"--",change:0,ai:87},
-{symbol:"HALKB",name:"Halkbank",price:"--",change:0,ai:81},
-{symbol:"VAKBN",name:"Vakıfbank",price:"--",change:0,ai:82},
-{symbol:"OYAKC",name:"OYAK Çimento",price:"--",change:0,ai:86}
-
-];
-
-StockPage.loadBIST30 = function(){
-
-    this.renderStocks(this.demoBIST30);
-
-};
-
-/*=========================================================
-BÖLÜM 6
-Professional Stock Cards
-=========================================================*/
-
-StockPage.getRecommendation=function(ai){
-
-    if(ai>=90){
-
-        return{
-
-            text:"🟢 GÜÇLÜ AL",
-
-            color:"text-emerald-400"
-
-        };
-
-    }
-
-    if(ai>=80){
-
-        return{
-
-            text:"🟡 AL",
-
-            color:"text-yellow-400"
-
-        };
-
-    }
-
-    if(ai>=70){
-
-        return{
-
-            text:"🟠 TUT",
-
-            color:"text-orange-400"
-
-        };
-
-    }
-
-    return{
-
-        text:"🔴 SAT",
-
-        color:"text-red-400"
-
-    };
-
-};
-
-StockPage.renderStocks=function(list){
-
-    this.currentStocks=[...list];
-
-    this.createStockContainer();
-
-    const container=document.getElementById("stockCards");
-
-    container.innerHTML="";
-
-    list.forEach(stock=>{
-
-        const signal=this.getRecommendation(stock.ai);
-
-        const card=document.createElement("div");
-
-        card.className=
-        "bg-slate-800 rounded-2xl p-4 cursor-pointer hover:bg-slate-700 transition border border-slate-700";
-
-        card.innerHTML=`
-
-<div class="flex justify-between">
 
 <div>
 
-<div class="text-lg font-bold">
+<p class="text-slate-400">İşlem Hacmi</p>
 
-${stock.symbol}
-
-</div>
-
-<div class="text-xs text-slate-400">
-
-${stock.name}
-
-</div>
-
-</div>
-
-<div class="text-right">
-
-<div class="font-bold">
-
-${stock.price}
-
-</div>
-
-<div class="${
-stock.change>=0
-?
-'text-emerald-400'
-:
-'text-red-400'
-}">
-
-${stock.change>=0?'+':''}${stock.change}%
+<h3 class="text-2xl font-bold mt-2">0</h3>
 
 </div>
 
@@ -1814,650 +983,1466 @@ ${stock.change>=0?'+':''}${stock.change}%
 
 </div>
 
-<div class="mt-4">
-
-<div class="flex justify-between">
-
-<span>
-
-🤖 AI
-
-</span>
-
-<b>
-
-${stock.ai}/100
-
-</b>
-
 </div>
 
-<div class="w-full bg-slate-700 rounded-full h-2 mt-2">
+<div>
 
-<div
+<div class="settingCard h-full">
 
-class="bg-emerald-500 h-2 rounded-full"
+<h3 class="text-3xl font-black mb-8">
 
-style="width:${stock.ai}%">
+🤖 Nexora AI Yorumu
 
-</div>
+</h3>
 
-</div>
+<p class="text-slate-400 leading-8">
 
-</div>
+Bu alanda yapay zekâ;
 
-<div class="mt-4 h-12 bg-slate-900 rounded-xl flex items-center justify-center text-slate-500 text-xs">
+• şirketi,
 
-📈 Mini Grafik
+• finansallarını,
 
-</div>
+• bilançosunu,
 
-<div class="mt-4 flex justify-between items-center">
+• sektörünü,
 
-<span class="${signal.color} font-bold">
+• risklerini,
 
-${signal.text}
+• fırsatlarını,
 
-</span>
+• haberlerini,
 
-<button
+analiz ederek kullanıcıya anlaşılır şekilde açıklayacaktır.
 
-class="favorite-btn"
+</p>
 
-data-symbol="${stock.symbol}">
+<div class="grid grid-cols-2 gap-5 mt-10">
 
-⭐
+<button class="bg-slate-800 rounded-xl py-4 hover:bg-emerald-500 hover:text-black transition">
+
+⭐ Favoriye Ekle
+
+</button>
+
+<button class="bg-slate-800 rounded-xl py-4 hover:bg-emerald-500 hover:text-black transition">
+
+💼 Portföye Ekle
+
+</button>
+
+<button class="bg-slate-800 rounded-xl py-4 hover:bg-emerald-500 hover:text-black transition">
+
+🔔 Alarm Kur
+
+</button>
+
+<button class="bg-slate-800 rounded-xl py-4 hover:bg-emerald-500 hover:text-black transition">
+
+📤 Paylaş
 
 </button>
 
 </div>
 
-`;
-
-        card.onclick=()=>{
-
-            location.href=
-
-            `stock.html?symbol=${stock.symbol}`;
-
-        };
-
-        container.appendChild(card);
-
-    });
-
-};
-
-/*=========================================================
-BÖLÜM 7
-Universal Market Loader
-=========================================================*/
-
-StockPage.marketData = {
-
-    BIST30: StockPage.demoBIST30,
-
-    BIST50: [],
-
-    BIST100: [],
-
-    BISTALL: [],
-
-    NASDAQ: [],
-
-    NYSE: [],
-
-    OTC: [],
-
-    CRYPTO: []
-
-};
-
-StockPage.loadMarket=function(){
-
-    const data=
-
-        this.marketData[this.market] || [];
-
-    this.renderStocks(data);
-
-    this.updateMarketTitle();
-
-};
-
-StockPage.updateMarketTitle=function(){
-
-    const titles={
-
-        BIST30:"🇹🇷 BIST 30",
-
-        BIST50:"🇹🇷 BIST 50",
-
-        BIST100:"🇹🇷 BIST 100",
-
-        BISTALL:"🇹🇷 TÜM BIST",
-
-        NASDAQ:"🇺🇸 NASDAQ",
-
-        NYSE:"🇺🇸 NYSE",
-
-        OTC:"🌍 OTC MARKET",
-
-        CRYPTO:"₿ KRİPTO"
-
-    };
-
-    const title=
-
-        document.getElementById("companyName");
-
-    if(title){
-
-        title.textContent=
-
-        titles[this.market] ||
-
-        "Piyasalar";
-
-    }
-
-};
-
-StockPage.changeMarket=function(market){
-
-    this.market=market;
-
-    this.loadMarket();
-
-};
-
-StockPage.loadMarket();
-
-/*=========================================================
-BÖLÜM 8
-Market Statistics
-=========================================================*/
-
-StockPage.marketStatistics = {
-
-    BIST30:30,
-
-    BIST50:50,
-
-    BIST100:100,
-
-    BISTALL:0,
-
-    NASDAQ:0,
-
-    NYSE:0,
-
-    OTC:0,
-
-    CRYPTO:0
-
-};
-
-StockPage.updateStatistics=function(){
-
-    const stats=this.marketStatistics;
-
-    const total=document.getElementById("marketTotal");
-
-    if(!total) return;
-
-    const value=stats[this.market]||0;
-
-    if(value===0){
-
-        total.textContent="Yakında";
-
-        return;
-
-    }
-
-    total.textContent=value+" Hisse";
-
-};
-
-const info=document.createElement("div");
-
-info.className=
-
-"bg-slate-900 rounded-2xl p-4 mt-4";
-
-info.innerHTML=`
-
-<div class="text-slate-400">
-
-Seçili Market
-
 </div>
 
-<div id="marketTotal"
-
-class="text-2xl font-bold mt-2">
-
---
-
 </div>
-
-`;
-
-document
-.getElementById("leftSidebar")
-.appendChild(info);
-
-StockPage.updateStatistics();
-
-/*=========================================================
-BÖLÜM 9
-Dashboard Counters
-=========================================================*/
-
-StockPage.dashboard = {
-
-    totalStocks:0,
-
-    rising:0,
-
-    falling:0,
-
-    aiStrongBuy:0
-
-};
-
-StockPage.calculateDashboard=function(){
-
-    const list=this.currentStocks||[];
-
-    this.dashboard.totalStocks=list.length;
-
-    this.dashboard.rising=list.filter(x=>x.change>0).length;
-
-    this.dashboard.falling=list.filter(x=>x.change<0).length;
-
-    this.dashboard.aiStrongBuy=list.filter(x=>x.ai>=90).length;
-
-};
-
-StockPage.renderDashboard=function(){
-
-    this.calculateDashboard();
-
-    let panel=document.getElementById("dashboardPanel");
-
-    if(!panel){
-
-        panel=document.createElement("div");
-
-        panel.id="dashboardPanel";
-
-        panel.className="grid grid-cols-2 gap-3 mt-4";
-
-        document.getElementById("rightSidebar").prepend(panel);
-
-    }
-
-    panel.innerHTML=`
-
-<div class="bg-slate-800 rounded-xl p-3">
-
-<div class="text-slate-400 text-sm">
-
-Hisse
-
-</div>
-
-<div class="text-2xl font-bold">
-
-${this.dashboard.totalStocks}
 
 </div>
 
 </div>
 
-<div class="bg-slate-800 rounded-xl p-3">
+</section>
 
-<div class="text-slate-400 text-sm">
+<section class="mt-20">
 
-Yükselen
+<div class="glass rounded-[34px] p-10">
 
-</div>
+<div class="flex flex-wrap justify-between items-center gap-6">
 
-<div class="text-2xl text-emerald-400 font-bold">
+<div>
 
-${this.dashboard.rising}
+<div class="badge">
 
-</div>
-
-</div>
-
-<div class="bg-slate-800 rounded-xl p-3">
-
-<div class="text-slate-400 text-sm">
-
-Düşen
+🤖 Nexora AI Pro
 
 </div>
 
-<div class="text-2xl text-red-400 font-bold">
+<h2 class="text-5xl font-black mt-5">
 
-${this.dashboard.falling}
+Yapay Zekâ Analizi
+
+</h2>
+
+<p class="text-slate-400 mt-5">
+
+Gerçek veriler bağlandığında Nexora AI hisseyi otomatik analiz edecektir.
+
+</p>
+
+</div>
+
+<button class="bg-emerald-500 hover:bg-emerald-400 text-black font-black px-8 py-4 rounded-2xl transition">
+
+Analizi Yenile
+
+</button>
+
+</div>
+
+<div class="grid xl:grid-cols-2 gap-10 mt-12">
+
+<div>
+
+<div class="settingCard">
+
+<h3 class="text-2xl font-bold mb-8">
+
+📊 AI Genel Skoru
+
+</h3>
+
+<div class="flex items-center gap-8">
+
+<div class="w-36 h-36 rounded-full border-8 border-emerald-500 flex items-center justify-center">
+
+<h2 class="text-5xl font-black">
+
+92
+
+</h2>
+
+</div>
+
+<div>
+
+<p class="text-slate-400">
+
+Genel Değerlendirme
+
+</p>
+
+<h3 class="text-3xl font-black text-emerald-400 mt-4">
+
+Güçlü
+
+</h3>
+
+<p class="text-slate-400 mt-4">
+
+Uzun vadede olumlu görünüm.
+
+</p>
 
 </div>
 
 </div>
 
-<div class="bg-slate-800 rounded-xl p-3">
+</div>
 
-<div class="text-slate-400 text-sm">
+<div class="settingCard mt-8">
 
-Güçlü AL
+<h3 class="text-2xl font-bold mb-6">
+
+📈 AI Değerlendirmesi
+
+</h3>
+
+<div class="space-y-5">
+
+<div class="flex justify-between">
+
+<span>Temel Analiz</span>
+
+<span class="text-emerald-400 font-bold">95/100</span>
 
 </div>
 
-<div class="text-2xl text-cyan-400 font-bold">
+<div class="flex justify-between">
 
-${this.dashboard.aiStrongBuy}
+<span>Teknik Analiz</span>
+
+<span class="text-emerald-400 font-bold">88/100</span>
+
+</div>
+
+<div class="flex justify-between">
+
+<span>Risk</span>
+
+<span class="text-yellow-400 font-bold">Orta</span>
+
+</div>
+
+<div class="flex justify-between">
+
+<span>Temettü</span>
+
+<span class="text-emerald-400 font-bold">İyi</span>
+
+</div>
+
+<div class="flex justify-between">
+
+<span>Büyüme Potansiyeli</span>
+
+<span class="text-emerald-400 font-bold">Yüksek</span>
 
 </div>
 
 </div>
 
-`;
+</div>
 
-};
+</div>
 
-const oldRender=StockPage.renderStocks;
+<div>
 
-StockPage.renderStocks=function(list){
+<div class="settingCard">
 
-    oldRender.call(this,list);
+<h3 class="text-2xl font-bold mb-8">
 
-    this.renderDashboard();
+🧠 Nexora AI Yorumu
 
-};
+</h3>
 
-/*=========================================================
-BÖLÜM 10
-Page Ready
-=========================================================*/
+<div class="space-y-6 text-slate-300 leading-8">
 
-document.addEventListener("DOMContentLoaded",()=>{
+<p>
 
-    StockPage.init();
+✅ Gelir büyümesi sektör ortalamasının üzerinde.
 
-    StockPage.changeMarket("BIST30");
+</p>
 
-    console.log(
+<p>
 
-        "✅ BIST AI Tracker Stock v3 Ready"
+✅ Karlılık güçlü görünmektedir.
 
-    );
+</p>
 
-});
+<p>
 
-/*=========================================================
-BÖLÜM 11
-Watchlists
-=========================================================*/
+⚠️ Borç seviyesi takip edilmelidir.
 
-StockPage.watchlists={
+</p>
 
-gainers:[],
+<p>
 
-losers:[],
+📈 Son bilanço beklentilerin üzerindedir.
 
-volume:[],
+</p>
 
-favorites:[],
+<p>
 
-aiTop:[]
+📰 Son haber akışı olumlu görünmektedir.
 
-};
+</p>
 
-StockPage.updateWatchlists=function(){
+<p>
 
-const list=this.currentStocks||[];
+🎯 AI Sonucu:
 
-this.watchlists.gainers=[
+Bu hisse uzun vadeli yatırımcılar için izlenebilir seviyededir.
 
-...list
+</p>
 
-].sort(
+</div>
 
-(a,b)=>b.change-a.change
+</div>
 
-).slice(0,10);
+<div class="grid grid-cols-2 gap-5 mt-8">
 
-this.watchlists.losers=[
+<button class="bg-slate-800 rounded-2xl py-5 hover:bg-emerald-500 hover:text-black transition">
 
-...list
+📄 PDF Rapor
 
-].sort(
+</button>
 
-(a,b)=>a.change-b.change
+<button class="bg-slate-800 rounded-2xl py-5 hover:bg-emerald-500 hover:text-black transition">
 
-).slice(0,10);
+💾 Analizi Kaydet
 
-this.watchlists.aiTop=[
+</button>
 
-...list
+<button class="bg-slate-800 rounded-2xl py-5 hover:bg-emerald-500 hover:text-black transition">
 
-].sort(
+⭐ Takip Et
 
-(a,b)=>b.ai-a.ai
+</button>
 
-).slice(0,10);
+<button class="bg-slate-800 rounded-2xl py-5 hover:bg-emerald-500 hover:text-black transition">
 
-};
+📤 Paylaş
 
-StockPage.updateWatchlists();
+</button>
 
-/*=========================================================
-BÖLÜM 12
-Market Scanner
-=========================================================*/
+</div>
 
-StockPage.scanner={
+</div>
 
-    marketCap:"",
+</div>
 
-    sector:"",
+</div>
 
-    search:"",
+</section>
 
-    minAI:0,
+<section class="mt-20">
 
-    maxAI:100,
+<div class="glass rounded-[34px] p-10">
 
-    onlyFavorites:false,
+<div class="flex justify-between items-center flex-wrap gap-6">
 
-    onlyPositive:false,
+<div>
 
-    sort:"volume"
+<div class="badge">
 
-};
+🏢 Company Center
 
-StockPage.scan=function(){
+</div>
 
-    let list=[...this.currentStocks];
+<h2 class="text-5xl font-black mt-5">
 
-    if(this.scanner.search){
+Şirket Bilgileri
 
-        const text=this.scanner.search.toUpperCase();
+</h2>
 
-        list=list.filter(stock=>
+<p class="text-slate-400 mt-5">
 
-            stock.symbol.includes(text)
+Yapay zekâ destekli şirket profili ve finansal özet.
 
-            ||
+</p>
 
-            stock.name.toUpperCase().includes(text)
+</div>
 
-        );
+<button class="bg-slate-800 hover:bg-emerald-500 hover:text-black transition px-7 py-4 rounded-2xl font-bold">
 
-    }
+🌍 Resmi Web Sitesi
 
-    if(this.scanner.onlyPositive){
+</button>
 
-        list=list.filter(
+</div>
 
-            stock=>stock.change>0
+<div class="grid xl:grid-cols-3 gap-8 mt-12">
 
-        );
+<div class="settingCard">
 
-    }
+<h3 class="text-2xl font-bold mb-6">
 
-    list=list.filter(
+🏢 Genel Bilgiler
 
-        stock=>
+</h3>
 
-        stock.ai>=this.scanner.minAI
+<div class="space-y-4">
 
-        &&
+<div class="flex justify-between">
 
-        stock.ai<=this.scanner.maxAI
+<span>Şirket</span>
 
-    );
+<span class="font-bold">ASELSAN</span>
 
-    this.renderStocks(list);
+</div>
 
-};
+<div class="flex justify-between">
 
-/*=========================================================
-BÖLÜM 13
-Market Overview
-=========================================================*/
+<span>Sembol</span>
 
-StockPage.overview={
+<span class="font-bold">ASELS</span>
 
-    totalMarketValue:0,
+</div>
 
-    totalVolume:0,
+<div class="flex justify-between">
 
-    advancing:0,
+<span>Kuruluş</span>
 
-    declining:0,
+<span class="font-bold">1975</span>
 
-    unchanged:0
+</div>
 
-};
+<div class="flex justify-between">
 
-StockPage.calculateOverview=function(){
+<span>Sektör</span>
 
-    const list=this.currentStocks;
+<span class="font-bold">Savunma</span>
 
-    this.overview.advancing=
+</div>
 
-    list.filter(
+<div class="flex justify-between">
 
-        x=>x.change>0
+<span>Çalışan</span>
 
-    ).length;
+<span class="font-bold">0</span>
 
-    this.overview.declining=
+</div>
 
-    list.filter(
+<div class="flex justify-between">
 
-        x=>x.change<0
+<span>Ülke</span>
 
-    ).length;
+<span class="font-bold">🇹🇷 Türkiye</span>
 
-    this.overview.unchanged=
+</div>
 
-    list.filter(
+</div>
 
-        x=>x.change===0
+</div>
 
-    ).length;
+<div class="settingCard">
 
-};
+<h3 class="text-2xl font-bold mb-6">
 
-/*=========================================================
-BÖLÜM 14
-Quick Actions
-=========================================================*/
+💰 Finansal Veriler
 
-StockPage.actions={
+</h3>
 
-refresh(){
+<div class="space-y-4">
 
-    StockPage.loadMarket();
+<div class="flex justify-between">
 
-},
+<span>Gelir</span>
 
-refreshAI(){
+<span>₺0</span>
 
-    console.log(
+</div>
 
-        "AI Güncelleniyor"
+<div class="flex justify-between">
 
-    );
+<span>Net Kar</span>
 
-},
+<span>₺0</span>
 
-refreshNews(){
+</div>
 
-    console.log(
+<div class="flex justify-between">
 
-        "Haberler Güncelleniyor"
+<span>FAVÖK</span>
 
-    );
+<span>₺0</span>
 
-},
+</div>
 
-exportWatchlist(){
+<div class="flex justify-between">
 
-    console.log(
+<span>Borç</span>
 
-        "Watchlist Export"
+<span>₺0</span>
 
-    );
+</div>
 
-}
+<div class="flex justify-between">
 
-};
+<span>Nakit</span>
 
-/*=========================================================
-BÖLÜM 15
-Future Modules
-=========================================================*/
+<span>₺0</span>
 
-StockPage.modules={
+</div>
 
-AI:true,
+<div class="flex justify-between">
 
-NEWS:true,
+<span>PD/DD</span>
 
-TECHNICAL:true,
+<span>0.00</span>
 
-FINANCIAL:true,
+</div>
 
-DIVIDEND:true,
+</div>
 
-KAP:true,
+</div>
 
-SCREENER:true,
+<div class="settingCard">
 
-PORTFOLIO:true,
+<h3 class="text-2xl font-bold mb-6">
 
-ALARM:true,
+📈 Performans
 
-BACKTEST:false,
+</h3>
 
-SIMULATOR:false,
+<div class="space-y-4">
 
-HEATMAP:false,
+<div class="flex justify-between">
 
-OPTIONS:false
+<span>1 Gün</span>
 
-};
+<span class="text-emerald-400">+0.00%</span>
 
-console.log(
+</div>
 
-"BIST AI Tracker Stock Engine Loaded"
+<div class="flex justify-between">
 
-);
+<span>1 Hafta</span>
 
+<span class="text-emerald-400">+0.00%</span>
+
+</div>
+
+<div class="flex justify-between">
+
+<span>1 Ay</span>
+
+<span class="text-red-400">-0.00%</span>
+
+</div>
+
+<div class="flex justify-between">
+
+<span>6 Ay</span>
+
+<span class="text-emerald-400">+0.00%</span>
+
+</div>
+
+<div class="flex justify-between">
+
+<span>1 Yıl</span>
+
+<span class="text-emerald-400">+0.00%</span>
+
+</div>
+
+<div class="flex justify-between">
+
+<span>5 Yıl</span>
+
+<span class="text-emerald-400">+0.00%</span>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="mt-20">
+
+<div class="glass rounded-[34px] p-10">
+
+<div class="badge">
+
+📊 Financial Analysis
+
+</div>
+
+<h2 class="text-5xl font-black mt-5">
+
+Profesyonel Finansal Analiz
+
+</h2>
+
+<p class="text-slate-400 mt-5">
+
+Şirketin finansal sağlığını tek ekranda inceleyin.
+
+</p>
+
+<div class="grid xl:grid-cols-4 gap-6 mt-12">
+
+<div class="settingCard">
+
+<div class="text-5xl">
+
+💰
+
+</div>
+
+<h3 class="text-2xl font-bold mt-5">
+
+F/K
+
+</h3>
+
+<h2 class="text-4xl font-black mt-6">
+
+0.00
+
+</h2>
+
+</div>
+
+<div class="settingCard">
+
+<div class="text-5xl">
+
+🏦
+
+</div>
+
+<h3 class="text-2xl font-bold mt-5">
+
+PD/DD
+
+</h3>
+
+<h2 class="text-4xl font-black mt-6">
+
+0.00
+
+</h2>
+
+</div>
+
+<div class="settingCard">
+
+<div class="text-5xl">
+
+📈
+
+</div>
+
+<h3 class="text-2xl font-bold mt-5">
+
+FD/FAVÖK
+
+</h3>
+
+<h2 class="text-4xl font-black mt-6">
+
+0.00
+
+</h2>
+
+</div>
+
+<div class="settingCard">
+
+<div class="text-5xl">
+
+⚡
+
+</div>
+
+<h3 class="text-2xl font-bold mt-5">
+
+ROE
+
+</h3>
+
+<h2 class="text-4xl font-black mt-6">
+
+0%
+
+</h2>
+
+</div>
+
+</div>
+
+<div class="grid xl:grid-cols-3 gap-8 mt-12">
+
+<div class="settingCard">
+
+<h3 class="text-2xl font-bold mb-6">
+
+📈 Karlılık
+
+</h3>
+
+<div class="space-y-4">
+
+<div class="flex justify-between">
+
+<span>Brüt Marj</span>
+
+<span>0%</span>
+
+</div>
+
+<div class="flex justify-between">
+
+<span>Net Marj</span>
+
+<span>0%</span>
+
+</div>
+
+<div class="flex justify-between">
+
+<span>FAVÖK Marjı</span>
+
+<span>0%</span>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="settingCard">
+
+<h3 class="text-2xl font-bold mb-6">
+
+🏦 Borç Durumu
+
+</h3>
+
+<div class="space-y-4">
+
+<div class="flex justify-between">
+
+<span>Net Borç</span>
+
+<span>₺0</span>
+
+</div>
+
+<div class="flex justify-between">
+
+<span>Cari Oran</span>
+
+<span>0.00</span>
+
+</div>
+
+<div class="flex justify-between">
+
+<span>Likidite</span>
+
+<span>İyi</span>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="settingCard">
+
+<h3 class="text-2xl font-bold mb-6">
+
+🤖 AI Finans Notu
+
+</h3>
+
+<div class="text-center">
+
+<div class="text-6xl">
+
+🟢
+
+</div>
+
+<h2 class="text-5xl font-black mt-6">
+
+91
+
+</h2>
+
+<p class="text-slate-400 mt-4">
+
+Finansal Güç Skoru
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="mt-20">
+
+<div class="glass rounded-[34px] p-10">
+
+<div class="flex flex-wrap justify-between items-center gap-6">
+
+<div>
+
+<div class="badge">
+
+📊 Trading Center
+
+</div>
+
+<h2 class="text-5xl font-black mt-5">
+
+Profesyonel Grafik Merkezi
+
+</h2>
+
+<p class="text-slate-400 mt-5">
+
+Yakında TradingView benzeri gelişmiş grafikler ve teknik analiz araçları burada yer alacak.
+
+</p>
+
+</div>
+
+<div class="flex gap-3 flex-wrap">
+
+<button class="bg-emerald-500 text-black px-6 py-3 rounded-xl font-bold">1G</button>
+
+<button class="bg-slate-800 px-6 py-3 rounded-xl">1H</button>
+
+<button class="bg-slate-800 px-6 py-3 rounded-xl">1A</button>
+
+<button class="bg-slate-800 px-6 py-3 rounded-xl">6A</button>
+
+<button class="bg-slate-800 px-6 py-3 rounded-xl">1Y</button>
+
+<button class="bg-slate-800 px-6 py-3 rounded-xl">MAX</button>
+
+</div>
+
+</div>
+
+<div class="mt-10 rounded-3xl bg-slate-900 border border-slate-800 h-[500px] flex flex-col items-center justify-center">
+
+<div class="text-8xl mb-6">
+
+📈
+
+</div>
+
+<h2 class="text-4xl font-black">
+
+Grafik Alanı
+
+</h2>
+
+<p class="text-slate-400 mt-4">
+
+TradingView veya kendi grafik motorumuz burada çalışacak.
+
+</p>
+
+</div>
+
+<div class="grid xl:grid-cols-4 gap-6 mt-10">
+
+<div class="settingCard">
+
+<h3 class="font-bold text-xl">
+
+📈 RSI
+
+</h3>
+
+<p class="text-slate-400 mt-4">
+
+Göster
+
+</p>
+
+</div>
+
+<div class="settingCard">
+
+<h3 class="font-bold text-xl">
+
+📊 MACD
+
+</h3>
+
+<p class="text-slate-400 mt-4">
+
+Göster
+
+</p>
+
+</div>
+
+<div class="settingCard">
+
+<h3 class="font-bold text-xl">
+
+📉 Bollinger
+
+</h3>
+
+<p class="text-slate-400 mt-4">
+
+Göster
+
+</p>
+
+</div>
+
+<div class="settingCard">
+
+<h3 class="font-bold text-xl">
+
+📐 Fibonacci
+
+</h3>
+
+<p class="text-slate-400 mt-4">
+
+Göster
+
+</p>
+
+</div>
+
+</div>
+
+<div class="grid xl:grid-cols-5 gap-5 mt-10">
+
+<button class="bg-slate-800 rounded-2xl py-4 hover:bg-emerald-500 hover:text-black transition">
+
+✏ Trend Çizgisi
+
+</button>
+
+<button class="bg-slate-800 rounded-2xl py-4 hover:bg-emerald-500 hover:text-black transition">
+
+📏 Destek / Direnç
+
+</button>
+
+<button class="bg-slate-800 rounded-2xl py-4 hover:bg-emerald-500 hover:text-black transition">
+
+🔍 Yakınlaştır
+
+</button>
+
+<button class="bg-slate-800 rounded-2xl py-4 hover:bg-emerald-500 hover:text-black transition">
+
+🖥 Tam Ekran
+
+</button>
+
+<button class="bg-slate-800 rounded-2xl py-4 hover:bg-emerald-500 hover:text-black transition">
+
+💾 Grafik Kaydet
+
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="mt-20">
+
+<div class="glass rounded-[34px] p-10">
+
+<div class="flex flex-wrap justify-between items-center gap-6">
+
+<div>
+
+<div class="badge">
+🏢 Company Intelligence
+</div>
+
+<h2 class="text-5xl font-black mt-5">
+Şirket Merkezi
+</h2>
+
+<p class="text-slate-400 mt-5">
+Şirket hakkında tüm önemli bilgiler tek ekranda.
+</p>
+
+</div>
+
+<button class="bg-emerald-500 text-black px-8 py-4 rounded-2xl font-black hover:scale-105 transition">
+
+📄 PDF Raporu İndir
+
+</button>
+
+</div>
+
+<div class="grid xl:grid-cols-3 gap-8 mt-12">
+
+<div class="settingCard">
+
+<h3 class="text-2xl font-bold mb-6">
+
+📰 Son Haberler
+
+</h3>
+
+<div class="space-y-4">
+
+<p>• Yeni yatırım açıklaması</p>
+
+<p>• Son bilanço açıklandı</p>
+
+<p>• Yeni fabrika yatırımı</p>
+
+<p>• İhracat sözleşmesi</p>
+
+</div>
+
+</div>
+
+<div class="settingCard">
+
+<h3 class="text-2xl font-bold mb-6">
+
+📅 Takvim
+
+</h3>
+
+<div class="space-y-4">
+
+<div class="flex justify-between">
+
+<span>Temettü</span>
+
+<span>-</span>
+
+</div>
+
+<div class="flex justify-between">
+
+<span>Bilanço</span>
+
+<span>-</span>
+
+</div>
+
+<div class="flex justify-between">
+
+<span>Genel Kurul</span>
+
+<span>-</span>
+
+</div>
+
+<div class="flex justify-between">
+
+<span>Yatırımcı Toplantısı</span>
+
+<span>-</span>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="settingCard">
+
+<h3 class="text-2xl font-bold mb-6">
+
+🏆 AI Güven Endeksi
+
+</h3>
+
+<div class="text-center">
+
+<div class="text-7xl">
+
+🟢
+
+</div>
+
+<h2 class="text-5xl font-black mt-6">
+
+91
+
+</h2>
+
+<p class="text-slate-400 mt-4">
+
+AI Güven Puanı
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="grid xl:grid-cols-2 gap-8 mt-10">
+
+<div class="settingCard">
+
+<h3 class="text-2xl font-bold mb-6">
+
+👥 Yönetim
+
+</h3>
+
+<div class="space-y-3">
+
+<p>CEO</p>
+
+<p>Yönetim Kurulu</p>
+
+<p>Bağımsız Üyeler</p>
+
+<p>Yatırımcı İlişkileri</p>
+
+</div>
+
+</div>
+
+<div class="settingCard">
+
+<h3 class="text-2xl font-bold mb-6">
+
+🏭 Rakip Şirketler
+
+</h3>
+
+<div class="grid grid-cols-2 gap-4">
+
+<button class="bg-slate-800 rounded-xl py-3 hover:bg-emerald-500 hover:text-black transition">
+
+Lockheed Martin
+
+</button>
+
+<button class="bg-slate-800 rounded-xl py-3 hover:bg-emerald-500 hover:text-black transition">
+
+RTX
+
+</button>
+
+<button class="bg-slate-800 rounded-xl py-3 hover:bg-emerald-500 hover:text-black transition">
+
+Northrop
+
+</button>
+
+<button class="bg-slate-800 rounded-xl py-3 hover:bg-emerald-500 hover:text-black transition">
+
+BAE Systems
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="grid xl:grid-cols-4 gap-6 mt-10">
+
+<button class="bg-slate-800 rounded-2xl py-5 hover:bg-emerald-500 hover:text-black transition">
+
+📄 Faaliyet Raporları
+
+</button>
+
+<button class="bg-slate-800 rounded-2xl py-5 hover:bg-emerald-500 hover:text-black transition">
+
+📑 KAP / SEC Bildirimleri
+
+</button>
+
+<button class="bg-slate-800 rounded-2xl py-5 hover:bg-emerald-500 hover:text-black transition">
+
+🎥 Yatırımcı Sunumları
+
+</button>
+
+<button class="bg-slate-800 rounded-2xl py-5 hover:bg-emerald-500 hover:text-black transition">
+
+💼 Kurumsal Bilgiler
+
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="mt-20 mb-20">
+
+<div class="glass rounded-[34px] p-10">
+
+<div class="text-center">
+
+<div class="badge">
+
+⚙️ Nexora Control Center
+
+</div>
+
+<h2 class="text-5xl font-black mt-5">
+
+Kontrol Merkezi
+
+</h2>
+
+<p class="text-slate-400 mt-5 max-w-3xl mx-auto">
+
+Nexora'nın tüm ayarlarına, sistem durumuna ve hesap seçeneklerine buradan ulaşabilirsiniz.
+
+</p>
+
+</div>
+
+<div class="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-6 mt-14">
+
+<div class="settingCard">
+
+<div class="text-5xl">🌙</div>
+
+<h3 class="text-2xl font-bold mt-5">
+
+Tema
+
+</h3>
+
+<p class="text-slate-400 mt-3">
+
+Koyu / Açık Mod
+
+</p>
+
+</div>
+
+<div class="settingCard">
+
+<div class="text-5xl">🌍</div>
+
+<h3 class="text-2xl font-bold mt-5">
+
+Dil
+
+</h3>
+
+<p class="text-slate-400 mt-3">
+
+10+ Dil Desteği
+
+</p>
+
+</div>
+
+<div class="settingCard">
+
+<div class="text-5xl">🔔</div>
+
+<h3 class="text-2xl font-bold mt-5">
+
+Bildirimler
+
+</h3>
+
+<p class="text-slate-400 mt-3">
+
+Alarm ve Haber Bildirimleri
+
+</p>
+
+</div>
+
+<div class="settingCard">
+
+<div class="text-5xl">👤</div>
+
+<h3 class="text-2xl font-bold mt-5">
+
+Profil
+
+</h3>
+
+<p class="text-slate-400 mt-3">
+
+Hesap Yönetimi
+
+</p>
+
+</div>
+
+<div class="settingCard">
+
+<div class="text-5xl">👑</div>
+
+<h3 class="text-2xl font-bold mt-5">
+
+Premium
+
+</h3>
+
+<p class="text-slate-400 mt-3">
+
+Üyeliğini Yönet
+
+</p>
+
+</div>
+
+<div class="settingCard">
+
+<div class="text-5xl">📩</div>
+
+<h3 class="text-2xl font-bold mt-5">
+
+Destek
+
+</h3>
+
+<p class="text-slate-400 mt-3">
+
+7/24 Yardım
+
+</p>
+
+</div>
+
+<div class="settingCard">
+
+<div class="text-5xl">🤖</div>
+
+<h3 class="text-2xl font-bold mt-5">
+
+AI Durumu
+
+</h3>
+
+<p class="text-emerald-400 mt-3">
+
+● Online
+
+</p>
+
+</div>
+
+<div class="settingCard">
+
+<div class="text-5xl">☁️</div>
+
+<h3 class="text-2xl font-bold mt-5">
+
+Sunucu
+
+</h3>
+
+<p class="text-emerald-400 mt-3">
+
+Çalışıyor
+
+</p>
+
+</div>
+
+</div>
+
+<hr class="border-slate-800 my-12">
+
+<div class="grid xl:grid-cols-4 gap-8">
+
+<div>
+
+<h3 class="text-2xl font-bold mb-6">
+
+🌐 Veri Kaynakları
+
+</h3>
+
+<ul class="space-y-3 text-slate-400">
+
+<li>🇹🇷 BIST</li>
+
+<li>🇺🇸 NASDAQ</li>
+
+<li>🇺🇸 NYSE</li>
+
+<li>🌍 OTC Markets</li>
+
+<li>📊 ETF</li>
+
+<li>💰 Fonlar</li>
+
+<li>₿ Kripto (Yakında)</li>
+
+</ul>
+
+</div>
+
+<div>
+
+<h3 class="text-2xl font-bold mb-6">
+
+📚 Platform
+
+</h3>
+
+<ul class="space-y-3 text-slate-400">
+
+<li>Stocks</li>
+
+<li>Portfolio</li>
+
+<li>News</li>
+
+<li>Charts</li>
+
+<li>Watchlist</li>
+
+<li>Calendar</li>
+
+</ul>
+
+</div>
+
+<div>
+
+<h3 class="text-2xl font-bold mb-6">
+
+📄 Yasal
+
+</h3>
+
+<ul class="space-y-3 text-slate-400">
+
+<li>Gizlilik Politikası</li>
+
+<li>Kullanım Şartları</li>
+
+<li>Risk Bildirimi</li>
+
+<li>Çerez Politikası</li>
+
+</ul>
+
+</div>
+
+<div>
+
+<h3 class="text-2xl font-bold mb-6">
+
+🚀 Nexora
+
+</h3>
+
+<p class="text-slate-400 leading-8">
+
+Version
+
+<b class="text-white">
+
+1.0 Alpha
+
+</b>
+
+<br><br>
+
+© 2026 Nexora AI
+
+<br>
+
+All Rights Reserved
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+</main>
+
+</body>
+
+</html>
