@@ -5,6 +5,8 @@
    File    : api/config.js
    ========================================================== */
 
+import { API_KEYS } from "./secrets.js";
+
 /* ==========================================================
    APPLICATION INFORMATION
    ========================================================== */
@@ -188,7 +190,7 @@ export const API_CONFIG = {
 
         enabled: true,
 
-        apiKey: "YOUR_FINNHUB_API_KEY",
+        apiKey: API_KEYS.finnhub,
 
         baseUrl: "https://finnhub.io/api/v1",
 
@@ -200,7 +202,7 @@ export const API_CONFIG = {
 
         enabled: true,
 
-        apiKey: "YOUR_TWELVEDATA_API_KEY",
+        apiKey: API_KEYS.twelveData,
 
         baseUrl: "https://api.twelvedata.com",
 
@@ -210,33 +212,33 @@ export const API_CONFIG = {
 
     polygon: {
 
-        enabled: true,
+    enabled: false,
 
-        apiKey: "YOUR_POLYGON_API_KEY",
+    apiKey: "",
 
-        baseUrl: "https://api.polygon.io",
+    baseUrl: "https://api.polygon.io",
 
-        timeout: 10000
+    timeout: 10000
 
-    },
+},
 
     alphaVantage: {
 
-        enabled: true,
+    enabled: false,
 
-        apiKey: "YOUR_ALPHA_VANTAGE_API_KEY",
+    apiKey: "",
 
-        baseUrl: "https://www.alphavantage.co",
+    baseUrl: "https://www.alphavantage.co",
 
-        timeout: 10000
+    timeout: 10000
 
-    },
+},
 
     financialModelingPrep: {
 
         enabled: true,
 
-        apiKey: "YOUR_FMP_API_KEY",
+        apiKey: API_KEYS.financialModelingPrep,
 
         baseUrl: "https://financialmodelingprep.com/api",
 
@@ -250,55 +252,53 @@ export const API_CONFIG = {
 
     marketaux: {
 
-        enabled: true,
+    enabled: true,
 
-        apiKey: "YOUR_MARKETAUX_API_KEY",
+    apiKey: API_KEYS.marketaux,
 
-        baseUrl: "https://api.marketaux.com",
+    baseUrl: "https://api.marketaux.com",
 
-        timeout: 10000
+    timeout: 10000
 
-    },
+},
 
-    newsApi: {
+newsApi: {
 
-        enabled: true,
+    enabled: true,
 
-        apiKey: "YOUR_NEWSAPI_KEY",
+    apiKey: API_KEYS.newsApi,
 
-        baseUrl: "https://newsapi.org/v2",
+    baseUrl: "https://newsapi.org/v2",
 
-        timeout: 10000
+    timeout: 10000
 
-    },
+},
 
-    newsData: {
+newsData: {
 
-        enabled: true,
+    enabled: true,
 
-        apiKey: "YOUR_NEWSDATA_API_KEY",
+    apiKey: API_KEYS.newsData,
 
-        baseUrl: "https://newsdata.io/api",
+    baseUrl: "https://newsdata.io/api",
 
-        timeout: 10000
+    timeout: 10000
 
-    },
+},
 
-    /* ===============================
-       CRYPTO PROVIDERS
-       =============================== */
+coinGecko: {
 
-    coinGecko: {
+    enabled: true,
 
-        enabled: true,
+    apiKey: "",
 
-        apiKey: "YOUR_COINGECKO_API_KEY",
+    baseUrl: "https://api.coingecko.com/api/v3",
 
-        baseUrl: "https://api.coingecko.com/api/v3",
+    timeout: 10000
 
-        timeout: 10000
+},
 
-    },
+
 
     coinMarketCap: {
 
