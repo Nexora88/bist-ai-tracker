@@ -1175,3 +1175,539 @@ export const REGION_SETTINGS = {
 /* ==========================================================
    END OF SECTION 7
    ========================================================== */
+
+   /* ==========================================================
+   PREMIUM & NOTIFICATION CONFIGURATION
+   ========================================================== */
+
+export const PREMIUM = {
+
+    enabled: true,
+
+    freePlan: true,
+
+    premiumPlan: true,
+
+    yearlyPlan: true,
+
+    lifetimePlan: false,
+
+    trialDays: 7,
+
+    removeAds: true,
+
+    unlimitedWatchlist: true,
+
+    unlimitedPortfolio: true,
+
+    aiUnlimited: true,
+
+    exportPortfolio: true,
+
+    advancedCharts: true,
+
+    insiderData: true,
+
+    realtimeData: true,
+
+    advancedScreener: true
+
+};
+
+/* ==========================================================
+   NOTIFICATIONS
+   ========================================================== */
+
+export const NOTIFICATIONS = {
+
+    enabled: true,
+
+    browser: true,
+
+    push: true,
+
+    email: true,
+
+    sound: true,
+
+    vibration: false,
+
+    desktop: true,
+
+    mobile: true,
+
+    showBadge: true,
+
+    autoRead: false
+
+};
+
+/* ==========================================================
+   PRICE ALERTS
+   ========================================================== */
+
+export const PRICE_ALERTS = {
+
+    enabled: true,
+
+    maxAlerts: 500,
+
+    percentageAlerts: true,
+
+    volumeAlerts: true,
+
+    newsAlerts: true,
+
+    earningsAlerts: true,
+
+    dividendAlerts: true,
+
+    ipoAlerts: true
+
+};
+
+/* ==========================================================
+   WATCHLIST SETTINGS
+   ========================================================== */
+
+export const WATCHLIST = {
+
+    enabled: true,
+
+    syncCloud: true,
+
+    autoSort: false,
+
+    defaultSort: "marketCap",
+
+    maxFavorites: 1000,
+
+    autoRefresh: true,
+
+    refreshInterval: 30
+
+};
+
+/* ==========================================================
+   PORTFOLIO SETTINGS
+   ========================================================== */
+
+export const PORTFOLIO = {
+
+    enabled: true,
+
+    cloudSync: true,
+
+    autoCalculateProfit: true,
+
+    realtimeUpdate: true,
+
+    dividendTracking: true,
+
+    transactionHistory: true,
+
+    exportExcel: true,
+
+    exportPDF: true
+
+};
+
+/* ==========================================================
+   SECURITY
+   ========================================================== */
+
+export const SECURITY = {
+
+    twoFactorAuth: true,
+
+    biometricLogin: true,
+
+    sessionTimeout: 30,
+
+    autoLogout: false,
+
+    encryptLocalData: true
+
+};
+
+/* ==========================================================
+   END OF SECTION 8
+   ========================================================== */
+
+   /* ==========================================================
+   NEXORA AI CONFIGURATION
+   ========================================================== */
+
+export const AI = {
+
+    enabled: true,
+
+    provider: "OpenAI",
+
+    model: "gpt-5.5",
+
+    temperature: 0.4,
+
+    maxTokens: 4000,
+
+    streamResponse: true,
+
+    saveConversation: true,
+
+    rememberUserPreferences: true,
+
+    language: "auto",
+
+    responseStyle: "professional"
+
+};
+
+/* ==========================================================
+   AI MODULES
+   ========================================================== */
+
+export const AI_MODULES = {
+
+    stockAnalysis: true,
+
+    technicalAnalysis: true,
+
+    fundamentalAnalysis: true,
+
+    portfolioAnalysis: true,
+
+    marketAnalysis: true,
+
+    newsAnalysis: true,
+
+    earningsAnalysis: true,
+
+    dividendAnalysis: true,
+
+    riskAnalysis: true,
+
+    economicAnalysis: true,
+
+    cryptoAnalysis: true,
+
+    forexAnalysis: true,
+
+    watchlistSuggestions: true,
+
+    smartSearch: true
+
+};
+
+/* ==========================================================
+   AI CHAT SETTINGS
+   ========================================================== */
+
+export const AI_CHAT = {
+
+    enableMarkdown: true,
+
+    enableTables: true,
+
+    enableCharts: true,
+
+    enableImages: false,
+
+    typingAnimation: true,
+
+    codeHighlight: true,
+
+    showSources: true,
+
+    autoScroll: true,
+
+    saveHistory: true,
+
+    historyLimit: 500
+
+};
+
+/* ==========================================================
+   AI ANALYSIS SETTINGS
+   ========================================================== */
+
+export const AI_ANALYSIS = {
+
+    sentimentAnalysis: true,
+
+    scoreStocks: true,
+
+    scoreNews: true,
+
+    scorePortfolio: true,
+
+    predictTrend: true,
+
+    detectRisk: true,
+
+    compareCompanies: true,
+
+    summarizeReports: true,
+
+    explainIndicators: true,
+
+    explainFinancialStatements: true
+
+};
+
+/* ==========================================================
+   AI WATCHLIST
+   ========================================================== */
+
+export const AI_WATCHLIST = {
+
+    autoSuggestions: true,
+
+    maxSuggestions: 20,
+
+    detectMomentum: true,
+
+    detectValueStocks: true,
+
+    detectDividendStocks: true,
+
+    detectGrowthStocks: true,
+
+    detectUndervaluedStocks: true
+
+};
+
+/* ==========================================================
+   AI PORTFOLIO
+   ========================================================== */
+
+export const AI_PORTFOLIO = {
+
+    rebalanceSuggestions: true,
+
+    diversificationAnalysis: true,
+
+    sectorDistribution: true,
+
+    riskDistribution: true,
+
+    expectedReturn: true,
+
+    volatilityAnalysis: true
+
+};
+
+/* ==========================================================
+   END OF SECTION 9
+   ========================================================== */
+
+   /* ==========================================================
+   GLOBAL CONSTANTS & SYSTEM CONFIGURATION
+   ========================================================== */
+
+export const SYSTEM = {
+
+    appName: "Nexora AI",
+
+    appVersion: "1.0.0",
+
+    apiVersion: "v1",
+
+    buildVersion: "2026.07",
+
+    developerMode: false,
+
+    maintenanceMode: false,
+
+    demoMode: false,
+
+    productionReady: true,
+
+    enableLogging: true,
+
+    enablePerformanceMonitor: true,
+
+    enableErrorReporting: true
+
+};
+
+/* ==========================================================
+   SUPPORTED CHART TYPES
+   ========================================================== */
+
+export const CHART_TYPES = [
+
+    "candlestick",
+
+    "line",
+
+    "area",
+
+    "bar",
+
+    "heikinAshi",
+
+    "hollowCandles",
+
+    "baseline"
+
+];
+
+/* ==========================================================
+   TECHNICAL INDICATORS
+   ========================================================== */
+
+export const TECHNICAL_INDICATORS = [
+
+    "SMA",
+
+    "EMA",
+
+    "VWAP",
+
+    "RSI",
+
+    "MACD",
+
+    "Bollinger Bands",
+
+    "ATR",
+
+    "ADX",
+
+    "Stochastic",
+
+    "CCI",
+
+    "Ichimoku Cloud",
+
+    "Parabolic SAR",
+
+    "OBV",
+
+    "Volume",
+
+    "SuperTrend",
+
+    "Fibonacci"
+
+];
+
+/* ==========================================================
+   SUPPORTED EXPORT FORMATS
+   ========================================================== */
+
+export const EXPORT_FORMATS = [
+
+    "PDF",
+
+    "CSV",
+
+    "XLSX",
+
+    "JSON"
+
+];
+
+/* ==========================================================
+   SUPPORTED FILE TYPES
+   ========================================================== */
+
+export const FILE_TYPES = {
+
+    image: [
+
+        "png",
+
+        "jpg",
+
+        "jpeg",
+
+        "webp",
+
+        "svg"
+
+    ],
+
+    document: [
+
+        "pdf",
+
+        "csv",
+
+        "xlsx",
+
+        "json"
+
+    ]
+
+};
+
+/* ==========================================================
+   MARKET STATUS
+   ========================================================== */
+
+export const MARKET_STATUS = {
+
+    PRE_MARKET: "pre-market",
+
+    OPEN: "open",
+
+    AFTER_HOURS: "after-hours",
+
+    CLOSED: "closed"
+
+};
+
+/* ==========================================================
+   LOG LEVELS
+   ========================================================== */
+
+export const LOG_LEVELS = {
+
+    INFO: "info",
+
+    WARNING: "warning",
+
+    ERROR: "error",
+
+    DEBUG: "debug"
+
+};
+
+/* ==========================================================
+   APPLICATION PATHS
+   ========================================================== */
+
+export const PATHS = {
+
+    home: "index.html",
+
+    stocks: "stocks.html",
+
+    news: "news.html",
+
+    chart: "chart.html",
+
+    portfolio: "portfolio.html",
+
+    settings: "settings.html"
+
+};
+
+/* ==========================================================
+   NEXORA CONFIG VERSION
+   ========================================================== */
+
+export const CONFIG = {
+
+    version: "1.0.0",
+
+    generated: "2026",
+
+    compatible: true
+
+};
+
+/* ==========================================================
+   END OF CONFIG.JS
+   ========================================================== */
