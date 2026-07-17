@@ -187,11 +187,17 @@ class MarketEngine {
        API PROVIDER
     ========================================== */
 
-    provider(service="stocks"){
+    provider(service = "stocks") {
 
-        return API_PRIORITY[service][0];
+    return API_PRIORITY[service];
 
-    }
+}
+
+nextProvider(service = "stocks") {
+
+    return client.nextProvider(service);
+
+}
 
 }
 
@@ -227,6 +233,8 @@ MarketEngine.prototype.quote = async function (
     symbol = this.normalizeSymbol(symbol, market);
 
     const provider = this.provider("stocks");
+
+    const provider = this.nextProvider("stocks");
 
     switch(provider){
 

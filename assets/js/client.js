@@ -244,6 +244,14 @@ NexoraClient.prototype.request = async function({
 
     const controller = this.createController(requestId);
 
+    query = {
+
+    ...query,
+
+    apikey: this.getApiKey(provider)
+
+};
+
     const url = this.buildUrl(
 
         this.getBaseUrl(provider),
