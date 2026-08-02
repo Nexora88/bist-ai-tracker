@@ -1,290 +1,273 @@
+/* ==========================================
+   NEXORA AI PREMIUM THEME
+   ========================================== */
+
+
 :root{
-    --bg:#0f172a;
-    --bg2:#111827;
-    --card:#1e293b;
-    --border:#334155;
-    --text:#f8fafc;
-    --muted:#94a3b8;
-    --green:#22c55e;
-    --red:#ef4444;
-    --blue:#3b82f6;
-    --yellow:#facc15;
-    --shadow:0 10px 25px rgba(0,0,0,.35);
-    --radius:18px;
-    --transition:.25s ease;
+
+--bg:#050816;
+
+--surface:#0b1224;
+
+--card:#111827;
+
+--primary:#00f5a0;
+
+--blue:#00c6ff;
+
+--purple:#8b5cf6;
+
+--text:#f8fafc;
+
+--muted:#94a3b8;
+
 }
+
+
+
+/* GLOBAL */
 
 *{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+
+margin:0;
+
+padding:0;
+
+box-sizing:border-box;
+
 }
 
-html{
-    scroll-behavior:smooth;
-}
+
 
 body{
-    background:linear-gradient(180deg,#08111f,#0f172a);
-    color:var(--text);
-    font-family:Inter,Arial,sans-serif;
-    min-height:100vh;
+
+background:
+radial-gradient(
+circle at top,
+#14213d 0%,
+#050816 45%
+);
+
+color:var(--text);
+
+font-family:
+Inter,
+Segoe UI,
+system-ui,
+sans-serif;
+
+min-height:100vh;
+
+overflow-x:hidden;
+
 }
 
-a{
-    color:inherit;
-    text-decoration:none;
+
+
+/* SCROLL */
+
+::-webkit-scrollbar{
+
+width:8px;
+
 }
 
-.container{
-    width:min(1300px,94%);
-    margin:auto;
-    padding:25px;
+
+::-webkit-scrollbar-track{
+
+background:#050816;
+
 }
 
-.header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:25px;
-    gap:20px;
-    flex-wrap:wrap;
+
+::-webkit-scrollbar-thumb{
+
+background:#00f5a0;
+
+border-radius:10px;
+
 }
 
-.logo-area{
-    display:flex;
-    align-items:center;
-    gap:18px;
+
+
+/* GLASS SYSTEM */
+
+.glass{
+
+background:
+rgba(15,23,42,.65);
+
+backdrop-filter:
+blur(20px);
+
+border:
+
+1px solid rgba(255,255,255,.08);
+
+box-shadow:
+
+0 20px 50px rgba(0,0,0,.35);
+
 }
 
-.logo{
-    width:72px;
-    height:72px;
-    border-radius:18px;
-    background:#fff;
-    object-fit:contain;
-    padding:8px;
-    box-shadow:var(--shadow);
+
+
+/* STOCK CARDS */
+
+.stock-card{
+
+background:
+
+linear-gradient(
+145deg,
+rgba(17,24,39,.9),
+rgba(15,23,42,.7)
+);
+
+border:
+
+1px solid rgba(255,255,255,.08);
+
+border-radius:20px;
+
+transition:.35s;
+
 }
 
-.company h1{
-    font-size:2rem;
+
+
+.stock-card:hover{
+
+transform:
+
+translateY(-10px);
+
+border-color:
+
+var(--primary);
+
+box-shadow:
+
+0 20px 50px rgba(0,245,160,.15);
+
 }
 
-.company p{
-    color:var(--muted);
-    margin-top:4px;
+
+
+/* TITLES */
+
+.section-title{
+
+font-size:2.5rem;
+
+font-weight:800;
+
+text-align:center;
+
+margin-bottom:40px;
+
+background:
+
+linear-gradient(
+90deg,
+var(--primary),
+var(--blue)
+);
+
+-webkit-background-clip:text;
+
+color:transparent;
+
 }
 
-.market-status{
-    padding:10px 18px;
-    border-radius:999px;
-    font-weight:700;
-    background:#1f2937;
-    border:1px solid var(--border);
+
+
+/* AI PANEL */
+
+.ai-panel{
+
+background:
+
+linear-gradient(
+135deg,
+rgba(139,92,246,.25),
+rgba(0,198,255,.15)
+);
+
+border:
+
+1px solid rgba(139,92,246,.4);
+
+border-radius:24px;
+
+backdrop-filter:
+
+blur(20px);
+
 }
 
-.market-open{
-    color:var(--green);
+
+
+/* ANIMATION */
+
+
+@keyframes fadeUp{
+
+from{
+
+opacity:0;
+
+transform:translateY(30px);
+
 }
 
-.market-closed{
-    color:var(--red);
-}
 
-.card{
-    background:var(--bg2);
-    border:1px solid var(--border);
-    border-radius:var(--radius);
-    box-shadow:var(--shadow);
-    padding:22px;
-    margin-bottom:22px;
-}
+to{
 
-.grid{
-    display:grid;
-    gap:22px;
-}
+opacity:1;
 
-.grid-2{
-    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-}
+transform:translateY(0);
 
-.grid-3{
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-}
-
-.price{
-    font-size:3.3rem;
-    font-weight:800;
-    margin:8px 0;
-}
-
-.change{
-    font-size:1.35rem;
-    font-weight:700;
-}
-
-.up{
-    color:var(--green);
-}
-
-.down{
-    color:var(--red);
-}
-
-.info-box{
-    background:var(--card);
-    border-radius:14px;
-    padding:18px;
-}
-
-.info-title{
-    color:var(--muted);
-    font-size:.92rem;
-    margin-bottom:8px;
-}
-
-.info-value{
-    font-size:1.35rem;
-    font-weight:700;
-}
-
-.chart-box{
-    height:520px;
-    overflow:hidden;
-    border-radius:16px;
-    background:#0b1220;
-}
-
-button{
-    cursor:pointer;
-    border:none;
-    border-radius:12px;
-    padding:12px 20px;
-    transition:var(--transition);
-    font-size:15px;
-    font-weight:700;
-}
-
-button:hover{
-    transform:translateY(-2px);
-}
-
-.primary-btn{
-    background:var(--blue);
-    color:white;
-}
-
-.secondary-btn{
-    background:#374151;
-    color:white;
-}
-
-.warning-btn{
-    background:var(--yellow);
-    color:black;
-}
-
-input{
-    width:100%;
-    padding:14px;
-    background:#0f172a;
-    border:1px solid var(--border);
-    color:white;
-    border-radius:12px;
-    outline:none;
-    margin-top:10px;
-}
-
-.news{
-    display:flex;
-    flex-direction:column;
-    gap:14px;
-}
-
-.news-item{
-    padding:15px;
-    background:var(--card);
-    border-radius:14px;
-    transition:.25s;
-}
-
-.news-item:hover{
-    transform:translateX(6px);
-}
-
-.footer{
-    text-align:center;
-    color:var(--muted);
-    padding:25px 0;
-}
-
-.loading{
-    color:#60a5fa;
-}
-
-.error{
-    color:var(--red);
-}
-
-.flash-up{
-    animation:flashGreen .8s;
-}
-
-.flash-down{
-    animation:flashRed .8s;
-}
-
-@keyframes flashGreen{
-    0%{background:#14532d;}
-    100%{background:transparent;}
-}
-
-@keyframes flashRed{
-    0%{background:#7f1d1d;}
-    100%{background:transparent;}
-}
-
-@media(max-width:900px){
-
-.header{
-    flex-direction:column;
-    align-items:flex-start;
-}
-
-.price{
-    font-size:2.6rem;
-}
-
-.chart-box{
-    height:400px;
 }
 
 }
 
-@media(max-width:600px){
 
-.container{
-    width:96%;
-    padding:15px;
+
+.animate{
+
+animation:
+
+fadeUp .8s ease forwards;
+
 }
 
-.logo{
-    width:58px;
-    height:58px;
-}
 
-.company h1{
-    font-size:1.5rem;
-}
 
-.price{
-    font-size:2.1rem;
-}
+/* BACKGROUND LIGHT */
 
-.chart-box{
-    height:300px;
-}
+body::before{
+
+content:"";
+
+position:fixed;
+
+width:450px;
+
+height:450px;
+
+background:
+
+radial-gradient(
+circle,
+rgba(0,245,160,.15),
+transparent 70%
+);
+
+top:-150px;
+
+right:-150px;
+
+z-index:-1;
 
 }
