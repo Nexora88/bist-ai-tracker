@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Giriş | BIST AI Tracker</title>
-<meta name="description" content="BIST AI Tracker giriş ve kayıt — Supabase Auth.">
+<meta name="description" content="BIST AI Tracker — Nexora hesabınla giriş yap.">
 <meta name="theme-color" content="#0a0e17">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -12,16 +12,14 @@
 <style>
 :root {
   --bg: #0a0e17;
-  --surface: #111827;
   --border: rgba(255,255,255,0.06);
   --text: #f1f5f9;
   --muted: #94a3b8;
-  --green: #22c55e;
-  --red: #ef4444;
   --accent: #10b981;
   --cyan: #22d3ee;
   --violet: #a78bfa;
   --amber: #fbbf24;
+  --red: #ef4444;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body {
@@ -42,26 +40,22 @@ button { cursor: pointer; border: none; background: none; }
   position: fixed; inset: 0; pointer-events: none; z-index: 0;
   background:
     radial-gradient(ellipse 60% 40% at 20% 20%, rgba(16,185,129,0.12), transparent),
-    radial-gradient(ellipse 50% 35% at 80% 70%, rgba(167,139,250,0.1), transparent),
-    radial-gradient(ellipse 40% 30% at 50% 100%, rgba(34,211,238,0.06), transparent);
+    radial-gradient(ellipse 50% 35% at 80% 70%, rgba(167,139,250,0.1), transparent);
 }
 
 .navbar {
   position: relative; z-index: 10; height: 60px;
   border-bottom: 1px solid var(--border);
-  background: rgba(10,14,23,0.7);
+  background: rgba(10,14,23,0.75);
   backdrop-filter: blur(16px);
 }
 .nav-inner {
   max-width: 1100px; margin: 0 auto; padding: 0 20px;
   height: 60px; display: flex; align-items: center; justify-content: space-between;
 }
-.logo {
-  display: flex; align-items: center; gap: 10px;
-  font-weight: 800; font-size: 17px; letter-spacing: -0.02em;
-}
+.logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 17px; }
 .logo .accent { color: var(--accent); }
-.nav-links { display: flex; gap: 20px; font-size: 13.5px; font-weight: 500; color: var(--muted); }
+.nav-links { display: flex; gap: 18px; font-size: 13.5px; font-weight: 500; color: var(--muted); }
 .nav-links a:hover { color: var(--accent); }
 
 .main {
@@ -72,7 +66,7 @@ button { cursor: pointer; border: none; background: none; }
 
 .auth-card {
   width: 100%; max-width: 420px;
-  background: rgba(17,24,39,0.85);
+  background: rgba(17,24,39,0.88);
   backdrop-filter: blur(20px);
   border: 1px solid var(--border);
   border-radius: 20px;
@@ -80,7 +74,7 @@ button { cursor: pointer; border: none; background: none; }
   box-shadow: 0 24px 64px rgba(0,0,0,0.4);
 }
 
-.auth-header { text-align: center; margin-bottom: 28px; }
+.auth-header { text-align: center; margin-bottom: 26px; }
 .auth-header .icon {
   width: 56px; height: 56px; border-radius: 16px; margin: 0 auto 16px;
   display: flex; align-items: center; justify-content: center;
@@ -88,15 +82,13 @@ button { cursor: pointer; border: none; background: none; }
   border: 1px solid rgba(16,185,129,0.25);
   font-size: 24px;
 }
-.auth-header h1 {
-  font-size: 22px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 6px;
-}
+.auth-header h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 6px; }
 .auth-header p { font-size: 13.5px; color: var(--muted); }
 
 .tabs {
   display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
   background: rgba(15,23,42,0.8); border-radius: 12px; padding: 4px;
-  margin-bottom: 24px; border: 1px solid var(--border);
+  margin-bottom: 22px; border: 1px solid var(--border);
 }
 .tabs button {
   padding: 10px; border-radius: 10px; font-size: 13.5px; font-weight: 600;
@@ -122,10 +114,10 @@ button { cursor: pointer; border: none; background: none; }
   color: #64748b; font-size: 13px; pointer-events: none;
 }
 .field-wrap input {
-  width: 100%; padding: 12px 14px 12px 40px;
-  border-radius: 11px; background: rgba(15,23,42,0.9);
+  width: 100%; padding: 12px 42px 12px 40px;
+  border-radius: 11px; background: rgba(15,23,42,0.95);
   border: 1px solid #334155; color: var(--text);
-  font-size: 14px; outline: none; transition: border-color 0.15s;
+  font-size: 14px; outline: none;
 }
 .field-wrap input:focus { border-color: rgba(16,185,129,0.5); }
 .field-wrap .toggle-pw {
@@ -149,15 +141,15 @@ button { cursor: pointer; border: none; background: none; }
   width: 100%; padding: 13px; border-radius: 12px;
   font-size: 14px; font-weight: 700;
   background: linear-gradient(135deg, #10b981, #059669);
-  color: #022c22; display: flex; align-items: center; justify-content: center; gap: 8px;
-  transition: box-shadow 0.2s, transform 0.15s;
+  color: #022c22;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
 }
-.btn-submit:hover { box-shadow: 0 10px 28px rgba(16,185,129,0.35); transform: translateY(-1px); }
-.btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+.btn-submit:hover { box-shadow: 0 10px 28px rgba(16,185,129,0.35); }
+.btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .divider {
   display: flex; align-items: center; gap: 12px;
-  margin: 20px 0; color: #64748b; font-size: 12px;
+  margin: 18px 0; color: #64748b; font-size: 12px;
 }
 .divider::before, .divider::after {
   content: ''; flex: 1; height: 1px; background: var(--border);
@@ -167,45 +159,36 @@ button { cursor: pointer; border: none; background: none; }
   width: 100%; padding: 12px; border-radius: 12px;
   font-size: 13.5px; font-weight: 600;
   background: rgba(30,41,59,0.8); border: 1px solid var(--border);
-  color: #e2e8f0; display: flex; align-items: center; justify-content: center; gap: 10px;
+  color: #e2e8f0;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
 }
 .btn-ghost:hover { border-color: rgba(16,185,129,0.35); }
 
 .msg {
   display: none; padding: 11px 14px; border-radius: 10px;
-  font-size: 13px; font-weight: 500; margin-bottom: 16px;
+  font-size: 13px; font-weight: 500; margin-bottom: 14px;
 }
 .msg.show { display: block; }
 .msg.error { background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.25); color: #fca5a5; }
 .msg.ok { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.25); color: #6ee7b7; }
 
-.hint {
-  margin-top: 20px; text-align: center; font-size: 12px; color: #64748b; line-height: 1.55;
+.strength {
+  height: 3px; border-radius: 2px; background: #1e293b; margin-top: 8px; overflow: hidden;
 }
-.hint code {
-  background: rgba(30,41,59,0.9); padding: 2px 6px; border-radius: 4px;
-  font-size: 11px; color: var(--cyan);
+.strength span {
+  display: block; height: 100%; width: 0; transition: width 0.25s, background 0.25s;
 }
+
+.footer-links {
+  margin-top: 20px; text-align: center; font-size: 13px; color: #94a3b8;
+}
+.footer-links a { color: var(--accent); font-weight: 600; }
 
 .footer {
   position: relative; z-index: 1;
   text-align: center; padding: 20px; font-size: 12px; color: #64748b;
   border-top: 1px solid var(--border);
 }
-
-.strength {
-  height: 3px; border-radius: 2px; background: #1e293b; margin-top: 8px; overflow: hidden;
-}
-.strength span {
-  display: block; height: 100%; width: 0; border-radius: 2px; transition: width 0.25s, background 0.25s;
-}
-
-.config-banner {
-  display: none; margin-bottom: 16px; padding: 12px 14px; border-radius: 10px;
-  background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3);
-  font-size: 12.5px; color: #fbbf24; line-height: 1.5;
-}
-.config-banner.show { display: block; }
 </style>
 </head>
 <body>
@@ -216,7 +199,7 @@ button { cursor: pointer; border: none; background: none; }
     <a href="index.html" class="logo"><span>📈</span> BIST <span class="accent">AI</span> Tracker</a>
     <div class="nav-links">
       <a href="index.html">Ana Sayfa</a>
-      <a href="about.html">Uygulama</a>
+      <a href="register.html">Kayıt Ol</a>
     </div>
   </div>
 </nav>
@@ -226,12 +209,7 @@ button { cursor: pointer; border: none; background: none; }
     <div class="auth-header">
       <div class="icon">🔐</div>
       <h1 id="titleText">Hoş geldiniz</h1>
-      <p id="subText">Supabase ile güvenli giriş</p>
-    </div>
-
-    <div class="config-banner" id="configBanner">
-      <strong>Supabase ayarı gerekli.</strong><br>
-      2. kısımdaki <code>SUPABASE_URL</code> ve <code>SUPABASE_ANON_KEY</code> alanlarını doldurun.
+      <p id="subText">Nexora hesabınla devam et</p>
     </div>
 
     <div class="tabs">
@@ -241,6 +219,7 @@ button { cursor: pointer; border: none; background: none; }
 
     <div class="msg" id="msg"></div>
 
+    <!-- LOGIN -->
     <div class="form-panel active" id="panel-login">
       <form id="formLogin" autocomplete="on">
         <div class="field">
@@ -255,7 +234,7 @@ button { cursor: pointer; border: none; background: none; }
           <div class="field-wrap">
             <i class="fas fa-lock left"></i>
             <input type="password" id="loginPass" placeholder="••••••••" required autocomplete="current-password">
-            <button type="button" class="toggle-pw" data-target="loginPass" aria-label="Şifreyi göster"><i class="fas fa-eye"></i></button>
+            <button type="button" class="toggle-pw" data-target="loginPass" aria-label="Göster"><i class="fas fa-eye"></i></button>
           </div>
         </div>
         <div class="row-between">
@@ -270,15 +249,19 @@ button { cursor: pointer; border: none; background: none; }
       <button type="button" class="btn-ghost" id="btnGuest">
         <i class="fas fa-user"></i> Misafir olarak devam et
       </button>
+      <div class="footer-links" style="margin-top:16px">
+        Hesabın yok mu? <a href="register.html">Ücretsiz kayıt ol</a>
+      </div>
     </div>
 
+    <!-- REGISTER -->
     <div class="form-panel" id="panel-register">
       <form id="formRegister" autocomplete="on">
         <div class="field">
           <label for="regName">Ad Soyad</label>
           <div class="field-wrap">
             <i class="fas fa-user left"></i>
-            <input type="text" id="regName" placeholder="Adınız Soyadınız" required autocomplete="name" minlength="2">
+            <input type="text" id="regName" placeholder="Adınız Soyadınız" required minlength="2" autocomplete="name">
           </div>
         </div>
         <div class="field">
@@ -292,8 +275,8 @@ button { cursor: pointer; border: none; background: none; }
           <label for="regPass">Şifre</label>
           <div class="field-wrap">
             <i class="fas fa-lock left"></i>
-            <input type="password" id="regPass" placeholder="En az 6 karakter" required autocomplete="new-password" minlength="6">
-            <button type="button" class="toggle-pw" data-target="regPass" aria-label="Şifreyi göster"><i class="fas fa-eye"></i></button>
+            <input type="password" id="regPass" placeholder="En az 6 karakter" required minlength="6" autocomplete="new-password">
+            <button type="button" class="toggle-pw" data-target="regPass" aria-label="Göster"><i class="fas fa-eye"></i></button>
           </div>
           <div class="strength"><span id="strengthBar"></span></div>
         </div>
@@ -301,72 +284,49 @@ button { cursor: pointer; border: none; background: none; }
           <label for="regPass2">Şifre Tekrar</label>
           <div class="field-wrap">
             <i class="fas fa-lock left"></i>
-            <input type="password" id="regPass2" placeholder="Şifreyi tekrarlayın" required autocomplete="new-password" minlength="6">
+            <input type="password" id="regPass2" placeholder="Tekrar yazın" required minlength="6" autocomplete="new-password">
           </div>
         </div>
         <div class="row-between">
-          <label><input type="checkbox" id="acceptTerms" required> <span>Şartları kabul ediyorum</span></label>
+          <label><input type="checkbox" id="acceptTerms" required> Şartları kabul ediyorum</label>
         </div>
         <button type="submit" class="btn-submit" id="btnRegister">
           <i class="fas fa-user-plus"></i> Hesap Oluştur
         </button>
       </form>
+      <div class="footer-links">
+        Zaten üye misin? <a href="#" id="gotoLogin">Giriş yap</a>
+        · <a href="register.html">Detaylı kayıt sayfası</a>
+      </div>
     </div>
-
-    <p class="hint">
-      Kimlik doğrulama: <strong>Supabase Auth</strong><br>
-      Anahtarları 2. kısımdaki <code>SUPABASE_URL</code> / <code>SUPABASE_ANON_KEY</code> satırlarına yazın.
-    </p>
   </div>
 </main>
 
-<footer class="footer">© 2026 BIST AI Tracker · Nexora AI · Supabase Auth</footer>
+<footer class="footer">© 2026 BIST AI Tracker · Nexora AI</footer>
 
 <script>
 
-/* ============================================================
-   SUPABASE AYARLARI — SADECE BU 2 SATIRI DEĞİŞTİR
-   Dashboard → Project Settings → API
-   ============================================================ */
+/* ===== Supabase — kendi URL / KEY ===== */
 var SUPABASE_URL = 'https://ckxgbmvjehshgicafsjp.supabase.co';
-// ↑ Project URL  (örnek: https://abcdefgh.supabase.co)
-
 var SUPABASE_ANON_KEY = 'sb_publishable_J370jM_6LUMXGfwGfbWK0Q_nR0I6NA2';
-// ↑ anon public key (uzun eyJ... ile başlayan string)
-/* ============================================================ */
+/* ===================================== */
 
 var supabaseClient = null;
-
-function initSupabase() {
-  var missing =
-    !SUPABASE_URL ||
-    SUPABASE_URL.indexOf('XXXXXXXX') !== -1 ||
-    !SUPABASE_ANON_KEY ||
-    SUPABASE_ANON_KEY.indexOf('BURAYA_ANON_KEY') !== -1 ||
-    SUPABASE_ANON_KEY.length < 40;
-
-  if (missing) {
-    document.getElementById('configBanner').classList.add('show');
-    return false;
+try {
+  if (typeof supabase !== 'undefined' && supabase.createClient &&
+      SUPABASE_URL && SUPABASE_URL.indexOf('XXXXXXXX') === -1 &&
+      SUPABASE_ANON_KEY && SUPABASE_ANON_KEY.length > 40 &&
+      SUPABASE_ANON_KEY.indexOf('BURAYA_ANON_KEY') === -1) {
+    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   }
-  if (typeof supabase === 'undefined' || !supabase.createClient) {
-    document.getElementById('configBanner').classList.add('show');
-    document.getElementById('configBanner').innerHTML =
-      '<strong>Supabase JS yüklenemedi.</strong> CDN bağlantısını kontrol edin.';
-    return false;
-  }
-  supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  return true;
-}
+} catch (e) {}
 
 function showMsg(text, type) {
   var el = document.getElementById('msg');
   el.textContent = text;
   el.className = 'msg show ' + (type || 'error');
 }
-function hideMsg() {
-  document.getElementById('msg').className = 'msg';
-}
+function hideMsg() { document.getElementById('msg').className = 'msg'; }
 
 function saveLocalSession(user) {
   try {
@@ -392,15 +352,22 @@ document.querySelectorAll('.tabs button').forEach(function(btn) {
     hideMsg();
     if (btn.getAttribute('data-tab') === 'login') {
       document.getElementById('titleText').textContent = 'Hoş geldiniz';
-      document.getElementById('subText').textContent = 'Supabase ile güvenli giriş';
+      document.getElementById('subText').textContent = 'Nexora hesabınla devam et';
     } else {
       document.getElementById('titleText').textContent = 'Hesap oluştur';
-      document.getElementById('subText').textContent = 'Ücretsiz kayıt — e-posta doğrulama açık olabilir';
+      document.getElementById('subText').textContent = 'Ücretsiz plan ile hemen başla';
     }
   });
 });
+var gotoLogin = document.getElementById('gotoLogin');
+if (gotoLogin) {
+  gotoLogin.addEventListener('click', function(e) {
+    e.preventDefault();
+    document.querySelector('.tabs button[data-tab="login"]').click();
+  });
+}
 
-/* Şifre göster/gizle */
+/* Şifre göster */
 document.querySelectorAll('.toggle-pw').forEach(function(btn) {
   btn.addEventListener('click', function() {
     var inp = document.getElementById(btn.getAttribute('data-target'));
@@ -412,25 +379,28 @@ document.querySelectorAll('.toggle-pw').forEach(function(btn) {
 });
 
 /* Şifre gücü */
-document.getElementById('regPass').addEventListener('input', function() {
-  var p = this.value, score = 0;
-  if (p.length >= 6) score++;
-  if (p.length >= 10) score++;
-  if (/[A-Z]/.test(p) && /[a-z]/.test(p)) score++;
-  if (/\d/.test(p)) score++;
-  if (/[^A-Za-z0-9]/.test(p)) score++;
-  var bar = document.getElementById('strengthBar');
-  var pct = Math.min(100, score * 20);
-  bar.style.width = pct + '%';
-  bar.style.background = pct < 40 ? '#ef4444' : pct < 70 ? '#f59e0b' : '#10b981';
-});
+var regPass = document.getElementById('regPass');
+if (regPass) {
+  regPass.addEventListener('input', function() {
+    var p = this.value, score = 0;
+    if (p.length >= 6) score++;
+    if (p.length >= 10) score++;
+    if (/[A-Z]/.test(p) && /[a-z]/.test(p)) score++;
+    if (/\d/.test(p)) score++;
+    if (/[^A-Za-z0-9]/.test(p)) score++;
+    var bar = document.getElementById('strengthBar');
+    if (!bar) return;
+    bar.style.width = Math.min(100, score * 20) + '%';
+    bar.style.background = score < 2 ? '#ef4444' : score < 4 ? '#f59e0b' : '#10b981';
+  });
+}
 
 /* GİRİŞ */
 document.getElementById('formLogin').addEventListener('submit', async function(e) {
   e.preventDefault();
   hideMsg();
   if (!supabaseClient) {
-    showMsg('Önce SUPABASE_URL ve SUPABASE_ANON_KEY değerlerini doldurun.', 'error');
+    showMsg('Bağlantı hatası. Daha sonra tekrar dene.', 'error');
     return;
   }
   var email = document.getElementById('loginEmail').value.trim();
@@ -443,10 +413,10 @@ document.getElementById('formLogin').addEventListener('submit', async function(e
     var res = await supabaseClient.auth.signInWithPassword({ email: email, password: pass });
     if (res.error) throw res.error;
     saveLocalSession(res.data.user);
-    showMsg('Giriş başarılı. Yönlendiriliyorsunuz…', 'ok');
+    showMsg('Giriş başarılı. Yönlendiriliyorsun…', 'ok');
     setTimeout(function(){ location.href = 'index.html'; }, 600);
   } catch (err) {
-    showMsg(err.message || 'Giriş başarısız.', 'error');
+    showMsg(err.message || 'E-posta veya şifre hatalı.', 'error');
     btn.disabled = false;
     btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Giriş Yap';
   }
@@ -457,7 +427,7 @@ document.getElementById('formRegister').addEventListener('submit', async functio
   e.preventDefault();
   hideMsg();
   if (!supabaseClient) {
-    showMsg('Önce SUPABASE_URL ve SUPABASE_ANON_KEY değerlerini doldurun.', 'error');
+    showMsg('Bağlantı hatası. Daha sonra tekrar dene.', 'error');
     return;
   }
   var name = document.getElementById('regName').value.trim();
@@ -485,16 +455,18 @@ document.getElementById('formRegister').addEventListener('submit', async functio
 
     if (res.data.user && res.data.session) {
       saveLocalSession(res.data.user);
-      showMsg('Hesap oluşturuldu. Yönlendiriliyorsunuz…', 'ok');
+      showMsg('Hesap oluşturuldu. Yönlendiriliyorsun…', 'ok');
       setTimeout(function(){ location.href = 'index.html'; }, 700);
     } else {
-      showMsg('Kayıt alındı. E-postadaki doğrulama linkine tıklayın, sonra giriş yapın.', 'ok');
+      showMsg('Kayıt alındı. E-postadaki doğrulama linkine tıkla, sonra giriş yap.', 'ok');
       btn.disabled = false;
       btn.innerHTML = '<i class="fas fa-user-plus"></i> Hesap Oluştur';
       document.querySelector('.tabs button[data-tab="login"]').click();
     }
   } catch (err) {
-    showMsg(err.message || 'Kayıt başarısız.', 'error');
+    var m = err.message || 'Kayıt başarısız.';
+    if (/already|registered|exists/i.test(m)) m = 'Bu e-posta zaten kayıtlı. Giriş yap.';
+    showMsg(m, 'error');
     btn.disabled = false;
     btn.innerHTML = '<i class="fas fa-user-plus"></i> Hesap Oluştur';
   }
@@ -504,12 +476,12 @@ document.getElementById('formRegister').addEventListener('submit', async functio
 document.getElementById('forgotLink').addEventListener('click', async function(e) {
   e.preventDefault();
   if (!supabaseClient) {
-    showMsg('Önce Supabase anahtarlarını doldurun.', 'error');
+    showMsg('Bağlantı hatası.', 'error');
     return;
   }
   var email = document.getElementById('loginEmail').value.trim();
   if (!email) {
-    showMsg('Önce e-posta alanına adresinizi yazın.', 'error');
+    showMsg('Önce e-posta adresini yaz.', 'error');
     return;
   }
   try {
@@ -517,7 +489,7 @@ document.getElementById('forgotLink').addEventListener('click', async function(e
       redirectTo: window.location.origin + '/login.html'
     });
     if (res.error) throw res.error;
-    showMsg('Sıfırlama linki e-postanıza gönderildi (Spam klasörüne bakın).', 'ok');
+    showMsg('Sıfırlama linki e-postana gönderildi.', 'ok');
   } catch (err) {
     showMsg(err.message || 'İstek gönderilemedi.', 'error');
   }
@@ -534,9 +506,8 @@ document.getElementById('btnGuest').addEventListener('click', function() {
   location.href = 'index.html';
 });
 
-/* Başlat */
-var ok = initSupabase();
-if (ok && supabaseClient) {
+/* Oturum açıksa bilgi */
+if (supabaseClient) {
   supabaseClient.auth.getSession().then(function(res) {
     if (res.data && res.data.session && res.data.session.user) {
       saveLocalSession(res.data.session.user);
