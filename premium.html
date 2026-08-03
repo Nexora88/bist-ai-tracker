@@ -1,1524 +1,651 @@
 <!DOCTYPE html>
 <html lang="tr">
-
 <head>
-
 <meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width,initial-scale=1.0">
-
-<title>Nexora Premium</title>
-
-<script src="https://cdn.tailwindcss.com"></script>
-
-<link rel="preconnect"
-href="https://fonts.googleapis.com">
-
-<link rel="preconnect"
-href="https://fonts.gstatic.com"
-crossorigin>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
-rel="stylesheet">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Premium | BIST AI Tracker · Nexora AI</title>
+<meta name="description" content="Nexora AI Premium: sınırsız AI analiz, gelişmiş sinyaller, portföy araçları. Pro $5/ay, Elite $12/ay.">
+<meta name="theme-color" content="#0a0e17">
+<meta property="og:title" content="Premium | BIST AI Tracker">
+<meta property="og:description" content="Sınırsız AI analiz, canlı sinyaller. Pro $5/mo · Elite $12/mo.">
+<meta property="og:type" content="website">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
-
-*{
-
-margin:0;
-
-padding:0;
-
-box-sizing:border-box;
-
-font-family:"Inter",sans-serif;
-
+:root {
+  --bg: #0a0e17;
+  --surface: #111827;
+  --border: rgba(255,255,255,0.06);
+  --text: #f1f5f9;
+  --muted: #94a3b8;
+  --green: #22c55e;
+  --red: #ef4444;
+  --accent: #10b981;
+  --cyan: #22d3ee;
+  --violet: #a78bfa;
+  --amber: #fbbf24;
+  --gold: #f59e0b;
 }
-
-html{
-
-scroll-behavior:smooth;
-
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: var(--bg); color: var(--text);
+  min-height: 100vh; line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
-
-body{
-
-background:#020617;
-
-color:white;
-
-overflow-x:hidden;
-
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+.container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+.glass {
+  background: rgba(17, 24, 39, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
 }
-
-/*=============================
-ARKA PLAN
-=============================*/
-
-body::before{
-
-content:"";
-
-position:fixed;
-
-inset:0;
-
-background:
-
-radial-gradient(circle at top left,#10b98122,transparent 35%),
-
-radial-gradient(circle at bottom right,#3b82f622,transparent 40%),
-
-radial-gradient(circle at center,#ffffff08,transparent 70%);
-
-z-index:-2;
-
+.navbar {
+  position: sticky; top: 0; z-index: 50; height: 60px;
+  background: rgba(10, 14, 23, 0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
 }
-
-body::after{
-
-content:"";
-
-position:fixed;
-
-inset:0;
-
-backdrop-filter:blur(2px);
-
-z-index:-1;
-
+.nav-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  height: 60px; max-width: 1280px; margin: 0 auto; padding: 0 20px;
 }
-
-/*=============================
-GLASS
-=============================*/
-
-.glass{
-
-background:rgba(15,23,42,.72);
-
-border:1px solid rgba(255,255,255,.08);
-
-backdrop-filter:blur(18px);
-
-box-shadow:
-
-0 20px 50px rgba(0,0,0,.35);
-
+.logo {
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 800; font-size: 17px; letter-spacing: -0.02em;
 }
-
-/*=============================
-GRADIENT
-=============================*/
-
-.gradient{
-
-background:linear-gradient(
-
-135deg,
-
-#10b981,
-
-#22c55e,
-
-#14b8a6
-
-);
-
--webkit-background-clip:text;
-
--webkit-text-fill-color:transparent;
-
+.logo .accent { color: var(--accent); }
+.nav-links {
+  display: flex; align-items: center; gap: 24px;
+  font-size: 13.5px; font-weight: 500; color: var(--muted);
 }
-
-/*=============================
-BADGE
-=============================*/
-
-.badge{
-
-display:inline-flex;
-
-align-items:center;
-
-gap:10px;
-
-padding:10px 18px;
-
-border-radius:999px;
-
-background:#10b98122;
-
-border:1px solid #10b98155;
-
-color:#6ee7b7;
-
-font-weight:700;
-
+.nav-links a { transition: color 0.15s; }
+.nav-links a:hover, .nav-links a.active { color: var(--accent); }
+.nav-cta {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 600; padding: 7px 14px;
+  border-radius: 10px; background: rgba(245,158,11,0.15);
+  color: var(--amber); border: 1px solid rgba(245,158,11,0.3);
 }
-
-/*=============================
-BUTTON
-=============================*/
-
-.btnPremium{
-
-background:#10b981;
-
-color:black;
-
-padding:18px 36px;
-
-border-radius:18px;
-
-font-weight:800;
-
-transition:.30s;
-
+.mobile-btn {
+  display: none; width: 40px; height: 40px; border-radius: 10px;
+  background: var(--surface); color: var(--muted);
+  align-items: center; justify-content: center;
 }
-
-.btnPremium:hover{
-
-transform:translateY(-4px);
-
-box-shadow:
-
-0 15px 35px rgba(16,185,129,.45);
-
+.mobile-menu {
+  display: none; border-top: 1px solid var(--border);
+  background: rgba(10,14,23,0.98); padding: 12px 20px;
 }
-
-.btnGhost{
-
-background:transparent;
-
-border:1px solid #334155;
-
-padding:18px 36px;
-
-border-radius:18px;
-
-transition:.30s;
-
+.mobile-menu.open { display: block; }
+.mobile-menu a {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px; border-radius: 10px; font-size: 14px; color: var(--muted);
 }
-
-.btnGhost:hover{
-
-background:#0f172a;
-
+.mobile-menu a:hover, .mobile-menu a.active {
+  background: rgba(16,185,129,0.1); color: var(--accent);
 }
-
-/*=============================
-NAVBAR
-=============================*/
-
-nav{
-
-position:sticky;
-
-top:0;
-
-z-index:999;
-
-backdrop-filter:blur(18px);
-
-background:rgba(2,6,23,.75);
-
-border-bottom:1px solid rgba(255,255,255,.06);
-
+@media (max-width: 768px) {
+  .nav-links { display: none !important; }
+  .mobile-btn { display: flex !important; }
 }
-
+.hero {
+  text-align: center; padding: 56px 0 40px; position: relative;
+}
+.hero::before {
+  content: '';
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 480px; height: 280px;
+  background: radial-gradient(ellipse, rgba(245,158,11,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 12px; font-weight: 600; color: var(--amber);
+  padding: 6px 14px; border-radius: 999px;
+  border: 1px solid rgba(245,158,11,0.25);
+  background: rgba(245,158,11,0.1); margin-bottom: 20px;
+}
+.hero h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 800; letter-spacing: -0.03em; line-height: 1.15;
+  margin-bottom: 14px;
+}
+.hero h1 .gold {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b 40%, #f97316);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.hero p {
+  color: var(--muted); font-size: 16px; max-width: 520px;
+  margin: 0 auto 28px; line-height: 1.65;
+}
+.billing {
+  display: inline-flex; align-items: center; gap: 12px;
+  padding: 6px; border-radius: 14px;
+  background: rgba(30,41,59,0.8); border: 1px solid var(--border);
+  margin-bottom: 40px;
+}
+.billing button {
+  padding: 10px 20px; border-radius: 10px;
+  font-size: 13px; font-weight: 600; color: var(--muted);
+  transition: all 0.2s;
+}
+.billing button.active {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #1c1000;
+}
+.save-tag {
+  font-size: 11px; font-weight: 700;
+  background: rgba(16,185,129,0.2); color: var(--accent);
+  padding: 3px 8px; border-radius: 6px;
+}
+.pricing {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 18px; margin-bottom: 56px;
+}
+@media (max-width: 900px) {
+  .pricing { grid-template-columns: 1fr; max-width: 420px; margin-left: auto; margin-right: auto; }
+}
+.plan {
+  padding: 28px 24px; border-radius: 20px;
+  position: relative; display: flex; flex-direction: column;
+  transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+}
+.plan:hover { transform: translateY(-6px); border-color: rgba(16,185,129,0.3); }
+.plan.featured {
+  border: 1px solid rgba(245,158,11,0.4);
+  background: linear-gradient(165deg, rgba(245,158,11,0.08) 0%, rgba(17,24,39,0.9) 40%);
+  box-shadow: 0 0 40px rgba(245,158,11,0.08);
+}
+.plan.featured:hover {
+  border-color: rgba(245,158,11,0.6);
+  box-shadow: 0 16px 48px rgba(245,158,11,0.15);
+}
+.plan-badge {
+  position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+  font-size: 11px; font-weight: 700; padding: 4px 14px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: #1c1000; white-space: nowrap;
+}
+.plan-name {
+  font-size: 13px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--muted); margin-bottom: 8px;
+}
+.plan.featured .plan-name { color: var(--amber); }
+.plan-price {
+  font-size: 40px; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 4px;
+}
+.plan-price span { font-size: 16px; font-weight: 500; color: var(--muted); }
+.plan-period { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+.plan-desc {
+  font-size: 13px; color: #94a3b8; margin-bottom: 22px; line-height: 1.55; min-height: 40px;
+}
+.plan-features { list-style: none; flex: 1; margin-bottom: 24px; }
+.plan-features li {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 13.5px; padding: 7px 0; color: #e2e8f0;
+}
+.plan-features li i { color: var(--accent); margin-top: 3px; font-size: 12px; width: 16px; }
+.plan-features li.muted { color: #64748b; }
+.plan-features li.muted i { color: #475569; }
+.plan-btn {
+  width: 100%; padding: 13px; border-radius: 12px;
+  font-size: 14px; font-weight: 700; text-align: center; transition: all 0.2s;
+}
+.plan-btn.ghost {
+  background: rgba(30,41,59,0.9); border: 1px solid var(--border); color: #e2e8f0;
+}
+.plan-btn.ghost:hover { border-color: rgba(16,185,129,0.4); }
+.plan-btn.gold {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #1c1000;
+}
+.plan-btn.gold:hover {
+  box-shadow: 0 10px 28px rgba(245,158,11,0.35); transform: translateY(-1px);
+}
+.plan-btn.primary {
+  background: linear-gradient(135deg, #10b981, #059669); color: #022c22;
+}
+.plan-btn.primary:hover { box-shadow: 0 10px 28px rgba(16,185,129,0.3); }
+.section-title {
+  font-size: clamp(1.4rem, 3vw, 1.85rem);
+  font-weight: 800; letter-spacing: -0.02em; text-align: center;
+  background: linear-gradient(135deg, #34d399, #22d3ee 55%, #a78bfa);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  margin-bottom: 8px;
+}
+.section-sub {
+  text-align: center; color: var(--muted); font-size: 14px; margin-bottom: 32px;
+}
+.features {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 56px;
+}
+@media (max-width: 800px) { .features { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 500px) { .features { grid-template-columns: 1fr; } }
+.feat { padding: 22px; border-radius: 16px; transition: border-color 0.2s, transform 0.2s; }
+.feat:hover { border-color: rgba(16,185,129,0.25); transform: translateY(-3px); }
+.feat-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; margin-bottom: 14px;
+}
+.feat h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+.feat p { font-size: 13px; color: var(--muted); line-height: 1.55; }
+.compare {
+  overflow-x: auto; margin-bottom: 56px;
+  border-radius: 16px; border: 1px solid var(--border);
+}
+.compare table { width: 100%; border-collapse: collapse; min-width: 640px; font-size: 13.5px; }
+.compare th, .compare td { padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--border); }
+.compare th {
+  background: rgba(15,23,42,0.8); font-weight: 600; color: #e2e8f0;
+  font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em;
+}
+.compare td { color: #cbd5e1; }
+.compare tr:last-child td { border-bottom: none; }
+.compare .check { color: var(--accent); font-weight: 700; }
+.compare .cross { color: #475569; }
+.compare .hl { background: rgba(245,158,11,0.04); }
+.faq { max-width: 720px; margin: 0 auto 56px; }
+.faq-item {
+  border-radius: 14px; margin-bottom: 10px; overflow: hidden; border: 1px solid var(--border);
+}
+.faq-q {
+  width: 100%; text-align: left; padding: 16px 20px;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 14px; font-weight: 600; color: #e2e8f0; background: rgba(17,24,39,0.6);
+}
+.faq-q i { color: var(--muted); transition: transform 0.2s; font-size: 12px; }
+.faq-item.open .faq-q i { transform: rotate(180deg); color: var(--accent); }
+.faq-a {
+  display: none; padding: 0 20px 16px;
+  font-size: 13.5px; color: var(--muted); line-height: 1.65; background: rgba(17,24,39,0.6);
+}
+.faq-item.open .faq-a { display: block; }
+.cta-box {
+  text-align: center; padding: 40px 28px; border-radius: 20px;
+  border: 1px solid rgba(245,158,11,0.2);
+  background: linear-gradient(165deg, rgba(245,158,11,0.08), rgba(17,24,39,0.5));
+  margin-bottom: 40px;
+}
+.cta-box h2 { font-size: 24px; font-weight: 800; margin-bottom: 10px; }
+.cta-box p {
+  color: var(--muted); font-size: 14px; margin-bottom: 22px;
+  max-width: 420px; margin-left: auto; margin-right: auto;
+}
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 28px 0; font-size: 12px; color: #64748b; text-align: center;
+}
+.toast {
+  position: fixed; bottom: 32px; left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: #1e293b; border: 1px solid rgba(245,158,11,0.35);
+  color: var(--amber); padding: 12px 22px; border-radius: 12px;
+  font-size: 13px; font-weight: 600; opacity: 0; pointer-events: none;
+  transition: all 0.3s; z-index: 100;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 </style>
-
 </head>
-
 <body>
 
-<!--============================
-NAVBAR
-=============================-->
-
-<nav>
-
-<div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
-
-<a href="index.html"
-class="text-2xl font-black">
-
-NEXORA
-
-<span class="gradient">
-
-AI
-
-</span>
-
-</a>
-
-<div class="hidden lg:flex gap-8 text-slate-300">
-
-<a href="index.html">
-
-Ana Sayfa
-
-</a>
-
-<a href="stock.html">
-
-Hisseler
-
-</a>
-
-<a href="#premium">
-
-Premium
-
-</a>
-
-<a href="#sss">
-
-SSS
-
-</a>
-
-</div>
-
-<div class="flex gap-3">
-
-<button class="btnGhost">
-
-Giriş Yap
-
-</button>
-
-<button class="btnPremium">
-
-Premium'a Geç
-
-</button>
-
-</div>
-
-</div>
-
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="logo"><span>📈</span> BIST <span class="accent">AI</span> Tracker</a>
+    <div class="nav-links">
+      <a href="index.html">Ana Sayfa</a>
+      <a href="stock.html">Küresel Borsalar</a>
+      <a href="portfolio.html">Portföy</a>
+      <a href="ai-analiz.html">AI Merkezi</a>
+      <a href="premium.html" class="active">Premium</a>
+      <a href="about.html">Uygulama</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <a href="#plans" class="nav-cta"><i class="fas fa-crown" style="font-size:11px"></i> Premium</a>
+      <button class="mobile-btn" id="mobileBtn" aria-label="Menü"><i class="fas fa-bars"></i></button>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html"><i class="fas fa-home" style="width:20px;text-align:center"></i> Ana Sayfa</a>
+    <a href="stock.html"><i class="fas fa-globe" style="width:20px;text-align:center"></i> Küresel Borsalar</a>
+    <a href="portfolio.html"><i class="fas fa-briefcase" style="width:20px;text-align:center"></i> Portföy</a>
+    <a href="ai-analiz.html"><i class="fas fa-robot" style="width:20px;text-align:center"></i> AI Merkezi</a>
+    <a href="premium.html" class="active"><i class="fas fa-crown" style="width:20px;text-align:center"></i> Premium</a>
+    <a href="about.html"><i class="fas fa-rocket" style="width:20px;text-align:center"></i> Uygulama</a>
+  </div>
 </nav>
 
-<!--============================
-HERO
-=============================-->
-
-<section
-class="max-w-7xl mx-auto px-6 py-24">
-
-<div class="grid lg:grid-cols-2 gap-20 items-center">
-
-<div>
-
-<div class="badge">
-
-🚀 Founder Fırsatı
-
-</div>
-
-<h1
-class="text-6xl lg:text-7xl font-black leading-tight mt-8">
-
-Nexora AI'ın
-
-<span class="gradient">
-
-Tüm Gücünü
-
-</span>
-
-Keşfedin
-
-</h1>
-
-<p
-class="text-slate-400 text-xl leading-9 mt-8">
-
-Gerçek zamanlı piyasa verileri,
-
-sınırsız yapay zeka analizi,
-
-akıllı portföy yönetimi,
-
-profesyonel grafikler
-
-ve çok daha fazlası tek üyelikte.
-
-</p>
-
-<div class="flex gap-5 mt-12">
-
-<button class="btnPremium">
-
-🚀 Premium'u Başlat
-
-</button>
-
-<button class="btnGhost">
-
-Paketleri İncele
-
-</button>
-
-</div>
-
-<div
-class="mt-10 flex flex-wrap gap-6 text-slate-300">
-
-<div>
-
-✅ Günlük sınırsız AI
-
-</div>
-
-<div>
-
-✅ Global Piyasalar
-
-</div>
-
-<div>
-
-✅ Portföy AI
-
-</div>
-
-</div>
-
-</div>
-
-<div>
-
-<div class="glass rounded-3xl p-10">
-
-<div class="text-center">
-
-<div class="text-slate-400">
-
-Founder Fiyatı
-
-</div>
-
-<div
-class="text-7xl font-black text-emerald-400 mt-4">
-
-$4.99
-
-</div>
-
-<div
-class="text-slate-400 mt-3">
-
-/ ay
-
-</div>
-
-<div
-class="mt-8 bg-emerald-500/20 rounded-2xl p-5 border border-emerald-500/30">
-
-🔥 İlk kullanıcılar için özel fiyat.
-
-Aboneliğiniz aktif kaldığı sürece
-
-<strong>$4.99/ay</strong>
-
-fiyatınız korunur.
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
+<section class="hero">
+  <div class="container" style="position:relative;z-index:1">
+    <div class="badge"><i class="fas fa-crown"></i> Nexora AI Premium</div>
+    <h1>Yatırımınızı bir üst<br>seviyeye taşıyın.<br><span class="gold">Premium ile sınırsız AI.</span></h1>
+    <p>Sınırsız Nexora AI analizi, gelişmiş sinyaller, öncelikli veri — Pro sadece <strong style="color:var(--amber)">$5/ay</strong>.</p>
+    <div class="billing" id="billing">
+      <button type="button" class="active" data-period="monthly">Aylık</button>
+      <button type="button" data-period="yearly">Yıllık <span class="save-tag">%20 tasarruf</span></button>
+    </div>
+  </div>
 </section>
 
-<!--=========================================
-FREE vs PREMIUM
-==========================================-->
-
-<section id="premium" class="max-w-7xl mx-auto px-6 py-24">
-
-<div class="text-center">
-
-<div class="badge">
-
-👑 Premium Karşılaştırması
-
-</div>
-
-<h2 class="text-5xl font-black mt-8">
-
-Size En Uygun Paketi Seçin
-
-</h2>
-
-<p class="text-slate-400 text-xl mt-6 max-w-3xl mx-auto">
-
-İstediğiniz kadar ücretsiz kullanın.
-Daha gelişmiş analizlere ihtiyaç duyduğunuzda
-tek tıkla Premium'a geçebilirsiniz.
-
-</p>
-
-</div>
-
-<div class="grid lg:grid-cols-2 gap-10 mt-20">
-
-<!-- FREE -->
-
-<div class="glass rounded-3xl p-10">
-
-<div class="flex justify-between items-center">
-
-<h3 class="text-4xl font-black">
-
-🆓 Ücretsiz
-
-</h3>
-
-<span class="text-emerald-400">
-
-Başlangıç
-
-</span>
-
-</div>
-
-<div class="mt-8">
-
-<div class="text-6xl font-black">
-
-0$
-
-</div>
-
-<div class="text-slate-400">
-
-Sonsuza kadar ücretsiz
-
-</div>
-
-</div>
-
-<div class="space-y-5 mt-12">
-
-<div>✅ Günlük 3 AI Analizi</div>
-
-<div>✅ Temel Hisse Takibi</div>
-
-<div>✅ BIST Verileri</div>
-
-<div>✅ Temel Grafikler</div>
-
-<div>✅ Günlük Haberler</div>
-
-<div>✅ 10 Favori Hisse</div>
-
-<div>✅ 1 Portföy</div>
-
-<div>❌ OTC Piyasası</div>
-
-<div>❌ NASDAQ AI</div>
-
-<div>❌ NYSE AI</div>
-
-<div>❌ Portföy AI</div>
-
-<div>❌ Temettü Takvimi</div>
-
-<div>❌ Halka Arz Takvimi</div>
-
-<div>❌ Akıllı Bildirimler</div>
-
-<div>❌ Sınırsız AI</div>
-
-</div>
-
-<button
-class="btnGhost w-full mt-12">
-
-Ücretsiz Devam Et
-
-</button>
-
-</div>
-
-<!-- PREMIUM -->
-
-<div class="rounded-3xl p-10 relative overflow-hidden"
-
-style="background:linear-gradient(135deg,#10b981,#059669);">
-
-<div class="absolute top-5 right-5">
-
-<div class="bg-black text-white px-4 py-2 rounded-full">
-
-🔥 En Popüler
-
-</div>
-
-</div>
-
-<h3 class="text-4xl font-black text-black">
-
-👑 Premium
-
-</h3>
-
-<div class="mt-8">
-
-<div class="text-6xl font-black text-black">
-
-4.99$
-
-</div>
-
-<div class="text-black/70">
-
-Aylık
-
-</div>
-
-</div>
-
-<div class="mt-6 bg-black/10 rounded-2xl p-5">
-
-⏳ Founder Fırsatı
-
-<br><br>
-
-Bugün Premium olursanız
-
-<strong>4.99$</strong>
-
-fiyatınız gelecekte de korunur.
-
-</div>
-
-<div class="space-y-5 mt-10 text-black font-semibold">
-
-<div>♾️ Sınırsız AI Analizi</div>
-
-<div>📊 Profesyonel Grafikler</div>
-
-<div>🤖 Portföy AI</div>
-
-<div>📈 Teknik Analiz AI</div>
-
-<div>🌍 BIST + NASDAQ + NYSE + OTC</div>
-
-<div>💼 Sınırsız Portföy</div>
-
-<div>🔔 Akıllı Bildirimler</div>
-
-<div>📰 Premium Haberler</div>
-
-<div>📅 Temettü Takvimi</div>
-
-<div>🏢 Halka Arz Takvimi</div>
-
-<div>📊 Bilanço Takvimi</div>
-
-<div>⚡ Öncelikli Yeni Özellikler</div>
-
-<div>⭐ Premium Rozeti</div>
-
-<div>🛡️ Öncelikli Destek</div>
-
-</div>
-
-<button
-class="w-full bg-black text-white py-5 rounded-2xl font-bold text-lg mt-12">
-
-🚀 Premium'a Geç
-
-</button>
-
-</div>
-
-</div>
-
+<section id="plans">
+  <div class="container">
+    <div class="pricing">
+      <div class="plan glass">
+        <div class="plan-name">Ücretsiz</div>
+        <div class="plan-price">$0 <span>/ ay</span></div>
+        <div class="plan-period">Herkes için başlangıç</div>
+        <p class="plan-desc">Temel canlı veriler ve sınırlı AI ile platformu keşfedin.</p>
+        <ul class="plan-features">
+          <li><i class="fas fa-check"></i> BIST 30 canlı fiyatlar</li>
+          <li><i class="fas fa-check"></i> Günlük 3 AI analizi</li>
+          <li><i class="fas fa-check"></i> Takip listesi (sınırsız)</li>
+          <li><i class="fas fa-check"></i> Temel teknik veriler</li>
+          <li class="muted"><i class="fas fa-times"></i> Gelişmiş AI sinyalleri</li>
+          <li class="muted"><i class="fas fa-times"></i> Küresel borsa önceliği</li>
+          <li class="muted"><i class="fas fa-times"></i> Portföy raporları</li>
+        </ul>
+        <button class="plan-btn ghost" data-plan="free">Mevcut Plan</button>
+      </div>
+
+      <div class="plan glass featured">
+        <div class="plan-badge">En Popüler</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price" id="pricePro">$5 <span>/ ay</span></div>
+        <div class="plan-period" id="periodPro">Aylık faturalandırma</div>
+        <p class="plan-desc">Aktif yatırımcılar için sınırsız AI ve gelişmiş araçlar.</p>
+        <ul class="plan-features">
+          <li><i class="fas fa-check"></i> Ücretsiz planın tümü</li>
+          <li><i class="fas fa-check"></i> <strong>Sınırsız</strong> Nexora AI analizi</li>
+          <li><i class="fas fa-check"></i> AI al/sat sinyalleri</li>
+          <li><i class="fas fa-check"></i> 11+ borsa (NASDAQ, NYSE, OTCQB…)</li>
+          <li><i class="fas fa-check"></i> Fiyat alarmları (sınırsız)</li>
+          <li><i class="fas fa-check"></i> Öncelikli veri yenileme</li>
+          <li><i class="fas fa-check"></i> Portföy performans raporu</li>
+        </ul>
+        <button class="plan-btn gold" data-plan="pro">Pro'ya Geç</button>
+      </div>
+
+      <div class="plan glass">
+        <div class="plan-name">Elite</div>
+        <div class="plan-price" id="priceElite">$12 <span>/ ay</span></div>
+        <div class="plan-period" id="periodElite">Aylık faturalandırma</div>
+        <p class="plan-desc">Profesyoneller için: haftalık rapor, API ve öncelikli destek.</p>
+        <ul class="plan-features">
+          <li><i class="fas fa-check"></i> Pro planın tümü</li>
+          <li><i class="fas fa-check"></i> Haftalık AI piyasa raporu</li>
+          <li><i class="fas fa-check"></i> Özel izleme listeleri</li>
+          <li><i class="fas fa-check"></i> Erken erişim özellikleri</li>
+          <li><i class="fas fa-check"></i> API erişimi (yakında)</li>
+          <li><i class="fas fa-check"></i> Öncelikli destek</li>
+          <li><i class="fas fa-check"></i> Markasız dışa aktarım</li>
+        </ul>
+        <button class="plan-btn primary" data-plan="elite">Elite'e Geç</button>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!--=========================================
-NEDEN NEXORA PREMIUM
-==========================================-->
-
-<section class="max-w-7xl mx-auto px-6 py-24">
-
-<div class="text-center">
-
-<div class="badge">
-
-✨ Premium Avantajları
-
-</div>
-
-<h2 class="text-5xl font-black mt-8">
-
-Neden Nexora Premium?
-
-</h2>
-
-<p class="text-slate-400 text-xl mt-6 max-w-3xl mx-auto">
-
-Sadece hisse fiyatlarını değil,
-yatırım kararınızı destekleyen
-akıllı araçları da kullanın.
-
-</p>
-
-</div>
-
-<div class="grid lg:grid-cols-3 md:grid-cols-2 gap-8 mt-20">
-
-<div class="glass rounded-3xl p-8">
-
-<div class="text-5xl">
-
-🧠
-
-</div>
-
-<h3 class="text-2xl font-bold mt-6">
-
-Sınırsız Yapay Zeka
-
-</h3>
-
-<p class="text-slate-400 mt-5 leading-8">
-
-İstediğiniz kadar hisse analizi yapın.
-
-Şirketleri karşılaştırın.
-
-Portföyünüzü yorumlatın.
-
-Sorularınıza saniyeler içinde cevap alın.
-
-</p>
-
-</div>
-
-<div class="glass rounded-3xl p-8">
-
-<div class="text-5xl">
-
-📈
-
-</div>
-
-<h3 class="text-2xl font-bold mt-6">
-
-Profesyonel Grafikler
-
-</h3>
-
-<p class="text-slate-400 mt-5 leading-8">
-
-TradingView benzeri gelişmiş grafikler,
-
-çoklu zaman aralığı,
-
-teknik göstergeler
-
-ve canlı fiyat hareketleri.
-
-</p>
-
-</div>
-
-<div class="glass rounded-3xl p-8">
-
-<div class="text-5xl">
-
-🌍
-
-</div>
-
-<h3 class="text-2xl font-bold mt-6">
-
-Küresel Piyasalar
-
-</h3>
-
-<p class="text-slate-400 mt-5 leading-8">
-
-BIST,
-
-NASDAQ,
-
-NYSE,
-
-OTC
-
-ve gelecekte Crypto
-
-tek platformda.
-
-</p>
-
-</div>
-
-<div class="glass rounded-3xl p-8">
-
-<div class="text-5xl">
-
-💼
-
-</div>
-
-<h3 class="text-2xl font-bold mt-6">
-
-Akıllı Portföy
-
-</h3>
-
-<p class="text-slate-400 mt-5 leading-8">
-
-Kar/Zarar,
-
-Risk,
-
-Sektör Dağılımı,
-
-AI Tavsiyeleri
-
-tek ekranda.
-
-</p>
-
-</div>
-
-<div class="glass rounded-3xl p-8">
-
-<div class="text-5xl">
-
-📅
-
-</div>
-
-<h3 class="text-2xl font-bold mt-6">
-
-Yatırım Takvimi
-
-</h3>
-
-<p class="text-slate-400 mt-5 leading-8">
-
-Temettüler,
-
-Halka Arzlar,
-
-Bilançolar,
-
-Fed,
-
-TCMB,
-
-Ekonomik Takvim.
-
-</p>
-
-</div>
-
-<div class="glass rounded-3xl p-8">
-
-<div class="text-5xl">
-
-🔔
-
-</div>
-
-<h3 class="text-2xl font-bold mt-6">
-
-Akıllı Bildirimler
-
-</h3>
-
-<p class="text-slate-400 mt-5 leading-8">
-
-Fiyat hedefleri,
-
-AI uyarıları,
-
-haberler,
-
-temettüler
-
-ve önemli gelişmeler anında.
-
-</p>
-
-</div>
-
-</div>
-
+<section>
+  <div class="container">
+    <h2 class="section-title">Neden Premium?</h2>
+    <p class="section-sub">Profesyonel yatırımcı deneyimi için tasarlandı</p>
+    <div class="features">
+      <div class="feat glass">
+        <div class="feat-icon" style="background:rgba(167,139,250,0.12)">🤖</div>
+        <h3>Sınırsız Nexora AI</h3>
+        <p>Günlük limit yok. Her hisse için derinlemesine AI analizi ve skor.</p>
+      </div>
+      <div class="feat glass">
+        <div class="feat-icon" style="background:rgba(16,185,129,0.12)">📡</div>
+        <h3>Canlı Sinyaller</h3>
+        <p>Al/sat ve izle önerileri; momentum ve hacim odaklı uyarılar.</p>
+      </div>
+      <div class="feat glass">
+        <div class="feat-icon" style="background:rgba(34,211,238,0.12)">🌍</div>
+        <h3>11 Küresel Borsa</h3>
+        <p>BIST, NASDAQ, NYSE, DAX, LSE, TSE, HKEX, SSE, ASX, TSX, OTCQB.</p>
+      </div>
+      <div class="feat glass">
+        <div class="feat-icon" style="background:rgba(245,158,11,0.12)">🔔</div>
+        <h3>Sınırsız Alarm</h3>
+        <p>Hedef fiyata ulaşınca tarayıcı bildirimi; takip listesiyle entegre.</p>
+      </div>
+      <div class="feat glass">
+        <div class="feat-icon" style="background:rgba(239,68,68,0.12)">⚡</div>
+        <h3>Öncelikli Veri</h3>
+        <p>Daha sık yenileme ve cache optimizasyonu ile güncel fiyatlar.</p>
+      </div>
+      <div class="feat glass">
+        <div class="feat-icon" style="background:rgba(148,163,184,0.12)">📊</div>
+        <h3>Portföy Raporları</h3>
+        <p>Performans özeti, kar/zarar ve AI destekli değerlendirme.</p>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!--=========================================
-NEXORA HER YERDE
-==========================================-->
-
-<section class="max-w-7xl mx-auto px-6 py-24">
-
-<div class="text-center">
-
-<div class="badge">
-
-📱 Her Cihazda Kullan
-
-</div>
-
-<h2 class="text-5xl font-black mt-8">
-
-Nexora AI Her An Yanınızda
-
-</h2>
-
-<p class="text-slate-400 text-xl mt-6">
-
-Telefon, tablet ve bilgisayarınızdan
-aynı Premium deneyimini yaşayın.
-
-</p>
-
-</div>
-
-<div class="grid lg:grid-cols-3 gap-8 mt-20">
-
-<div class="glass rounded-3xl p-8 text-center">
-
-<div class="text-7xl">
-
-📱
-
-</div>
-
-<h3 class="text-3xl font-bold mt-8">
-
-Mobil
-
-</h3>
-
-<p class="text-slate-400 mt-5">
-
-Anlık bildirimler
-
-AI analizleri
-
-Portföy takibi
-
-</p>
-
-</div>
-
-<div class="glass rounded-3xl p-8 text-center">
-
-<div class="text-7xl">
-
-💻
-
-</div>
-
-<h3 class="text-3xl font-bold mt-8">
-
-Masaüstü
-
-</h3>
-
-<p class="text-slate-400 mt-5">
-
-Profesyonel grafikler
-
-Çoklu ekran
-
-Hızlı analiz
-
-</p>
-
-</div>
-
-<div class="glass rounded-3xl p-8 text-center">
-
-<div class="text-7xl">
-
-📊
-
-</div>
-
-<h3 class="text-3xl font-bold mt-8">
-
-Tablet
-
-</h3>
-
-<p class="text-slate-400 mt-5">
-
-Toplantılarda
-
-Seyahatte
-
-Her yerde yatırım
-
-</p>
-
-</div>
-
-</div>
-
+<section>
+  <div class="container">
+    <h2 class="section-title">Plan Karşılaştırması</h2>
+    <p class="section-sub">Özellikleri yan yana inceleyin</p>
+    <div class="compare glass">
+      <table>
+        <thead>
+          <tr>
+            <th>Özellik</th>
+            <th>Ücretsiz</th>
+            <th class="hl">Pro · $5</th>
+            <th>Elite · $12</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>BIST 30 canlı veri</td>
+            <td class="check">✓</td>
+            <td class="check hl">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Günlük AI analizi</td>
+            <td>3 adet</td>
+            <td class="check hl">Sınırsız</td>
+            <td class="check">Sınırsız</td>
+          </tr>
+          <tr>
+            <td>Küresel borsalar</td>
+            <td class="cross">Sınırlı</td>
+            <td class="check hl">11 borsa</td>
+            <td class="check">11 borsa</td>
+          </tr>
+          <tr>
+            <td>OTCQB erişimi</td>
+            <td class="cross">—</td>
+            <td class="check hl">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Fiyat alarmı</td>
+            <td>3 adet</td>
+            <td class="check hl">Sınırsız</td>
+            <td class="check">Sınırsız</td>
+          </tr>
+          <tr>
+            <td>AI al/sat sinyali</td>
+            <td class="cross">—</td>
+            <td class="check hl">✓</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>Haftalık AI raporu</td>
+            <td class="cross">—</td>
+            <td class="cross hl">—</td>
+            <td class="check">✓</td>
+          </tr>
+          <tr>
+            <td>API erişimi</td>
+            <td class="cross">—</td>
+            <td class="cross hl">—</td>
+            <td class="check">Yakında</td>
+          </tr>
+          <tr>
+            <td>Öncelikli destek</td>
+            <td class="cross">—</td>
+            <td class="cross hl">—</td>
+            <td class="check">✓</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </section>
 
-<!--=========================================
-YAKINDA
-==========================================-->
-
-<section class="max-w-7xl mx-auto px-6 pb-24">
-
-<div class="glass rounded-3xl p-12">
-
-<div class="badge">
-
-🚀 Yakında
-
-</div>
-
-<h2 class="text-4xl font-black mt-8">
-
-Premium'a Sürekli Yeni Özellikler Geliyor
-
-</h2>
-
-<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
-
-<div>✅ Kripto Takibi</div>
-
-<div>✅ AI Hedef Fiyat</div>
-
-<div>✅ Opsiyon Analizi</div>
-
-<div>✅ PDF Raporları</div>
-
-<div>✅ AI Screener</div>
-
-<div>✅ Kurumsal Hesaplar</div>
-
-<div>✅ API Desteği</div>
-
-<div>✅ Yapay Zeka Portföy Yöneticisi</div>
-
-<div>✅ Mobil Uygulama</div>
-
-</div>
-
-</div>
-
+<section>
+  <div class="container">
+    <h2 class="section-title">Sıkça Sorulan Sorular</h2>
+    <p class="section-sub">Premium hakkında merak edilenler</p>
+    <div class="faq">
+      <div class="faq-item">
+        <button class="faq-q" type="button">Premium'u nasıl iptal ederim? <i class="fas fa-chevron-down"></i></button>
+        <div class="faq-a">İstediğiniz zaman Ayarlar veya hesap bölümünden iptal edebilirsiniz. İptal sonrası dönem sonuna kadar özellikler açık kalır.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" type="button">Ödeme yöntemleri neler? <i class="fas fa-chevron-down"></i></button>
+        <div class="faq-a">Kredi/banka kartı ile USD ödeme (entegrasyon sonrası). Şu an demo modunda plan seçimi kayıt edilir; gerçek ödeme yakında.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" type="button">AI analizleri yatırım tavsiyesi midir? <i class="fas fa-chevron-down"></i></button>
+        <div class="faq-a">Hayır. Nexora AI çıktıları bilgilendirme amaçlıdır; yatırım kararı size aittir. Resmi yatırım danışmanlığı değildir.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" type="button">Veriler ne kadar güncel? <i class="fas fa-chevron-down"></i></button>
+        <div class="faq-a">Yahoo Finance kaynaklı veriler kısa gecikmeli olabilir. Premium'da daha sık yenileme ve önbellek optimizasyonu kullanılır.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" type="button">OTCQB nedir? <i class="fas fa-chevron-down"></i></button>
+        <div class="faq-a">OTCQB, ABD'de tezgah üstü (OTC) piyasada işlem gören şirketlerin kotasyon seviyesidir. ADR ve yabancı şirket hisseleri burada takip edilebilir.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" type="button">Yıllık planda ne kadar tasarruf ederim? <i class="fas fa-chevron-down"></i></button>
+        <div class="faq-a">Pro yıllık $48 (ayda ~$4), Elite yıllık $115 (ayda ~$9.6). Aylığa göre yaklaşık %20 indirim.</div>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!--=========================================
-NEXORA RAKAMLARLA
-==========================================-->
-
-<section class="max-w-7xl mx-auto px-6 py-24">
-
-<div class="text-center">
-
-<div class="badge">
-
-📊 Nexora
-
-</div>
-
-<h2 class="text-5xl font-black mt-8">
-
-Yatırımcılar İçin Geliştiriliyor
-
-</h2>
-
-<p class="text-slate-400 text-xl mt-6">
-
-Her gün gelişen, sürekli güncellenen bir yatırım platformu.
-
-</p>
-
-</div>
-
-<div class="grid lg:grid-cols-4 md:grid-cols-2 gap-8 mt-20">
-
-<div class="glass rounded-3xl p-10 text-center">
-
-<div class="text-6xl font-black gradient">
-
-1000+
-
-</div>
-
-<p class="mt-5 text-slate-400">
-
-Takip Edilebilecek Hisse
-
-</p>
-
-</div>
-
-<div class="glass rounded-3xl p-10 text-center">
-
-<div class="text-6xl font-black gradient">
-
-4
-
-</div>
-
-<p class="mt-5 text-slate-400">
-
-Desteklenen Piyasa
-
-</p>
-
-</div>
-
-<div class="glass rounded-3xl p-10 text-center">
-
-<div class="text-6xl font-black gradient">
-
-24/7
-
-</div>
-
-<p class="mt-5 text-slate-400">
-
-Yapay Zeka Desteği
-
-</p>
-
-</div>
-
-<div class="glass rounded-3xl p-10 text-center">
-
-<div class="text-6xl font-black gradient">
-
-∞
-
-</div>
-
-<p class="mt-5 text-slate-400">
-
-Premium AI Analizi
-
-</p>
-
-</div>
-
-</div>
-
+<section>
+  <div class="container">
+    <div class="cta-box">
+      <h2>Hemen Pro ile başlayın</h2>
+      <p>Sınırsız AI, 11 borsa ve profesyonel araçlar — sadece <strong style="color:var(--amber)">$5/ay</strong>.</p>
+      <button class="plan-btn gold" style="display:inline-flex;width:auto;padding:14px 32px" data-plan="pro">Pro'ya Geç — $5/ay</button>
+    </div>
+  </div>
 </section>
 
-<!--=========================================
-SON ÇAĞRI
-==========================================-->
-
-<section class="max-w-6xl mx-auto px-6 pb-24">
-
-<div class="glass rounded-[40px] p-14 text-center">
-
-<div class="badge">
-
-🚀 Founder Kampanyası
-
-</div>
-
-<h2 class="text-6xl font-black mt-8">
-
-Bugün Katıl,
-
-Fiyatın Hep Aynı Kalsın.
-
-</h2>
-
-<p class="text-slate-400 text-xl mt-8 max-w-3xl mx-auto">
-
-Founder döneminde Premium olan kullanıcılar
-
-abonelikleri devam ettiği sürece
-
-4.99 USD fiyatını koruyacaktır.
-
-</p>
-
-<div class="mt-12 flex flex-wrap justify-center gap-5">
-
-<button class="btnPremium">
-
-👑 Premium'a Geç
-
-</button>
-
-<button class="btnGhost">
-
-Özellikleri Karşılaştır
-
-</button>
-
-</div>
-
-<div class="mt-12 text-yellow-400 text-lg">
-
-⏳ Founder Fırsatı Sınırlı Süre İçin Geçerlidir.
-
-</div>
-
-</div>
-
-</section>
-
-<!--=========================================
-NEXORA CANLI İSTATİSTİKLER
-==========================================-->
-
-<section class="max-w-7xl mx-auto px-6 py-24">
-
-<div class="text-center">
-
-<div class="badge">
-
-📊 Canlı İstatistikler
-
-</div>
-
-<h2 class="text-5xl font-black mt-8">
-
-Nexora Her Gün Büyüyor
-
-</h2>
-
-<p class="text-slate-400 text-xl mt-6">
-
-Platform büyüdükçe istatistikler gerçek zamanlı olarak güncellenecektir.
-
-</p>
-
-</div>
-
-<div class="grid lg:grid-cols-3 md:grid-cols-2 gap-8 mt-20">
-
-<div class="glass rounded-3xl p-8 text-center">
-
-<div id="onlineUsers"
-class="text-6xl font-black text-emerald-400">
-
-127
-
-</div>
-
-<p class="mt-5 text-slate-400">
-
-🟢 Çevrimiçi Kullanıcı
-
-</p>
-
-</div>
-
-<div class="glass rounded-3xl p-8 text-center">
-
-<div id="premiumUsers"
-class="text-6xl font-black text-emerald-400">
-
-2481
-
-</div>
-
-<p class="mt-5 text-slate-400">
-
-👑 Premium Üye
-
-</p>
-
-</div>
-
-<div class="glass rounded-3xl p-8 text-center">
-
-<div id="aiRequests"
-class="text-6xl font-black text-emerald-400">
-
-18294
-
-</div>
-
-<p class="mt-5 text-slate-400">
-
-🤖 Bugünkü AI Analizi
-
-</p>
-
-</div>
-
-<div class="glass rounded-3xl p-8 text-center">
-
-<div
-class="text-6xl font-black text-emerald-400">
-
-1000+
-
-</div>
-
-<p class="mt-5 text-slate-400">
-
-📈 Desteklenen Hisseler
-
-</p>
-
-</div>
-
-<div class="glass rounded-3xl p-8 text-center">
-
-<div
-class="text-6xl font-black text-emerald-400">
-
-4.9★
-
-</div>
-
-<p class="mt-5 text-slate-400">
-
-⭐ Ortalama Puan
-
-</p>
-
-</div>
-
-<div class="glass rounded-3xl p-8 text-center">
-
-<div
-class="text-6xl font-black text-emerald-400">
-
-99.9%
-
-</div>
-
-<p class="mt-5 text-slate-400">
-
-⚡ Uptime
-
-</p>
-
-</div>
-
-</div>
-
-</section>
-
-<!--=========================================
-FOUNDER
-==========================================-->
-
-<section class="max-w-6xl mx-auto px-6 pb-24">
-
-<div class="glass rounded-[40px] p-14">
-
-<div class="text-center">
-
-<div class="badge">
-
-👑 Founder Programı
-
-</div>
-
-<h2 class="text-5xl font-black mt-8">
-
-İlk Premium Kullanıcılardan Olun
-
-</h2>
-
-<p class="text-slate-400 text-xl mt-8 max-w-3xl mx-auto">
-
-Founder kullanıcıları abonelikleri devam ettiği sürece
-4.99 USD fiyatını korur ve yeni özelliklere herkesten önce erişir.
-
-</p>
-
-</div>
-
-<div class="grid md:grid-cols-2 gap-8 mt-16">
-
-<div class="glass rounded-3xl p-8">
-
-<h3 class="text-2xl font-bold">
-
-🎁 Founder Avantajları
-
-</h3>
-
-<div class="space-y-4 mt-8">
-
-<div>✅ Ömür Boyu 4.99 USD</div>
-
-<div>✅ Founder Rozeti</div>
-
-<div>✅ Yeni Özelliklere Erken Erişim</div>
-
-<div>✅ Öncelikli Destek</div>
-
-<div>✅ Beta Özellikleri Kullanma</div>
-
-<div>✅ Özel Etkinlikler (Yakında)</div>
-
-</div>
-
-</div>
-
-<div class="glass rounded-3xl p-8">
-
-<h3 class="text-2xl font-bold">
-
-🚀 Nexora Premium
-
-</h3>
-
-<p class="text-slate-400 mt-6">
-
-Yapay zekanın tüm gücünü kullanın.
-
-Profesyonel grafikler,
-
-portföy analizi,
-
-küresel piyasalar
-
-ve çok daha fazlası sizi bekliyor.
-
-</p>
-
-<button
-class="btnPremium w-full mt-10">
-
-👑 Premium'a Geç
-
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-<!--=========================================
-FOOTER
-==========================================-->
-
-<footer class="border-t border-slate-800">
-
-<div class="max-w-7xl mx-auto px-6 py-12">
-
-<div class="grid lg:grid-cols-4 gap-10">
-
-<div>
-
-<h3 class="text-2xl font-black">
-
-NEXORA AI
-
-</h3>
-
-<p class="text-slate-400 mt-5">
-
-Akıllı yatırımın yeni nesli.
-
-</p>
-
-</div>
-
-<div>
-
-<h4 class="font-bold">
-
-Platform
-
-</h4>
-
-<div class="space-y-3 mt-5 text-slate-400">
-
-<div>Ana Sayfa</div>
-
-<div>Hisseler</div>
-
-<div>Premium</div>
-
-<div>Portföy</div>
-
-</div>
-
-</div>
-
-<div>
-
-<h4 class="font-bold">
-
-Destek
-
-</h4>
-
-<div class="space-y-3 mt-5 text-slate-400">
-
-<div>SSS</div>
-
-<div>İletişim</div>
-
-<div>Gizlilik Politikası</div>
-
-<div>Kullanım Koşulları</div>
-
-</div>
-
-</div>
-
-<div>
-
-<h4 class="font-bold">
-
-Yasal Uyarı</h4>
-
-<p class="text-slate-400 mt-5 text-sm leading-7">
-
-Nexora AI tarafından sunulan içerikler yalnızca bilgilendirme amaçlıdır.
-Hiçbir içerik yatırım tavsiyesi değildir.
-Yatırım kararlarınızı kendi araştırmanız doğrultusunda vermeniz önerilir.
-
-</p>
-
-</div>
-
-</div>
-
-<div class="border-t border-slate-800 mt-10 pt-8 text-center text-slate-500">
-
-© 2026 Nexora AI. Tüm Hakları Saklıdır.
-
-</div>
-
-</div>
-
+<footer class="footer">
+  <div class="container">
+    © 2026 BIST AI Tracker · Nexora AI · Ahmet Eymen Bakraç
+  </div>
 </footer>
 
+<div class="toast" id="toast">Plan seçildi</div>
+
 <script>
+(function(){
+  var period = 'monthly';
+  var prices = {
+    monthly: {
+      pro: '$5',
+      elite: '$12',
+      proPeriod: 'Aylık faturalandırma',
+      elitePeriod: 'Aylık faturalandırma'
+    },
+    yearly: {
+      pro: '$48',
+      elite: '$115',
+      proPeriod: 'Yıllık · ayda ~$4',
+      elitePeriod: 'Yıllık · ayda ~$9.6'
+    }
+  };
 
-setInterval(()=>{
+  function storeGet(k, fb) {
+    try {
+      if (typeof localStorage === 'undefined') return fb;
+      var v = localStorage.getItem(k);
+      return v === null ? fb : v;
+    } catch (e) { return fb; }
+  }
+  function storeSet(k, v) {
+    try { if (typeof localStorage !== 'undefined') localStorage.setItem(k, v); } catch (e) {}
+  }
 
-document.getElementById("onlineUsers").textContent=
-120+Math.floor(Math.random()*20);
+  function showToast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(function(){ t.classList.remove('show'); }, 2500);
+  }
 
-},5000);
+  function updatePrices() {
+    var p = prices[period];
+    var unit = period === 'monthly' ? 'ay' : 'yıl';
+    var pro = document.getElementById('pricePro');
+    var elite = document.getElementById('priceElite');
+    var pp = document.getElementById('periodPro');
+    var ep = document.getElementById('periodElite');
+    if (pro) pro.innerHTML = p.pro + ' <span>/ ' + unit + '</span>';
+    if (elite) elite.innerHTML = p.elite + ' <span>/ ' + unit + '</span>';
+    if (pp) pp.textContent = p.proPeriod;
+    if (ep) ep.textContent = p.elitePeriod;
+  }
 
+  document.querySelectorAll('#billing button').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('#billing button').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      period = btn.getAttribute('data-period');
+      updatePrices();
+    });
+  });
+
+  document.querySelectorAll('[data-plan]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var plan = btn.getAttribute('data-plan');
+      if (plan === 'free') {
+        showToast('Zaten ücretsiz plandasınız');
+        return;
+      }
+      storeSet('nexora_plan', plan);
+      storeSet('nexora_billing', period);
+      var label = plan === 'pro' ? 'Pro ($5)' : 'Elite ($12)';
+      if (period === 'yearly') label = plan === 'pro' ? 'Pro ($48/yıl)' : 'Elite ($115/yıl)';
+      showToast(label + ' seçildi — demo kayıt');
+    });
+  });
+
+  document.querySelectorAll('.faq-q').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var item = btn.parentElement;
+      var open = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(function(i){ i.classList.remove('open'); });
+      if (!open) item.classList.add('open');
+    });
+  });
+
+  var mb = document.getElementById('mobileBtn');
+  if (mb) {
+    mb.addEventListener('click', function() {
+      document.getElementById('mobileMenu').classList.toggle('open');
+      var icon = this.querySelector('i');
+      if (icon) { icon.classList.toggle('fa-bars'); icon.classList.toggle('fa-times'); }
+    });
+  }
+
+  updatePrices();
+})();
 </script>
-
 </body>
 </html>
