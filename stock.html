@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Küresel Borsalar | BIST AI Tracker</title>
-<meta name="description" content="BIST, NASDAQ, NYSE, DAX, LSE, OTCQB ve 11 küresel borsada canlı hisse takibi. Nexora AI destekli analiz.">
+<meta name="description" content="BIST, NASDAQ, NYSE, DAX, LSE, TSE, HKEX, SSE, ASX, TSX, OTCQB canlı hisse takibi. Nexora AI destekli analiz.">
 <meta name="theme-color" content="#0a0e17">
 <meta property="og:title" content="Küresel Borsalar | BIST AI Tracker">
-<meta property="og:description" content="11 borsa, canlı fiyatlar, Nexora AI analiz.">
+<meta property="og:description" content="11 borsa, OTCQB dahil, canlı fiyatlar, Nexora AI analiz.">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
@@ -83,7 +83,7 @@ h1{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;letter-spacing:-.02em;marg
 <div class="page">
   <div class="container">
     <h1>🌍 Küresel Borsalar</h1>
-    <p class="sub">11 borsa · Canlı fiyat · Yahoo Finance · Nexora AI · OTCQB dahil</p>
+    <p class="sub">11 borsa · BIST · NASDAQ · NYSE · DAX · LSE · TSE · HKEX · SSE · ASX · TSX · OTCQB</p>
 
     <div class="tabs" id="tabs"></div>
     <div class="search">
@@ -165,7 +165,7 @@ var EXCHANGES={
   ]},
   SSE:{name:'SSE (Çin)',suffix:'.SS',currency:'¥',symbols:[
     {s:'600519',n:'Kweichow Moutai'},{s:'601318',n:'Ping An'},{s:'600036',n:'CMB'},{s:'601166',n:'Industrial Bank'},
-    {s:'000858',n:'Wuliangye'},{s:'600276',n:'Hengrui'}
+    {s:'600276',n:'Hengrui'},{s:'601888',n:'China Tourism'}
   ]},
   ASX:{name:'ASX (Avustralya)',suffix:'.AX',currency:'A$',symbols:[
     {s:'BHP',n:'BHP'},{s:'CBA',n:'Commonwealth Bank'},{s:'CSL',n:'CSL'},{s:'NAB',n:'NAB'},
@@ -188,8 +188,7 @@ var EXCHANGES={
 var currentMkt='BIST',listData=[],detailSymbol=null;
 
 function yahooSymbol(mkt,sym){
-  var ex=EXCHANGES[mkt];
-  return sym+(ex.suffix||'');
+  return sym+(EXCHANGES[mkt].suffix||'');
 }
 
 function parseQuote(json){
@@ -199,37 +198,20 @@ function parseQuote(json){
     var price=meta.regularMarketPrice;
     var prev=meta.chartPreviousClose||meta.previousClose||price;
     var change=prev?((price-prev)/prev)*100:0;
-    return{
-      price:+price.toFixed(2),
-      change:+change.toFixed(2),
-      volume:meta.regularMarketVolume||0,
-      high:meta.regularMarketDayHigh||null,
-      low:meta.regularMarketDayLow||null,
-      live:true
-    };
+    return{price:+price.toFixed(2),change:+change.toFixed(2),volume:meta.regularMarketVolume||0,high:meta.regularMarketDayHigh||null,low:meta.regularMarketDayLow||null,live:true};
   }catch(e){return null}
 }
 
 async function fetchQuote(fullSymbol){
   var url='https://query1.finance.yahoo.com/v8/finance/chart/'+fullSymbol+'?interval=1d&range=2d';
-  try{
-    var res=await fetch(url,{mode:'cors'});
-    if(res.ok){var d=parseQuote(await res.json());if(d)return d}
-  }catch(e){}
-  try{
-    var res2=await fetch('https://api.allorigins.win/raw?url='+encodeURIComponent(url));
-    if(res2.ok){var d2=parseQuote(await res2.json());if(d2)return d2}
-  }catch(e){}
-  try{
-    var res3=await fetch('https://corsproxy.io/?'+encodeURIComponent(url));
-    if(res3.ok){var d3=parseQuote(await res3.json());if(d3)return d3}
-  }catch(e){}
+  try{var res=await fetch(url,{mode:'cors'});if(res.ok){var d=parseQuote(await res.json());if(d)return d}}catch(e){}
+  try{var res2=await fetch('https://api.allorigins.win/raw?url='+encodeURIComponent(url));if(res2.ok){var d2=parseQuote(await res2.json());if(d2)return d2}}catch(e){}
+  try{var res3=await fetch('https://corsproxy.io/?'+encodeURIComponent(url));if(res3.ok){var d3=parseQuote(await res3.json());if(d3)return d3}}catch(e){}
   return null;
 }
 
 function buildTabs(){
-  var el=document.getElementById('tabs');
-  el.innerHTML='';
+  var el=document.getElementById('tabs');el.innerHTML='';
   Object.keys(EXCHANGES).forEach(function(k){
     var btn=document.createElement('button');
     btn.className='tab'+(k===currentMkt?' active':'');
@@ -243,7 +225,6 @@ async function loadMarket(){
   var ex=EXCHANGES[currentMkt];
   document.getElementById('status').textContent=ex.name+' yükleniyor...';
   document.getElementById('list').innerHTML='<div class="loading"><div class="skel" style="width:60%;margin:0 auto"></div><div class="skel" style="width:40%;margin:12px auto"></div></div>';
-
   var results=await Promise.all(ex.symbols.map(async function(item){
     var full=yahooSymbol(currentMkt,item.s);
     var q=await fetchQuote(full);
@@ -251,9 +232,7 @@ async function loadMarket(){
     var seed=item.s.split('').reduce(function(a,c){return a+c.charCodeAt(0)},0);
     return{symbol:item.s,name:item.n,full:full,price:+(10+(seed%500)+Math.random()*5).toFixed(2),change:+(((seed%11)-5)*0.5).toFixed(2),volume:0,high:null,low:null,live:false};
   }));
-
-  listData=results;
-  renderList(results);
+  listData=results;renderList(results);
   var live=results.filter(function(r){return r.live}).length;
   document.getElementById('status').textContent=ex.name+' · '+live+'/'+results.length+' canlı · '+new Date().toLocaleTimeString('tr-TR');
 }
