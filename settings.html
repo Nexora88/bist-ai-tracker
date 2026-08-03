@@ -1,1637 +1,439 @@
 <!DOCTYPE html>
 <html lang="tr">
-
 <head>
-
 <meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
-
-<title>Ayarlar | Nexora AI</title>
-
-<script src="https://cdn.tailwindcss.com"></script>
-
-<link rel="preconnect"
-href="https://fonts.googleapis.com">
-
-<link rel="preconnect"
-href="https://fonts.gstatic.com"
-crossorigin>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
-rel="stylesheet">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ayarlar | BIST AI Tracker</title>
+<meta name="description" content="BIST AI Tracker ayarlar: tema, veri yenileme, önbellek, bildirimler ve Nexora AI.">
+<meta name="theme-color" content="#0a0e17">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
-
-*{
-
-margin:0;
-
-padding:0;
-
-box-sizing:border-box;
-
-font-family:Inter,sans-serif;
-
-}
-
-html{
-
-scroll-behavior:smooth;
-
-}
-
-body{
-
-background:#020617;
-
-color:white;
-
-overflow-x:hidden;
-
-}
-
-body::before{
-
-content:"";
-
-position:fixed;
-
-inset:0;
-
-background:
-
-radial-gradient(circle at top left,#10b98122,transparent 35%),
-
-radial-gradient(circle at bottom right,#2563eb22,transparent 35%),
-
-radial-gradient(circle at center,#ffffff08,transparent 70%);
-
-z-index:-2;
-
-}
-
-.glass{
-
-background:rgba(15,23,42,.72);
-
-border:1px solid rgba(255,255,255,.08);
-
-backdrop-filter:blur(18px);
-
-border-radius:30px;
-
-}
-
-.gradient{
-
-background:linear-gradient(135deg,#10b981,#22c55e,#14b8a6);
-
--webkit-background-clip:text;
-
--webkit-text-fill-color:transparent;
-
-}
-
-.settingCard{
-
-background:#0f172a;
-
-border:1px solid #1e293b;
-
-border-radius:24px;
-
-padding:28px;
-
-transition:.30s;
-
-cursor:pointer;
-
-}
-
-.settingCard:hover{
-
-border-color:#10b981;
-
-transform:translateY(-6px);
-
-box-shadow:0 25px 45px rgba(16,185,129,.20);
-
-}
-
-.badge{
-
-display:inline-flex;
-
-align-items:center;
-
-gap:8px;
-
-padding:8px 16px;
-
-border-radius:999px;
-
-background:#10b98122;
-
-border:1px solid #10b98155;
-
-color:#6ee7b7;
-
-font-weight:700;
-
-}
-
+:root{--bg:#0a0e17;--surface:#111827;--border:rgba(255,255,255,.06);--text:#f1f5f9;--muted:#94a3b8;--green:#22c55e;--red:#ef4444;--accent:#10b981;--cyan:#22d3ee;--violet:#a78bfa;--amber:#fbbf24}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}button{font-family:inherit;cursor:pointer;border:none;background:none}
+input,select{font-family:inherit}
+.container{max-width:960px;margin:0 auto;padding:0 20px}
+.glass{background:rgba(17,24,39,.75);backdrop-filter:blur(16px);border:1px solid var(--border)}
+.navbar{position:sticky;top:0;z-index:50;height:60px;background:rgba(10,14,23,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:60px;max-width:1280px;margin:0 auto;padding:0 20px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px}
+.logo .accent{color:var(--accent)}
+.nav-links{display:flex;gap:24px;font-size:13.5px;font-weight:500;color:var(--muted)}
+.nav-links a:hover,.nav-links a.active{color:var(--accent)}
+.nav-cta{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:7px 14px;border-radius:10px;background:rgba(245,158,11,.15);color:var(--amber);border:1px solid rgba(245,158,11,.3)}
+.mobile-btn{display:none;width:40px;height:40px;border-radius:10px;background:var(--surface);color:var(--muted);align-items:center;justify-content:center}
+.mobile-menu{display:none;border-top:1px solid var(--border);background:rgba(10,14,23,.98);padding:12px 20px}
+.mobile-menu.open{display:block}
+.mobile-menu a{display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;font-size:14px;color:var(--muted)}
+.mobile-menu a:hover,.mobile-menu a.active{background:rgba(16,185,129,.1);color:var(--accent)}
+@media(max-width:768px){.nav-links{display:none!important}.mobile-btn{display:flex!important}}
+.page-head{padding:36px 0 8px}
+.page-head h1{font-size:clamp(1.6rem,3vw,2.1rem);font-weight:800;letter-spacing:-.02em;background:linear-gradient(135deg,#34d399,#22d3ee 55%,#a78bfa);-webkit-background-clip:text;background-clip:text;color:transparent}
+.page-head p{color:var(--muted);font-size:14px;margin-top:6px}
+.settings-layout{display:grid;grid-template-columns:200px 1fr;gap:24px;padding:24px 0 48px}
+@media(max-width:700px){.settings-layout{grid-template-columns:1fr}.settings-nav{display:flex;flex-wrap:wrap;gap:6px}.settings-nav a{margin-bottom:0!important}}
+.settings-nav a{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:12px;font-size:13.5px;font-weight:500;color:var(--muted);transition:all .15s;margin-bottom:4px}
+.settings-nav a:hover{background:rgba(30,41,59,.8);color:#e2e8f0}
+.settings-nav a.active{background:rgba(16,185,129,.12);color:var(--accent);border:1px solid rgba(16,185,129,.25)}
+.settings-nav a i{width:18px;text-align:center;font-size:13px}
+.settings-panel{display:none}.settings-panel.active{display:block}
+.panel-card{padding:24px;border-radius:16px;margin-bottom:16px}
+.panel-card h2{font-size:16px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.panel-card .desc{font-size:12.5px;color:var(--muted);margin-bottom:20px}
+.setting-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px solid var(--border)}
+.setting-row:last-child{border-bottom:none}
+.setting-info{flex:1;min-width:0}
+.setting-info .label{font-size:14px;font-weight:600;color:#e2e8f0}
+.setting-info .hint{font-size:12px;color:#64748b;margin-top:2px}
+.toggle{position:relative;width:48px;height:28px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.toggle .slider{position:absolute;inset:0;cursor:pointer;background:#334155;border-radius:999px;transition:.25s}
+.toggle .slider::before{content:'';position:absolute;width:22px;height:22px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.25s}
+.toggle input:checked + .slider{background:var(--accent)}
+.toggle input:checked + .slider::before{transform:translateX(20px)}
+.select{padding:9px 12px;border-radius:10px;background:rgba(15,23,42,.9);border:1px solid #334155;color:var(--text);font-size:13px;outline:none;min-width:140px}
+.select:focus{border-color:rgba(16,185,129,.5)}
+.range-wrap{display:flex;align-items:center;gap:12px;min-width:180px}
+.range-wrap input[type=range]{flex:1;accent-color:var(--accent);height:4px}
+.range-wrap .val{font-size:13px;font-weight:700;color:var(--accent);min-width:48px;text-align:right}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.btn-danger{background:rgba(239,68,68,.12);color:var(--red);border:1px solid rgba(239,68,68,.25);padding:10px 16px;border-radius:10px;font-size:13px;font-weight:600}
+.btn-danger:hover{background:rgba(239,68,68,.2)}
+.btn-secondary{background:#1e293b;color:#e2e8f0;border:1px solid var(--border);padding:10px 16px;border-radius:10px;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:8px}
+.btn-secondary:hover{border-color:rgba(16,185,129,.3)}
+.meta-row{display:flex;justify-content:space-between;padding:10px 0;font-size:13px;border-bottom:1px solid var(--border);color:#cbd5e1}
+.meta-row:last-child{border-bottom:none}
+.meta-row span:last-child{color:#94a3b8;font-weight:500;max-width:55%;text-align:right}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:#1e293b;border:1px solid rgba(16,185,129,.3);color:var(--accent);padding:12px 20px;border-radius:12px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:all .3s;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.footer{border-top:1px solid var(--border);padding:28px 0;font-size:12px;color:#64748b;text-align:center}
 </style>
-
 </head>
-
 <body>
 
-<section class="max-w-7xl mx-auto px-6 py-14">
-
-<div class="text-center">
-
-<div class="badge">
-
-⚙️ Nexora Settings
-
-</div>
-
-<h1 class="text-6xl font-black mt-8">
-
-Ayarlar
-
-<span class="gradient">
-
-Merkezi
-
-</span>
-
-</h1>
-
-<p class="text-slate-400 text-xl max-w-3xl mx-auto mt-8 leading-9">
-
-Nexora AI hesabınızı, görünümünüzü, güvenliğinizi,
-bildirimlerinizi ve yatırım deneyiminizi tek bir yerden yönetin.
-
-</p>
-
-</div>
-
-<div class="grid md:grid-cols-2 xl:grid-cols-3 gap-8 mt-16">
-
-<div class="settingCard">
-
-<div class="text-5xl">
-
-👤
-
-</div>
-
-<h2 class="text-2xl font-bold mt-6">
-
-Profil
-
-</h2>
-
-<p class="text-slate-400 mt-4">
-
-Adınız, kullanıcı adınız, profil fotoğrafınız ve kişisel bilgilerinizi yönetin.
-
-</p>
-
-<a href="profile.html"
-class="inline-block mt-6 text-emerald-400 font-bold">
-
-Profili Aç →
-
-</a>
-
-</div>
-
-<div class="settingCard">
-
-<div class="text-5xl">
-
-🌍
-
-</div>
-
-<h2 class="text-2xl font-bold mt-6">
-
-Dil ve Bölge
-
-</h2>
-
-<p class="text-slate-400 mt-4">
-
-Türkçe, English, Português (Brasil), Español ve diğer dilleri seçin.
-
-</p>
-
-<a href="language.html"
-class="inline-block mt-6 text-emerald-400 font-bold">
-
-Dil Ayarları →
-
-</a>
-
-</div>
-
-<div class="settingCard">
-
-<div class="text-5xl">
-
-🎨
-
-</div>
-
-<h2 class="text-2xl font-bold mt-6">
-
-Tema
-
-</h2>
-
-<p class="text-slate-400 mt-4">
-
-Koyu tema, açık tema, sistem teması ve renk seçenekleri.
-
-</p>
-
-<a href="#"
-class="inline-block mt-6 text-emerald-400 font-bold">
-
-Tema Ayarları →
-
-</a>
-
-</div>
-
-<div class="settingCard">
-
-<div class="text-5xl">
-
-🔔
-
-</div>
-
-<h2 class="text-2xl font-bold mt-6">
-
-Bildirimler
-
-</h2>
-
-<p class="text-slate-400 mt-4">
-
-Fiyat alarmları, haberler, temettüler ve halka arz bildirimlerini yönetin.
-
-</p>
-
-<a href="#"
-class="inline-block mt-6 text-emerald-400 font-bold">
-
-Bildirimler →
-
-</a>
-
-</div>
-
-<div class="settingCard">
-
-<div class="text-5xl">
-
-🤖
-
-</div>
-
-<h2 class="text-2xl font-bold mt-6">
-
-Yapay Zekâ
-
-</h2>
-
-<p class="text-slate-400 mt-4">
-
-AI yanıt dili, analiz stili ve kişisel tercihlerinizi belirleyin.
-
-</p>
-
-<a href="#"
-class="inline-block mt-6 text-emerald-400 font-bold">
-
-AI Ayarları →
-
-</a>
-
-</div>
-
-<div class="settingCard">
-
-<div class="text-5xl">
-
-🔒
-
-</div>
-
-<h2 class="text-2xl font-bold mt-6">
-
-Güvenlik
-
-</h2>
-
-<p class="text-slate-400 mt-4">
-
-Şifre değişikliği, iki adımlı doğrulama ve oturum yönetimi.
-
-</p>
-
-<a href="#"
-class="inline-block mt-6 text-emerald-400 font-bold">
-
-Güvenlik →
-
-</a>
-
-</div>
-
-<div class="settingCard">
-
-<div class="text-5xl">
-
-📈
-
-</div>
-
-<h2 class="text-2xl font-bold mt-6">
-
-Yatırım Tercihleri
-
-</h2>
-
-<p class="text-slate-400 mt-4">
-
-Varsayılan borsa, favori sektörler, para birimi ve yatırım tercihlerinizi belirleyin.
-
-</p>
-
-<a href="#"
-class="inline-block mt-6 text-emerald-400 font-bold">
-
-Tercihleri Yönet →
-
-</a>
-
-</div>
-
-<div class="settingCard">
-
-<div class="text-5xl">
-
-📊
-
-</div>
-
-<h2 class="text-2xl font-bold mt-6">
-
-Grafik Ayarları
-
-</h2>
-
-<p class="text-slate-400 mt-4">
-
-Mum grafik tipi, indikatörler, varsayılan zaman aralığı ve görünümü özelleştirin.
-
-</p>
-
-<a href="#"
-class="inline-block mt-6 text-emerald-400 font-bold">
-
-Grafik Ayarları →
-
-</a>
-
-</div>
-
-<div class="settingCard">
-
-<div class="text-5xl">
-
-💳
-
-</div>
-
-<h2 class="text-2xl font-bold mt-6">
-
-Premium
-
-</h2>
-
-<p class="text-slate-400 mt-4">
-
-Premium üyeliğinizi görüntüleyin, yönetin veya yeni avantajları keşfedin.
-
-</p>
-
-<a href="premium.html"
-class="inline-block mt-6 text-emerald-400 font-bold">
-
-Premium'u Yönet →
-
-</a>
-
-</div>
-
-<div class="settingCard">
-
-<div class="text-5xl">
-
-📱
-
-</div>
-
-<h2 class="text-2xl font-bold mt-6">
-
-Cihazlar
-
-</h2>
-
-<p class="text-slate-400 mt-4">
-
-Hesabınıza giriş yapılan cihazları görüntüleyin ve güvenliğinizi yönetin.
-
-</p>
-
-<a href="#"
-class="inline-block mt-6 text-emerald-400 font-bold">
-
-Cihazları Gör →
-
-</a>
-
-</div>
-
-<div class="settingCard">
-
-<div class="text-5xl">
-
-📧
-
-</div>
-
-<h2 class="text-2xl font-bold mt-6">
-
-Hesap ve E-posta
-
-</h2>
-
-<p class="text-slate-400 mt-4">
-
-E-posta adresinizi değiştirin, doğrulama durumunu kontrol edin ve hesap bilgilerinizi güncelleyin.
-
-</p>
-
-<a href="#"
-class="inline-block mt-6 text-emerald-400 font-bold">
-
-Hesabı Yönet →
-
-</a>
-
-</div>
-
-<div class="settingCard">
-
-<div class="text-5xl">
-
-🗑️
-
-</div>
-
-<h2 class="text-2xl font-bold mt-6">
-
-Hesap Yönetimi
-
-</h2>
-
-<p class="text-slate-400 mt-4">
-
-Verilerinizi dışa aktarın, hesabınızı geçici olarak dondurun veya kalıcı olarak silin.
-
-</p>
-
-<a href="#"
-class="inline-block mt-6 text-red-400 font-bold">
-
-Hesap İşlemleri →
-
-</a>
-
-</div>
-
-</div>
-
-</section>
-
-<section class="mt-14">
-
-<div class="glass p-10">
-
-<div class="badge">
-
-⚡ Hızlı Ayarlar
-
-</div>
-
-<h2 class="text-4xl font-black mt-8">
-
-Tek Dokunuşla Kontrol
-
-</h2>
-
-<p class="text-slate-400 mt-5 leading-8">
-
-En sık kullanılan ayarlarınızı buradan hızlıca değiştirebilirsiniz.
-
-</p>
-
-<div class="grid lg:grid-cols-2 gap-8 mt-12">
-
-<div class="settingCard">
-
-<div class="flex justify-between items-center">
-
-<div>
-
-<h3 class="text-2xl font-bold">
-
-🌙 Karanlık Mod
-
-</h3>
-
-<p class="text-slate-400 mt-3">
-
-Nexora görünümünü değiştir.
-
-</p>
-
-</div>
-
-<label class="relative inline-flex items-center cursor-pointer">
-
-<input type="checkbox"
-
-class="sr-only"
-
-checked>
-
-<div class="w-14 h-8 bg-slate-700 rounded-full"></div>
-
-</label>
-
-</div>
-
-</div>
-
-<div class="settingCard">
-
-<div class="flex justify-between items-center">
-
-<div>
-
-<h3 class="text-2xl font-bold">
-
-🔔 Bildirimler
-
-</h3>
-
-<p class="text-slate-400 mt-3">
-
-Anlık fiyat bildirimleri.
-
-</p>
-
-</div>
-
-<label class="relative inline-flex items-center cursor-pointer">
-
-<input type="checkbox"
-
-class="sr-only"
-
-checked>
-
-<div class="w-14 h-8 bg-slate-700 rounded-full"></div>
-
-</label>
-
-</div>
-
-</div>
-
-<div class="settingCard">
-
-<div class="flex justify-between items-center">
-
-<div>
-
-<h3 class="text-2xl font-bold">
-
-🤖 AI Önerileri
-
-</h3>
-
-<p class="text-slate-400 mt-3">
-
-AI yatırım önerileri ve analizleri.
-
-</p>
-
-</div>
-
-<label class="relative inline-flex items-center cursor-pointer">
-
-<input type="checkbox"
-
-class="sr-only"
-
-checked>
-
-<div class="w-14 h-8 bg-slate-700 rounded-full"></div>
-
-</label>
-
-</div>
-
-</div>
-
-<div class="settingCard">
-
-<div class="flex justify-between items-center">
-
-<div>
-
-<h3 class="text-2xl font-bold">
-
-📈 Canlı Veri
-
-</h3>
-
-<p class="text-slate-400 mt-3">
-
-Gerçek zamanlı piyasa verileri.
-
-</p>
-
-</div>
-
-<label class="relative inline-flex items-center cursor-pointer">
-
-<input type="checkbox"
-
-class="sr-only"
-
-checked>
-
-<div class="w-14 h-8 bg-slate-700 rounded-full"></div>
-
-</label>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-<section class="mt-14">
-
-<div class="glass p-10">
-
-<div class="badge">
-
-👑 Premium
-
-</div>
-
-<h2 class="text-4xl font-black mt-8">
-
-Premium Durumu
-
-</h2>
-
-<p class="text-slate-400 mt-5">
-
-Premium üyeliğinizi buradan yönetebilirsiniz.
-
-</p>
-
-<div class="grid md:grid-cols-3 gap-6 mt-10">
-
-<div class="settingCard">
-
-<div class="text-5xl">
-
-🚀
-
-</div>
-
-<h3 class="text-xl font-bold mt-5">
-
-Mevcut Plan
-
-</h3>
-
-<p class="text-slate-400 mt-4">
-
-Free Plan
-
-</p>
-
-</div>
-
-<div class="settingCard">
-
-<div class="text-5xl">
-
-⭐
-
-</div>
-
-<h3 class="text-xl font-bold mt-5">
-
-Yükselt
-
-</h3>
-
-<p class="text-slate-400 mt-4">
-
-Premium 4.99 USD
-
-</p>
-
-</div>
-
-<div class="settingCard">
-
-<div class="text-5xl">
-
-🎁
-
-</div>
-
-<h3 class="text-xl font-bold mt-5">
-
-Avantajlar
-
-</h3>
-
-<p class="text-slate-400 mt-4">
-
-Sınırsız AI • Reklamsız • Profesyonel Analiz
-
-</p>
-
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-<section class="mt-14">
-
-<div class="glass p-10">
-
-<div class="badge">
-
-🧪 Nexora Labs
-
-</div>
-
-<h2 class="text-4xl font-black mt-8">
-
-Deneysel Özellikler
-
-</h2>
-
-<p class="text-slate-400 mt-5 leading-8">
-
-Henüz geliştirme aşamasında olan özellikleri herkesten önce deneyin.
-Bu özellikler zamanla değişebilir veya kaldırılabilir.
-
-</p>
-
-<div class="grid lg:grid-cols-2 gap-8 mt-12">
-
-<div class="settingCard">
-
-<div class="flex justify-between items-center">
-
-<div>
-
-<h3 class="text-2xl font-bold">
-
-🤖 AI Vision
-
-</h3>
-
-<p class="text-slate-400 mt-3">
-
-Grafik ve ekran görüntülerini yorumlayan yeni yapay zekâ.
-
-</p>
-
-</div>
-
-<span class="badge">
-
-BETA
-
-</span>
-
-</div>
-
-</div>
-
-<div class="settingCard">
-
-<div class="flex justify-between items-center">
-
-<div>
-
-<h3 class="text-2xl font-bold">
-
-🎤 Sesli AI
-
-</h3>
-
-<p class="text-slate-400 mt-3">
-
-Nexora ile sesli sohbet edin.
-
-</p>
-
-</div>
-
-<span class="badge">
-
-Yakında
-
-</span>
-
-</div>
-
-</div>
-
-<div class="settingCard">
-
-<div class="flex justify-between items-center">
-
-<div>
-
-<h3 class="text-2xl font-bold">
-
-📊 Yeni Grafik Motoru
-
-</h3>
-
-<p class="text-slate-400 mt-3">
-
-TradingView benzeri gelişmiş grafik sistemi.
-
-</p>
-
-</div>
-
-<span class="badge">
-
-Yakında
-
-</span>
-
-</div>
-
-</div>
-
-<div class="settingCard">
-
-<div class="flex justify-between items-center">
-
-<div>
-
-<h3 class="text-2xl font-bold">
-
-🌍 Küresel Haber Merkezi
-
-</h3>
-
-<p class="text-slate-400 mt-3">
-
-Ülkeye göre filtrelenmiş finans haberleri.
-
-</p>
-
-</div>
-
-<span class="badge">
-
-Geliştiriliyor
-
-</span>
-
-</div>
-
-</div>
-
-<div class="settingCard">
-
-<div class="flex justify-between items-center">
-
-<div>
-
-<h3 class="text-2xl font-bold">
-
-📈 Akıllı Portföy
-
-</h3>
-
-<p class="text-slate-400 mt-3">
-
-AI destekli portföy optimizasyonu.
-
-</p>
-
-</div>
-
-<span class="badge">
-
-Premium
-
-</span>
-
-</div>
-
-</div>
-
-<div class="settingCard">
-
-<div class="flex justify-between items-center">
-
-<div>
-
-<h3 class="text-2xl font-bold">
-
-🛰️ Canlı Borsa Merkezi
-
-</h3>
-
-<p class="text-slate-400 mt-3">
-
-Gerçek zamanlı dünya borsaları ve gelişmiş veri akışı.
-
-</p>
-
-</div>
-
-<span class="badge">
-
-Yakında
-
-</span>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-<section class="mt-14">
-
-<div class="glass p-10">
-
-<div class="badge">
-
-📢 Nexora Güncellemeleri
-
-</div>
-
-<h2 class="text-4xl font-black mt-8">
-
-Güncelleme Merkezi
-
-</h2>
-
-<p class="text-slate-400 mt-5 leading-8">
-
-Nexora AI'a eklenen yeni özellikleri, hata düzeltmelerini ve bakım duyurularını buradan takip edebilirsiniz.
-
-</p>
-
-<div class="space-y-6 mt-12">
-
-<div class="settingCard">
-
-<div class="flex justify-between items-center">
-
-<h3 class="text-2xl font-bold">
-
-🚀 Sürüm 1.0.0
-
-</h3>
-
-<span class="badge">
-
-En Yeni
-
-</span>
-
-</div>
-
-<ul class="mt-6 space-y-3 text-slate-300">
-
-<li>✅ Yeni Ayarlar Merkezi eklendi.</li>
-
-<li>✅ Çoklu Dil Sistemi geliştirildi.</li>
-
-<li>✅ Premium sayfası yenilendi.</li>
-
-<li>✅ Güvenlik altyapısı güçlendirildi.</li>
-
-<li>✅ Yapay zekâ ayarları geliştirildi.</li>
-
-</ul>
-
-</div>
-
-<div class="settingCard">
-
-<div class="flex justify-between items-center">
-
-<h3 class="text-2xl font-bold">
-
-🛠️ Planlanan Özellikler
-
-</h3>
-
-<span class="badge">
-
-Yakında
-
-</span>
-
-</div>
-
-<ul class="mt-6 space-y-3 text-slate-300">
-
-<li>📈 Gerçek zamanlı grafik sistemi</li>
-
-<li>🌎 Dünya borsaları</li>
-
-<li>🤖 Sesli Nexora AI</li>
-
-<li>📊 Akıllı portföy analizi</li>
-
-<li>💹 Temettü ve halka arz takvimi</li>
-
-<li>📱 Mobil uygulama</li>
-
-<li>⌚ Akıllı saat desteği</li>
-
-</ul>
-
-</div>
-
-<div class="settingCard">
-
-<div class="flex justify-between items-center">
-
-<h3 class="text-2xl font-bold">
-
-📡 Sistem Durumu
-
-</h3>
-
-<span class="badge">
-
-Çevrimiçi
-
-</span>
-
-</div>
-
-<div class="grid md:grid-cols-2 gap-6 mt-8">
-
-<div>
-
-<p class="text-slate-400">
-
-🌐 Sunucular
-
-</p>
-
-<p class="text-emerald-400 font-bold">
-
-Normal Çalışıyor
-
-</p>
-
-</div>
-
-<div>
-
-<p class="text-slate-400">
-
-🤖 AI Servisi
-
-</p>
-
-<p class="text-emerald-400 font-bold">
-
-Aktif
-
-</p>
-
-</div>
-
-<div>
-
-<p class="text-slate-400">
-
-📈 Piyasa Verileri
-
-</p>
-
-<p class="text-emerald-400 font-bold">
-
-Canlı
-
-</p>
-
-</div>
-
-<div>
-
-<p class="text-slate-400">
-
-🔒 Güvenlik
-
-</p>
-
-<p class="text-emerald-400 font-bold">
-
-Koruma Aktif
-
-</p>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-<section class="mt-14">
-
-<div class="glass p-10">
-
-<div class="badge">
-
-🛡️ Gizlilik ve Veri
-
-</div>
-
-<h2 class="text-4xl font-black mt-8">
-
-Verileriniz Güvende
-
-</h2>
-
-<p class="text-slate-400 mt-5 leading-8">
-
-Nexora AI, gizliliğinizi ön planda tutar. Hesabınız ve verileriniz üzerinde tam kontrole sahip olursunuz.
-
-</p>
-
-<div class="grid lg:grid-cols-2 gap-8 mt-12">
-
-<div class="settingCard">
-
-<h3 class="text-2xl font-bold">
-
-📥 Verilerimi İndir
-
-</h3>
-
-<p class="text-slate-400 mt-4">
-
-Profiliniz, portföyünüz, favorileriniz ve ayarlarınızı tek dosya halinde dışa aktarın.
-
-</p>
-
-<button class="mt-6 w-full bg-slate-800 hover:bg-slate-700 rounded-xl py-4 transition">
-
-Verileri İndir
-
-</button>
-
-</div>
-
-<div class="settingCard">
-
-<h3 class="text-2xl font-bold">
-
-🗑️ Hesabı Sil
-
-</h3>
-
-<p class="text-slate-400 mt-4">
-
-Hesabınızı kalıcı olarak silebilir veya geçici olarak dondurabilirsiniz.
-
-</p>
-
-<button class="mt-6 w-full bg-red-600 hover:bg-red-500 rounded-xl py-4 transition font-bold">
-
-Hesabı Yönet
-
-</button>
-
-</div>
-
-<div class="settingCard">
-
-<h3 class="text-2xl font-bold">
-
-🔑 Giriş Geçmişi
-
-</h3>
-
-<p class="text-slate-400 mt-4">
-
-Hesabınıza giriş yapılan cihazları ve IP geçmişini görüntüleyin.
-
-</p>
-
-<button class="mt-6 w-full bg-slate-800 hover:bg-slate-700 rounded-xl py-4 transition">
-
-Geçmişi Gör
-
-</button>
-
-</div>
-
-<div class="settingCard">
-
-<h3 class="text-2xl font-bold">
-
-📧 E-posta Doğrulama
-
-</h3>
-
-<p class="text-slate-400 mt-4">
-
-E-posta adresinizin doğrulama durumunu kontrol edin veya yeniden doğrulama isteyin.
-
-</p>
-
-<button class="mt-6 w-full bg-emerald-500 hover:bg-emerald-400 text-black rounded-xl py-4 font-bold transition">
-
-Doğrulama Gönder
-
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-<section class="mt-14">
-
-<div class="glass p-10">
-
-<div class="badge">
-
-⚡ Gelişmiş Ayarlar
-
-</div>
-
-<h2 class="text-4xl font-black mt-8">
-
-Performans ve Geliştirici
-
-</h2>
-
-<p class="text-slate-400 mt-5 leading-8">
-
-Nexora AI'ın performansını, veri kullanımını ve deneysel geliştirici özelliklerini buradan yönetebilirsiniz.
-
-</p>
-
-<div class="grid lg:grid-cols-2 gap-8 mt-12">
-
-<div class="settingCard">
-
-<div class="flex justify-between items-center">
-
-<div>
-
-<h3 class="text-2xl font-bold">
-
-🚀 Performans Modu
-
-</h3>
-
-<p class="text-slate-400 mt-3">
-
-Daha hızlı yükleme ve daha düşük kaynak kullanımı.
-
-</p>
-
-</div>
-
-<label class="relative inline-flex items-center cursor-pointer">
-
-<input type="checkbox" class="sr-only" checked>
-
-<div class="w-14 h-8 bg-slate-700 rounded-full"></div>
-
-</label>
-
-</div>
-
-</div>
-
-<div class="settingCard">
-
-<div class="flex justify-between items-center">
-
-<div>
-
-<h3 class="text-2xl font-bold">
-
-📡 Arka Plan Senkronizasyonu
-
-</h3>
-
-<p class="text-slate-400 mt-3">
-
-Verileri uygulama açık değilken de güncelle.
-
-</p>
-
-</div>
-
-<label class="relative inline-flex items-center cursor-pointer">
-
-<input type="checkbox" class="sr-only" checked>
-
-<div class="w-14 h-8 bg-slate-700 rounded-full"></div>
-
-</label>
-
-</div>
-
-</div>
-
-<div class="settingCard">
-
-<div class="flex justify-between items-center">
-
-<div>
-
-<h3 class="text-2xl font-bold">
-
-🧪 Geliştirici Modu
-
-</h3>
-
-<p class="text-slate-400 mt-3">
-
-Beta özelliklerini ve test araçlarını etkinleştir.
-
-</p>
-
-</div>
-
-<label class="relative inline-flex items-center cursor-pointer">
-
-<input type="checkbox" class="sr-only">
-
-<div class="w-14 h-8 bg-slate-700 rounded-full"></div>
-
-</label>
-
-</div>
-
-</div>
-
-<div class="settingCard">
-
-<div class="flex justify-between items-center">
-
-<div>
-
-<h3 class="text-2xl font-bold">
-
-📊 Tanılama Verileri
-
-</h3>
-
-<p class="text-slate-400 mt-3">
-
-Anonim kullanım verilerini paylaşarak Nexora'nın gelişmesine katkı sağlayın.
-
-</p>
-
-</div>
-
-<label class="relative inline-flex items-center cursor-pointer">
-
-<input type="checkbox" class="sr-only">
-
-<div class="w-14 h-8 bg-slate-700 rounded-full"></div>
-
-</label>
-
-</div>
-
-</div>
-
-</div>
-
-<div class="grid md:grid-cols-3 gap-6 mt-12">
-
-<button class="bg-emerald-500 hover:bg-emerald-400 text-black rounded-2xl py-5 font-black transition">
-
-💾 Tüm Ayarları Kaydet
-
-</button>
-
-<button class="bg-slate-800 hover:bg-slate-700 rounded-2xl py-5 transition">
-
-🔄 Varsayılanlara Dön
-
-</button>
-
-<button class="bg-red-600 hover:bg-red-500 rounded-2xl py-5 transition font-bold">
-
-🗑️ Tüm Ayarları Sıfırla
-
-</button>
-
-</div>
-
-</div>
-
-</section>
-
-<footer class="mt-20 border-t border-slate-800">
-
-<div class="max-w-7xl mx-auto px-6 py-12">
-
-<div class="flex flex-col lg:flex-row justify-between items-center gap-8">
-
-<div>
-
-<h2 class="text-3xl font-black">
-
-NEXORA
-
-<span class="gradient">
-
-AI
-
-</span>
-
-</h2>
-
-<p class="text-slate-500 mt-3">
-
-Settings Center • Version 1.0.0
-
-</p>
-
-</div>
-
-<div class="flex flex-wrap gap-6 text-slate-400">
-
-<a href="index.html" class="hover:text-emerald-400 transition">
-
-Ana Sayfa
-
-</a>
-
-<a href="profile.html" class="hover:text-emerald-400 transition">
-
-Profil
-
-</a>
-
-<a href="language.html" class="hover:text-emerald-400 transition">
-
-Dil
-
-</a>
-
-<a href="premium.html" class="hover:text-emerald-400 transition">
-
-Premium
-
-</a>
-
-</div>
-
-</div>
-
-<div class="border-t border-slate-800 mt-10 pt-8 text-center text-slate-500">
-
-© 2026 Nexora AI • Tüm Hakları Saklıdır
-
-</div>
-
-</div>
-
-</footer>
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="logo"><span>📈</span> BIST <span class="accent">AI</span> Tracker</a>
+    <div class="nav-links">
+      <a href="index.html">Ana Sayfa</a>
+      <a href="stock.html">Küresel Borsalar</a>
+      <a href="portfolio.html">Portföy</a>
+      <a href="ai-analiz.html">AI Merkezi</a>
+      <a href="premium.html">Premium</a>
+      <a href="settings.html" class="active">Ayarlar</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <a href="premium.html" class="nav-cta"><i class="fas fa-crown" style="font-size:11px"></i> Premium</a>
+      <button class="mobile-btn" id="mobileBtn" aria-label="Menü"><i class="fas fa-bars"></i></button>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html"><i class="fas fa-home" style="width:20px;text-align:center"></i> Ana Sayfa</a>
+    <a href="stock.html"><i class="fas fa-globe" style="width:20px;text-align:center"></i> Küresel Borsalar</a>
+    <a href="portfolio.html"><i class="fas fa-briefcase" style="width:20px;text-align:center"></i> Portföy</a>
+    <a href="ai-analiz.html"><i class="fas fa-robot" style="width:20px;text-align:center"></i> AI Merkezi</a>
+    <a href="premium.html"><i class="fas fa-crown" style="width:20px;text-align:center"></i> Premium</a>
+    <a href="settings.html" class="active"><i class="fas fa-cog" style="width:20px;text-align:center"></i> Ayarlar</a>
+    <a href="about.html"><i class="fas fa-rocket" style="width:20px;text-align:center"></i> Uygulama</a>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="page-head">
+    <h1>⚙️ Ayarlar</h1>
+    <p>Tema, veri yenileme, bildirimler, önbellek ve teknik tercihler</p>
+  </div>
+
+  <div class="settings-layout">
+    <nav class="settings-nav">
+      <a href="#genel" class="active" data-panel="genel"><i class="fas fa-sliders-h"></i> Genel</a>
+      <a href="#veri" data-panel="veri"><i class="fas fa-database"></i> Veri & Cache</a>
+      <a href="#gorunum" data-panel="gorunum"><i class="fas fa-palette"></i> Görünüm</a>
+      <a href="#bildirim" data-panel="bildirim"><i class="fas fa-bell"></i> Bildirimler</a>
+      <a href="#ai" data-panel="ai"><i class="fas fa-robot"></i> Nexora AI</a>
+      <a href="#gelismis" data-panel="gelismis"><i class="fas fa-cog"></i> Gelişmiş</a>
+    </nav>
+
+    <div>
+      <!-- GENEL -->
+      <div class="settings-panel active" id="panel-genel">
+        <div class="panel-card glass">
+          <h2><i class="fas fa-sliders-h" style="color:var(--accent)"></i> Genel Ayarlar</h2>
+          <p class="desc">Dil, varsayılan borsa ve temel tercihler</p>
+          <div class="setting-row">
+            <div class="setting-info"><div class="label">Dil</div><div class="hint">Arayüz dili</div></div>
+            <select class="select" id="setLang"><option value="tr">Türkçe</option><option value="en">English</option></select>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info"><div class="label">Varsayılan Borsa</div><div class="hint">Ana sayfa ve stock.html açılış borsası</div></div>
+            <select class="select" id="setDefaultMarket">
+              <option value="BIST">BIST (Türkiye)</option>
+              <option value="NASDAQ">NASDAQ</option>
+              <option value="NYSE">NYSE</option>
+              <option value="DAX">DAX (Almanya)</option>
+              <option value="LSE">LSE (İngiltere)</option>
+              <option value="TSE">TSE (Japonya)</option>
+              <option value="HKEX">HKEX</option>
+              <option value="SSE">SSE (Çin)</option>
+              <option value="ASX">ASX</option>
+              <option value="TSX">TSX (Kanada)</option>
+              <option value="OTCQB">OTCQB</option>
+            </select>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info"><div class="label">Para Birimi Gösterimi</div><div class="hint">Fiyatların yanında gösterilecek birim</div></div>
+            <select class="select" id="setCurrency">
+              <option value="auto">Otomatik (borsaya göre)</option>
+              <option value="TRY">TRY (₺)</option>
+              <option value="USD">USD ($)</option>
+              <option value="EUR">EUR (€)</option>
+            </select>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info"><div class="label">Aktif Plan</div><div class="hint">Premium abonelik durumu</div></div>
+            <span id="planDisplay" style="font-weight:700;color:var(--amber)">Ücretsiz</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- VERİ -->
+      <div class="settings-panel" id="panel-veri">
+        <div class="panel-card glass">
+          <h2><i class="fas fa-database" style="color:var(--cyan)"></i> Veri & Önbellek</h2>
+          <p class="desc">Yenileme aralığı, cache ve API davranışı</p>
+          <div class="setting-row">
+            <div class="setting-info"><div class="label">Otomatik Yenileme</div><div class="hint">Verileri periyodik olarak güncelle</div></div>
+            <label class="toggle"><input type="checkbox" id="setAutoRefresh" checked><span class="slider"></span></label>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info"><div class="label">Yenileme Aralığı</div><div class="hint">Kaç saniyede bir yeni veri çekilsin</div></div>
+            <div class="range-wrap">
+              <input type="range" id="setRefreshInterval" min="15" max="300" step="15" value="60">
+              <span class="val" id="refreshVal">60 sn</span>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info"><div class="label">Önbellek (Cache)</div><div class="hint">localStorage ile gereksiz istekleri azalt</div></div>
+            <label class="toggle"><input type="checkbox" id="setCacheEnabled" checked><span class="slider"></span></label>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info"><div class="label">Önbellek Süresi</div><div class="hint">Cache geçerli kalma süresi</div></div>
+            <div class="range-wrap">
+              <input type="range" id="setCacheTTL" min="15" max="300" step="15" value="60">
+              <span class="val" id="cacheTTLVal">60 sn</span>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info"><div class="label">CORS Proxy Kullan</div><div class="hint">Yahoo engellenirse alternatif proxy dene</div></div>
+            <label class="toggle"><input type="checkbox" id="setUseProxy" checked><span class="slider"></span></label>
+          </div>
+          <div class="btn-row">
+            <button class="btn-secondary" id="btnClearCache"><i class="fas fa-broom"></i> Önbelleği Temizle</button>
+            <button class="btn-secondary" id="btnForceRefresh"><i class="fas fa-sync"></i> Zorla Yenile</button>
+          </div>
+        </div>
+      </div>
+
+            <!-- GÖRÜNÜM -->
+      <div class="settings-panel" id="panel-gorunum">
+        <div class="panel-card glass">
+          <h2><i class="fas fa-palette" style="color:var(--violet)"></i> Görünüm</h2>
+          <p class="desc">Tema, animasyon ve arayüz tercihleri</p>
+          <div class="setting-row">
+            <div class="setting-info"><div class="label">Koyu Tema</div><div class="hint">Finans platformları için önerilen görünüm</div></div>
+            <label class="toggle"><input type="checkbox" id="setDarkMode" checked><span class="slider"></span></label>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info"><div class="label">Arka Plan Animasyonu</div><div class="hint">TradingView tarzı mum grafiği</div></div>
+            <label class="toggle"><input type="checkbox" id="setBgAnim" checked><span class="slider"></span></label>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info"><div class="label">Animasyon Yoğunluğu</div><div class="hint">Canvas opacity</div></div>
+            <div class="range-wrap">
+              <input type="range" id="setAnimOpacity" min="5" max="50" step="5" value="28">
+              <span class="val" id="animOpacityVal">28%</span>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info"><div class="label">Compact Kartlar</div><div class="hint">Hisse kartlarını daha sıkışık göster</div></div>
+            <label class="toggle"><input type="checkbox" id="setCompactCards"><span class="slider"></span></label>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info"><div class="label">Ticker Bandı</div><div class="hint">Üstte kayan fiyat şeridi</div></div>
+            <label class="toggle"><input type="checkbox" id="setShowTicker" checked><span class="slider"></span></label>
+          </div>
+        </div>
+      </div>
+
+      <!-- BİLDİRİM -->
+      <div class="settings-panel" id="panel-bildirim">
+        <div class="panel-card glass">
+          <h2><i class="fas fa-bell" style="color:var(--amber)"></i> Bildirimler</h2>
+          <p class="desc">Fiyat alarmı ve tarayıcı bildirimleri</p>
+          <div class="setting-row">
+            <div class="setting-info"><div class="label">Bildirimlere İzin Ver</div><div class="hint">Fiyat alarmı için tarayıcı izni</div></div>
+            <button class="btn-secondary" id="btnRequestNotif">İzin İste</button>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info"><div class="label">Fiyat Alarmları</div><div class="hint">Hedef fiyata ulaşınca bildirim</div></div>
+            <label class="toggle"><input type="checkbox" id="setAlarmsEnabled" checked><span class="slider"></span></label>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info"><div class="label">Sesli Uyarı</div><div class="hint">Alarm tetiklenince bip sesi</div></div>
+            <label class="toggle"><input type="checkbox" id="setAlarmSound"><span class="slider"></span></label>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI — limit sabit, değiştirilemez -->
+      <div class="settings-panel" id="panel-ai">
+        <div class="panel-card glass">
+          <h2><i class="fas fa-robot" style="color:var(--violet)"></i> Nexora AI</h2>
+          <p class="desc">Limitler planınıza göre sabittir; değiştirilemez</p>
+          <div class="setting-row">
+            <div class="setting-info"><div class="label">Plan Limiti</div><div class="hint">Ücretsiz: 3/gün · Pro & Elite: sınırsız</div></div>
+            <span id="aiLimitDisplay" style="font-weight:700;color:var(--violet)">3 / gün</span>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info"><div class="label">Bugün Kullanılan</div><div class="hint">Günlük AI analiz hakkı</div></div>
+            <span id="usedQuestionsDisplay" style="font-weight:700;color:var(--accent)">0</span>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info"><div class="label">Kalan Hak</div><div class="hint">Bugün kalan analiz sayısı</div></div>
+            <span id="remainQuestionsDisplay" style="font-weight:700;color:var(--cyan)">3</span>
+          </div>
+          <div class="btn-row">
+            <a href="premium.html" class="btn-secondary"><i class="fas fa-crown" style="color:var(--amber)"></i> Sınırsız için Premium</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- GELİŞMİŞ -->
+      <div class="settings-panel" id="panel-gelismis">
+        <div class="panel-card glass">
+          <h2><i class="fas fa-cog" style="color:var(--muted)"></i> Gelişmiş</h2>
+          <p class="desc">Hata ayıklama ve veri yönetimi</p>
+          <div class="setting-row">
+            <div class="setting-info"><div class="label">Debug Modu</div><div class="hint">Konsola detaylı log yaz</div></div>
+            <label class="toggle"><input type="checkbox" id="setDebug"><span class="slider"></span></label>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info"><div class="label">Hareketi Azalt</div><div class="hint">Düşük cihazlarda canvas’ı kapat</div></div>
+            <label class="toggle"><input type="checkbox" id="setReduceMotion"><span class="slider"></span></label>
+          </div>
+          <div class="btn-row">
+            <button class="btn-secondary" id="btnExport"><i class="fas fa-download"></i> Ayarları Dışa Aktar</button>
+            <button class="btn-secondary" id="btnImport"><i class="fas fa-upload"></i> Ayarları İçe Aktar</button>
+            <button class="btn-danger" id="btnResetAll"><i class="fas fa-trash"></i> Tüm Verileri Sıfırla</button>
+          </div>
+        </div>
+        <div class="panel-card glass">
+          <h2><i class="fas fa-info-circle" style="color:var(--cyan)"></i> Sistem Bilgisi</h2>
+          <p class="desc">Uygulama ve tarayıcı bilgileri</p>
+          <div class="meta-row"><span>Sürüm</span><span>Nexora 4.4 · API 3.1</span></div>
+          <div class="meta-row"><span>Depolama</span><span id="storageInfo">—</span></div>
+          <div class="meta-row"><span>User Agent</span><span id="uaInfo" style="font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">—</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer"><div class="container">© 2026 BIST AI Tracker · Nexora AI</div></footer>
+<div class="toast" id="toast">Ayarlar kaydedildi</div>
 
 <script>
+var Store={
+  get:function(k,fb){try{if(typeof localStorage==='undefined')return fb;var v=localStorage.getItem(k);return v===null?fb:v}catch(e){return fb}},
+  set:function(k,v){try{if(typeof localStorage!=='undefined')localStorage.setItem(k,v)}catch(e){}},
+  getJSON:function(k,fb){try{var v=this.get(k,null);return v?JSON.parse(v):fb}catch(e){return fb}},
+  setJSON:function(k,v){try{this.set(k,JSON.stringify(v))}catch(e){}}
+};
+var DEFAULTS={
+  lang:'tr',defaultMarket:'BIST',currency:'auto',
+  autoRefresh:true,refreshInterval:60,cacheEnabled:true,cacheTTL:60,useProxy:true,
+  darkMode:true,bgAnim:true,animOpacity:28,compactCards:false,showTicker:true,
+  alarmsEnabled:true,alarmSound:false,debug:false,reduceMotion:false
+};
+function loadSettings(){return Object.assign({},DEFAULTS,Store.getJSON('nexora_settings',{}))}
+function saveSettings(s){Store.setJSON('nexora_settings',s);showToast('Ayarlar kaydedildi')}
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2200)}
 
-const switches=document.querySelectorAll('input[type="checkbox"]');
-
-switches.forEach((item,index)=>{
-
-const key="switch_"+index;
-
-const saved=localStorage.getItem(key);
-
-if(saved==="true") item.checked=true;
-
-if(saved==="false") item.checked=false;
-
-item.addEventListener("change",()=>{
-
-localStorage.setItem(key,item.checked);
-
-});
-
-});
-
-const selects=document.querySelectorAll("select");
-
-selects.forEach((select,index)=>{
-
-const key="select_"+index;
-
-const saved=localStorage.getItem(key);
-
-if(saved){
-
-select.value=saved;
-
+function applyToUI(s){
+  document.getElementById('setLang').value=s.lang;
+  document.getElementById('setDefaultMarket').value=s.defaultMarket;
+  document.getElementById('setCurrency').value=s.currency;
+  document.getElementById('setAutoRefresh').checked=s.autoRefresh;
+  document.getElementById('setRefreshInterval').value=s.refreshInterval;
+  document.getElementById('refreshVal').textContent=s.refreshInterval+' sn';
+  document.getElementById('setCacheEnabled').checked=s.cacheEnabled;
+  document.getElementById('setCacheTTL').value=s.cacheTTL;
+  document.getElementById('cacheTTLVal').textContent=s.cacheTTL+' sn';
+  document.getElementById('setUseProxy').checked=s.useProxy;
+  document.getElementById('setDarkMode').checked=s.darkMode;
+  document.getElementById('setBgAnim').checked=s.bgAnim;
+  document.getElementById('setAnimOpacity').value=s.animOpacity;
+  document.getElementById('animOpacityVal').textContent=s.animOpacity+'%';
+  document.getElementById('setCompactCards').checked=s.compactCards;
+  document.getElementById('setShowTicker').checked=s.showTicker;
+  document.getElementById('setAlarmsEnabled').checked=s.alarmsEnabled;
+  document.getElementById('setAlarmSound').checked=s.alarmSound;
+  document.getElementById('setDebug').checked=s.debug;
+  document.getElementById('setReduceMotion').checked=s.reduceMotion;
+  var used=parseInt(Store.get('nexoraUsed','0'),10)||0;
+  var plan=Store.get('nexora_plan','free');
+  var isPrem=plan==='pro'||plan==='elite';
+  document.getElementById('usedQuestionsDisplay').textContent=used;
+  document.getElementById('aiLimitDisplay').textContent=isPrem?'Sınırsız':'3 / gün';
+  document.getElementById('remainQuestionsDisplay').textContent=isPrem?'∞':Math.max(0,3-used);
+  document.getElementById('planDisplay').textContent=plan==='pro'?'Pro ($5)':plan==='elite'?'Elite ($12)':'Ücretsiz';
+  document.getElementById('uaInfo').textContent=navigator.userAgent;
+  try{
+    var bytes=0;
+    for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);bytes+=(localStorage.getItem(k)||'').length}
+    document.getElementById('storageInfo').textContent=(bytes/1024).toFixed(1)+' KB';
+  }catch(e){document.getElementById('storageInfo').textContent='Erişilemiyor'}
 }
 
-select.addEventListener("change",()=>{
+function readFromUI(){
+  return{
+    lang:document.getElementById('setLang').value,
+    defaultMarket:document.getElementById('setDefaultMarket').value,
+    currency:document.getElementById('setCurrency').value,
+    autoRefresh:document.getElementById('setAutoRefresh').checked,
+    refreshInterval:parseInt(document.getElementById('setRefreshInterval').value,10),
+    cacheEnabled:document.getElementById('setCacheEnabled').checked,
+    cacheTTL:parseInt(document.getElementById('setCacheTTL').value,10),
+    useProxy:document.getElementById('setUseProxy').checked,
+    darkMode:document.getElementById('setDarkMode').checked,
+    bgAnim:document.getElementById('setBgAnim').checked,
+    animOpacity:parseInt(document.getElementById('setAnimOpacity').value,10),
+    compactCards:document.getElementById('setCompactCards').checked,
+    showTicker:document.getElementById('setShowTicker').checked,
+    alarmsEnabled:document.getElementById('setAlarmsEnabled').checked,
+    alarmSound:document.getElementById('setAlarmSound').checked,
+    debug:document.getElementById('setDebug').checked,
+    reduceMotion:document.getElementById('setReduceMotion').checked
+  };
+}
 
-localStorage.setItem(key,select.value);
+function bindEvents(){
+  document.querySelectorAll('.settings-nav a').forEach(function(a){
+    a.addEventListener('click',function(e){
+      e.preventDefault();
+      document.querySelectorAll('.settings-nav a').forEach(function(x){x.classList.remove('active')});
+      document.querySelectorAll('.settings-panel').forEach(function(x){x.classList.remove('active')});
+      a.classList.add('active');
+      document.getElementById('panel-'+a.getAttribute('data-panel')).classList.add('active');
+    });
+  });
+  ['setLang','setDefaultMarket','setCurrency','setAutoRefresh','setCacheEnabled','setUseProxy',
+   'setDarkMode','setBgAnim','setCompactCards','setShowTicker','setAlarmsEnabled','setAlarmSound',
+   'setDebug','setReduceMotion'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el) el.addEventListener('change',function(){saveSettings(readFromUI())});
+  });
+  document.getElementById('setRefreshInterval').addEventListener('input',function(){document.getElementById('refreshVal').textContent=this.value+' sn'});
+  document.getElementById('setRefreshInterval').addEventListener('change',function(){saveSettings(readFromUI())});
+  document.getElementById('setCacheTTL').addEventListener('input',function(){document.getElementById('cacheTTLVal').textContent=this.value+' sn'});
+  document.getElementById('setCacheTTL').addEventListener('change',function(){saveSettings(readFromUI())});
+  document.getElementById('setAnimOpacity').addEventListener('input',function(){document.getElementById('animOpacityVal').textContent=this.value+'%'});
+  document.getElementById('setAnimOpacity').addEventListener('change',function(){saveSettings(readFromUI())});
 
-});
-
-});
-
-document.querySelectorAll(".settingCard").forEach(card=>{
-
-card.addEventListener("mouseenter",()=>{
-
-card.style.transform="translateY(-8px)";
-
-});
-
-card.addEventListener("mouseleave",()=>{
-
-card.style.transform="translateY(0px)";
-
-});
-
-});
-
+  document.getElementById('btnClearCache').onclick=function(){Store.set('bist_cache_v1','');showToast('Önbellek temizlendi')};
+  document.getElementById('btnForceRefresh').onclick=function(){Store.set('bist_cache_v1','');showToast('Bir sonraki yüklemede zorla yenilenecek')};
+  document.getElementById('btnRequestNotif').onclick=function(){
+    if(!('Notification' in window)){showToast('Tarayıcı bildirim desteklemiyor');return}
+    Notification.requestPermission().then(function(p){showToast(p==='granted'?'Bildirim izni verildi':'İzin reddedildi')});
+  };
+  document.getElementById('btnResetAll').onclick=function(){
+    if(!confirm('Tüm ayarlar, takip listesi ve önbellek silinecek. Emin misiniz?'))return;
+    try{['nexora_settings','takipListesi','bist_cache_v1','nexoraUsed','theme','nexora_plan','nexora_billing'].forEach(function(k){localStorage.removeItem(k)})}catch(e){}
+    applyToUI(DEFAULTS);showToast('Tüm veriler sıfırlandı');
+  };
+  document.getElementById('btnExport').onclick=function(){
+    var blob=new Blob([JSON.stringify(readFromUI(),null,2)],{type:'application/json'});
+    var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='nexora-settings.json';a.click();
+    showToast('Ayarlar dışa aktarıldı');
+  };
+  document.getElementById('btnImport').onclick=function(){
+    var inp=document.createElement('input');inp.type='file';inp.accept='.json';
+    inp.onchange=function(){
+      var f=inp.files[0];if(!f)return;
+      var r=new FileReader();
+      r.onload=function(){try{saveSettings(Object.assign({},DEFAULTS,JSON.parse(r.result)));applyToUI(loadSettings());showToast('Ayarlar içe aktarıldı')}catch(e){showToast('Geçersiz dosya')}};
+      r.readAsText(f);
+    };
+    inp.click();
+  };
+  var mb=document.getElementById('mobileBtn');
+  if(mb) mb.addEventListener('click',function(){document.getElementById('mobileMenu').classList.toggle('open')});
+}
+applyToUI(loadSettings());
+bindEvents();
 </script>
-
 </body>
-
 </html>
