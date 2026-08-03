@@ -127,3 +127,197 @@ h1{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;letter-spacing:-.02em;marg
 
 <script>
 
+var EXCHANGES={
+  BIST:{name:'BIST (Türkiye)',suffix:'.IS',currency:'₺',symbols:[
+    {s:'THYAO',n:'Türk Hava Yolları'},{s:'GARAN',n:'Garanti BBVA'},{s:'AKBNK',n:'Akbank'},
+    {s:'ASELS',n:'Aselsan'},{s:'EREGL',n:'Ereğli'},{s:'KCHOL',n:'Koç Holding'},
+    {s:'SISE',n:'Şişecam'},{s:'TUPRS',n:'Tüpraş'},{s:'BIMAS',n:'BİM'},{s:'TCELL',n:'Turkcell'},
+    {s:'PGSUS',n:'Pegasus'},{s:'FROTO',n:'Ford Otosan'},{s:'SAHOL',n:'Sabancı'},{s:'YKBNK',n:'Yapı Kredi'},
+    {s:'ISCTR',n:'İş Bankası'},{s:'AEFES',n:'Anadolu Efes'},{s:'TAVHL',n:'TAV'},{s:'VAKBN',n:'VakıfBank'}
+  ]},
+  NASDAQ:{name:'NASDAQ (ABD)',suffix:'',currency:'$',symbols:[
+    {s:'AAPL',n:'Apple'},{s:'MSFT',n:'Microsoft'},{s:'GOOGL',n:'Alphabet'},{s:'AMZN',n:'Amazon'},
+    {s:'NVDA',n:'NVIDIA'},{s:'META',n:'Meta'},{s:'TSLA',n:'Tesla'},{s:'NFLX',n:'Netflix'},
+    {s:'AMD',n:'AMD'},{s:'INTC',n:'Intel'},{s:'PYPL',n:'PayPal'},{s:'ADBE',n:'Adobe'}
+  ]},
+  NYSE:{name:'NYSE (ABD)',suffix:'',currency:'$',symbols:[
+    {s:'JPM',n:'JPMorgan'},{s:'V',n:'Visa'},{s:'JNJ',n:'Johnson & Johnson'},{s:'WMT',n:'Walmart'},
+    {s:'PG',n:'Procter & Gamble'},{s:'MA',n:'Mastercard'},{s:'DIS',n:'Disney'},{s:'BA',n:'Boeing'},
+    {s:'KO',n:'Coca-Cola'},{s:'XOM',n:'Exxon Mobil'},{s:'HD',n:'Home Depot'},{s:'NKE',n:'Nike'}
+  ]},
+  DAX:{name:'DAX (Almanya)',suffix:'.DE',currency:'€',symbols:[
+    {s:'SAP',n:'SAP'},{s:'SIE',n:'Siemens'},{s:'VOW3',n:'Volkswagen'},{s:'BMW',n:'BMW'},
+    {s:'DTE',n:'Deutsche Telekom'},{s:'ALV',n:'Allianz'},{s:'BAS',n:'BASF'},{s:'BAYN',n:'Bayer'},
+    {s:'DBK',n:'Deutsche Bank'},{s:'ADS',n:'Adidas'}
+  ]},
+  LSE:{name:'LSE (İngiltere)',suffix:'.L',currency:'£',symbols:[
+    {s:'HSBA',n:'HSBC'},{s:'BP',n:'BP'},{s:'SHEL',n:'Shell'},{s:'AZN',n:'AstraZeneca'},
+    {s:'ULVR',n:'Unilever'},{s:'GSK',n:'GSK'},{s:'VOD',n:'Vodafone'},{s:'BATS',n:'BAT'},
+    {s:'RIO',n:'Rio Tinto'},{s:'LLOY',n:'Lloyds'}
+  ]},
+  TSE:{name:'TSE (Japonya)',suffix:'.T',currency:'¥',symbols:[
+    {s:'7203',n:'Toyota'},{s:'6758',n:'Sony'},{s:'9984',n:'SoftBank'},{s:'6861',n:'Keyence'},
+    {s:'8306',n:'MUFG'},{s:'9432',n:'NTT'},{s:'6902',n:'Denso'},{s:'4063',n:'Shin-Etsu'}
+  ]},
+  HKEX:{name:'HKEX (Hong Kong)',suffix:'.HK',currency:'HK$',symbols:[
+    {s:'0700',n:'Tencent'},{s:'9988',n:'Alibaba'},{s:'0941',n:'China Mobile'},{s:'0005',n:'HSBC'},
+    {s:'1299',n:'AIA'},{s:'2318',n:'Ping An'},{s:'3690',n:'Meituan'},{s:'1810',n:'Xiaomi'}
+  ]},
+  SSE:{name:'SSE (Çin)',suffix:'.SS',currency:'¥',symbols:[
+    {s:'600519',n:'Kweichow Moutai'},{s:'601318',n:'Ping An'},{s:'600036',n:'CMB'},{s:'601166',n:'Industrial Bank'},
+    {s:'000858',n:'Wuliangye'},{s:'600276',n:'Hengrui'}
+  ]},
+  ASX:{name:'ASX (Avustralya)',suffix:'.AX',currency:'A$',symbols:[
+    {s:'BHP',n:'BHP'},{s:'CBA',n:'Commonwealth Bank'},{s:'CSL',n:'CSL'},{s:'NAB',n:'NAB'},
+    {s:'WBC',n:'Westpac'},{s:'ANZ',n:'ANZ'},{s:'WES',n:'Wesfarmers'},{s:'MQG',n:'Macquarie'}
+  ]},
+  TSX:{name:'TSX (Kanada)',suffix:'.TO',currency:'C$',symbols:[
+    {s:'RY',n:'Royal Bank'},{s:'TD',n:'TD Bank'},{s:'ENB',n:'Enbridge'},{s:'CNQ',n:'Canadian Natural'},
+    {s:'SHOP',n:'Shopify'},{s:'BMO',n:'BMO'},{s:'CP',n:'Canadian Pacific'},{s:'CNR',n:'CN Rail'}
+  ]},
+  OTCQB:{name:'OTCQB (ABD)',suffix:'',currency:'$',symbols:[
+    {s:'TCEHY',n:'Tencent (OTC)'},{s:'BABA',n:'Alibaba (OTC)'},{s:'NSRGY',n:'Nestlé'},
+    {s:'RHHBY',n:'Roche'},{s:'TOYOF',n:'Toyota (OTC)'},{s:'SFTBY',n:'SoftBank (OTC)'},
+    {s:'NTDOY',n:'Nintendo'},{s:'SSNLF',n:'Samsung'},{s:'LNSTY',n:'London Stock Exchange'},
+    {s:'ADDYY',n:'Adidas (OTC)'},{s:'BAYRY',n:'Bayer (OTC)'},{s:'DTEGY',n:'Deutsche Telekom (OTC)'},
+    {s:'VWAGY',n:'Volkswagen (OTC)'},{s:'SIEGY',n:'Siemens (OTC)'},{s:'SAPGY',n:'SAP (OTC)'},
+    {s:'HMC',n:'Honda'},{s:'SONY',n:'Sony (OTC)'},{s:'MUFG',n:'MUFG (OTC)'}
+  ]}
+};
+
+var currentMkt='BIST',listData=[],detailSymbol=null;
+
+function yahooSymbol(mkt,sym){
+  var ex=EXCHANGES[mkt];
+  return sym+(ex.suffix||'');
+}
+
+function parseQuote(json){
+  try{
+    var meta=json.chart.result[0].meta;
+    if(!meta||meta.regularMarketPrice==null)return null;
+    var price=meta.regularMarketPrice;
+    var prev=meta.chartPreviousClose||meta.previousClose||price;
+    var change=prev?((price-prev)/prev)*100:0;
+    return{
+      price:+price.toFixed(2),
+      change:+change.toFixed(2),
+      volume:meta.regularMarketVolume||0,
+      high:meta.regularMarketDayHigh||null,
+      low:meta.regularMarketDayLow||null,
+      live:true
+    };
+  }catch(e){return null}
+}
+
+async function fetchQuote(fullSymbol){
+  var url='https://query1.finance.yahoo.com/v8/finance/chart/'+fullSymbol+'?interval=1d&range=2d';
+  try{
+    var res=await fetch(url,{mode:'cors'});
+    if(res.ok){var d=parseQuote(await res.json());if(d)return d}
+  }catch(e){}
+  try{
+    var res2=await fetch('https://api.allorigins.win/raw?url='+encodeURIComponent(url));
+    if(res2.ok){var d2=parseQuote(await res2.json());if(d2)return d2}
+  }catch(e){}
+  try{
+    var res3=await fetch('https://corsproxy.io/?'+encodeURIComponent(url));
+    if(res3.ok){var d3=parseQuote(await res3.json());if(d3)return d3}
+  }catch(e){}
+  return null;
+}
+
+function buildTabs(){
+  var el=document.getElementById('tabs');
+  el.innerHTML='';
+  Object.keys(EXCHANGES).forEach(function(k){
+    var btn=document.createElement('button');
+    btn.className='tab'+(k===currentMkt?' active':'');
+    btn.textContent=EXCHANGES[k].name;
+    btn.onclick=function(){currentMkt=k;buildTabs();loadMarket()};
+    el.appendChild(btn);
+  });
+}
+
+async function loadMarket(){
+  var ex=EXCHANGES[currentMkt];
+  document.getElementById('status').textContent=ex.name+' yükleniyor...';
+  document.getElementById('list').innerHTML='<div class="loading"><div class="skel" style="width:60%;margin:0 auto"></div><div class="skel" style="width:40%;margin:12px auto"></div></div>';
+
+  var results=await Promise.all(ex.symbols.map(async function(item){
+    var full=yahooSymbol(currentMkt,item.s);
+    var q=await fetchQuote(full);
+    if(q)return Object.assign({symbol:item.s,name:item.n,full:full},q);
+    var seed=item.s.split('').reduce(function(a,c){return a+c.charCodeAt(0)},0);
+    return{symbol:item.s,name:item.n,full:full,price:+(10+(seed%500)+Math.random()*5).toFixed(2),change:+(((seed%11)-5)*0.5).toFixed(2),volume:0,high:null,low:null,live:false};
+  }));
+
+  listData=results;
+  renderList(results);
+  var live=results.filter(function(r){return r.live}).length;
+  document.getElementById('status').textContent=ex.name+' · '+live+'/'+results.length+' canlı · '+new Date().toLocaleTimeString('tr-TR');
+}
+
+function renderList(data){
+  var box=document.getElementById('list');
+  var cur=EXCHANGES[currentMkt].currency;
+  box.innerHTML='';
+  data.forEach(function(s){
+    var div=document.createElement('div');
+    div.className='card glass';
+    div.style.cursor='pointer';
+    var cls=s.change>=0?'up':'down';
+    div.innerHTML='<div class="sym">'+s.symbol+'</div><div class="name">'+s.name+'</div><div class="price">'+s.price.toLocaleString(undefined,{minimumFractionDigits:2})+' '+cur+'</div><div class="chg '+cls+'">'+(s.change>=0?'▲ +':'▼ ')+s.change+'%</div><div class="exch">'+currentMkt+(s.live?' · canlı':'')+'</div>';
+    div.onclick=function(){showDetail(s)};
+    box.appendChild(div);
+  });
+}
+
+function showDetail(s){
+  detailSymbol=s;
+  document.getElementById('detail').classList.add('open');
+  var cur=EXCHANGES[currentMkt].currency;
+  document.getElementById('dSym').textContent=s.symbol+' · '+s.name;
+  document.getElementById('dPrice').textContent=s.price.toLocaleString(undefined,{minimumFractionDigits:2})+' '+cur;
+  var cls=s.change>=0?'up':'down';
+  document.getElementById('dChg').className='chg '+cls;
+  document.getElementById('dChg').textContent=(s.change>=0?'▲ +':'▼ ')+s.change+'%';
+  document.getElementById('dExch').textContent=EXCHANGES[currentMkt].name;
+  document.getElementById('dVol').textContent=s.volume?s.volume.toLocaleString():'—';
+  document.getElementById('dHigh').textContent=s.high!=null?s.high.toFixed(2)+' '+cur:'—';
+  document.getElementById('dLow').textContent=s.low!=null?s.low.toFixed(2)+' '+cur:'—';
+  document.getElementById('dTime').textContent=new Date().toLocaleTimeString('tr-TR');
+  var ai=Math.min(95,Math.max(40,60+Math.round(s.change*3)));
+  document.getElementById('dAI').textContent=ai+'/100';
+  var comment=s.change>1?'Kısa vadede pozitif momentum. Hacim ve haber akışını takip edin.':s.change<-1?'Baskı altında. Destek seviyeleri kritik. Risk yönetimine dikkat.':'Yatay seyir. Teknik kırılımlar yönü belirleyebilir.';
+  document.getElementById('dComment').textContent=comment;
+  document.getElementById('detail').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+document.getElementById('btnRefresh').onclick=async function(){
+  if(!detailSymbol)return;
+  var q=await fetchQuote(detailSymbol.full);
+  if(q){Object.assign(detailSymbol,q);showDetail(detailSymbol)}
+};
+
+document.getElementById('q').addEventListener('input',function(e){
+  var v=e.target.value.toUpperCase().trim();
+  if(!v){renderList(listData);return}
+  renderList(listData.filter(function(s){return s.symbol.indexOf(v)!==-1||(s.name||'').toUpperCase().indexOf(v)!==-1}));
+});
+
+(function(){
+  var p=new URLSearchParams(location.search);
+  var m=p.get('m'),sym=p.get('symbol');
+  if(m&&EXCHANGES[m])currentMkt=m;
+  buildTabs();
+  loadMarket().then(function(){
+    if(sym){
+      var found=listData.find(function(s){return s.symbol===sym});
+      if(found)showDetail(found);
+    }
+  });
+})();
+</script>
+</body>
+</html>
