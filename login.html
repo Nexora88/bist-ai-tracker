@@ -1,793 +1,550 @@
 <!DOCTYPE html>
 <html lang="tr">
-
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Giriş Yap | Nexora AI</title>
-
-<script src="https://cdn.tailwindcss.com"></script>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
+<title>Giriş | BIST AI Tracker</title>
+<meta name="description" content="BIST AI Tracker giriş ve kayıt — Supabase Auth.">
+<meta name="theme-color" content="#0a0e17">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
+:root {
+  --bg: #0a0e17;
+  --surface: #111827;
+  --border: rgba(255,255,255,0.06);
+  --text: #f1f5f9;
+  --muted: #94a3b8;
+  --green: #22c55e;
+  --red: #ef4444;
+  --accent: #10b981;
+  --cyan: #22d3ee;
+  --violet: #a78bfa;
+  --amber: #fbbf24;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  flex-direction: column;
+}
+a { color: inherit; text-decoration: none; }
+button, input { font-family: inherit; }
+button { cursor: pointer; border: none; background: none; }
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:"Inter",sans-serif;
+.bg-glow {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 20%, rgba(16,185,129,0.12), transparent),
+    radial-gradient(ellipse 50% 35% at 80% 70%, rgba(167,139,250,0.1), transparent),
+    radial-gradient(ellipse 40% 30% at 50% 100%, rgba(34,211,238,0.06), transparent);
 }
 
-html{
-scroll-behavior:smooth;
+.navbar {
+  position: relative; z-index: 10; height: 60px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(10,14,23,0.7);
+  backdrop-filter: blur(16px);
+}
+.nav-inner {
+  max-width: 1100px; margin: 0 auto; padding: 0 20px;
+  height: 60px; display: flex; align-items: center; justify-content: space-between;
+}
+.logo {
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 800; font-size: 17px; letter-spacing: -0.02em;
+}
+.logo .accent { color: var(--accent); }
+.nav-links { display: flex; gap: 20px; font-size: 13.5px; font-weight: 500; color: var(--muted); }
+.nav-links a:hover { color: var(--accent); }
+
+.main {
+  position: relative; z-index: 1;
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  padding: 40px 20px;
 }
 
-body{
-background:#020617;
-color:white;
-overflow-x:hidden;
+.auth-card {
+  width: 100%; max-width: 420px;
+  background: rgba(17,24,39,0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 32px 28px 28px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.4);
 }
 
-body::before{
-content:"";
-position:fixed;
-inset:0;
-background:
-radial-gradient(circle at top left,#10b98125,transparent 35%),
-radial-gradient(circle at bottom right,#3b82f625,transparent 40%),
-radial-gradient(circle at center,#ffffff08,transparent 70%);
-z-index:-2;
+.auth-header { text-align: center; margin-bottom: 28px; }
+.auth-header .icon {
+  width: 56px; height: 56px; border-radius: 16px; margin: 0 auto 16px;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(34,211,238,0.15));
+  border: 1px solid rgba(16,185,129,0.25);
+  font-size: 24px;
+}
+.auth-header h1 {
+  font-size: 22px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 6px;
+}
+.auth-header p { font-size: 13.5px; color: var(--muted); }
+
+.tabs {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+  background: rgba(15,23,42,0.8); border-radius: 12px; padding: 4px;
+  margin-bottom: 24px; border: 1px solid var(--border);
+}
+.tabs button {
+  padding: 10px; border-radius: 10px; font-size: 13.5px; font-weight: 600;
+  color: var(--muted); transition: all 0.2s;
+}
+.tabs button.active {
+  background: rgba(16,185,129,0.15);
+  color: var(--accent);
+  border: 1px solid rgba(16,185,129,0.3);
 }
 
-.glass{
-background:rgba(15,23,42,.72);
-border:1px solid rgba(255,255,255,.08);
-backdrop-filter:blur(18px);
-box-shadow:0 20px 50px rgba(0,0,0,.35);
+.form-panel { display: none; }
+.form-panel.active { display: block; }
+
+.field { margin-bottom: 14px; }
+.field label {
+  display: block; font-size: 12px; font-weight: 600;
+  color: #94a3b8; margin-bottom: 6px;
+}
+.field-wrap { position: relative; }
+.field-wrap i.left {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  color: #64748b; font-size: 13px; pointer-events: none;
+}
+.field-wrap input {
+  width: 100%; padding: 12px 14px 12px 40px;
+  border-radius: 11px; background: rgba(15,23,42,0.9);
+  border: 1px solid #334155; color: var(--text);
+  font-size: 14px; outline: none; transition: border-color 0.15s;
+}
+.field-wrap input:focus { border-color: rgba(16,185,129,0.5); }
+.field-wrap .toggle-pw {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  color: #64748b; font-size: 13px; padding: 4px;
+}
+.field-wrap .toggle-pw:hover { color: var(--accent); }
+
+.row-between {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 18px; font-size: 12.5px;
+}
+.row-between label {
+  display: flex; align-items: center; gap: 8px; color: #94a3b8; cursor: pointer;
+}
+.row-between input[type=checkbox] { accent-color: var(--accent); width: 15px; height: 15px; }
+.row-between a { color: var(--accent); font-weight: 500; }
+.row-between a:hover { text-decoration: underline; }
+
+.btn-submit {
+  width: 100%; padding: 13px; border-radius: 12px;
+  font-size: 14px; font-weight: 700;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #022c22; display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: box-shadow 0.2s, transform 0.15s;
+}
+.btn-submit:hover { box-shadow: 0 10px 28px rgba(16,185,129,0.35); transform: translateY(-1px); }
+.btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.divider {
+  display: flex; align-items: center; gap: 12px;
+  margin: 20px 0; color: #64748b; font-size: 12px;
+}
+.divider::before, .divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
 }
 
-.gradient{
-background:linear-gradient(135deg,#10b981,#22c55e,#14b8a6);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
+.btn-ghost {
+  width: 100%; padding: 12px; border-radius: 12px;
+  font-size: 13.5px; font-weight: 600;
+  background: rgba(30,41,59,0.8); border: 1px solid var(--border);
+  color: #e2e8f0; display: flex; align-items: center; justify-content: center; gap: 10px;
+}
+.btn-ghost:hover { border-color: rgba(16,185,129,0.35); }
+
+.msg {
+  display: none; padding: 11px 14px; border-radius: 10px;
+  font-size: 13px; font-weight: 500; margin-bottom: 16px;
+}
+.msg.show { display: block; }
+.msg.error { background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.25); color: #fca5a5; }
+.msg.ok { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.25); color: #6ee7b7; }
+
+.hint {
+  margin-top: 20px; text-align: center; font-size: 12px; color: #64748b; line-height: 1.55;
+}
+.hint code {
+  background: rgba(30,41,59,0.9); padding: 2px 6px; border-radius: 4px;
+  font-size: 11px; color: var(--cyan);
 }
 
-.inputBox{
-width:100%;
-background:#0f172a;
-border:1px solid #334155;
-border-radius:16px;
-padding:18px;
-color:white;
-outline:none;
-transition:.25s;
+.footer {
+  position: relative; z-index: 1;
+  text-align: center; padding: 20px; font-size: 12px; color: #64748b;
+  border-top: 1px solid var(--border);
 }
 
-.inputBox:focus{
-border-color:#10b981;
-box-shadow:0 0 20px rgba(16,185,129,.25);
+.strength {
+  height: 3px; border-radius: 2px; background: #1e293b; margin-top: 8px; overflow: hidden;
+}
+.strength span {
+  display: block; height: 100%; width: 0; border-radius: 2px; transition: width 0.25s, background 0.25s;
 }
 
-.btnPrimary{
-width:100%;
-background:#10b981;
-color:black;
-padding:18px;
-border-radius:16px;
-font-weight:800;
-transition:.3s;
+.config-banner {
+  display: none; margin-bottom: 16px; padding: 12px 14px; border-radius: 10px;
+  background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3);
+  font-size: 12.5px; color: #fbbf24; line-height: 1.5;
 }
-
-.btnPrimary:hover{
-transform:translateY(-2px);
-box-shadow:0 15px 30px rgba(16,185,129,.35);
-}
-
-.link{
-color:#10b981;
-transition:.25s;
-}
-
-.link:hover{
-color:#34d399;
-}
-
-.badge{
-display:inline-flex;
-align-items:center;
-gap:8px;
-padding:8px 16px;
-border-radius:999px;
-background:#10b98122;
-border:1px solid #10b98155;
-color:#6ee7b7;
-font-weight:700;
-}
-
+.config-banner.show { display: block; }
 </style>
-
 </head>
-
 <body>
-
-<section class="min-h-screen flex items-center justify-center px-6 py-12">
-
-<div class="grid lg:grid-cols-2 gap-14 max-w-7xl w-full">
-
-<div class="hidden lg:flex flex-col justify-center">
-
-<div class="badge">
-
-🔒 Güvenli Giriş
-
-</div>
-
-<h1 class="text-6xl font-black mt-8 leading-tight">
-
-Tekrar
-
-<span class="gradient">
-
-Hoş Geldiniz
-
-</span>
-
-</h1>
-
-<p class="text-slate-400 text-xl mt-8 leading-9">
-
-Nexora AI hesabınıza giriş yapın,
-
-portföyünüzü görüntüleyin,
-
-AI analizlerine kaldığınız yerden devam edin
-
-ve tüm yatırımlarınızı tek platformdan yönetin.
-
-</p>
-
-<div class="mt-12 space-y-4 text-lg">
-
-<div>✅ SSL ile güvenli bağlantı</div>
-
-<div>✅ Şifreler güvenli şekilde saklanır</div>
-
-<div>✅ E-posta doğrulama desteği</div>
-
-<div>✅ Şüpheli giriş koruması</div>
-
-<div>✅ Gelecekte 2 Adımlı Doğrulama</div>
-
-</div>
-
-</div>
-
-<div class="glass rounded-[32px] p-10">
-
-<div class="text-center">
-
-<a href="index.html" class="text-4xl font-black">
-
-NEXORA
-
-<span class="gradient">
-
-AI
-
-</span>
-
-</a>
-
-<h2 class="text-3xl font-bold mt-8">
-
-Giriş Yap
-
-</h2>
-
-<p class="text-slate-400 mt-4">
-
-Hesabınıza güvenli şekilde giriş yapın.
-
-</p>
-
-</div>
-
-<form id="loginForm" class="mt-10">
-
-<label class="block mb-3 font-semibold">
-
-E-posta Adresi
-
-</label>
-
-<input
-type="email"
-id="email"
-class="inputBox"
-placeholder="ornek@mail.com"
-autocomplete="email"
-required>
-
-<div class="mt-8">
-
-<label class="block mb-3 font-semibold">
-
-Şifre
-
-</label>
-
-<div class="relative">
-
-<input
-type="password"
-id="password"
-class="inputBox pr-16"
-placeholder="Şifrenizi girin"
-autocomplete="current-password"
-required>
-
-<button
-type="button"
-id="togglePassword"
-class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400">
-
-👁️
-
-</button>
-
-</div>
-
-</div>
-
-<div class="flex justify-between items-center mt-8">
-
-<label
-class="flex items-center gap-3 cursor-pointer">
-
-<input
-type="checkbox"
-id="rememberMe">
-
-<span>
-
-Beni Hatırla
-
-</span>
-
-</label>
-
-<a
-href="forgot-password.html"
-class="link font-semibold">
-
-Şifremi Unuttum
-
-</a>
-
-</div>
-
-<div
-class="glass rounded-2xl p-5 mt-8">
-
-<div class="flex items-center gap-3">
-
-🛡️
-
-<strong>
-
-Güvenlik Bilgisi
-
-</strong>
-
-</div>
-
-<p class="text-slate-400 mt-4 leading-7">
-
-Giriş bilgileriniz şifrelenmiş bağlantı üzerinden iletilir.
-
-Nexora hiçbir zaman şifrenizi düz metin olarak saklamaz.
-
-</p>
-
-</div>
-
-<button
-type="submit"
-class="btnPrimary mt-8">
-
-🔐 Güvenli Giriş Yap
-
-</button>
-
-<div class="text-center mt-8">
-
-<span class="text-slate-400">
-
-Hesabınız yok mu?
-
-</span>
-
-<a
-href="register.html"
-class="link font-bold ml-2">
-
-Ücretsiz Hesap Oluştur
-
-</a>
-
-</div>
-
-<div class="mt-10">
-
-<div
-class="flex items-center gap-4">
-
-<div class="h-px bg-slate-700 flex-1"></div>
-
-<div class="text-slate-400">
-
-veya
-
-</div>
-
-<div class="h-px bg-slate-700 flex-1"></div>
-
-</div>
-
-<div class="grid grid-cols-2 gap-4 mt-8">
-
-<button
-type="button"
-class="glass rounded-2xl p-4">
-
-🔵 Google
-
-</button>
-
-<button
-type="button"
-class="glass rounded-2xl p-4">
-
-⚫ Apple
-
-</button>
-
-<button
-type="button"
-class="glass rounded-2xl p-4">
-
-⚫ GitHub
-
-</button>
-
-<button
-type="button"
-class="glass rounded-2xl p-4">
-
-🟦 Microsoft
-
-</button>
-
-</div>
-
-<p class="text-center text-slate-500 text-sm mt-6">
-
-Yakında aktif olacaktır.
-
-</p>
-
-</div>
-
-</form>
-
-</div>
-
-</div>
-
-</section>
+<div class="bg-glow"></div>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="logo"><span>📈</span> BIST <span class="accent">AI</span> Tracker</a>
+    <div class="nav-links">
+      <a href="index.html">Ana Sayfa</a>
+      <a href="about.html">Uygulama</a>
+    </div>
+  </div>
+</nav>
+
+<main class="main">
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="icon">🔐</div>
+      <h1 id="titleText">Hoş geldiniz</h1>
+      <p id="subText">Supabase ile güvenli giriş</p>
+    </div>
+
+    <div class="config-banner" id="configBanner">
+      <strong>Supabase ayarı gerekli.</strong><br>
+      2. kısımdaki <code>SUPABASE_URL</code> ve <code>SUPABASE_ANON_KEY</code> alanlarını doldurun.
+    </div>
+
+    <div class="tabs">
+      <button type="button" class="active" data-tab="login">Giriş</button>
+      <button type="button" data-tab="register">Kayıt Ol</button>
+    </div>
+
+    <div class="msg" id="msg"></div>
+
+    <div class="form-panel active" id="panel-login">
+      <form id="formLogin" autocomplete="on">
+        <div class="field">
+          <label for="loginEmail">E-posta</label>
+          <div class="field-wrap">
+            <i class="fas fa-envelope left"></i>
+            <input type="email" id="loginEmail" placeholder="ornek@email.com" required autocomplete="email">
+          </div>
+        </div>
+        <div class="field">
+          <label for="loginPass">Şifre</label>
+          <div class="field-wrap">
+            <i class="fas fa-lock left"></i>
+            <input type="password" id="loginPass" placeholder="••••••••" required autocomplete="current-password">
+            <button type="button" class="toggle-pw" data-target="loginPass" aria-label="Şifreyi göster"><i class="fas fa-eye"></i></button>
+          </div>
+        </div>
+        <div class="row-between">
+          <label><input type="checkbox" id="rememberMe" checked> Beni hatırla</label>
+          <a href="#" id="forgotLink">Şifremi unuttum</a>
+        </div>
+        <button type="submit" class="btn-submit" id="btnLogin">
+          <i class="fas fa-sign-in-alt"></i> Giriş Yap
+        </button>
+      </form>
+      <div class="divider">veya</div>
+      <button type="button" class="btn-ghost" id="btnGuest">
+        <i class="fas fa-user"></i> Misafir olarak devam et
+      </button>
+    </div>
+
+    <div class="form-panel" id="panel-register">
+      <form id="formRegister" autocomplete="on">
+        <div class="field">
+          <label for="regName">Ad Soyad</label>
+          <div class="field-wrap">
+            <i class="fas fa-user left"></i>
+            <input type="text" id="regName" placeholder="Adınız Soyadınız" required autocomplete="name" minlength="2">
+          </div>
+        </div>
+        <div class="field">
+          <label for="regEmail">E-posta</label>
+          <div class="field-wrap">
+            <i class="fas fa-envelope left"></i>
+            <input type="email" id="regEmail" placeholder="ornek@email.com" required autocomplete="email">
+          </div>
+        </div>
+        <div class="field">
+          <label for="regPass">Şifre</label>
+          <div class="field-wrap">
+            <i class="fas fa-lock left"></i>
+            <input type="password" id="regPass" placeholder="En az 6 karakter" required autocomplete="new-password" minlength="6">
+            <button type="button" class="toggle-pw" data-target="regPass" aria-label="Şifreyi göster"><i class="fas fa-eye"></i></button>
+          </div>
+          <div class="strength"><span id="strengthBar"></span></div>
+        </div>
+        <div class="field">
+          <label for="regPass2">Şifre Tekrar</label>
+          <div class="field-wrap">
+            <i class="fas fa-lock left"></i>
+            <input type="password" id="regPass2" placeholder="Şifreyi tekrarlayın" required autocomplete="new-password" minlength="6">
+          </div>
+        </div>
+        <div class="row-between">
+          <label><input type="checkbox" id="acceptTerms" required> <span>Şartları kabul ediyorum</span></label>
+        </div>
+        <button type="submit" class="btn-submit" id="btnRegister">
+          <i class="fas fa-user-plus"></i> Hesap Oluştur
+        </button>
+      </form>
+    </div>
+
+    <p class="hint">
+      Kimlik doğrulama: <strong>Supabase Auth</strong><br>
+      Anahtarları 2. kısımdaki <code>SUPABASE_URL</code> / <code>SUPABASE_ANON_KEY</code> satırlarına yazın.
+    </p>
+  </div>
+</main>
+
+<footer class="footer">© 2026 BIST AI Tracker · Nexora AI · Supabase Auth</footer>
 
 <script>
 
-/*=========================================
-ŞİFRE GÖSTER / GİZLE
-=========================================*/
+/* ============================================================
+   SUPABASE AYARLARI — SADECE BU 2 SATIRI DEĞİŞTİR
+   Dashboard → Project Settings → API
+   ============================================================ */
+var SUPABASE_URL = 'https://XXXXXXXX.supabase.co';
+// ↑ Project URL  (örnek: https://abcdefgh.supabase.co)
 
-const passwordInput =
-document.getElementById("password");
+var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.BURAYA_ANON_KEY';
+// ↑ anon public key (uzun eyJ... ile başlayan string)
+/* ============================================================ */
 
-const togglePassword =
-document.getElementById("togglePassword");
+var supabaseClient = null;
 
-togglePassword.addEventListener("click",()=>{
+function initSupabase() {
+  var missing =
+    !SUPABASE_URL ||
+    SUPABASE_URL.indexOf('XXXXXXXX') !== -1 ||
+    !SUPABASE_ANON_KEY ||
+    SUPABASE_ANON_KEY.indexOf('BURAYA_ANON_KEY') !== -1 ||
+    SUPABASE_ANON_KEY.length < 40;
 
-if(passwordInput.type==="password"){
-
-passwordInput.type="text";
-
-togglePassword.innerHTML="🙈";
-
-}else{
-
-passwordInput.type="password";
-
-togglePassword.innerHTML="👁️";
-
+  if (missing) {
+    document.getElementById('configBanner').classList.add('show');
+    return false;
+  }
+  if (typeof supabase === 'undefined' || !supabase.createClient) {
+    document.getElementById('configBanner').classList.add('show');
+    document.getElementById('configBanner').innerHTML =
+      '<strong>Supabase JS yüklenemedi.</strong> CDN bağlantısını kontrol edin.';
+    return false;
+  }
+  supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  return true;
 }
 
+function showMsg(text, type) {
+  var el = document.getElementById('msg');
+  el.textContent = text;
+  el.className = 'msg show ' + (type || 'error');
+}
+function hideMsg() {
+  document.getElementById('msg').className = 'msg';
+}
+
+function saveLocalSession(user) {
+  try {
+    var sess = {
+      id: user.id,
+      email: user.email || '',
+      name: (user.user_metadata && user.user_metadata.full_name) || user.email || '',
+      plan: (user.user_metadata && user.user_metadata.plan) || 'free',
+      at: Date.now()
+    };
+    localStorage.setItem('nexora_session', JSON.stringify(sess));
+    localStorage.setItem('nexora_plan', sess.plan);
+  } catch (e) {}
+}
+
+/* Sekmeler */
+document.querySelectorAll('.tabs button').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.tabs button').forEach(function(b){ b.classList.remove('active'); });
+    document.querySelectorAll('.form-panel').forEach(function(p){ p.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById('panel-' + btn.getAttribute('data-tab')).classList.add('active');
+    hideMsg();
+    if (btn.getAttribute('data-tab') === 'login') {
+      document.getElementById('titleText').textContent = 'Hoş geldiniz';
+      document.getElementById('subText').textContent = 'Supabase ile güvenli giriş';
+    } else {
+      document.getElementById('titleText').textContent = 'Hesap oluştur';
+      document.getElementById('subText').textContent = 'Ücretsiz kayıt — e-posta doğrulama açık olabilir';
+    }
+  });
 });
 
-/*=========================================
-EMAİL DOĞRULAMA
-=========================================*/
-
-function validateEmail(email){
-
-return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
-}
-
-/*=========================================
-ŞİFRE GÜÇ KONTROLÜ
-=========================================*/
-
-function validatePassword(password){
-
-return password.length>=8;
-
-}
-
-/*=========================================
-FORM KONTROLÜ
-=========================================*/
-
-const loginForm=
-document.getElementById("loginForm");
-
-loginForm.addEventListener("submit",(e)=>{
-
-e.preventDefault();
-
-const email=
-document.getElementById("email").value.trim();
-
-const password=
-document.getElementById("password").value;
-
-if(!validateEmail(email)){
-
-alert("Geçerli bir e-posta adresi giriniz.");
-
-return;
-
-}
-
-if(!validatePassword(password)){
-
-alert("Şifre en az 8 karakter olmalıdır.");
-
-return;
-
-}
-
-/*=========================================
-BACKEND BAĞLANTI NOKTASI
-=========================================*/
-
-// fetch("/api/login")
-
-// buraya gerçek giriş sistemi bağlanacak
-
-alert("Giriş doğrulandı. Backend bağlanınca oturum açılacak.");
-
+/* Şifre göster/gizle */
+document.querySelectorAll('.toggle-pw').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var inp = document.getElementById(btn.getAttribute('data-target'));
+    if (!inp) return;
+    var show = inp.type === 'password';
+    inp.type = show ? 'text' : 'password';
+    btn.innerHTML = show ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
+  });
 });
 
-/*=========================================
-BENİ HATIRLA
-=========================================*/
-
-const remember=
-document.getElementById("rememberMe");
-
-if(localStorage.getItem("rememberEmail")){
-
-document.getElementById("email").value=
-
-localStorage.getItem("rememberEmail");
-
-remember.checked=true;
-
-}
-
-remember.addEventListener("change",()=>{
-
-if(remember.checked){
-
-localStorage.setItem(
-
-"rememberEmail",
-
-document.getElementById("email").value
-
-);
-
-}else{
-
-localStorage.removeItem("rememberEmail");
-
-}
-
+/* Şifre gücü */
+document.getElementById('regPass').addEventListener('input', function() {
+  var p = this.value, score = 0;
+  if (p.length >= 6) score++;
+  if (p.length >= 10) score++;
+  if (/[A-Z]/.test(p) && /[a-z]/.test(p)) score++;
+  if (/\d/.test(p)) score++;
+  if (/[^A-Za-z0-9]/.test(p)) score++;
+  var bar = document.getElementById('strengthBar');
+  var pct = Math.min(100, score * 20);
+  bar.style.width = pct + '%';
+  bar.style.background = pct < 40 ? '#ef4444' : pct < 70 ? '#f59e0b' : '#10b981';
 });
 
-/*=========================================
-GELECEK ÖZELLİKLER
-=========================================*/
+/* GİRİŞ */
+document.getElementById('formLogin').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  hideMsg();
+  if (!supabaseClient) {
+    showMsg('Önce SUPABASE_URL ve SUPABASE_ANON_KEY değerlerini doldurun.', 'error');
+    return;
+  }
+  var email = document.getElementById('loginEmail').value.trim();
+  var pass = document.getElementById('loginPass').value;
+  var btn = document.getElementById('btnLogin');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Giriş yapılıyor…';
 
-// ✅ JWT
+  try {
+    var res = await supabaseClient.auth.signInWithPassword({ email: email, password: pass });
+    if (res.error) throw res.error;
+    saveLocalSession(res.data.user);
+    showMsg('Giriş başarılı. Yönlendiriliyorsunuz…', 'ok');
+    setTimeout(function(){ location.href = 'index.html'; }, 600);
+  } catch (err) {
+    showMsg(err.message || 'Giriş başarısız.', 'error');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Giriş Yap';
+  }
+});
 
-// ✅ Refresh Token
+/* KAYIT */
+document.getElementById('formRegister').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  hideMsg();
+  if (!supabaseClient) {
+    showMsg('Önce SUPABASE_URL ve SUPABASE_ANON_KEY değerlerini doldurun.', 'error');
+    return;
+  }
+  var name = document.getElementById('regName').value.trim();
+  var email = document.getElementById('regEmail').value.trim();
+  var pass = document.getElementById('regPass').value;
+  var pass2 = document.getElementById('regPass2').value;
+  var btn = document.getElementById('btnRegister');
 
-// ✅ Email Verification
+  if (pass.length < 6) { showMsg('Şifre en az 6 karakter olmalı.', 'error'); return; }
+  if (pass !== pass2) { showMsg('Şifreler eşleşmiyor.', 'error'); return; }
+  if (!document.getElementById('acceptTerms').checked) {
+    showMsg('Şartları kabul edin.', 'error'); return;
+  }
 
-// ✅ Two Factor Authentication
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Kayıt yapılıyor…';
 
-// ✅ Login History
+  try {
+    var res = await supabaseClient.auth.signUp({
+      email: email,
+      password: pass,
+      options: { data: { full_name: name, plan: 'free' } }
+    });
+    if (res.error) throw res.error;
 
-// ✅ Device Detection
+    if (res.data.user && res.data.session) {
+      saveLocalSession(res.data.user);
+      showMsg('Hesap oluşturuldu. Yönlendiriliyorsunuz…', 'ok');
+      setTimeout(function(){ location.href = 'index.html'; }, 700);
+    } else {
+      showMsg('Kayıt alındı. E-postadaki doğrulama linkine tıklayın, sonra giriş yapın.', 'ok');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-user-plus"></i> Hesap Oluştur';
+      document.querySelector('.tabs button[data-tab="login"]').click();
+    }
+  } catch (err) {
+    showMsg(err.message || 'Kayıt başarısız.', 'error');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-user-plus"></i> Hesap Oluştur';
+  }
+});
 
-// ✅ Suspicious Login Detection
+/* Şifremi unuttum */
+document.getElementById('forgotLink').addEventListener('click', async function(e) {
+  e.preventDefault();
+  if (!supabaseClient) {
+    showMsg('Önce Supabase anahtarlarını doldurun.', 'error');
+    return;
+  }
+  var email = document.getElementById('loginEmail').value.trim();
+  if (!email) {
+    showMsg('Önce e-posta alanına adresinizi yazın.', 'error');
+    return;
+  }
+  try {
+    var res = await supabaseClient.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + '/login.html'
+    });
+    if (res.error) throw res.error;
+    showMsg('Sıfırlama linki e-postanıza gönderildi (Spam klasörüne bakın).', 'ok');
+  } catch (err) {
+    showMsg(err.message || 'İstek gönderilemedi.', 'error');
+  }
+});
 
-// ✅ Rate Limit
+/* Misafir */
+document.getElementById('btnGuest').addEventListener('click', function() {
+  try {
+    localStorage.setItem('nexora_session', JSON.stringify({
+      id: 'guest', email: '', name: 'Misafir', plan: 'free', at: Date.now()
+    }));
+    localStorage.setItem('nexora_plan', 'free');
+  } catch (e) {}
+  location.href = 'index.html';
+});
 
-// ✅ reCAPTCHA / Turnstile
-
-// ✅ Session Timeout
-
-// ✅ Password Reset Email
-
+/* Başlat */
+var ok = initSupabase();
+if (ok && supabaseClient) {
+  supabaseClient.auth.getSession().then(function(res) {
+    if (res.data && res.data.session && res.data.session.user) {
+      saveLocalSession(res.data.session.user);
+      document.getElementById('subText').textContent =
+        'Oturum açık: ' + (res.data.session.user.email || '');
+    }
+  });
+}
 </script>
-
-<!--=========================================
-GÜVENLİK VE DESTEK
-==========================================-->
-
-<section class="max-w-7xl mx-auto px-6 py-20">
-
-<div class="grid lg:grid-cols-3 gap-8">
-
-<div class="glass rounded-3xl p-8">
-
-<div class="text-5xl">
-
-🔒
-
-</div>
-
-<h3 class="text-2xl font-bold mt-6">
-
-256 Bit Şifreleme
-
-</h3>
-
-<p class="text-slate-400 mt-5 leading-8">
-
-Tüm giriş işlemleri SSL üzerinden gerçekleştirilir.
-
-Verileriniz güvenli bağlantılarla korunur.
-
-</p>
-
-</div>
-
-<div class="glass rounded-3xl p-8">
-
-<div class="text-5xl">
-
-🛡️
-
-</div>
-
-<h3 class="text-2xl font-bold mt-6">
-
-Hesap Koruması
-
-</h3>
-
-<p class="text-slate-400 mt-5 leading-8">
-
-Yeni cihaz girişleri,
-
-şüpheli oturumlar,
-
-şifre değişiklikleri
-
-e-posta ile bildirilecektir.
-
-</p>
-
-</div>
-
-<div class="glass rounded-3xl p-8">
-
-<div class="text-5xl">
-
-📧
-
-</div>
-
-<h3 class="text-2xl font-bold mt-6">
-
-7/24 Destek
-
-</h3>
-
-<p class="text-slate-400 mt-5 leading-8">
-
-Herhangi bir güvenlik problemi yaşarsanız
-
-destek ekibimizle iletişime geçebilirsiniz.
-
-</p>
-
-</div>
-
-</div>
-
-</section>
-
-<!--=========================================
-FOOTER
-==========================================-->
-
-<footer class="border-t border-slate-800">
-
-<div class="max-w-7xl mx-auto px-6 py-12">
-
-<div class="grid lg:grid-cols-4 gap-10">
-
-<div>
-
-<h3 class="text-3xl font-black">
-
-NEXORA
-
-<span class="gradient">
-
-AI
-
-</span>
-
-</h3>
-
-<p class="text-slate-400 mt-5">
-
-Yapay zekâ destekli yeni nesil yatırım platformu.
-
-</p>
-
-</div>
-
-<div>
-
-<h4 class="font-bold">
-
-Hızlı Menü
-
-</h4>
-
-<div class="space-y-3 mt-5 text-slate-400">
-
-<a href="index.html" class="block hover:text-white">
-
-Ana Sayfa
-
-</a>
-
-<a href="stock.html" class="block hover:text-white">
-
-Hisseler
-
-</a>
-
-<a href="premium.html" class="block hover:text-white">
-
-Premium
-
-</a>
-
-<a href="register.html" class="block hover:text-white">
-
-Kayıt Ol
-
-</a>
-
-</div>
-
-</div>
-
-<div>
-
-<h4 class="font-bold">
-
-Yakında
-
-</h4>
-
-<div class="space-y-3 mt-5 text-slate-400">
-
-<div>Çoklu Dil Desteği</div>
-
-<div>Mobil Uygulama</div>
-
-<div>Yatırım Takvimi</div>
-
-<div>Kripto Piyasaları</div>
-
-</div>
-
-</div>
-
-<div>
-
-<h4 class="font-bold">
-
-Yasal Bilgilendirme
-
-</h4>
-
-<p class="text-slate-400 mt-5 text-sm leading-7">
-
-Nexora AI'da yer alan içerikler yalnızca bilgilendirme amaçlıdır.
-
-Hiçbir içerik yatırım tavsiyesi değildir.
-
-Yatırım kararları kullanıcı sorumluluğundadır.
-
-</p>
-
-</div>
-
-</div>
-
-<div class="border-t border-slate-800 mt-12 pt-8 flex flex-col lg:flex-row justify-between items-center gap-4">
-
-<div class="text-slate-500">
-
-© 2026 Nexora AI
-
-Tüm Hakları Saklıdır.
-
-</div>
-
-<div class="flex gap-6 text-slate-400">
-
-<button>
-
-🌐 Türkçe
-
-</button>
-
-<button>
-
-🌙 Koyu Tema
-
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-</footer>
-
 </body>
-
 </html>
