@@ -58,7 +58,7 @@
     credentials: {
       fmp: "",
       finnhub: "d92gf21r01qraam0tf4gd92gf21r01qraam0tf50",
-      twelve: "",
+      twelve: "f021e2f611c34dd892d465af169f4ae2",
       alpha: "",
       polygon: "",
       /** Optional news token; falls back to finnhub when empty */
