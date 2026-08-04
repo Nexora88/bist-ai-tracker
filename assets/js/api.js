@@ -1,397 +1,491 @@
-/*=========================================================
-BIST AI Tracker
-API Engine v3.1 — CORS Proxy destekli
-Developer: Ahmet Eymen Bakraç
-=========================================================*/
+/**
+ * =============================================================================
+ *  BIST AI Tracker — Market Data Client
+ *  Module: api.js
+ *  Version: 4.0.0
+ *  Author: Ahmet Eymen Bakraç (Nexora)
+ *
+ *  Responsibility
+ *  --------------
+ *  Unified market-data access with ordered provider failover, short-lived
+ *  in-memory cache, and CORS-aware transport for static hosting (e.g. GitHub Pages).
+ *
+ *  Failover order
+ *  --------------
+ *  1. Financial Modeling Prep
+ *  2. Finnhub
+ *  3. Twelve Data
+ *  4. Alpha Vantage
+ *  5. Polygon.io
+ *  6. Yahoo Finance (no key; last resort + public CORS proxies)
+ *
+ *  Security note
+ *  -------------
+ *  Keys embedded in front-end bundles are visible to anyone who loads the page.
+ *  Use only restricted / free-tier credentials. Prefer provider-side domain
+ *  allowlists. Never commit high-privilege or billing-enabled secrets.
+ * =============================================================================
+ */
 
-const API = {
+(function (global) {
+  "use strict";
 
-    VERSION: "3.1.0",
+  // ---------------------------------------------------------------------------
+  // Configuration
+  // ---------------------------------------------------------------------------
 
-    APP_NAME: "BIST AI Tracker",
+  var CONFIG = {
+    version: "4.0.0",
+    requestTimeoutMs: 12e3,
+    quoteCacheTtlMs: 30e3,
 
-    BASE: {
-        YAHOO: "https://query1.finance.yahoo.com",
-        FINNHUB: "https://finnhub.io/api/v1"
-    },
-
-    KEY: {
-        FINNHUB: "",
-        NEWS: ""
-    },
-
-    TIMEOUT: 12000,
-
-    CACHE_TIME: 30000,
-
-    cache: new Map(),
-
-    /* CORS proxy listesi (sırayla dener) */
-    PROXIES: [
-        function(url) {
-            return "https://api.allorigins.win/raw?url=" + encodeURIComponent(url);
-        },
-        function(url) {
-            return "https://corsproxy.io/?" + encodeURIComponent(url);
-        }
-    ],
-
-    /* Tek fetch denemesi */
-    async _fetchOnce(url, options, timeoutMs) {
-        const controller = new AbortController();
-        const timeout = setTimeout(function() {
-            controller.abort();
-        }, timeoutMs || API.TIMEOUT);
-
-        try {
-            const response = await fetch(url, Object.assign({}, options || {}, {
-                signal: controller.signal
-            }));
-            clearTimeout(timeout);
-
-            if (!response.ok) {
-                throw new Error("HTTP " + response.status);
-            }
-
-            return await response.json();
-        } catch (error) {
-            clearTimeout(timeout);
-            throw error;
-        }
+    endpoints: {
+      yahoo: "https://query1.finance.yahoo.com",
+      fmp: "https://financialmodelingprep.com/api/v3",
+      finnhub: "https://finnhub.io/api/v1",
+      twelve: "https://api.twelvedata.com",
+      alpha: "https://www.alphavantage.co/query",
+      polygon: "https://api.polygon.io"
     },
 
     /**
-     * Ana istek metodu
-     * 1) Doğrudan URL
-     * 2) CORS proxy yedekleri
+     * PROVIDER CREDENTIALS — fill only the values between quotes.
+     * Leave a provider empty ("") to skip it in the failover chain.
+     *
+     * Example:
+     *   fmp: "your_key_here",
      */
-    async request(url, options) {
-        options = options || {};
+    credentials: {
+      fmp: "",
+      finnhub: "",
+      twelve: "",
+      alpha: "",
+      polygon: "",
+      /** Optional news token; falls back to finnhub when empty */
+      news: ""
+    },
 
-        /* 1 — Doğrudan */
-        try {
-            return await this._fetchOnce(url, options, this.TIMEOUT);
-        } catch (e1) {
-            console.warn("API direct failed:", e1 && e1.message);
-        }
+    corsProxies: [
+      function (targetUrl) {
+        return (
+          "https://api.allorigins.win/raw?url=" + encodeURIComponent(targetUrl)
+        );
+      },
+      function (targetUrl) {
+        return "https://corsproxy.io/?" + encodeURIComponent(targetUrl);
+      }
+    ]
+  };
 
-        /* 2 — Proxy yedekleri */
-        for (var i = 0; i < this.PROXIES.length; i++) {
-            try {
-                var proxyUrl = this.PROXIES[i](url);
-                return await this._fetchOnce(proxyUrl, options, this.TIMEOUT);
-            } catch (e2) {
-                console.warn("API proxy " + i + " failed:", e2 && e2.message);
-            }
-        }
+  // ---------------------------------------------------------------------------
+  // Internals
+  // ---------------------------------------------------------------------------
 
-        console.error("API Request Error: all methods failed for", url);
-        throw new Error("Veri alınamadı (CORS / ağ hatası)");
-    }
-
-};
-
-window.API = API;
-
-/*=========================================================
-BÖLÜM 2 — Yahoo Finance API
-=========================================================*/
-
-API.getQuote = async function(symbol) {
-    symbol = Market.normalize(symbol);
-    var url = this.BASE.YAHOO + "/v8/finance/chart/" + symbol + ".IS?interval=1m&range=1d";
-    return await this.request(url);
-};
-
-API.getHistory = async function(symbol, range, interval) {
-    range = range || "6mo";
-    interval = interval || "1d";
-    symbol = Market.normalize(symbol);
-    var url = this.BASE.YAHOO + "/v8/finance/chart/" + symbol + ".IS?range=" + range + "&interval=" + interval;
-    return await this.request(url);
-};
-
-API.getCompany = async function(symbol) {
-    symbol = Market.normalize(symbol);
-    var url = this.BASE.YAHOO + "/v10/finance/quoteSummary/" + symbol + ".IS?modules=price,summaryProfile,assetProfile";
-    return await this.request(url);
-};
-
-API.getStatistics = async function(symbol) {
-    symbol = Market.normalize(symbol);
-    var url = this.BASE.YAHOO + "/v10/finance/quoteSummary/" + symbol + ".IS?modules=defaultKeyStatistics,financialData";
-    return await this.request(url);
-};
-
-API.getRecommendations = async function(symbol) {
-    symbol = Market.normalize(symbol);
-    var url = this.BASE.YAHOO + "/v10/finance/quoteSummary/" + symbol + ".IS?modules=recommendationTrend";
-    return await this.request(url);
-};
-
-/*=========================================================
-BÖLÜM 3 — Finnhub API
-=========================================================*/
-
-API.setFinnhubKey = function(key) {
-    this.KEY.FINNHUB = key;
-};
-
-API.getCompanyNews = async function(symbol, from, to) {
-    symbol = Market.normalize(symbol);
-    var url = this.BASE.FINNHUB + "/company-news?symbol=" + symbol + "&from=" + from + "&to=" + to + "&token=" + this.KEY.FINNHUB;
-    return await this.request(url);
-};
-
-API.getBasicFinancials = async function(symbol) {
-    symbol = Market.normalize(symbol);
-    var url = this.BASE.FINNHUB + "/stock/metric?symbol=" + symbol + "&metric=all&token=" + this.KEY.FINNHUB;
-    return await this.request(url);
-};
-
-API.getPriceTarget = async function(symbol) {
-    symbol = Market.normalize(symbol);
-    var url = this.BASE.FINNHUB + "/stock/price-target?symbol=" + symbol + "&token=" + this.KEY.FINNHUB;
-    return await this.request(url);
-};
-
-API.getRecommendation = async function(symbol) {
-    symbol = Market.normalize(symbol);
-    var url = this.BASE.FINNHUB + "/stock/recommendation?symbol=" + symbol + "&token=" + this.KEY.FINNHUB;
-    return await this.request(url);
-};
-
-API.getInsiderTransactions = async function(symbol) {
-    symbol = Market.normalize(symbol);
-    var url = this.BASE.FINNHUB + "/stock/insider-transactions?symbol=" + symbol + "&token=" + this.KEY.FINNHUB;
-    return await this.request(url);
-};
-
-API.getEarnings = async function(symbol) {
-    symbol = Market.normalize(symbol);
-    var url = this.BASE.FINNHUB + "/stock/earnings?symbol=" + symbol + "&token=" + this.KEY.FINNHUB;
-    return await this.request(url);
-};
-
-/*=========================================================
-BÖLÜM 4 — Finansal Veriler
-=========================================================*/
-
-API.getIncomeStatement = async function(symbol) {
-    symbol = Market.normalize(symbol);
-    var url = this.BASE.YAHOO + "/v10/finance/quoteSummary/" + symbol + ".IS?modules=incomeStatementHistory";
-    return await this.request(url);
-};
-
-API.getBalanceSheet = async function(symbol) {
-    symbol = Market.normalize(symbol);
-    var url = this.BASE.YAHOO + "/v10/finance/quoteSummary/" + symbol + ".IS?modules=balanceSheetHistory";
-    return await this.request(url);
-};
-
-API.getCashFlow = async function(symbol) {
-    symbol = Market.normalize(symbol);
-    var url = this.BASE.YAHOO + "/v10/finance/quoteSummary/" + symbol + ".IS?modules=cashflowStatementHistory";
-    return await this.request(url);
-};
-
-API.getFinancialData = async function(symbol) {
-    symbol = Market.normalize(symbol);
-    var url = this.BASE.YAHOO + "/v10/finance/quoteSummary/" + symbol + ".IS?modules=financialData";
-    return await this.request(url);
-};
-
-API.getValuation = async function(symbol) {
-    symbol = Market.normalize(symbol);
-    var url = this.BASE.YAHOO + "/v10/finance/quoteSummary/" + symbol + ".IS?modules=defaultKeyStatistics";
-    return await this.request(url);
-};
-
-API.getDividendHistory = async function(symbol) {
-    symbol = Market.normalize(symbol);
-    var url = this.BASE.YAHOO + "/v8/finance/chart/" + symbol + ".IS?events=div";
-    return await this.request(url);
-};
-
-API.getSplitHistory = async function(symbol) {
-    symbol = Market.normalize(symbol);
-    var url = this.BASE.YAHOO + "/v8/finance/chart/" + symbol + ".IS?events=split";
-    return await this.request(url);
-};
-
-/*=========================================================
-BÖLÜM 5 — Global Markets
-=========================================================*/
-
-API.getCurrency = async function(pair) {
-    pair = pair || "TRY=X";
-    var url = this.BASE.YAHOO + "/v8/finance/chart/" + pair + "?interval=1m&range=1d";
-    return await this.request(url);
-};
-
-API.getGold = async function() {
-    return await this.getCurrency("GC=F");
-};
-
-API.getSilver = async function() {
-    return await this.getCurrency("SI=F");
-};
-
-API.getBrentOil = async function() {
-    return await this.getCurrency("BZ=F");
-};
-
-API.getNaturalGas = async function() {
-    return await this.getCurrency("NG=F");
-};
-
-API.getNASDAQ = async function() {
-    return await this.getCurrency("^IXIC");
-};
-
-API.getSP500 = async function() {
-    return await this.getCurrency("^GSPC");
-};
-
-API.getDowJones = async function() {
-    return await this.getCurrency("^DJI");
-};
-
-API.getDAX = async function() {
-    return await this.getCurrency("^GDAXI");
-};
-
-API.getBitcoin = async function() {
-    return await this.getCurrency("BTC-USD");
-};
-
-API.getEthereum = async function() {
-    return await this.getCurrency("ETH-USD");
-};
-
-API.getMarketOverview = async function() {
-    var results = await Promise.all([
-        this.getCurrency("TRY=X"),
-        this.getCurrency("EURTRY=X"),
-        this.getGold(),
-        this.getBrentOil(),
-        this.getNASDAQ(),
-        this.getSP500(),
-        this.getBitcoin()
-    ]);
+  function createCache() {
+    var store = new Map();
     return {
-        usd: results[0],
-        eur: results[1],
-        gold: results[2],
-        brent: results[3],
-        nasdaq: results[4],
-        sp500: results[5],
-        bitcoin: results[6]
-    };
-};
-
-/*=========================================================
-BÖLÜM 6 — News
-=========================================================*/
-
-API.getKAPNews = async function(symbol) {
-    symbol = Market.normalize(symbol);
-    return await News.get(symbol);
-};
-
-API.getMarketNews = async function(symbol) {
-    symbol = Market.normalize(symbol);
-    var today = new Date();
-    var from = new Date();
-    from.setDate(today.getDate() - 7);
-    var format = function(d) {
-        return d.toISOString().split("T")[0];
-    };
-    return await this.getCompanyNews(symbol, format(from), format(today));
-};
-
-API.getEconomicNews = async function() {
-    return await this.request(
-        this.BASE.FINNHUB + "/news?category=general&token=" + this.KEY.FINNHUB
-    );
-};
-
-API.getCryptoNews = async function() {
-    return await this.request(
-        this.BASE.FINNHUB + "/news?category=crypto&token=" + this.KEY.FINNHUB
-    );
-};
-
-API.getForexNews = async function() {
-    return await this.request(
-        this.BASE.FINNHUB + "/news?category=forex&token=" + this.KEY.FINNHUB
-    );
-};
-
-API.getNewsCenter = async function(symbol) {
-    var results = await Promise.all([
-        this.getMarketNews(symbol),
-        this.getEconomicNews(),
-        this.getCryptoNews(),
-        this.getForexNews()
-    ]);
-    return {
-        company: results[0],
-        economy: results[1],
-        crypto: results[2],
-        forex: results[3]
-    };
-};
-
-/*=========================================================
-BÖLÜM 7 — Smart Cache
-=========================================================*/
-
-API.Cache = {
-    storage: new Map(),
-    defaultTTL: 30000,
-
-    set: function(key, value, ttl) {
-        this.storage.set(key, {
-            value: value,
-            expires: Date.now() + (ttl || this.defaultTTL)
+      get: function (key) {
+        var entry = store.get(key);
+        if (!entry) return null;
+        if (Date.now() > entry.expiresAt) {
+          store.delete(key);
+          return null;
+        }
+        return entry.value;
+      },
+      set: function (key, value, ttlMs) {
+        store.set(key, {
+          value: value,
+          expiresAt: Date.now() + (ttlMs || CONFIG.quoteCacheTtlMs)
         });
-    },
+      },
+      clear: function () {
+        store.clear();
+      }
+    };
+  }
 
-    get: function(key) {
-        var item = this.storage.get(key);
-        if (!item) return null;
-        if (Date.now() > item.expires) {
-            this.storage.delete(key);
-            return null;
+  var cache = createCache();
+
+  function stripSuffix(symbol) {
+    return String(symbol || "").replace(/\.[A-Za-z]+$/i, "");
+  }
+
+  function normalizeQuote(price, previousClose, currency, source) {
+    price = Number(price);
+    previousClose =
+      previousClose != null ? Number(previousClose) : price;
+    if (!isFinite(price)) return null;
+
+    var change = price - previousClose;
+    var changePercent = previousClose ? (change / previousClose) * 100 : 0;
+
+    return {
+      price: price,
+      previousClose: previousClose,
+      change: change,
+      changePercent: changePercent,
+      currency: currency || "",
+      source: source || "",
+      asOf: Date.now()
+    };
+  }
+
+  function fetchJsonOnce(url, timeoutMs) {
+    var controller = new AbortController();
+    var timer = setTimeout(function () {
+      controller.abort();
+    }, timeoutMs || CONFIG.requestTimeoutMs);
+
+    return fetch(url, { signal: controller.signal, mode: "cors" })
+      .then(function (response) {
+        clearTimeout(timer);
+        if (!response.ok) {
+          throw new Error("HTTP " + response.status);
         }
-        return item.value;
+        return response.json();
+      })
+      .catch(function (err) {
+        clearTimeout(timer);
+        throw err;
+      });
+  }
+
+  /**
+   * Transport: direct request, then configured CORS proxies in order.
+   */
+  function requestJson(url) {
+    return fetchJsonOnce(url, CONFIG.requestTimeoutMs).catch(function (
+      directError
+    ) {
+      if (typeof console !== "undefined" && console.warn) {
+        console.warn("[MarketData] direct fetch failed:", directError.message);
+      }
+
+      var chain = Promise.reject(directError);
+      CONFIG.corsProxies.forEach(function (buildProxyUrl) {
+        chain = chain.catch(function () {
+          return fetchJsonOnce(
+            buildProxyUrl(url),
+            CONFIG.requestTimeoutMs
+          );
+        });
+      });
+      return chain;
+    });
+  }
+
+  // ---------------------------------------------------------------------------
+  // Provider adapters (each throws on empty / invalid payload)
+  // ---------------------------------------------------------------------------
+
+  function quoteFromFmp(symbol) {
+    var key = CONFIG.credentials.fmp;
+    if (!key) return Promise.reject(new Error("FMP key not configured"));
+
+    var url =
+      CONFIG.endpoints.fmp +
+      "/quote/" +
+      encodeURIComponent(stripSuffix(symbol)) +
+      "?apikey=" +
+      encodeURIComponent(key);
+
+    return requestJson(url).then(function (payload) {
+      var row = Array.isArray(payload) ? payload[0] : payload;
+      if (!row || row.price == null) throw new Error("FMP empty payload");
+      return normalizeQuote(
+        row.price,
+        row.previousClose,
+        row.currency || "USD",
+        "fmp"
+      );
+    });
+  }
+
+  function quoteFromFinnhub(symbol) {
+    var key = CONFIG.credentials.finnhub;
+    if (!key) return Promise.reject(new Error("Finnhub key not configured"));
+
+    var url =
+      CONFIG.endpoints.finnhub +
+      "/quote?symbol=" +
+      encodeURIComponent(stripSuffix(symbol)) +
+      "&token=" +
+      encodeURIComponent(key);
+
+    return requestJson(url).then(function (payload) {
+      if (!payload || payload.c == null || payload.c === 0) {
+        throw new Error("Finnhub empty payload");
+      }
+      return normalizeQuote(payload.c, payload.pc, "", "finnhub");
+    });
+  }
+
+  function quoteFromTwelve(symbol) {
+    var key = CONFIG.credentials.twelve;
+    if (!key) return Promise.reject(new Error("Twelve Data key not configured"));
+
+    var url =
+      CONFIG.endpoints.twelve +
+      "/quote?symbol=" +
+      encodeURIComponent(symbol) +
+      "&apikey=" +
+      encodeURIComponent(key);
+
+    return requestJson(url).then(function (payload) {
+      if (!payload || payload.close == null) {
+        throw new Error("Twelve Data empty payload");
+      }
+      var price = Number(payload.close);
+      var prev =
+        payload.previous_close != null
+          ? Number(payload.previous_close)
+          : price;
+      return normalizeQuote(price, prev, payload.currency || "", "twelve");
+    });
+  }
+
+  function quoteFromAlpha(symbol) {
+    var key = CONFIG.credentials.alpha;
+    if (!key) return Promise.reject(new Error("Alpha Vantage key not configured"));
+
+    var url =
+      CONFIG.endpoints.alpha +
+      "?function=GLOBAL_QUOTE&symbol=" +
+      encodeURIComponent(stripSuffix(symbol)) +
+      "&apikey=" +
+      encodeURIComponent(key);
+
+    return requestJson(url).then(function (payload) {
+      var quote = payload && payload["Global Quote"];
+      if (!quote || !quote["05. price"]) {
+        throw new Error("Alpha Vantage empty payload");
+      }
+      return normalizeQuote(
+        quote["05. price"],
+        quote["08. previous close"],
+        "",
+        "alpha"
+      );
+    });
+  }
+
+  function quoteFromPolygon(symbol) {
+    var key = CONFIG.credentials.polygon;
+    if (!key) return Promise.reject(new Error("Polygon key not configured"));
+
+    var url =
+      CONFIG.endpoints.polygon +
+      "/v2/aggs/ticker/" +
+      encodeURIComponent(stripSuffix(symbol)) +
+      "/prev?adjusted=true&apiKey=" +
+      encodeURIComponent(key);
+
+    return requestJson(url).then(function (payload) {
+      var row = payload && payload.results && payload.results[0];
+      if (!row || row.c == null) throw new Error("Polygon empty payload");
+      return normalizeQuote(row.c, row.o, "USD", "polygon");
+    });
+  }
+
+  function quoteFromYahoo(symbol) {
+    var url =
+      CONFIG.endpoints.yahoo +
+      "/v8/finance/chart/" +
+      encodeURIComponent(symbol) +
+      "?interval=1d&range=2d";
+
+    return requestJson(url).then(function (payload) {
+      var meta =
+        payload &&
+        payload.chart &&
+        payload.chart.result &&
+        payload.chart.result[0] &&
+        payload.chart.result[0].meta;
+      if (!meta || meta.regularMarketPrice == null) {
+        throw new Error("Yahoo empty payload");
+      }
+      var price = meta.regularMarketPrice;
+      var prev = meta.chartPreviousClose || meta.previousClose || price;
+      return normalizeQuote(price, prev, meta.currency || "", "yahoo");
+    });
+  }
+
+  var PROVIDER_CHAIN = [
+    { id: "fmp", invoke: quoteFromFmp, requiresKey: "fmp" },
+    { id: "finnhub", invoke: quoteFromFinnhub, requiresKey: "finnhub" },
+    { id: "twelve", invoke: quoteFromTwelve, requiresKey: "twelve" },
+    { id: "alpha", invoke: quoteFromAlpha, requiresKey: "alpha" },
+    { id: "polygon", invoke: quoteFromPolygon, requiresKey: "polygon" },
+    { id: "yahoo", invoke: quoteFromYahoo, requiresKey: null }
+  ];
+
+  // ---------------------------------------------------------------------------
+  // Public API
+  // ---------------------------------------------------------------------------
+
+  var MarketData = {
+    version: CONFIG.version,
+
+    /**
+     * Resolve a live quote for a Yahoo-style symbol (e.g. ASELS.IS, AAPL).
+     * Walks the provider chain until one returns a valid quote.
+     *
+     * @param {string} symbol
+     * @returns {Promise<{
+     *   price: number,
+     *   previousClose: number,
+     *   change: number,
+     *   changePercent: number,
+     *   currency: string,
+     *   source: string,
+     *   asOf: number
+     * }|null>}
+     */
+    getQuote: function (symbol) {
+      var normalized = String(symbol || "").trim();
+      if (!normalized) {
+        return Promise.resolve(null);
+      }
+
+      var cacheKey = "quote:" + normalized;
+      var cached = cache.get(cacheKey);
+      if (cached) {
+        return Promise.resolve(cached);
+      }
+
+      var sequence = Promise.resolve(null);
+
+      PROVIDER_CHAIN.forEach(function (provider) {
+        sequence = sequence.then(function (result) {
+          if (result) return result;
+
+          if (
+            provider.requiresKey &&
+            !CONFIG.credentials[provider.requiresKey]
+          ) {
+            return null;
+          }
+
+          return provider.invoke(normalized).catch(function (err) {
+            if (typeof console !== "undefined" && console.warn) {
+              console.warn(
+                "[MarketData] provider skipped (" + provider.id + "):",
+                err && err.message
+              );
+            }
+            return null;
+          });
+        });
+      });
+
+      return sequence.then(function (quote) {
+        if (quote) {
+          cache.set(cacheKey, quote, CONFIG.quoteCacheTtlMs);
+        }
+        return quote;
+      });
     },
 
-    has: function(key) {
-        return this.get(key) !== null;
+    /**
+     * Convenience for BIST tickers without suffix.
+     * @param {string} bistCode e.g. "ASELS"
+     */
+    getBistQuote: function (bistCode) {
+      var code = String(bistCode || "").trim();
+      if (code && code.indexOf(".") === -1) code += ".IS";
+      return this.getQuote(code);
     },
 
-    remove: function(key) {
-        this.storage.delete(key);
+    /**
+     * OHLCV history via Yahoo chart API.
+     * @param {string} symbol
+     * @param {string} [range="1mo"]
+     * @param {string} [interval="1d"]
+     */
+    getHistory: function (symbol, range, interval) {
+      range = range || "1mo";
+      interval = interval || "1d";
+      var normalized = String(symbol || "").trim();
+      if (normalized && normalized.indexOf(".") === -1) {
+        normalized += ".IS";
+      }
+      var url =
+        CONFIG.endpoints.yahoo +
+        "/v8/finance/chart/" +
+        encodeURIComponent(normalized) +
+        "?range=" +
+        encodeURIComponent(range) +
+        "&interval=" +
+        encodeURIComponent(interval);
+      return requestJson(url);
     },
 
-    clear: function() {
-        this.storage.clear();
+    /**
+     * Company news (Finnhub). Requires credentials.news or credentials.finnhub.
+     */
+    getCompanyNews: function (symbol, fromIsoDate, toIsoDate) {
+      var token =
+        CONFIG.credentials.news || CONFIG.credentials.finnhub || "";
+      if (!token) return Promise.resolve([]);
+
+      var url =
+        CONFIG.endpoints.finnhub +
+        "/company-news?symbol=" +
+        encodeURIComponent(stripSuffix(symbol)) +
+        "&from=" +
+        encodeURIComponent(fromIsoDate) +
+        "&to=" +
+        encodeURIComponent(toIsoDate) +
+        "&token=" +
+        encodeURIComponent(token);
+
+      return requestJson(url);
     },
 
-    size: function() {
-        return this.storage.size;
+    /** Drop in-memory quote cache */
+    clearCache: function () {
+      cache.clear();
     }
-};
+  };
 
-API.cachedRequest = async function(url, ttl) {
-    ttl = ttl || 30000;
-    var cached = this.Cache.get(url);
-    if (cached) return cached;
-    var data = await this.request(url);
-    this.Cache.set(url, data, ttl);
-    return data;
-};
+  // Backward-compatible global used by stock.html / index.html
+  var API = {
+    VERSION: MarketData.version,
+    getLiveQuote: function (symbol) {
+      return MarketData.getQuote(symbol).then(function (q) {
+        if (!q) return null;
+        // Legacy shape expected by existing pages
+        return {
+          price: q.price,
+          prev: q.previousClose,
+          chg: q.change,
+          pct: q.changePercent,
+          currency: q.currency,
+          source: q.source
+        };
+      });
+    },
+    getQuote: function (symbol) {
+      return this.getLiveQuote(symbol);
+    },
+    getHistory: function (symbol, range, interval) {
+      return MarketData.getHistory(symbol, range, interval);
+    },
+    getCompanyNews: function (symbol, from, to) {
+      return MarketData.getCompanyNews(symbol, from, to);
+    },
+    Cache: cache
+  };
 
-console.log("API Engine v" + API.VERSION + " ready (CORS proxy enabled)");
+  global.MarketData = MarketData;
+  global.API = API;
+
+  if (typeof console !== "undefined" && console.info) {
+    console.info(
+      "[MarketData] v" +
+        MarketData.version +
+        " ready · failover FMP→Finnhub→Twelve→Alpha→Polygon→Yahoo"
+    );
+  }
+})(typeof window !== "undefined" ? window : this);
