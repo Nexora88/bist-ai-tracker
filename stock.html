@@ -4,299 +4,518 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Küresel Borsalar | BIST AI Tracker</title>
-<meta name="description" content="BIST, NASDAQ, NYSE, DAX, LSE, TSE, HKEX, SSE, ASX, TSX, OTCQB canlı hisse takibi. Nexora AI destekli analiz.">
+<meta name="description" content="BIST, NASDAQ, NYSE ücretsiz. LSE, Frankfurt, Tokyo Premium. OTC, Hong Kong, Çin Elite. Tek panelde dünya piyasaları.">
 <meta name="theme-color" content="#0a0e17">
-<meta property="og:title" content="Küresel Borsalar | BIST AI Tracker">
-<meta property="og:description" content="11 borsa, OTCQB dahil, canlı fiyatlar, Nexora AI analiz.">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
-:root{--bg:#0a0e17;--surface:#111827;--border:rgba(255,255,255,.06);--text:#f1f5f9;--muted:#94a3b8;--green:#22c55e;--red:#ef4444;--accent:#10b981;--cyan:#22d3ee;--violet:#a78bfa;--amber:#fbbf24}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5}
-a{color:inherit;text-decoration:none}button{font-family:inherit;cursor:pointer;border:none;background:none}
-.container{max-width:1280px;margin:0 auto;padding:0 20px}
-.glass{background:rgba(17,24,39,.75);backdrop-filter:blur(16px);border:1px solid var(--border)}
-.navbar{position:sticky;top:0;z-index:50;height:60px;background:rgba(10,14,23,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
-.nav-inner{display:flex;align-items:center;justify-content:space-between;height:60px;max-width:1280px;margin:0 auto;padding:0 20px}
-.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px}
-.logo .accent{color:var(--accent)}
-.nav-links{display:flex;gap:24px;font-size:13.5px;font-weight:500;color:var(--muted)}
-.nav-links a:hover,.nav-links a.active{color:var(--accent)}
-@media(max-width:768px){.nav-links{display:none}}
-.page{padding:32px 0 60px}
-h1{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;letter-spacing:-.02em;margin-bottom:8px}
-.sub{color:var(--muted);font-size:14px;margin-bottom:24px}
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
-.tab{padding:9px 16px;border-radius:10px;font-size:12px;font-weight:600;background:#1e293b;color:var(--muted);border:1px solid var(--border);transition:all .15s}
-.tab:hover,.tab.active{background:rgba(16,185,129,.15);color:var(--accent);border-color:rgba(16,185,129,.35)}
-.search{position:relative;max-width:360px;margin-bottom:24px}
-.search i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#64748b;font-size:13px}
-.search input{width:100%;padding:12px 14px 12px 40px;border-radius:12px;background:rgba(15,23,42,.85);border:1px solid #334155;color:var(--text);font-size:13.5px;outline:none}
-.search input:focus{border-color:rgba(16,185,129,.45)}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-@media(max-width:1100px){.grid{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:768px){.grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:480px){.grid{grid-template-columns:1fr}}
-.card{padding:16px;border-radius:14px;transition:transform .25s,border-color .25s}
-.card:hover{transform:translateY(-4px);border-color:rgba(16,185,129,.35)}
-.sym{font-size:15px;font-weight:700}
-.name{font-size:11px;color:#64748b;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.price{font-size:20px;font-weight:700;margin-top:12px}
-.chg{font-size:13px;font-weight:600;margin-top:2px}
-.up{color:var(--green)}.down{color:var(--red)}
-.exch{font-size:10px;font-weight:600;text-transform:uppercase;color:#64748b;margin-top:10px}
-.status{font-size:12px;color:var(--muted);margin-bottom:16px}
-.detail{display:none;margin-top:28px}
-.detail.open{display:block}
-.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-@media(max-width:768px){.detail-grid{grid-template-columns:1fr}}
-.dcard{padding:20px;border-radius:16px}
-.dcard h2{font-size:18px;font-weight:700;margin-bottom:12px}
-.big-price{font-size:32px;font-weight:800}
-.meta-row{display:flex;justify-content:space-between;padding:8px 0;font-size:13px;border-bottom:1px solid var(--border)}
-.meta-row:last-child{border-bottom:none}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;font-size:13px;font-weight:600}
-.btn-primary{background:linear-gradient(135deg,#10b981,#059669);color:#022c22}
-.btn-ghost{background:#1e293b;color:#e2e8f0;border:1px solid var(--border)}
-.loading{text-align:center;padding:40px;color:#64748b}
-.skel{background:linear-gradient(90deg,#1e293b 25%,#334155 50%,#1e293b 75%);background-size:200% 100%;animation:skel 1.4s ease infinite;border-radius:6px;height:14px;margin:8px 0}
-@keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
-.footer{border-top:1px solid var(--border);padding:28px 0;margin-top:40px;font-size:12px;color:#64748b;text-align:center}
+:root {
+  --bg: #0a0e17;
+  --border: rgba(255,255,255,0.06);
+  --text: #f1f5f9;
+  --muted: #94a3b8;
+  --accent: #10b981;
+  --cyan: #22d3ee;
+  --violet: #a78bfa;
+  --amber: #fbbf24;
+  --red: #ef4444;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+button, input { font-family: inherit; border: none; background: none; cursor: pointer; }
+.container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+.bg {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 40% at 10% 0%, rgba(16,185,129,0.12), transparent 50%),
+    radial-gradient(ellipse 50% 35% at 90% 20%, rgba(167,139,250,0.1), transparent 50%);
+}
+
+.navbar {
+  position: sticky; top: 0; z-index: 50; height: 60px;
+  background: rgba(10,14,23,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-inner {
+  max-width: 1100px; margin: 0 auto; padding: 0 20px;
+  height: 60px; display: flex; align-items: center; justify-content: space-between;
+}
+.logo { font-weight: 800; font-size: 17px; display: flex; align-items: center; gap: 8px; }
+.logo .accent { color: var(--accent); }
+.nav-links { display: flex; gap: 20px; font-size: 13.5px; font-weight: 500; color: var(--muted); }
+.nav-links a:hover, .nav-links a.active { color: var(--accent); }
+@media (max-width: 700px) { .nav-links { display: none; } }
+
+.page { position: relative; z-index: 1; padding: 32px 0 60px; }
+
+.hero { margin-bottom: 28px; }
+.hero h1 {
+  font-size: clamp(1.55rem, 3.2vw, 2.1rem);
+  font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px;
+  background: linear-gradient(135deg, #34d399, #22d3ee 55%, #a78bfa);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.hero .lead {
+  font-size: 14.5px; color: #94a3b8; max-width: 620px; line-height: 1.65; margin-bottom: 16px;
+}
+.hero .lead strong { color: #e2e8f0; }
+
+.promo {
+  display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+  padding: 14px 16px; border-radius: 14px; margin-bottom: 28px;
+  background: linear-gradient(135deg, rgba(251,191,36,0.08), rgba(167,139,250,0.08));
+  border: 1px solid rgba(251,191,36,0.22);
+}
+.promo p { flex: 1; font-size: 13px; color: #cbd5e1; min-width: 200px; line-height: 1.5; }
+.promo p strong { color: var(--amber); }
+.promo a {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 14px; border-radius: 10px; font-size: 12.5px; font-weight: 700;
+  background: linear-gradient(135deg, #f59e0b, #d97706); color: #1c1000;
+  white-space: nowrap;
+}
+
+.tier-head {
+  font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+  margin: 26px 0 12px; display: flex; align-items: center; gap: 8px;
+}
+.tier-head.free { color: var(--accent); }
+.tier-head.premium { color: var(--amber); }
+.tier-head.elite { color: var(--violet); }
+.tier-head span {
+  font-weight: 500; text-transform: none; letter-spacing: 0; color: #64748b; font-size: 12px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+}
+
+.mcard {
+  padding: 18px; border-radius: 16px; width: 100%; text-align: left;
+  background: rgba(17,24,39,0.82); border: 1px solid var(--border);
+  transition: border-color 0.2s, transform 0.15s;
+}
+.mcard:hover { border-color: rgba(16,185,129,0.35); transform: translateY(-2px); }
+.mcard.locked { opacity: 0.78; }
+.mcard.locked:hover { border-color: rgba(251,191,36,0.4); }
+.mcard .top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+.mcard .flag { font-size: 28px; line-height: 1; }
+.mcard .lock-tag {
+  font-size: 11px; font-weight: 700; color: var(--amber);
+  display: flex; align-items: center; gap: 4px;
+}
+.mcard h3 { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+.mcard .country { font-size: 12px; color: #64748b; margin-bottom: 12px; }
+.mcard .meta { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #94a3b8; }
+.badge {
+  font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; text-transform: uppercase;
+}
+.badge-free { background: rgba(16,185,129,0.15); color: var(--accent); }
+.badge-premium { background: rgba(251,191,36,0.15); color: var(--amber); }
+.badge-elite { background: rgba(167,139,250,0.15); color: var(--violet); }
+
+.view { display: none; }
+.view.active { display: block; }
+
+.back {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 16px;
+}
+.back:hover { color: var(--accent); }
+
+.mhead {
+  display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+  justify-content: space-between; margin-bottom: 12px;
+}
+.mhead h2 { font-size: 20px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+.search {
+  padding: 10px 14px; border-radius: 10px;
+  background: rgba(15,23,42,0.9); border: 1px solid #334155;
+  color: var(--text); font-size: 13px; min-width: 200px; outline: none;
+}
+.search:focus { border-color: rgba(16,185,129,0.45); }
+
+.status { font-size: 12px; color: #64748b; margin-bottom: 12px; }
+
+.table-wrap {
+  overflow-x: auto; border-radius: 14px;
+  border: 1px solid var(--border); background: rgba(17,24,39,0.75);
+}
+table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 560px; }
+th {
+  text-align: left; padding: 11px 14px; font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.04em; color: #64748b;
+  border-bottom: 1px solid var(--border);
+}
+td { padding: 12px 14px; border-bottom: 1px solid var(--border); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(30,41,59,0.35); }
+.sym { font-weight: 700; }
+.sym small { display: block; font-weight: 500; color: #64748b; font-size: 11px; margin-top: 2px; }
+.up { color: var(--accent); }
+.down { color: var(--red); }
+
+.lock-panel {
+  text-align: center; padding: 48px 24px; border-radius: 16px;
+  background: rgba(17,24,39,0.85); border: 1px solid var(--border);
+}
+.lock-panel h3 { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
+.lock-panel p { color: #94a3b8; font-size: 14px; margin-bottom: 20px; max-width: 360px; margin-left: auto; margin-right: auto; line-height: 1.6; }
+.btn-prem {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 18px; border-radius: 11px; font-size: 13px; font-weight: 700;
+  background: linear-gradient(135deg, #f59e0b, #d97706); color: #1c1000;
+}
+
+.skel {
+  height: 14px; border-radius: 6px; width: 64px;
+  background: linear-gradient(90deg, #1e293b, #334155, #1e293b);
+  background-size: 200% 100%; animation: sh 1.2s infinite;
+}
+@keyframes sh {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.footer {
+  position: relative; z-index: 1;
+  border-top: 1px solid var(--border);
+  padding: 24px 0; text-align: center; font-size: 12px; color: #64748b;
+}
 </style>
 </head>
 <body>
+<div class="bg"></div>
 
 <nav class="navbar">
   <div class="nav-inner">
     <a href="index.html" class="logo"><span>📈</span> BIST <span class="accent">AI</span> Tracker</a>
     <div class="nav-links">
       <a href="index.html">Ana Sayfa</a>
-      <a href="stock.html" class="active">Küresel Borsalar</a>
+      <a href="stock.html" class="active">Borsalar</a>
       <a href="portfolio.html">Portföy</a>
-      <a href="ai-analiz.html">AI Merkezi</a>
-      <a href="about.html">Uygulama</a>
+      <a href="premium.html">Premium</a>
+      <a href="about.html">Hakkımızda</a>
     </div>
   </div>
 </nav>
 
 <div class="page">
   <div class="container">
-    <h1>🌍 Küresel Borsalar</h1>
-    <p class="sub">11 borsa · BIST · NASDAQ · NYSE · DAX · LSE · TSE · HKEX · SSE · ASX · TSX · OTCQB</p>
 
-    <div class="tabs" id="tabs"></div>
-    <div class="search">
-      <i class="fas fa-search"></i>
-      <input id="q" type="text" placeholder="Sembol ara... (AAPL, THYAO, TCEHY...)" autocomplete="off">
-    </div>
-    <div class="status" id="status">Borsa seçin veya arayın</div>
-    <div class="grid" id="list"></div>
-
-    <div class="detail" id="detail">
-      <div class="detail-grid">
-        <div class="dcard glass">
-          <h2 id="dSym">—</h2>
-          <div class="big-price" id="dPrice">—</div>
-          <div id="dChg" class="chg">—</div>
-          <div style="margin-top:16px">
-            <div class="meta-row"><span>Borsa</span><span id="dExch">—</span></div>
-            <div class="meta-row"><span>Hacim</span><span id="dVol">—</span></div>
-            <div class="meta-row"><span>Günlük Yüksek</span><span id="dHigh">—</span></div>
-            <div class="meta-row"><span>Günlük Düşük</span><span id="dLow">—</span></div>
-            <div class="meta-row"><span>Son Güncelleme</span><span id="dTime">—</span></div>
-          </div>
-          <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
-            <button class="btn btn-primary" id="btnRefresh"><i class="fas fa-sync-alt"></i> Yenile</button>
-            <a class="btn btn-ghost" href="index.html">← Ana Sayfa</a>
-          </div>
-        </div>
-        <div class="dcard glass">
-          <h2>🤖 Nexora AI</h2>
-          <div class="meta-row"><span>AI Skoru</span><span id="dAI" style="color:var(--violet);font-weight:700">—</span></div>
-          <p id="dComment" style="margin-top:14px;font-size:14px;color:#cbd5e1;line-height:1.7">Sembol seçildiğinde analiz üretilir.</p>
-        </div>
+    <!-- BORSALAR -->
+    <div class="view active" id="viewMarkets">
+      <div class="hero">
+        <h1>🌍 Dünyanın borsaları, tek panel</h1>
+        <p class="lead">
+          <strong>Free</strong> ile BIST, NASDAQ ve NYSE’ye anında eriş.
+          Londra, Frankfurt, Tokyo ve Toronto için <strong>Pro</strong>;
+          OTC, Hong Kong, Hindistan, Kore, Avustralya ve Çin için <strong>Elite</strong>.
+          Kartına tıkla — hisseler JSON’dan, fiyatlar canlı gelsin.
+        </p>
       </div>
+
+      <div class="promo">
+        <p>
+          <strong>Daha fazla piyasa mı?</strong>
+          Pro ($5) Avrupa &amp; Asya’nın bir kısmını; Elite ($12) OTC ve Uzak Doğu’yu açar.
+          Ücretsiz plan kalıcı — yükseltme senin seçimin.
+        </p>
+        <a href="premium.html"><i class="fas fa-crown"></i> Premium’a geç</a>
+      </div>
+
+      <div class="tier-head free"><i class="fas fa-unlock"></i> Free <span>— herkese açık · hemen keşfet</span></div>
+      <div class="grid" id="gridFree"></div>
+
+      <div class="tier-head premium"><i class="fas fa-crown"></i> Premium <span>— Pro &amp; Elite · LSE · Frankfurt · Tokyo · Toronto</span></div>
+      <div class="grid" id="gridPremium"></div>
+
+      <div class="tier-head elite"><i class="fas fa-gem"></i> Elite <span>— OTC · Hong Kong · Hindistan · Kore · Avustralya · Çin</span></div>
+      <div class="grid" id="gridElite"></div>
     </div>
+
+    <!-- HİSSE LİSTESİ -->
+    <div class="view" id="viewStocks">
+      <button type="button" class="back" id="btnBack"><i class="fas fa-arrow-left"></i> Tüm borsalara dön</button>
+      <div class="mhead">
+        <h2 id="mTitle">—</h2>
+        <input type="search" class="search" id="stockSearch" placeholder="Hisse veya sektör ara…" autocomplete="off">
+      </div>
+      <div class="status" id="stockStatus">—</div>
+      <div id="stockBody"></div>
+    </div>
+
   </div>
 </div>
 
 <footer class="footer">
-  <div class="container">BIST AI Tracker © 2026 · Veri: Yahoo Finance · Nexora AI</div>
+  <div class="container">© 2026 BIST AI Tracker · Nexora · data/*.json</div>
 </footer>
 
 <script>
 
-var EXCHANGES={
-  BIST:{name:'BIST (Türkiye)',suffix:'.IS',currency:'₺',symbols:[
-    {s:'THYAO',n:'Türk Hava Yolları'},{s:'GARAN',n:'Garanti BBVA'},{s:'AKBNK',n:'Akbank'},
-    {s:'ASELS',n:'Aselsan'},{s:'EREGL',n:'Ereğli'},{s:'KCHOL',n:'Koç Holding'},
-    {s:'SISE',n:'Şişecam'},{s:'TUPRS',n:'Tüpraş'},{s:'BIMAS',n:'BİM'},{s:'TCELL',n:'Turkcell'},
-    {s:'PGSUS',n:'Pegasus'},{s:'FROTO',n:'Ford Otosan'},{s:'SAHOL',n:'Sabancı'},{s:'YKBNK',n:'Yapı Kredi'},
-    {s:'ISCTR',n:'İş Bankası'},{s:'AEFES',n:'Anadolu Efes'},{s:'TAVHL',n:'TAV'},{s:'VAKBN',n:'VakıfBank'}
-  ]},
-  NASDAQ:{name:'NASDAQ (ABD)',suffix:'',currency:'$',symbols:[
-    {s:'AAPL',n:'Apple'},{s:'MSFT',n:'Microsoft'},{s:'GOOGL',n:'Alphabet'},{s:'AMZN',n:'Amazon'},
-    {s:'NVDA',n:'NVIDIA'},{s:'META',n:'Meta'},{s:'TSLA',n:'Tesla'},{s:'NFLX',n:'Netflix'},
-    {s:'AMD',n:'AMD'},{s:'INTC',n:'Intel'},{s:'PYPL',n:'PayPal'},{s:'ADBE',n:'Adobe'}
-  ]},
-  NYSE:{name:'NYSE (ABD)',suffix:'',currency:'$',symbols:[
-    {s:'JPM',n:'JPMorgan'},{s:'V',n:'Visa'},{s:'JNJ',n:'Johnson & Johnson'},{s:'WMT',n:'Walmart'},
-    {s:'PG',n:'Procter & Gamble'},{s:'MA',n:'Mastercard'},{s:'DIS',n:'Disney'},{s:'BA',n:'Boeing'},
-    {s:'KO',n:'Coca-Cola'},{s:'XOM',n:'Exxon Mobil'},{s:'HD',n:'Home Depot'},{s:'NKE',n:'Nike'}
-  ]},
-  DAX:{name:'DAX (Almanya)',suffix:'.DE',currency:'€',symbols:[
-    {s:'SAP',n:'SAP'},{s:'SIE',n:'Siemens'},{s:'VOW3',n:'Volkswagen'},{s:'BMW',n:'BMW'},
-    {s:'DTE',n:'Deutsche Telekom'},{s:'ALV',n:'Allianz'},{s:'BAS',n:'BASF'},{s:'BAYN',n:'Bayer'},
-    {s:'DBK',n:'Deutsche Bank'},{s:'ADS',n:'Adidas'}
-  ]},
-  LSE:{name:'LSE (İngiltere)',suffix:'.L',currency:'£',symbols:[
-    {s:'HSBA',n:'HSBC'},{s:'BP',n:'BP'},{s:'SHEL',n:'Shell'},{s:'AZN',n:'AstraZeneca'},
-    {s:'ULVR',n:'Unilever'},{s:'GSK',n:'GSK'},{s:'VOD',n:'Vodafone'},{s:'BATS',n:'BAT'},
-    {s:'RIO',n:'Rio Tinto'},{s:'LLOY',n:'Lloyds'}
-  ]},
-  TSE:{name:'TSE (Japonya)',suffix:'.T',currency:'¥',symbols:[
-    {s:'7203',n:'Toyota'},{s:'6758',n:'Sony'},{s:'9984',n:'SoftBank'},{s:'6861',n:'Keyence'},
-    {s:'8306',n:'MUFG'},{s:'9432',n:'NTT'},{s:'6902',n:'Denso'},{s:'4063',n:'Shin-Etsu'}
-  ]},
-  HKEX:{name:'HKEX (Hong Kong)',suffix:'.HK',currency:'HK$',symbols:[
-    {s:'0700',n:'Tencent'},{s:'9988',n:'Alibaba'},{s:'0941',n:'China Mobile'},{s:'0005',n:'HSBC'},
-    {s:'1299',n:'AIA'},{s:'2318',n:'Ping An'},{s:'3690',n:'Meituan'},{s:'1810',n:'Xiaomi'}
-  ]},
-  SSE:{name:'SSE (Çin)',suffix:'.SS',currency:'¥',symbols:[
-    {s:'600519',n:'Kweichow Moutai'},{s:'601318',n:'Ping An'},{s:'600036',n:'CMB'},{s:'601166',n:'Industrial Bank'},
-    {s:'600276',n:'Hengrui'},{s:'601888',n:'China Tourism'}
-  ]},
-  ASX:{name:'ASX (Avustralya)',suffix:'.AX',currency:'A$',symbols:[
-    {s:'BHP',n:'BHP'},{s:'CBA',n:'Commonwealth Bank'},{s:'CSL',n:'CSL'},{s:'NAB',n:'NAB'},
-    {s:'WBC',n:'Westpac'},{s:'ANZ',n:'ANZ'},{s:'WES',n:'Wesfarmers'},{s:'MQG',n:'Macquarie'}
-  ]},
-  TSX:{name:'TSX (Kanada)',suffix:'.TO',currency:'C$',symbols:[
-    {s:'RY',n:'Royal Bank'},{s:'TD',n:'TD Bank'},{s:'ENB',n:'Enbridge'},{s:'CNQ',n:'Canadian Natural'},
-    {s:'SHOP',n:'Shopify'},{s:'BMO',n:'BMO'},{s:'CP',n:'Canadian Pacific'},{s:'CNR',n:'CN Rail'}
-  ]},
-  OTCQB:{name:'OTCQB (ABD)',suffix:'',currency:'$',symbols:[
-    {s:'TCEHY',n:'Tencent (OTC)'},{s:'BABA',n:'Alibaba (OTC)'},{s:'NSRGY',n:'Nestlé'},
-    {s:'RHHBY',n:'Roche'},{s:'TOYOF',n:'Toyota (OTC)'},{s:'SFTBY',n:'SoftBank (OTC)'},
-    {s:'NTDOY',n:'Nintendo'},{s:'SSNLF',n:'Samsung'},{s:'LNSTY',n:'London Stock Exchange'},
-    {s:'ADDYY',n:'Adidas (OTC)'},{s:'BAYRY',n:'Bayer (OTC)'},{s:'DTEGY',n:'Deutsche Telekom (OTC)'},
-    {s:'VWAGY',n:'Volkswagen (OTC)'},{s:'SIEGY',n:'Siemens (OTC)'},{s:'SAPGY',n:'SAP (OTC)'},
-    {s:'HMC',n:'Honda'},{s:'SONY',n:'Sony (OTC)'},{s:'MUFG',n:'MUFG (OTC)'}
-  ]}
-};
+var DATA_BASE = 'data/';
+var TIER_RANK = { free: 0, pro: 1, premium: 1, elite: 2 };
 
-var currentMkt='BIST',listData=[],detailSymbol=null;
-
-function yahooSymbol(mkt,sym){
-  return sym+(EXCHANGES[mkt].suffix||'');
+function userTier() {
+  try {
+    var p = (localStorage.getItem('nexora_plan') || 'free').toLowerCase();
+    if (p === 'pro') return 'pro';
+    if (p === 'elite') return 'elite';
+    return 'free';
+  } catch (e) { return 'free'; }
 }
 
-function parseQuote(json){
-  try{
-    var meta=json.chart.result[0].meta;
-    if(!meta||meta.regularMarketPrice==null)return null;
-    var price=meta.regularMarketPrice;
-    var prev=meta.chartPreviousClose||meta.previousClose||price;
-    var change=prev?((price-prev)/prev)*100:0;
-    return{price:+price.toFixed(2),change:+change.toFixed(2),volume:meta.regularMarketVolume||0,high:meta.regularMarketDayHigh||null,low:meta.regularMarketDayLow||null,live:true};
-  }catch(e){return null}
+function canAccess(marketTier) {
+  var need = marketTier === 'elite' ? 2 : marketTier === 'premium' ? 1 : 0;
+  var have = TIER_RANK[userTier()] != null ? TIER_RANK[userTier()] : 0;
+  return have >= need;
 }
 
-async function fetchQuote(fullSymbol){
-  var url='https://query1.finance.yahoo.com/v8/finance/chart/'+fullSymbol+'?interval=1d&range=2d';
-  try{var res=await fetch(url,{mode:'cors'});if(res.ok){var d=parseQuote(await res.json());if(d)return d}}catch(e){}
-  try{var res2=await fetch('https://api.allorigins.win/raw?url='+encodeURIComponent(url));if(res2.ok){var d2=parseQuote(await res2.json());if(d2)return d2}}catch(e){}
-  try{var res3=await fetch('https://corsproxy.io/?'+encodeURIComponent(url));if(res3.ok){var d3=parseQuote(await res3.json());if(d3)return d3}}catch(e){}
-  return null;
-}
+var MARKETS = [];
+var currentMarket = null;
+var currentStocks = [];
+var priceCache = {};
 
-function buildTabs(){
-  var el=document.getElementById('tabs');el.innerHTML='';
-  Object.keys(EXCHANGES).forEach(function(k){
-    var btn=document.createElement('button');
-    btn.className='tab'+(k===currentMkt?' active':'');
-    btn.textContent=EXCHANGES[k].name;
-    btn.onclick=function(){currentMkt=k;buildTabs();loadMarket()};
-    el.appendChild(btn);
+function fmt(n, d) {
+  if (n == null || isNaN(n)) return '—';
+  return Number(n).toLocaleString('tr-TR', {
+    minimumFractionDigits: d != null ? d : 2,
+    maximumFractionDigits: d != null ? d : 2
   });
 }
 
-async function loadMarket(){
-  var ex=EXCHANGES[currentMkt];
-  document.getElementById('status').textContent=ex.name+' yükleniyor...';
-  document.getElementById('list').innerHTML='<div class="loading"><div class="skel" style="width:60%;margin:0 auto"></div><div class="skel" style="width:40%;margin:12px auto"></div></div>';
-  var results=await Promise.all(ex.symbols.map(async function(item){
-    var full=yahooSymbol(currentMkt,item.s);
-    var q=await fetchQuote(full);
-    if(q)return Object.assign({symbol:item.s,name:item.n,full:full},q);
-    var seed=item.s.split('').reduce(function(a,c){return a+c.charCodeAt(0)},0);
-    return{symbol:item.s,name:item.n,full:full,price:+(10+(seed%500)+Math.random()*5).toFixed(2),change:+(((seed%11)-5)*0.5).toFixed(2),volume:0,high:null,low:null,live:false};
-  }));
-  listData=results;renderList(results);
-  var live=results.filter(function(r){return r.live}).length;
-  document.getElementById('status').textContent=ex.name+' · '+live+'/'+results.length+' canlı · '+new Date().toLocaleTimeString('tr-TR');
+function yahooSymbol(m, sym) {
+  var s = (sym || '').trim();
+  if (!m || !m.suffix) return s;
+  if (s.indexOf('.') !== -1) return s;
+  return s + m.suffix;
 }
 
-function renderList(data){
-  var box=document.getElementById('list');
-  var cur=EXCHANGES[currentMkt].currency;
-  box.innerHTML='';
-  data.forEach(function(s){
-    var div=document.createElement('div');
-    div.className='card glass';
-    div.style.cursor='pointer';
-    var cls=s.change>=0?'up':'down';
-    div.innerHTML='<div class="sym">'+s.symbol+'</div><div class="name">'+s.name+'</div><div class="price">'+s.price.toLocaleString(undefined,{minimumFractionDigits:2})+' '+cur+'</div><div class="chg '+cls+'">'+(s.change>=0?'▲ +':'▼ ')+s.change+'%</div><div class="exch">'+currentMkt+(s.live?' · canlı':'')+'</div>';
-    div.onclick=function(){showDetail(s)};
-    box.appendChild(div);
+function parseYahoo(json) {
+  try {
+    var meta = json.chart.result[0].meta;
+    if (!meta || meta.regularMarketPrice == null) return null;
+    var price = +meta.regularMarketPrice;
+    var prev = meta.chartPreviousClose || meta.previousClose || price;
+    return {
+      price: price,
+      chg: price - prev,
+      pct: prev ? ((price - prev) / prev) * 100 : 0,
+      currency: meta.currency || ''
+    };
+  } catch (e) { return null; }
+}
+
+/* Fiyat: önce API.getLiveQuote (api.js), yoksa Yahoo + proxy */
+async function fetchQuote(ysym) {
+  if (priceCache[ysym] && Date.now() - priceCache[ysym].ts < 60000) {
+    return priceCache[ysym].d;
+  }
+
+  if (typeof API !== 'undefined' && API.getLiveQuote) {
+    try {
+      var q = await API.getLiveQuote(ysym);
+      if (q && q.price != null) {
+        var d = { price: q.price, chg: q.chg, pct: q.pct, currency: q.currency || '', source: q.source || 'api' };
+        priceCache[ysym] = { d: d, ts: Date.now() };
+        return d;
+      }
+    } catch (e) {}
+  }
+
+  var url = 'https://query1.finance.yahoo.com/v8/finance/chart/' + encodeURIComponent(ysym) + '?interval=1d&range=2d';
+  var data = null;
+  try {
+    var r = await fetch(url, { mode: 'cors' });
+    if (r.ok) data = parseYahoo(await r.json());
+  } catch (e) {}
+  if (!data) {
+    try {
+      var r2 = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(url));
+      if (r2.ok) data = parseYahoo(await r2.json());
+    } catch (e) {}
+  }
+  if (!data) {
+    try {
+      var r3 = await fetch('https://corsproxy.io/?' + encodeURIComponent(url));
+      if (r3.ok) data = parseYahoo(await r3.json());
+    } catch (e) {}
+  }
+  if (data) {
+    data.source = data.source || 'yahoo';
+    priceCache[ysym] = { d: data, ts: Date.now() };
+  }
+  return data;
+}
+
+async function loadIndex() {
+  try {
+    var r = await fetch(DATA_BASE + 'markets.json');
+    if (!r.ok) throw new Error('index');
+    var j = await r.json();
+    MARKETS = j.markets || [];
+  } catch (e) {
+    MARKETS = [
+      { key: 'bist', id: 'BIST', name: 'Borsa İstanbul', country: 'Türkiye', flag: '🇹🇷', tier: 'free', count: 0, file: 'bist.json' },
+      { key: 'nasdaq', id: 'NASDAQ', name: 'NASDAQ', country: 'ABD', flag: '🇺🇸', tier: 'free', count: 0, file: 'nasdaq.json' },
+      { key: 'nyse', id: 'NYSE', name: 'NYSE', country: 'ABD', flag: '🇺🇸', tier: 'free', count: 0, file: 'nyse.json' }
+    ];
+  }
+  renderMarketCards();
+}
+
+function renderMarketCards() {
+  var free = document.getElementById('gridFree');
+  var prem = document.getElementById('gridPremium');
+  var elite = document.getElementById('gridElite');
+  free.innerHTML = prem.innerHTML = elite.innerHTML = '';
+
+  MARKETS.forEach(function (m) {
+    var locked = !canAccess(m.tier);
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'mcard' + (locked ? ' locked' : '');
+    btn.innerHTML =
+      '<div class="top"><span class="flag">' + m.flag + '</span>' +
+      (locked
+        ? '<span class="lock-tag"><i class="fas fa-lock"></i> ' + (m.tier === 'elite' ? 'Elite' : 'Premium') + '</span>'
+        : '') +
+      '</div>' +
+      '<h3>' + m.name + '</h3>' +
+      '<div class="country">' + m.country + ' · ' + m.id + '</div>' +
+      '<div class="meta"><span>' + (m.count || '—') + ' hisse</span>' +
+      '<span class="badge badge-' + m.tier + '">' + m.tier + '</span></div>';
+    btn.onclick = function () { openMarket(m); };
+    if (m.tier === 'free') free.appendChild(btn);
+    else if (m.tier === 'premium') prem.appendChild(btn);
+    else elite.appendChild(btn);
   });
 }
 
-function showDetail(s){
-  detailSymbol=s;
-  document.getElementById('detail').classList.add('open');
-  var cur=EXCHANGES[currentMkt].currency;
-  document.getElementById('dSym').textContent=s.symbol+' · '+s.name;
-  document.getElementById('dPrice').textContent=s.price.toLocaleString(undefined,{minimumFractionDigits:2})+' '+cur;
-  var cls=s.change>=0?'up':'down';
-  document.getElementById('dChg').className='chg '+cls;
-  document.getElementById('dChg').textContent=(s.change>=0?'▲ +':'▼ ')+s.change+'%';
-  document.getElementById('dExch').textContent=EXCHANGES[currentMkt].name;
-  document.getElementById('dVol').textContent=s.volume?s.volume.toLocaleString():'—';
-  document.getElementById('dHigh').textContent=s.high!=null?s.high.toFixed(2)+' '+cur:'—';
-  document.getElementById('dLow').textContent=s.low!=null?s.low.toFixed(2)+' '+cur:'—';
-  document.getElementById('dTime').textContent=new Date().toLocaleTimeString('tr-TR');
-  var ai=Math.min(95,Math.max(40,60+Math.round(s.change*3)));
-  document.getElementById('dAI').textContent=ai+'/100';
-  var comment=s.change>1?'Kısa vadede pozitif momentum. Hacim ve haber akışını takip edin.':s.change<-1?'Baskı altında. Destek seviyeleri kritik. Risk yönetimine dikkat.':'Yatay seyir. Teknik kırılımlar yönü belirleyebilir.';
-  document.getElementById('dComment').textContent=comment;
-  document.getElementById('detail').scrollIntoView({behavior:'smooth',block:'start'});
+async function openMarket(m) {
+  document.getElementById('viewMarkets').classList.remove('active');
+  document.getElementById('viewStocks').classList.add('active');
+  document.getElementById('mTitle').innerHTML = m.flag + ' ' + m.name;
+  document.getElementById('stockSearch').value = '';
+  document.getElementById('stockBody').innerHTML = '';
+  document.getElementById('stockStatus').textContent = 'Yükleniyor…';
+
+  if (!canAccess(m.tier)) {
+    document.getElementById('stockStatus').textContent = '';
+    document.getElementById('stockBody').innerHTML =
+      '<div class="lock-panel">' +
+      '<h3><i class="fas fa-lock" style="color:var(--amber)"></i> ' +
+      (m.tier === 'elite' ? 'Elite' : 'Premium') + ' gerekli</h3>' +
+      '<p><strong>' + m.name + '</strong> bu plana özel. Yükseltince tüm hisseler ve canlı fiyatlar açılır — ücretsiz planın silinmez.</p>' +
+      '<a class="btn-prem" href="premium.html"><i class="fas fa-crown"></i> Planları incele · Pro $5 · Elite $12</a>' +
+      '</div>';
+    return;
+  }
+
+  try {
+    var r = await fetch(DATA_BASE + m.file);
+    if (!r.ok) throw new Error('json');
+    var j = await r.json();
+    currentMarket = j;
+    currentStocks = j.stocks || [];
+    document.getElementById('stockStatus').textContent =
+      currentStocks.length + ' hisse · ' + (j.currency || '');
+    renderStockTable(currentStocks);
+    refreshPrices();
+  } catch (e) {
+    document.getElementById('stockStatus').textContent = 'JSON yüklenemedi';
+    document.getElementById('stockBody').innerHTML =
+      '<p style="color:#94a3b8;padding:24px">data/' + m.file +
+      ' bulunamadı. Dosyayı repo kökünde <code>data/</code> klasörüne ekle.</p>';
+  }
 }
 
-document.getElementById('btnRefresh').onclick=async function(){
-  if(!detailSymbol)return;
-  var q=await fetchQuote(detailSymbol.full);
-  if(q){Object.assign(detailSymbol,q);showDetail(detailSymbol)}
+function renderStockTable(list) {
+  var q = (document.getElementById('stockSearch').value || '').toLowerCase().trim();
+  var filtered = list.filter(function (s) {
+    if (!q) return true;
+    return (s.symbol + ' ' + s.name + ' ' + (s.sector || '')).toLowerCase().indexOf(q) !== -1;
+  });
+
+  if (!filtered.length) {
+    document.getElementById('stockBody').innerHTML =
+      '<p style="color:#64748b;padding:20px">Sonuç yok.</p>';
+    return;
+  }
+
+  var html =
+    '<div class="table-wrap"><table><thead><tr>' +
+    '<th>Hisse</th><th>Sektör</th><th>Fiyat</th><th>Değişim</th>' +
+    '</tr></thead><tbody>';
+
+  filtered.forEach(function (s) {
+    var id = 'p_' + s.symbol.replace(/[^a-zA-Z0-9]/g, '_');
+    html +=
+      '<tr>' +
+      '<td class="sym">' + s.symbol + '<small>' + s.name + '</small></td>' +
+      '<td style="color:#94a3b8">' + (s.sector || '—') + '</td>' +
+      '<td id="' + id + '_px"><div class="skel"></div></td>' +
+      '<td id="' + id + '_ch"><div class="skel" style="width:72px"></div></td>' +
+      '</tr>';
+  });
+  html += '</tbody></table></div>';
+  document.getElementById('stockBody').innerHTML = html;
+}
+
+async function refreshPrices() {
+  if (!currentMarket || !currentStocks.length) return;
+
+  await Promise.all(
+    currentStocks.map(async function (s) {
+      var ysym = yahooSymbol(currentMarket, s.symbol);
+      var q = await fetchQuote(ysym);
+      var id = 'p_' + s.symbol.replace(/[^a-zA-Z0-9]/g, '_');
+      var px = document.getElementById(id + '_px');
+      var ch = document.getElementById(id + '_ch');
+      if (!px) return;
+      if (q) {
+        px.textContent = fmt(q.price);
+        ch.innerHTML =
+          '<span class="' + (q.pct >= 0 ? 'up' : 'down') + '">' +
+          (q.pct >= 0 ? '▲ ' : '▼ ') + fmt(Math.abs(q.pct), 2) + '%</span>';
+      } else {
+        px.textContent = '—';
+        ch.textContent = '—';
+      }
+    })
+  );
+
+  document.getElementById('stockStatus').textContent =
+    currentStocks.length + ' hisse · ' + (currentMarket.currency || '') + ' · ' +
+    new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+}
+
+document.getElementById('btnBack').onclick = function () {
+  document.getElementById('viewStocks').classList.remove('active');
+  document.getElementById('viewMarkets').classList.add('active');
+  currentMarket = null;
 };
 
-document.getElementById('q').addEventListener('input',function(e){
-  var v=e.target.value.toUpperCase().trim();
-  if(!v){renderList(listData);return}
-  renderList(listData.filter(function(s){return s.symbol.indexOf(v)!==-1||(s.name||'').toUpperCase().indexOf(v)!==-1}));
+document.getElementById('stockSearch').addEventListener('input', function () {
+  if (!currentStocks.length) return;
+  renderStockTable(currentStocks);
+  refreshPrices();
 });
 
-(function(){
-  var p=new URLSearchParams(location.search);
-  var m=p.get('m'),sym=p.get('symbol');
-  if(m&&EXCHANGES[m])currentMkt=m;
-  buildTabs();
-  loadMarket().then(function(){
-    if(sym){
-      var found=listData.find(function(s){return s.symbol===sym});
-      if(found)showDetail(found);
-    }
-  });
-})();
+loadIndex();
 </script>
 </body>
 </html>
