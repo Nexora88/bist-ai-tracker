@@ -57,7 +57,7 @@
      */
     credentials: {
       fmp: "",
-      finnhub: "",
+      finnhub: "d92gf21r01qraam0tf4gd92gf21r01qraam0tf50",
       twelve: "",
       alpha: "",
       polygon: "",
