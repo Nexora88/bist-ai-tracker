@@ -2,43 +2,58 @@
  * =============================================================================
  *  BIST AI Tracker — Market Data Client
  *  Module: api.js
- *  Version: 4.0.0
+ *  Version: 4.1.0
  *  Author: Ahmet Eymen Bakraç (Nexora)
  *
- *  Responsibility
- *  --------------
- *  Unified market-data access with ordered provider failover, short-lived
- *  in-memory cache, and CORS-aware transport for static hosting (e.g. GitHub Pages).
+ *  Keys: ONLY from secrets.js (window.NEXORA_KEYS or window.API_KEYS)
+ *  Do not put API keys in this file.
  *
- *  Failover order
- *  --------------
- *  1. Financial Modeling Prep
- *  2. Finnhub
- *  3. Twelve Data
- *  4. Alpha Vantage
- *  5. Polygon.io
- *  6. Yahoo Finance (no key; last resort + public CORS proxies)
- *
- *  Security note
- *  -------------
- *  Keys embedded in front-end bundles are visible to anyone who loads the page.
- *  Use only restricted / free-tier credentials. Prefer provider-side domain
- *  allowlists. Never commit high-privilege or billing-enabled secrets.
+ *  <script src="assets/js/secrets.js"></script>
+ *  <script src="assets/js/api.js"></script>
  * =============================================================================
  */
 
 (function (global) {
   "use strict";
 
-  // ---------------------------------------------------------------------------
-  // Configuration
-  // ---------------------------------------------------------------------------
+  function readKeys() {
+    var raw =
+      (global.NEXORA_KEYS && typeof global.NEXORA_KEYS === "object"
+        ? global.NEXORA_KEYS
+        : null) ||
+      (global.API_KEYS && typeof global.API_KEYS === "object"
+        ? global.API_KEYS
+        : null) ||
+      {};
+
+    return {
+      fmp:
+        raw.fmp ||
+        raw.FMP ||
+        raw.financialModelingPrep ||
+        raw.financialmodelingprep ||
+        "",
+      finnhub: raw.finnhub || raw.FINNHUB || "",
+      twelve:
+        raw.twelve ||
+        raw.TWELVE ||
+        raw.twelveData ||
+        raw.twelve_data ||
+        "",
+      alpha: raw.alpha || raw.ALPHA || raw.alphavantage || "",
+      polygon: raw.polygon || raw.POLYGON || "",
+      marketaux: raw.marketaux || raw.MARKETAUX || "",
+      newsApi: raw.newsApi || raw.newsapi || raw.NEWSAPI || "",
+      news: raw.news || raw.NEWS || raw.finnhub || raw.FINNHUB || ""
+    };
+  }
+
+  var KEYS = readKeys();
 
   var CONFIG = {
-    version: "4.0.0",
+    version: "4.1.0",
     requestTimeoutMs: 12e3,
     quoteCacheTtlMs: 30e3,
-
     endpoints: {
       yahoo: "https://query1.finance.yahoo.com",
       fmp: "https://financialmodelingprep.com/api/v3",
@@ -47,24 +62,6 @@
       alpha: "https://www.alphavantage.co/query",
       polygon: "https://api.polygon.io"
     },
-
-    /**
-     * PROVIDER CREDENTIALS — fill only the values between quotes.
-     * Leave a provider empty ("") to skip it in the failover chain.
-     *
-     * Example:
-     *   fmp: "your_key_here",
-     */
-    credentials: {
-      fmp: "CWDeXaxEfJV1DvQkBDHfV8bFVucP8bJU",
-      finnhub: "d92gf21r01qraam0tf4gd92gf21r01qraam0tf50",
-      twelve: "f021e2f611c34dd892d465af169f4ae2",
-      alpha: "5H6HXN22DXTWU41G",
-      polygon: "",
-      /** Optional news token; falls back to finnhub when empty */
-      news: ""
-    },
-
     corsProxies: [
       function (targetUrl) {
         return (
@@ -76,10 +73,6 @@
       }
     ]
   };
-
-  // ---------------------------------------------------------------------------
-  // Internals
-  // ---------------------------------------------------------------------------
 
   function createCache() {
     var store = new Map();
@@ -116,10 +109,8 @@
     previousClose =
       previousClose != null ? Number(previousClose) : price;
     if (!isFinite(price)) return null;
-
     var change = price - previousClose;
     var changePercent = previousClose ? (change / previousClose) * 100 : 0;
-
     return {
       price: price,
       previousClose: previousClose,
@@ -140,9 +131,7 @@
     return fetch(url, { signal: controller.signal, mode: "cors" })
       .then(function (response) {
         clearTimeout(timer);
-        if (!response.ok) {
-          throw new Error("HTTP " + response.status);
-        }
+        if (!response.ok) throw new Error("HTTP " + response.status);
         return response.json();
       })
       .catch(function (err) {
@@ -151,9 +140,6 @@
       });
   }
 
-  /**
-   * Transport: direct request, then configured CORS proxies in order.
-   */
   function requestJson(url) {
     return fetchJsonOnce(url, CONFIG.requestTimeoutMs).catch(function (
       directError
@@ -161,38 +147,27 @@
       if (typeof console !== "undefined" && console.warn) {
         console.warn("[MarketData] direct fetch failed:", directError.message);
       }
-
       var chain = Promise.reject(directError);
       CONFIG.corsProxies.forEach(function (buildProxyUrl) {
         chain = chain.catch(function () {
-          return fetchJsonOnce(
-            buildProxyUrl(url),
-            CONFIG.requestTimeoutMs
-          );
+          return fetchJsonOnce(buildProxyUrl(url), CONFIG.requestTimeoutMs);
         });
       });
       return chain;
     });
   }
 
-  // ---------------------------------------------------------------------------
-  // Provider adapters (each throws on empty / invalid payload)
-  // ---------------------------------------------------------------------------
-
   function quoteFromFmp(symbol) {
-    var key = CONFIG.credentials.fmp;
-    if (!key) return Promise.reject(new Error("FMP key not configured"));
-
+    if (!KEYS.fmp) return Promise.reject(new Error("FMP key missing"));
     var url =
       CONFIG.endpoints.fmp +
       "/quote/" +
       encodeURIComponent(stripSuffix(symbol)) +
       "?apikey=" +
-      encodeURIComponent(key);
-
+      encodeURIComponent(KEYS.fmp);
     return requestJson(url).then(function (payload) {
       var row = Array.isArray(payload) ? payload[0] : payload;
-      if (!row || row.price == null) throw new Error("FMP empty payload");
+      if (!row || row.price == null) throw new Error("FMP empty");
       return normalizeQuote(
         row.price,
         row.previousClose,
@@ -203,39 +178,31 @@
   }
 
   function quoteFromFinnhub(symbol) {
-    var key = CONFIG.credentials.finnhub;
-    if (!key) return Promise.reject(new Error("Finnhub key not configured"));
-
+    if (!KEYS.finnhub) return Promise.reject(new Error("Finnhub key missing"));
     var url =
       CONFIG.endpoints.finnhub +
       "/quote?symbol=" +
       encodeURIComponent(stripSuffix(symbol)) +
       "&token=" +
-      encodeURIComponent(key);
-
+      encodeURIComponent(KEYS.finnhub);
     return requestJson(url).then(function (payload) {
       if (!payload || payload.c == null || payload.c === 0) {
-        throw new Error("Finnhub empty payload");
+        throw new Error("Finnhub empty");
       }
       return normalizeQuote(payload.c, payload.pc, "", "finnhub");
     });
   }
 
   function quoteFromTwelve(symbol) {
-    var key = CONFIG.credentials.twelve;
-    if (!key) return Promise.reject(new Error("Twelve Data key not configured"));
-
+    if (!KEYS.twelve) return Promise.reject(new Error("Twelve key missing"));
     var url =
       CONFIG.endpoints.twelve +
       "/quote?symbol=" +
       encodeURIComponent(symbol) +
       "&apikey=" +
-      encodeURIComponent(key);
-
+      encodeURIComponent(KEYS.twelve);
     return requestJson(url).then(function (payload) {
-      if (!payload || payload.close == null) {
-        throw new Error("Twelve Data empty payload");
-      }
+      if (!payload || payload.close == null) throw new Error("Twelve empty");
       var price = Number(payload.close);
       var prev =
         payload.previous_close != null
@@ -246,21 +213,16 @@
   }
 
   function quoteFromAlpha(symbol) {
-    var key = CONFIG.credentials.alpha;
-    if (!key) return Promise.reject(new Error("Alpha Vantage key not configured"));
-
+    if (!KEYS.alpha) return Promise.reject(new Error("Alpha key missing"));
     var url =
       CONFIG.endpoints.alpha +
       "?function=GLOBAL_QUOTE&symbol=" +
       encodeURIComponent(stripSuffix(symbol)) +
       "&apikey=" +
-      encodeURIComponent(key);
-
+      encodeURIComponent(KEYS.alpha);
     return requestJson(url).then(function (payload) {
       var quote = payload && payload["Global Quote"];
-      if (!quote || !quote["05. price"]) {
-        throw new Error("Alpha Vantage empty payload");
-      }
+      if (!quote || !quote["05. price"]) throw new Error("Alpha empty");
       return normalizeQuote(
         quote["05. price"],
         quote["08. previous close"],
@@ -271,19 +233,16 @@
   }
 
   function quoteFromPolygon(symbol) {
-    var key = CONFIG.credentials.polygon;
-    if (!key) return Promise.reject(new Error("Polygon key not configured"));
-
+    if (!KEYS.polygon) return Promise.reject(new Error("Polygon key missing"));
     var url =
       CONFIG.endpoints.polygon +
       "/v2/aggs/ticker/" +
       encodeURIComponent(stripSuffix(symbol)) +
       "/prev?adjusted=true&apiKey=" +
-      encodeURIComponent(key);
-
+      encodeURIComponent(KEYS.polygon);
     return requestJson(url).then(function (payload) {
       var row = payload && payload.results && payload.results[0];
-      if (!row || row.c == null) throw new Error("Polygon empty payload");
+      if (!row || row.c == null) throw new Error("Polygon empty");
       return normalizeQuote(row.c, row.o, "USD", "polygon");
     });
   }
@@ -294,7 +253,6 @@
       "/v8/finance/chart/" +
       encodeURIComponent(symbol) +
       "?interval=1d&range=2d";
-
     return requestJson(url).then(function (payload) {
       var meta =
         payload &&
@@ -303,7 +261,7 @@
         payload.chart.result[0] &&
         payload.chart.result[0].meta;
       if (!meta || meta.regularMarketPrice == null) {
-        throw new Error("Yahoo empty payload");
+        throw new Error("Yahoo empty");
       }
       var price = meta.regularMarketPrice;
       var prev = meta.chartPreviousClose || meta.previousClose || price;
@@ -312,65 +270,40 @@
   }
 
   var PROVIDER_CHAIN = [
-    { id: "fmp", invoke: quoteFromFmp, requiresKey: "fmp" },
-    { id: "finnhub", invoke: quoteFromFinnhub, requiresKey: "finnhub" },
-    { id: "twelve", invoke: quoteFromTwelve, requiresKey: "twelve" },
-    { id: "alpha", invoke: quoteFromAlpha, requiresKey: "alpha" },
-    { id: "polygon", invoke: quoteFromPolygon, requiresKey: "polygon" },
-    { id: "yahoo", invoke: quoteFromYahoo, requiresKey: null }
+    { id: "fmp", invoke: quoteFromFmp, need: "fmp" },
+    { id: "finnhub", invoke: quoteFromFinnhub, need: "finnhub" },
+    { id: "twelve", invoke: quoteFromTwelve, need: "twelve" },
+    { id: "alpha", invoke: quoteFromAlpha, need: "alpha" },
+    { id: "polygon", invoke: quoteFromPolygon, need: "polygon" },
+    { id: "yahoo", invoke: quoteFromYahoo, need: null }
   ];
-
-  // ---------------------------------------------------------------------------
-  // Public API
-  // ---------------------------------------------------------------------------
 
   var MarketData = {
     version: CONFIG.version,
 
-    /**
-     * Resolve a live quote for a Yahoo-style symbol (e.g. ASELS.IS, AAPL).
-     * Walks the provider chain until one returns a valid quote.
-     *
-     * @param {string} symbol
-     * @returns {Promise<{
-     *   price: number,
-     *   previousClose: number,
-     *   change: number,
-     *   changePercent: number,
-     *   currency: string,
-     *   source: string,
-     *   asOf: number
-     * }|null>}
-     */
+    reloadKeys: function () {
+      KEYS = readKeys();
+      return KEYS;
+    },
+
     getQuote: function (symbol) {
       var normalized = String(symbol || "").trim();
-      if (!normalized) {
-        return Promise.resolve(null);
-      }
+      if (!normalized) return Promise.resolve(null);
 
       var cacheKey = "quote:" + normalized;
       var cached = cache.get(cacheKey);
-      if (cached) {
-        return Promise.resolve(cached);
-      }
+      if (cached) return Promise.resolve(cached);
 
       var sequence = Promise.resolve(null);
 
       PROVIDER_CHAIN.forEach(function (provider) {
         sequence = sequence.then(function (result) {
           if (result) return result;
-
-          if (
-            provider.requiresKey &&
-            !CONFIG.credentials[provider.requiresKey]
-          ) {
-            return null;
-          }
-
+          if (provider.need && !KEYS[provider.need]) return null;
           return provider.invoke(normalized).catch(function (err) {
             if (typeof console !== "undefined" && console.warn) {
               console.warn(
-                "[MarketData] provider skipped (" + provider.id + "):",
+                "[MarketData] skip " + provider.id + ":",
                 err && err.message
               );
             }
@@ -380,36 +313,22 @@
       });
 
       return sequence.then(function (quote) {
-        if (quote) {
-          cache.set(cacheKey, quote, CONFIG.quoteCacheTtlMs);
-        }
+        if (quote) cache.set(cacheKey, quote, CONFIG.quoteCacheTtlMs);
         return quote;
       });
     },
 
-    /**
-     * Convenience for BIST tickers without suffix.
-     * @param {string} bistCode e.g. "ASELS"
-     */
     getBistQuote: function (bistCode) {
       var code = String(bistCode || "").trim();
       if (code && code.indexOf(".") === -1) code += ".IS";
       return this.getQuote(code);
     },
 
-    /**
-     * OHLCV history via Yahoo chart API.
-     * @param {string} symbol
-     * @param {string} [range="1mo"]
-     * @param {string} [interval="1d"]
-     */
     getHistory: function (symbol, range, interval) {
       range = range || "1mo";
       interval = interval || "1d";
       var normalized = String(symbol || "").trim();
-      if (normalized && normalized.indexOf(".") === -1) {
-        normalized += ".IS";
-      }
+      if (normalized && normalized.indexOf(".") === -1) normalized += ".IS";
       var url =
         CONFIG.endpoints.yahoo +
         "/v8/finance/chart/" +
@@ -421,14 +340,9 @@
       return requestJson(url);
     },
 
-    /**
-     * Company news (Finnhub). Requires credentials.news or credentials.finnhub.
-     */
     getCompanyNews: function (symbol, fromIsoDate, toIsoDate) {
-      var token =
-        CONFIG.credentials.news || CONFIG.credentials.finnhub || "";
+      var token = KEYS.news || KEYS.finnhub || "";
       if (!token) return Promise.resolve([]);
-
       var url =
         CONFIG.endpoints.finnhub +
         "/company-news?symbol=" +
@@ -439,23 +353,19 @@
         encodeURIComponent(toIsoDate) +
         "&token=" +
         encodeURIComponent(token);
-
       return requestJson(url);
     },
 
-    /** Drop in-memory quote cache */
     clearCache: function () {
       cache.clear();
     }
   };
 
-  // Backward-compatible global used by stock.html / index.html
   var API = {
     VERSION: MarketData.version,
     getLiveQuote: function (symbol) {
       return MarketData.getQuote(symbol).then(function (q) {
         if (!q) return null;
-        // Legacy shape expected by existing pages
         return {
           price: q.price,
           prev: q.previousClose,
@@ -475,6 +385,9 @@
     getCompanyNews: function (symbol, from, to) {
       return MarketData.getCompanyNews(symbol, from, to);
     },
+    reloadKeys: function () {
+      return MarketData.reloadKeys();
+    },
     Cache: cache
   };
 
@@ -482,10 +395,17 @@
   global.API = API;
 
   if (typeof console !== "undefined" && console.info) {
+    var loaded = [];
+    if (KEYS.fmp) loaded.push("fmp");
+    if (KEYS.finnhub) loaded.push("finnhub");
+    if (KEYS.twelve) loaded.push("twelve");
+    if (KEYS.alpha) loaded.push("alpha");
+    if (KEYS.polygon) loaded.push("polygon");
     console.info(
       "[MarketData] v" +
-        MarketData.version +
-        " ready · failover FMP→Finnhub→Twelve→Alpha→Polygon→Yahoo"
+        CONFIG.version +
+        " · keys from secrets.js: " +
+        (loaded.length ? loaded.join(", ") : "none (Yahoo only)")
     );
   }
 })(typeof window !== "undefined" ? window : this);
