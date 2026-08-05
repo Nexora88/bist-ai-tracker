@@ -1,1 +1,108 @@
+{
+  "market": "BIST",
+  "name": "Borsa İstanbul",
+  "country": "Türkiye",
+  "flag": "🇹🇷",
+  "tier": "free",
+  "currency": "TRY",
+  "suffix": ".IS",
+  "updated": "2026-08-05",
+  "stocks": [
+    { "symbol": "THYAO", "name": "Türk Hava Yolları", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Ulaştırma", "plan": "free", "aiScore": 76, "risk": "Medium" },
+    { "symbol": "GARAN", "name": "Garanti BBVA", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Bankacılık", "plan": "free", "aiScore": 81, "risk": "Low" },
+    { "symbol": "AKBNK", "name": "Akbank", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Bankacılık", "plan": "free", "aiScore": 79, "risk": "Low" },
+    { "symbol": "YKBNK", "name": "Yapı Kredi", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Bankacılık", "plan": "free", "aiScore": 74, "risk": "Medium" },
+    { "symbol": "ISCTR", "name": "İş Bankası (C)", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Bankacılık", "plan": "free", "aiScore": 77, "risk": "Low" },
+    { "symbol": "VAKBN", "name": "VakıfBank", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Bankacılık", "plan": "free", "aiScore": 72, "risk": "Medium" },
+    { "symbol": "HALKB", "name": "Halkbank", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Bankacılık", "plan": "free", "aiScore": 68, "risk": "Medium" },
+    { "symbol": "TSKB", "name": "TSKB", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Bankacılık", "plan": "free", "aiScore": 71, "risk": "Medium" },
+    { "symbol": "SKBNK", "name": "Şekerbank", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Bankacılık", "plan": "free", "aiScore": 58, "risk": "High" },
+    { "symbol": "ALBRK", "name": "Albaraka Türk", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Bankacılık", "plan": "free", "aiScore": 62, "risk": "Medium" },
 
+    { "symbol": "ASELS", "name": "Aselsan", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Savunma", "plan": "free", "aiScore": 84, "risk": "Low" },
+    { "symbol": "OTKAR", "name": "Otokar", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Savunma", "plan": "free", "aiScore": 73, "risk": "Medium" },
+
+    { "symbol": "KCHOL", "name": "Koç Holding", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Holding", "plan": "free", "aiScore": 80, "risk": "Low" },
+    { "symbol": "SAHOL", "name": "Sabancı Holding", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Holding", "plan": "free", "aiScore": 78, "risk": "Low" },
+    { "symbol": "ALARK", "name": "Alarko Holding", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Holding", "plan": "free", "aiScore": 70, "risk": "Medium" },
+    { "symbol": "AGHOL", "name": "AG Anadolu Grubu", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Holding", "plan": "free", "aiScore": 69, "risk": "Medium" },
+    { "symbol": "DOHOL", "name": "Doğan Holding", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Holding", "plan": "free", "aiScore": 65, "risk": "Medium" },
+    { "symbol": "TKFEN", "name": "Tekfen Holding", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Holding", "plan": "free", "aiScore": 67, "risk": "Medium" },
+
+    { "symbol": "SISE", "name": "Şişecam", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Cam", "plan": "free", "aiScore": 75, "risk": "Medium" },
+    { "symbol": "EREGL", "name": "Ereğli Demir Çelik", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Metal Ana", "plan": "free", "aiScore": 72, "risk": "Medium" },
+    { "symbol": "KRDMD", "name": "Kardemir (D)", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Metal Ana", "plan": "free", "aiScore": 66, "risk": "High" },
+    { "symbol": "BRSAN", "name": "Borusan Birleşik Boru", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Metal", "plan": "free", "aiScore": 64, "risk": "Medium" },
+    { "symbol": "CEMTS", "name": "Çemtaş", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Metal", "plan": "free", "aiScore": 60, "risk": "High" },
+    { "symbol": "SARKY", "name": "Sarkuysan", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Metal", "plan": "free", "aiScore": 61, "risk": "Medium" },
+
+    { "symbol": "TUPRS", "name": "Tüpraş", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Enerji", "plan": "free", "aiScore": 83, "risk": "Low" },
+    { "symbol": "PETKM", "name": "Petkim", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Kimya", "plan": "free", "aiScore": 70, "risk": "Medium" },
+    { "symbol": "SASA", "name": "Sasa Polyester", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Kimya", "plan": "free", "aiScore": 55, "risk": "High" },
+    { "symbol": "GUBRF", "name": "Gübre Fabrikaları", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Kimya", "plan": "free", "aiScore": 63, "risk": "High" },
+    { "symbol": "HEKTS", "name": "Hektaş", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Tarım Kimya", "plan": "free", "aiScore": 58, "risk": "High" },
+
+    { "symbol": "ENJSA", "name": "Enerjisa Enerji", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Enerji", "plan": "free", "aiScore": 74, "risk": "Medium" },
+    { "symbol": "AKSEN", "name": "Aksa Enerji", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Enerji", "plan": "free", "aiScore": 68, "risk": "Medium" },
+    { "symbol": "AYDEM", "name": "Aydem Enerji", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Enerji", "plan": "free", "aiScore": 62, "risk": "High" },
+    { "symbol": "ZOREN", "name": "Zorlu Enerji", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Enerji", "plan": "free", "aiScore": 59, "risk": "High" },
+    { "symbol": "ASTOR", "name": "Astor Enerji", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Enerji", "plan": "free", "aiScore": 71, "risk": "Medium" },
+    { "symbol": "CANTE", "name": "Çan2 Termik", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Enerji", "plan": "free", "aiScore": 54, "risk": "High" },
+    { "symbol": "SMRTG", "name": "Smart Güneş", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Enerji", "plan": "free", "aiScore": 66, "risk": "High" },
+    { "symbol": "ODAS", "name": "Odaş Elektrik", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Enerji", "plan": "free", "aiScore": 52, "risk": "High" },
+    { "symbol": "YEOTK", "name": "Yeo Teknoloji", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Enerji", "plan": "free", "aiScore": 67, "risk": "High" },
+    { "symbol": "CWENE", "name": "CW Enerji", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Enerji", "plan": "free", "aiScore": 64, "risk": "High" },
+    { "symbol": "EUPWR", "name": "Europower Enerji", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Enerji", "plan": "free", "aiScore": 63, "risk": "High" },
+
+    { "symbol": "BIMAS", "name": "BİM", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Perakende", "plan": "free", "aiScore": 85, "risk": "Low" },
+    { "symbol": "MGROS", "name": "Migros", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Perakende", "plan": "free", "aiScore": 73, "risk": "Medium" },
+    { "symbol": "SOKM", "name": "Şok Marketler", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Perakende", "plan": "free", "aiScore": 69, "risk": "Medium" },
+
+    { "symbol": "TCELL", "name": "Turkcell", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Telekom", "plan": "free", "aiScore": 78, "risk": "Low" },
+    { "symbol": "TTKOM", "name": "Türk Telekom", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Telekom", "plan": "free", "aiScore": 72, "risk": "Medium" },
+
+    { "symbol": "FROTO", "name": "Ford Otosan", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Otomotiv", "plan": "free", "aiScore": 82, "risk": "Low" },
+    { "symbol": "TOASO", "name": "Tofaş", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Otomotiv", "plan": "free", "aiScore": 74, "risk": "Medium" },
+    { "symbol": "DOAS", "name": "Doğuş Otomotiv", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Otomotiv", "plan": "free", "aiScore": 70, "risk": "Medium" },
+    { "symbol": "ASUZU", "name": "Anadolu Isuzu", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Otomotiv", "plan": "free", "aiScore": 65, "risk": "Medium" },
+    { "symbol": "EGEEN", "name": "Ege Endüstri", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Otomotiv Yan", "plan": "free", "aiScore": 68, "risk": "Medium" },
+
+    { "symbol": "PGSUS", "name": "Pegasus", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Ulaştırma", "plan": "free", "aiScore": 77, "risk": "Medium" },
+    { "symbol": "TAVHL", "name": "TAV Havalimanları", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Ulaştırma", "plan": "free", "aiScore": 75, "risk": "Medium" },
+    { "symbol": "CLEBI", "name": "Çelebi", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Ulaştırma", "plan": "free", "aiScore": 66, "risk": "Medium" },
+
+    { "symbol": "AEFES", "name": "Anadolu Efes", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "İçecek", "plan": "free", "aiScore": 76, "risk": "Low" },
+    { "symbol": "CCOLA", "name": "Coca-Cola İçecek", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "İçecek", "plan": "free", "aiScore": 80, "risk": "Low" },
+    { "symbol": "ULKER", "name": "Ülker Bisküvi", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Gıda", "plan": "free", "aiScore": 71, "risk": "Medium" },
+    { "symbol": "TATGD", "name": "Tat Gıda", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Gıda", "plan": "free", "aiScore": 60, "risk": "Medium" },
+
+    { "symbol": "ARCLK", "name": "Arçelik", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Dayanıklı Tüketim", "plan": "free", "aiScore": 74, "risk": "Medium" },
+    { "symbol": "VESBE", "name": "Vestel Beyaz Eşya", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Dayanıklı Tüketim", "plan": "free", "aiScore": 61, "risk": "High" },
+    { "symbol": "VESTL", "name": "Vestel Elektronik", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Elektronik", "plan": "free", "aiScore": 57, "risk": "High" },
+
+    { "symbol": "ENKAI", "name": "Enka İnşaat", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "İnşaat", "plan": "free", "aiScore": 79, "risk": "Low" },
+    { "symbol": "GESAN", "name": "Girişim Elektrik", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Müteahhitlik", "plan": "free", "aiScore": 68, "risk": "High" },
+    { "symbol": "EKGYO", "name": "Emlak Konut GYO", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "GYO", "plan": "free", "aiScore": 64, "risk": "Medium" },
+    { "symbol": "ISGYO", "name": "İş GYO", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "GYO", "plan": "free", "aiScore": 66, "risk": "Medium" },
+    { "symbol": "HLGYO", "name": "Halk GYO", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "GYO", "plan": "free", "aiScore": 59, "risk": "Medium" },
+
+    { "symbol": "OYAKC", "name": "Oyak Çimento", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Çimento", "plan": "free", "aiScore": 70, "risk": "Medium" },
+    { "symbol": "CIMSA", "name": "Çimsa", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Çimento", "plan": "free", "aiScore": 69, "risk": "Medium" },
+    { "symbol": "AKCNS", "name": "Akçansa", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Çimento", "plan": "free", "aiScore": 67, "risk": "Medium" },
+
+    { "symbol": "KOZAL", "name": "Koza Altın", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Madencilik", "plan": "free", "aiScore": 73, "risk": "Medium" },
+    { "symbol": "KOZAA", "name": "Koza Anadolu", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Madencilik", "plan": "free", "aiScore": 65, "risk": "High" },
+    { "symbol": "IPEKE", "name": "İpek Enerji", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Madencilik", "plan": "free", "aiScore": 58, "risk": "High" },
+
+    { "symbol": "LOGO", "name": "Logo Yazılım", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Teknoloji", "plan": "free", "aiScore": 76, "risk": "Medium" },
+    { "symbol": "KAREL", "name": "Karel Elektronik", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Teknoloji", "plan": "free", "aiScore": 62, "risk": "High" },
+    { "symbol": "INDES", "name": "İndeks Bilgisayar", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Teknoloji", "plan": "free", "aiScore": 60, "risk": "High" },
+    { "symbol": "KONTR", "name": "Kontrolmatik", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Teknoloji", "plan": "free", "aiScore": 72, "risk": "High" },
+    { "symbol": "REEDR", "name": "Reeder Teknoloji", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Teknoloji", "plan": "free", "aiScore": 56, "risk": "High" },
+
+    { "symbol": "MAVI", "name": "Mavi Giyim", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Giyim", "plan": "free", "aiScore": 71, "risk": "Medium" },
+    { "symbol": "DESA", "name": "Desa Deri", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Giyim", "plan": "free", "aiScore": 57, "risk": "High" },
+    { "symbol": "QUAGR", "name": "Qua Granite", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "İnşaat Malzeme", "plan": "free", "aiScore": 61, "risk": "High" },
+    { "symbol": "BINHO", "name": "1000 Yatırımlar", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Yatırım", "plan": "free", "aiScore": 55, "risk": "High" }
+  ]
+    }
