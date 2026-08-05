@@ -1,614 +1,875 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BIST AI Tracker | Canlı Borsa & Nexora AI</title>
-<meta name="description" content="Borsa İstanbul canlı fiyatlar, teknik analiz ve Nexora AI destekli yatırım platformu.">
-<meta name="theme-color" content="#0a0e17">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<style>
-:root{--bg:#0a0e17;--surface:#111827;--border:rgba(255,255,255,.06);--text:#f1f5f9;--muted:#94a3b8;--green:#22c55e;--red:#ef4444;--accent:#10b981;--cyan:#22d3ee;--violet:#a78bfa;--amber:#fbbf24}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:Inter,system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;line-height:1.5;-webkit-font-smoothing:antialiased}
-a{color:inherit;text-decoration:none}button{font-family:inherit;cursor:pointer;border:none;background:none}ul{list-style:none}
-#tvCanvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.28}
-.wrap{position:relative;z-index:1}
-.container{max-width:1280px;margin:0 auto;padding:0 20px}
-.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.grid-stocks{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-@media(max-width:1100px){.grid-stocks{grid-template-columns:repeat(3,1fr)}.grid-4{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:768px){.grid-stocks,.grid-3,.grid-4{grid-template-columns:1fr 1fr}.hero-grid{grid-template-columns:1fr!important}.nav-links{display:none!important}.mobile-btn{display:flex!important}.idx-row{grid-template-columns:repeat(2,1fr)!important}}
-@media(max-width:480px){.grid-stocks,.grid-4{grid-template-columns:1fr}}
-.glass{background:rgba(17,24,39,.75);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border)}
-.glass-nav{background:rgba(10,14,23,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
-.navbar{position:sticky;top:0;z-index:50;height:60px}
-.nav-inner{display:flex;align-items:center;justify-content:space-between;height:60px;max-width:1280px;margin:0 auto;padding:0 20px}
-.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px;letter-spacing:-.02em}
-.logo .accent{color:var(--accent)}
-.nav-links{display:flex;align-items:center;gap:28px;font-size:13.5px;font-weight:500;color:var(--muted)}
-.nav-links a{transition:color .15s;position:relative}
-.nav-links a:hover,.nav-links a.active{color:var(--accent)}
-.nav-links a.active::after{content:'';position:absolute;left:0;bottom:-6px;width:100%;height:2px;background:var(--accent);border-radius:2px}
-.nav-cta{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:7px 14px;border-radius:10px;background:rgba(16,185,129,.12);color:var(--accent);border:1px solid rgba(16,185,129,.25);transition:background .15s}
-.nav-cta:hover{background:rgba(16,185,129,.22)}
-.mobile-btn{display:none;width:40px;height:40px;border-radius:10px;background:var(--surface);color:var(--muted);align-items:center;justify-content:center}
-.mobile-menu{display:none;border-top:1px solid var(--border);background:rgba(10,14,23,.98);padding:12px 20px}
-.mobile-menu.open{display:block}
-.mobile-menu a{display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;font-size:14px;color:var(--muted)}
-.mobile-menu a:hover,.mobile-menu a.active{background:rgba(16,185,129,.1);color:var(--accent)}
-.ticker-bar{border-bottom:1px solid var(--border);background:rgba(10,14,23,.7);overflow:hidden;height:36px}
-.ticker-track{display:flex;align-items:center;gap:28px;height:36px;white-space:nowrap;font-size:12px;font-weight:500;color:var(--muted);animation:ticker 50s linear infinite}
-.ticker-track:hover{animation-play-state:paused}
-@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-.t-item{display:inline-flex;align-items:center;gap:6px}.t-item b{color:#e2e8f0;font-weight:600}
-.hero{padding:48px 0 40px}
-.hero-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:32px;align-items:start}
-.badge{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:#6ee7b7;padding:5px 12px;border-radius:999px;border:1px solid rgba(16,185,129,.2);background:rgba(16,185,129,.08);margin-bottom:20px}
-.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 1.5s ease infinite}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
-.hero h1{font-size:clamp(2rem,4.5vw,3.25rem);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-bottom:16px}
-.hero h1 .grad{background:linear-gradient(135deg,#34d399,#22d3ee);-webkit-background-clip:text;background-clip:text;color:transparent}
-.hero p{color:var(--muted);font-size:16px;max-width:480px;margin-bottom:28px;line-height:1.65}
-.hero-btns{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:36px}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:12px;font-size:14px;font-weight:600;transition:all .2s}
-.btn-primary{background:linear-gradient(135deg,#10b981,#059669);color:#022c22}
-.btn-primary:hover{transform:translateY(-1px);box-shadow:0 10px 28px rgba(16,185,129,.35)}
-.btn-ghost{background:rgba(30,41,59,.8);border:1px solid var(--border);color:#e2e8f0}
-.btn-ghost:hover{border-color:rgba(16,185,129,.35);background:rgba(51,65,85,.9)}
-.idx-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.idx-card{padding:12px 14px;border-radius:12px}
-.idx-card .label{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#64748b;font-weight:600}
-.idx-card .val{font-size:17px;font-weight:700;margin-top:2px}
-.nexora-panel{padding:22px;border-radius:18px;border:1px solid rgba(16,185,129,.12)}
-.nexora-panel h2{font-size:22px;font-weight:700;margin-bottom:6px}
-.nexora-panel .sub{font-size:13px;color:var(--muted);margin-bottom:18px}
-.nexora-panel .sub strong{color:var(--accent)}
-.nexora-input{width:100%;padding:12px 14px;border-radius:11px;background:rgba(15,23,42,.9);border:1px solid #334155;color:var(--text);font-size:13.5px;outline:none;transition:border-color .15s}
-.nexora-input:focus{border-color:rgba(16,185,129,.5)}
-.nexora-input::placeholder{color:#64748b}
-.nexora-actions{display:flex;gap:8px;margin-top:10px}
-.nexora-foot{margin-top:18px;padding-top:14px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.nexora-foot .q-label{font-size:11px;color:#64748b}
-.nexora-foot .q-val{font-size:18px;font-weight:700;color:var(--accent)}
-.section{padding:40px 0}
-.section-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:20px;gap:12px;flex-wrap:wrap}
-.section-title{font-size:clamp(1.4rem,3vw,1.85rem);font-weight:800;letter-spacing:-.02em;background:linear-gradient(135deg,#34d399,#22d3ee 60%,#a78bfa);-webkit-background-clip:text;background-clip:text;color:transparent}
-.section-sub{font-size:13px;color:var(--muted);margin-top:4px}
-.dash-card{padding:16px;border-radius:14px}
-.dash-card h3{font-size:13px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px}
-.dash-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:13px}
-.dash-row a{font-weight:600;transition:color .15s}.dash-row a:hover{color:var(--accent)}
-.up{color:var(--green);font-weight:600;font-size:12px}
-.down{color:var(--red);font-weight:600;font-size:12px}
-.insight{padding:24px 28px;border-radius:18px;border:1px solid rgba(16,185,129,.1)}
-.insight-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:14px;flex-wrap:wrap}
-.insight h2{font-size:20px;font-weight:700}
-.insight .meta{font-size:13px;color:var(--muted);margin-top:2px}
-.score-box{text-align:right}.score-box .sl{font-size:11px;color:#64748b}.score-box .sv{font-size:24px;font-weight:800;color:var(--accent)}
-.insight h3{font-size:16px;font-weight:700;margin-bottom:6px}
-.insight p{font-size:14px;color:#cbd5e1;line-height:1.65}
-.stock-card{padding:16px;border-radius:14px;transition:transform .25s cubic-bezier(.22,1,.36,1),border-color .25s,box-shadow .25s}
-.stock-card:hover{transform:translateY(-5px);border-color:rgba(16,185,129,.35);box-shadow:0 16px 36px rgba(16,185,129,.1)}
-.sc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
-.sc-sym{font-size:15px;font-weight:700;letter-spacing:-.01em}
-.sc-name{font-size:11px;color:#64748b;margin-top:1px;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.sc-badge{font-size:10px;font-weight:600;text-transform:uppercase;padding:3px 7px;border-radius:6px}
-.sc-badge.on{background:rgba(16,185,129,.15);color:var(--accent)}
-.sc-badge.off{background:#1e293b;color:#64748b}
-.sc-price{font-size:20px;font-weight:700}
-.sc-chg{font-size:13px;font-weight:600;margin-top:2px}
-.sc-ai{text-align:right}.sc-ai .l{font-size:10px;color:#64748b}.sc-ai .v{font-size:13px;font-weight:700;color:var(--violet)}
-.sc-mid{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:12px}
-.sc-btn{width:100%;padding:8px;border-radius:10px;font-size:12px;font-weight:600;transition:all .15s}
-.sc-btn.add{background:var(--accent);color:#022c22}.sc-btn.add:hover{background:#34d399}
-.sc-btn.added{background:rgba(16,185,129,.12);color:var(--accent);border:1px solid rgba(16,185,129,.3)}
-.sc-link{display:block;text-align:center;margin-top:8px;padding:8px;border-radius:10px;font-size:12px;font-weight:500;background:rgba(30,41,59,.7);color:#94a3b8;transition:background .15s}
-.sc-link:hover{background:#334155;color:#e2e8f0}
-.search-wrap{position:relative;max-width:400px;margin:0 auto 28px}
-.search-wrap i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#64748b;font-size:13px}
-.search-wrap input{width:100%;padding:12px 14px 12px 40px;border-radius:12px;background:rgba(15,23,42,.85);border:1px solid #334155;color:var(--text);font-size:13.5px;outline:none}
-.search-wrap input:focus{border-color:rgba(16,185,129,.45)}
-.search-wrap input::placeholder{color:#64748b}
-.refresh-row{display:flex;align-items:center;gap:10px}
-.refresh-row .time{font-size:11px;color:#64748b}
-.refresh-btn{font-size:12px;font-weight:600;padding:6px 12px;border-radius:8px;background:#1e293b;color:var(--accent);transition:background .15s}
-.refresh-btn:hover{background:#334155}
-.data-status{font-size:11px;padding:3px 8px;border-radius:6px;font-weight:600}
-.data-status.live{background:rgba(34,197,94,.15);color:var(--green)}
-.data-status.demo{background:rgba(251,191,36,.15);color:var(--amber)}
-.wl-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
-@media(max-width:900px){.wl-grid{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:500px){.wl-grid{grid-template-columns:repeat(2,1fr)}}
-.wl-item{display:block;text-align:center;padding:10px;border-radius:11px;font-weight:600;font-size:13px;color:var(--accent);transition:border-color .15s,background .15s}
-.wl-item:hover{border-color:rgba(16,185,129,.4);background:rgba(16,185,129,.05)}
-.wl-empty{text-align:center;padding:36px;color:#64748b;font-size:13px}
-.wl-count{background:var(--accent);color:#022c22;font-size:12px;font-weight:700;padding:4px 12px;border-radius:999px;min-width:28px;text-align:center}
-.tool-card{padding:22px;border-radius:16px;transition:transform .25s,border-color .25s}
-.tool-card:hover{transform:translateY(-4px);border-color:rgba(16,185,129,.3)}
-.tool-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px;transition:transform .25s}
-.tool-card:hover .tool-icon{transform:scale(1.1)}
-.tool-card h3{font-size:16px;font-weight:700;margin-bottom:6px}
-.tool-card p{font-size:13px;color:var(--muted);line-height:1.5}
-.footer{border-top:1px solid var(--border);padding:48px 0 28px;margin-top:20px}
-.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:32px;margin-bottom:36px}
-@media(max-width:768px){.footer-grid{grid-template-columns:1fr 1fr}}
-.footer h4{font-size:13px;font-weight:600;margin-bottom:12px;color:#e2e8f0}
-.footer a{display:block;font-size:13px;color:var(--muted);padding:3px 0;transition:color .15s}
-.footer a:hover{color:var(--accent)}
-.footer-brand{font-weight:700;font-size:14px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
-.footer-desc{font-size:12px;color:var(--muted);line-height:1.6}
-.dev-link{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:12px;font-weight:600;color:var(--accent);transition:color .15s}
-.dev-link:hover{color:#6ee7b7}
-.footer-bottom{border-top:1px solid var(--border);padding-top:20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:11px;color:#64748b}
-#fabs{position:fixed;right:16px;bottom:16px;display:flex;flex-direction:column;gap:10px;z-index:60}
-.fab{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 8px 24px rgba(0,0,0,.4);transition:transform .2s}
-.fab:hover{transform:scale(1.08)}
-.fab-theme{background:#1e293b;color:#fff}.fab-ai{background:var(--accent);color:#fff}
-.loading{grid-column:1/-1;text-align:center;padding:60px 20px;color:#64748b;font-size:14px}
-.loading i{display:block;font-size:24px;color:var(--accent);margin-bottom:12px}
-::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--accent);border-radius:99px}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nexora AI · BIST & Global Piyasa Takibi</title>
+  <meta name="description" content="Nexora AI ile BIST, NASDAQ ve global hisselerde canlı takip, AI skor ve portföy araçları." />
+  <meta property="og:title" content="Nexora AI Tracker" />
+  <meta property="og:description" content="Yapay zeka destekli borsa takip platformu" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #070b14;
+      --panel: rgba(15, 23, 42, 0.72);
+      --panel-solid: #0f172a;
+      --border: rgba(148, 163, 184, 0.12);
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --dim: #64748b;
+      --accent: #10b981;
+      --cyan: #22d3ee;
+      --violet: #8b5cf6;
+      --amber: #fbbf24;
+      --rose: #f87171;
+      --radius: 18px;
+      --nav-h: 64px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: Inter, system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; }
+
+    /* ---- canvas bg ---- */
+    #bgCanvas {
+      position: fixed; inset: 0; z-index: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+    }
+    .glow {
+      position: fixed; z-index: 0; pointer-events: none;
+      width: 520px; height: 520px; border-radius: 50%;
+      filter: blur(100px); opacity: 0.22;
+    }
+    .glow.a { top: -120px; left: -80px; background: #059669; }
+    .glow.b { bottom: 10%; right: -100px; background: #0ea5e9; opacity: 0.14; }
+
+    .shell { position: relative; z-index: 1; }
+
+    /* ---- nav ---- */
+    .nav {
+      position: sticky; top: 0; z-index: 50;
+      height: var(--nav-h);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 20px;
+      background: rgba(7, 11, 20, 0.78);
+      backdrop-filter: blur(16px) saturate(1.2);
+      border-bottom: 1px solid var(--border);
+    }
+    .brand {
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 800; letter-spacing: -0.04em; font-size: 1.1rem;
+    }
+    .brand-mark {
+      width: 32px; height: 32px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--cyan));
+      display: grid; place-items: center;
+      color: #022c22; font-size: 14px; font-weight: 900;
+      box-shadow: 0 0 24px rgba(16, 185, 129, 0.35);
+    }
+    .brand em { font-style: normal; color: var(--accent); }
+    .nav-links {
+      display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
+    }
+    .nav-links a {
+      font-size: 13px; font-weight: 600; color: var(--muted);
+      padding: 8px 12px; border-radius: 10px;
+      transition: 0.15s ease;
+    }
+    .nav-links a:hover, .nav-links a.on {
+      color: var(--text); background: rgba(255,255,255,0.05);
+    }
+    .nav-cta {
+      display: flex; gap: 8px; align-items: center;
+    }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 6px; padding: 9px 14px; border-radius: 11px;
+      font-size: 13px; font-weight: 700; border: none; cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .btn-ghost {
+      background: transparent; color: var(--muted);
+      border: 1px solid var(--border) !important;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #059669);
+      color: #022c22;
+      box-shadow: 0 8px 28px rgba(16, 185, 129, 0.25);
+    }
+    .btn-soft {
+      background: rgba(30, 41, 59, 0.9);
+      color: var(--text);
+      border: 1px solid var(--border) !important;
+    }
+    .menu-toggle {
+      display: none;
+      background: transparent; border: 1px solid var(--border);
+      color: var(--text); border-radius: 10px; padding: 8px 10px;
+    }
+
+    /* ---- layout ---- */
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 28px 18px 64px; }
+
+    /* ---- hero ---- */
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr 0.9fr;
+      gap: 28px; align-items: center;
+      margin-bottom: 36px;
+    }
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex; position: absolute; top: var(--nav-h); left: 0; right: 0;
+        flex-direction: column; background: rgba(7,11,20,0.96);
+        padding: 12px; border-bottom: 1px solid var(--border);
+      }
+      .menu-toggle { display: inline-flex; }
+    }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 12px; font-weight: 700; color: var(--accent);
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      padding: 6px 12px; border-radius: 999px; margin-bottom: 14px;
+    }
+    .eyebrow i {
+      width: 7px; height: 7px; border-radius: 50%; background: var(--accent);
+      box-shadow: 0 0 0 0 rgba(16,185,129,0.6);
+      animation: pulse 1.8s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.55); }
+      70% { box-shadow: 0 0 0 10px rgba(16,185,129,0); }
+      100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+    }
+    .hero h1 {
+      font-size: clamp(1.85rem, 4.2vw, 2.75rem);
+      font-weight: 800; letter-spacing: -0.045em; line-height: 1.12;
+      margin-bottom: 12px;
+    }
+    .hero h1 span {
+      background: linear-gradient(90deg, var(--accent), var(--cyan), var(--violet));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .hero-lead {
+      color: var(--muted); font-size: 15.5px; max-width: 520px; margin-bottom: 20px;
+    }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 22px; }
+    .stats {
+      display: flex; flex-wrap: wrap; gap: 18px;
+    }
+    .stat strong {
+      display: block; font-size: 1.25rem; font-weight: 800; letter-spacing: -0.03em;
+    }
+    .stat span { font-size: 12px; color: var(--dim); font-weight: 600; }
+
+    .hero-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 18px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+      animation: float 6s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    .hero-card h3 {
+      font-size: 13px; font-weight: 700; color: var(--muted);
+      margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .mini-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 0; border-bottom: 1px solid var(--border);
+      font-size: 13.5px;
+    }
+    .mini-row:last-child { border-bottom: none; }
+    .mini-row .sym { font-weight: 800; }
+    .mini-row .px { font-weight: 700; }
+    .up { color: #34d399; }
+    .down { color: var(--rose); }
+
+    /* ---- section ---- */
+    .section-head {
+      display: flex; justify-content: space-between; align-items: end;
+      gap: 12px; flex-wrap: wrap; margin: 8px 0 14px;
+    }
+    .section-head h2 {
+      font-size: 1.2rem; font-weight: 800; letter-spacing: -0.03em;
+    }
+    .section-head p { color: var(--dim); font-size: 13px; }
+    .section-head a {
+      font-size: 13px; font-weight: 700; color: var(--accent);
+    }
+
+    /* ---- quick links ---- */
+    .quick {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px; margin-bottom: 32px;
+    }
+    @media (max-width: 800px) {
+      .quick { grid-template-columns: repeat(2, 1fr); }
+    }
+    .qcard {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      transition: 0.2s ease;
+    }
+    .qcard:hover {
+      border-color: rgba(16,185,129,0.35);
+      transform: translateY(-3px);
+    }
+    .qcard .ic {
+      width: 36px; height: 36px; border-radius: 11px;
+      display: grid; place-items: center; font-size: 16px;
+      background: rgba(16,185,129,0.12); margin-bottom: 10px;
+    }
+    .qcard h3 { font-size: 14px; font-weight: 750; margin-bottom: 4px; }
+    .qcard p { font-size: 12.5px; color: var(--muted); }
+
+    /* ---- stock grid side by side ---- */
+    .stock-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .scard {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      display: flex; flex-direction: column; gap: 8px;
+      transition: 0.18s ease;
+      animation: cardIn 0.5s ease backwards;
+    }
+    .scard:nth-child(1) { animation-delay: 0.05s; }
+    .scard:nth-child(2) { animation-delay: 0.1s; }
+    .scard:nth-child(3) { animation-delay: 0.15s; }
+    .scard:nth-child(4) { animation-delay: 0.2s; }
+    .scard:nth-child(5) { animation-delay: 0.25s; }
+    .scard:nth-child(6) { animation-delay: 0.3s; }
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .scard:hover {
+      border-color: rgba(16,185,129,0.4);
+      transform: translateY(-3px);
+    }
+    .scard-top { display: flex; justify-content: space-between; gap: 8px; }
+    .scard-sym { font-weight: 800; font-size: 15px; display: flex; gap: 6px; align-items: center; }
+    .scard-name { font-size: 12px; color: var(--muted); }
+    .scard-mkt {
+      font-size: 10px; font-weight: 700; color: var(--dim);
+      background: rgba(30,41,59,0.9); padding: 3px 7px; border-radius: 6px;
+      height: fit-content;
+    }
+    .scard-price { font-size: 15px; font-weight: 800; }
+    .scard-price small { font-size: 11.5px; font-weight: 600; }
+    .ai-bar {
+      height: 6px; border-radius: 99px; background: #1e293b; overflow: hidden;
+    }
+    .ai-bar > i {
+      display: block; height: 100%; border-radius: 99px;
+      background: linear-gradient(90deg, var(--accent), var(--cyan));
+    }
+    .scard-meta {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 11.5px; color: var(--dim);
+    }
+    .tag {
+      font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px;
+    }
+    .tag-low { background: rgba(16,185,129,0.12); color: #34d399; }
+    .tag-mid { background: rgba(251,191,36,0.12); color: var(--amber); }
+    .tag-high { background: rgba(239,68,68,0.12); color: var(--rose); }
+
+    /* ---- panels row ---- */
+    .panels {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    @media (max-width: 800px) {
+      .panels { grid-template-columns: 1fr; }
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px 16px 14px;
+      backdrop-filter: blur(10px);
+    }
+    .panel h3 {
+      font-size: 14px; font-weight: 800; margin-bottom: 12px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .panel h3 span {
+      font-size: 11px; font-weight: 700; color: var(--dim);
+      background: rgba(30,41,59,0.9); padding: 3px 8px; border-radius: 999px;
+    }
+    .skeleton {
+      height: 42px; border-radius: 10px; margin-bottom: 8px;
+      background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+    }
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* ---- AI / Nexora box ---- */
+    .nexora {
+      border-color: rgba(16,185,129,0.22);
+      background: linear-gradient(160deg, rgba(16,185,129,0.08), rgba(15,23,42,0.85));
+    }
+    .nexora-out {
+      font-size: 13.5px; color: var(--muted); min-height: 72px;
+    }
+    .nexora-out strong { color: var(--text); }
+
+    footer {
+      text-align: center; color: var(--dim); font-size: 12px;
+      padding: 8px 16px 36px;
+    }
+    footer a { color: var(--muted); font-weight: 600; }
+  </style>
 </head>
 <body>
-<canvas id="tvCanvas"></canvas>
-<div class="wrap">
+  <canvas id="bgCanvas"></canvas>
+  <div class="glow a"></div>
+  <div class="glow b"></div>
 
-<nav class="navbar glass-nav">
-  <div class="nav-inner">
-    <a href="index.html" class="logo"><span style="font-size:22px">📈</span> BIST <span class="accent">AI</span> Tracker</a>
-    <div class="nav-links">
-      <a href="index.html" class="active">Ana Sayfa</a>
-      <a href="portfolio.html">Portföy</a>
-      <a href="calculator.html">Hesaplayıcı</a>
-      <a href="ai-analiz.html">AI Merkezi</a>
-      <a href="about.html">Uygulama</a>
-    </div>
-    <div style="display:flex;align-items:center;gap:10px">
-      <a href="ai-analiz.html" class="nav-cta"><i class="fas fa-robot" style="font-size:11px"></i> Nexora AI</a>
-      <button class="mobile-btn" id="mobileBtn" aria-label="Menü"><i class="fas fa-bars"></i></button>
-    </div>
-  </div>
-  <div class="mobile-menu" id="mobileMenu">
-    <a href="index.html" class="active"><i class="fas fa-home" style="width:20px;text-align:center"></i> Ana Sayfa</a>
-    <a href="portfolio.html"><i class="fas fa-briefcase" style="width:20px;text-align:center"></i> Portföy</a>
-    <a href="calculator.html"><i class="fas fa-calculator" style="width:20px;text-align:center"></i> Hesaplayıcı</a>
-    <a href="ai-analiz.html"><i class="fas fa-robot" style="width:20px;text-align:center"></i> AI Merkezi</a>
-    <a href="about.html"><i class="fas fa-rocket" style="width:20px;text-align:center"></i> Uygulama</a>
-  </div>
-</nav>
-
-<div class="ticker-bar"><div class="ticker-track" id="tickerTrack"></div></div>
-
-<section class="hero">
-  <div class="container">
-    <div class="hero-grid">
-      <div>
-        <div class="badge"><span class="live-dot"></span> Canlı BIST 30 · Nexora AI</div>
-        <h1>Borsa İstanbul'u<br><span class="grad">Yapay Zeka</span> ile takip edin.</h1>
-        <p>Canlı fiyatlar, teknik veriler ve <strong style="color:var(--accent)">Nexora AI</strong> analizleri — profesyonel borsa takip platformu.</p>
-        <div class="hero-btns">
-          <a href="#stocks" class="btn btn-primary"><i class="fas fa-chart-line"></i> Hisseleri İncele</a>
-          <a href="ai-analiz.html" class="btn btn-ghost"><i class="fas fa-robot" style="color:var(--accent)"></i> AI Analiz</a>
-        </div>
-        <div class="idx-row">
-          <div class="idx-card glass"><div class="label">BIST 30</div><div class="val" id="idxBIST30">—</div></div>
-          <div class="idx-card glass"><div class="label">BIST 100</div><div class="val" id="idxBIST100">—</div></div>
-          <div class="idx-card glass"><div class="label">USD/TRY</div><div class="val" id="idxUSD">—</div></div>
-          <div class="idx-card glass"><div class="label">BTC</div><div class="val" id="idxBTC">—</div></div>
-        </div>
+  <div class="shell">
+    <nav class="nav">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">N</span>
+        Nexora <em>AI</em>
+      </a>
+      <button type="button" class="menu-toggle" id="menuBtn" aria-label="Menü">☰</button>
+      <div class="nav-links" id="navLinks">
+        <a class="on" href="index.html">Ana Sayfa</a>
+        <a href="stock.html">Hisseler</a>
+        <a href="portfolio.html">Portföy</a>
+        <a href="premium.html">Premium</a>
+        <a href="settings.html">Ayarlar</a>
+        <a href="about.html">Hakkında</a>
       </div>
-      <div>
-        <div class="nexora-panel glass">
-          <div id="nexoraGreeting"><h2>Merhaba 👋</h2><p class="sub">Ben <strong>Nexora AI</strong>. Bugün size nasıl yardımcı olabilirim?</p></div>
-          <input class="nexora-input" id="aiSearch" type="text" placeholder="Hisse veya sorunuzu yazın... (THYAO, ASELS...)" autocomplete="off">
-          <div class="nexora-actions">
-            <button class="btn btn-primary" style="flex:1;justify-content:center" id="askAI">🤖 AI Analiz Et</button>
-            <a href="#stocks" class="btn btn-ghost" style="padding:11px 14px">📈</a>
+      <div class="nav-cta">
+        <a class="btn btn-ghost" href="login.html">Giriş</a>
+        <a class="btn btn-primary" href="register.html">Kayıt Ol</a>
+      </div>
+    </nav>
+
+    <main class="wrap">
+      <!-- HERO -->
+      <section class="hero">
+        <div>
+          <div class="eyebrow"><i></i> Canlı piyasa · AI analiz</div>
+          <h1>BIST ve global piyasalar,<br /><span>tek premium panelde</span></h1>
+          <p class="hero-lead">
+            Hisse kartları, portföy takibi, alarmlar ve Nexora AI skorları.
+            Free planda BIST, NASDAQ ve NYSE — daha fazlası Premium’da.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="stock.html">Hisselere git</a>
+            <a class="btn btn-soft" href="premium.html">Planları incele</a>
+            <a class="btn btn-ghost" href="portfolio.html">Portföyüm</a>
           </div>
-          <div class="nexora-foot">
-            <div><div class="q-label">Günlük AI Hakkı</div><div class="q-val" id="questionCounter">3 / 3</div></div>
-            <a href="premium.html" style="font-size:12px;font-weight:600;color:var(--amber)">Premium →</a>
+          <div class="stats">
+            <div class="stat"><strong id="statMarkets">3+</strong><span>Açık piyasa (Free)</span></div>
+            <div class="stat"><strong id="statStocks">400+</strong><span>BIST sembol</span></div>
+            <div class="stat"><strong>AI</strong><span>Skor &amp; risk</span></div>
           </div>
         </div>
+
+        <aside class="hero-card">
+          <h3>Öne çıkanlar</h3>
+          <div id="heroMini">
+            <div class="mini-row"><span class="sym">🇹🇷 THYAO</span><span class="px" id="m_THYAO">—</span></div>
+            <div class="mini-row"><span class="sym">🇹🇷 GARAN</span><span class="px" id="m_GARAN">—</span></div>
+            <div class="mini-row"><span class="sym">🇹🇷 ASELS</span><span class="px" id="m_ASELS">—</span></div>
+            <div class="mini-row"><span class="sym">🇺🇸 AAPL</span><span class="px" id="m_AAPL">—</span></div>
+            <div class="mini-row"><span class="sym">🇺🇸 NVDA</span><span class="px" id="m_NVDA">—</span></div>
+          </div>
+        </aside>
+      </section>
+
+      <!-- QUICK -->
+      <div class="quick">
+        <a class="qcard" href="stock.html?market=bist">
+          <div class="ic">📈</div>
+          <h3>Hisseler</h3>
+          <p>BIST, NASDAQ, NYSE kartları</p>
+        </a>
+        <a class="qcard" href="portfolio.html">
+          <div class="ic">💼</div>
+          <h3>Portföy</h3>
+          <p>Alış fiyatı, K/Z, grafik</p>
+        </a>
+        <a class="qcard" href="settings.html">
+          <div class="ic">⚙️</div>
+          <h3>Ayarlar</h3>
+          <p>Plan, limit, bildirim</p>
+        </a>
+        <a class="qcard" href="login.html">
+          <div class="ic">👤</div>
+          <h3>Hesap</h3>
+          <p>Giriş / kayıt</p>
+        </a>
       </div>
-    </div>
+
+      <!-- STOCKS SIDE BY SIDE -->
+      <div class="section-head">
+        <div>
+          <h2>Hisse kartları</h2>
+          <p>Yan yana canlı önizleme · çoklu veri kaynağı</p>
+        </div>
+        <a href="stock.html">Tümünü gör →</a>
+      </div>
+      <div class="stock-grid" id="homeGrid">
+        <!-- 2. kısımda doldurulacak; şimdilik iskelet -->
+        <div class="scard"><div class="skeleton"></div><div class="skeleton" style="height:10px;width:60%"></div></div>
+        <div class="scard"><div class="skeleton"></div><div class="skeleton" style="height:10px;width:60%"></div></div>
+        <div class="scard"><div class="skeleton"></div><div class="skeleton" style="height:10px;width:60%"></div></div>
+        <div class="scard"><div class="skeleton"></div><div class="skeleton" style="height:10px;width:60%"></div></div>
+        <div class="scard"><div class="skeleton"></div><div class="skeleton" style="height:10px;width:60%"></div></div>
+        <div class="scard"><div class="skeleton"></div><div class="skeleton" style="height:10px;width:60%"></div></div>
+      </div>
+
+      <!-- PANELS -->
+      <div class="panels">
+        <div class="panel">
+          <h3>En çok hareket <span>Canlı</span></h3>
+          <div id="movers">
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+            <div class="skeleton"></div>
+          </div>
+        </div>
+        <div class="panel nexora">
+          <h3>Nexora AI <span>Radar</span></h3>
+          <div class="nexora-out" id="nexoraOut">
+            Piyasa özeti hazırlanıyor…
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer>
+      Nexora AI Tracker · <a href="about.html">Ahmet Eymen Bakraç</a>
+      · <a href="premium.html">Premium</a>
+      · <a href="settings.html">Ayarlar</a>
+    </footer>
   </div>
-</section>
 
-<section class="section">
-  <div class="container">
-    <h2 class="section-title" style="margin-bottom:18px">Bugün Piyasada</h2>
-    <div class="grid-4">
-      <div class="dash-card glass"><h3><span style="color:var(--green)">📈</span> En Çok Kazananlar</h3><div id="gainersList"><div style="font-size:12px;color:#64748b">Yükleniyor...</div></div></div>
-      <div class="dash-card glass"><h3><span style="color:var(--red)">📉</span> En Çok Kaybedenler</h3><div id="losersList"><div style="font-size:12px;color:#64748b">Yükleniyor...</div></div></div>
-      <div class="dash-card glass"><h3><span style="color:var(--amber)">🔥</span> Yüksek Hacim</h3><div id="volumeList"><div style="font-size:12px;color:#64748b">Yükleniyor...</div></div></div>
-      <div class="dash-card glass" style="border-color:rgba(167,139,250,.15)"><h3><span style="color:var(--violet)">🤖</span> AI Radar</h3><div id="aiRadarList"><div style="font-size:12px;color:#64748b">Yükleniyor...</div></div></div>
-    </div>
-  </div>
-</section>
+  <!-- 2. KISIM: secrets + api + animasyon + canlı veri JS buraya -->
+  <script src="assets/js/secrets.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script>
+(function () {
+  "use strict";
 
-<section class="section" style="padding-top:8px">
-  <div class="container">
-    <div class="insight glass">
-      <div class="insight-top">
-        <div><h2>🤖 Nexora AI Bugünkü Yorumu</h2><div class="meta">Yapay zekanın günlük piyasa değerlendirmesi</div></div>
-        <div class="score-box"><div class="sl">Güven Skoru</div><div class="sv" id="insightScore">—</div></div>
-      </div>
-      <h3 id="insightTitle">—</h3>
-      <p id="insightText">—</p>
-      <a href="ai-analiz.html" class="btn btn-primary" style="margin-top:16px;font-size:13px">Detaylı AI Analizi</a>
-    </div>
-  </div>
-</section>
-
-<section class="section" id="stocks">
-  <div class="container">
-    <div class="section-head">
-      <div>
-        <h2 class="section-title">BIST 30 Canlı Takip</h2>
-        <div class="section-sub">Yahoo Finance gerçek veri · 60 sn yenileme · <span id="dataStatus" class="data-status">—</span></div>
-      </div>
-      <div class="refresh-row">
-        <span class="time" id="lastUpdate">—</span>
-        <button class="refresh-btn" id="refreshBtn"><i class="fas fa-sync-alt"></i> Yenile</button>
-      </div>
-    </div>
-    <div class="search-wrap">
-      <i class="fas fa-search"></i>
-      <input id="searchInput" type="text" placeholder="Hisse ara... (THYAO, ASELS, GARAN...)" autocomplete="off">
-    </div>
-    <div class="grid-stocks" id="hisseListesi">
-      <div class="loading"><i class="fas fa-spinner fa-spin"></i>Canlı veriler yükleniyor...</div>
-    </div>
-  </div>
-</section>
-
-<section class="section" style="padding-top:12px">
-  <div class="container">
-    <div class="section-head">
-      <h2 style="font-size:18px;font-weight:700"><span style="color:var(--amber)">★</span> Takip Listesi</h2>
-      <span class="wl-count" id="takipSayisi">0</span>
-    </div>
-    <div class="wl-grid" id="takipListesi"></div>
-    <div class="wl-empty" id="takipEmpty" style="display:none">Henüz takip ettiğiniz hisse yok. Yukarıdan ekleyin.</div>
-  </div>
-</section>
-
-<section class="section">
-  <div class="container">
-    <h2 class="section-title" style="text-align:center;margin-bottom:28px">Yatırım Araçları</h2>
-    <div class="grid-3">
-      <a href="calculator.html" class="tool-card glass"><div class="tool-icon" style="background:rgba(16,185,129,.12)">🧮</div><h3>Hisse Hesaplayıcı</h3><p>Alış, satış hedefi, lot ve kar-zarar hesaplama.</p></a>
-      <a href="portfolio.html" class="tool-card glass"><div class="tool-icon" style="background:rgba(34,211,238,.12)">💼</div><h3>Portföy Takibi</h3><p>Yatırımlarınızı ve performansınızı izleyin.</p></a>
-      <a href="ai-analiz.html" class="tool-card glass"><div class="tool-icon" style="background:rgba(167,139,250,.12)">🤖</div><h3>AI Analiz Merkezi</h3><p>Nexora AI ile detaylı hisse analizi.</p></a>
-    </div>
-  </div>
-</section>
-
-<footer class="footer">
-  <div class="container">
-    <div class="footer-grid">
-      <div>
-        <div class="footer-brand"><span>📈</span> BIST <span style="color:var(--accent)">AI</span> Tracker</div>
-        <p class="footer-desc">Canlı BIST verileri ve Nexora AI destekli profesyonel borsa takip platformu.</p>
-      </div>
-      <div>
-        <h4>Sayfalar</h4>
-        <a href="index.html">Ana Sayfa</a><a href="portfolio.html">Portföy</a><a href="calculator.html">Hesaplayıcı</a><a href="ai-analiz.html">AI Merkezi</a><a href="about.html">Uygulama</a>
-      </div>
-      <div>
-        <h4>Araçlar</h4>
-        <a href="#stocks">BIST 30 Canlı</a><a href="ai-analiz.html">Nexora AI</a><a href="premium.html">Premium</a>
-      </div>
-      <div>
-        <h4>Geliştirici</h4>
-        <p style="font-size:13px;color:#e2e8f0;margin-bottom:2px">Ahmet Eymen Bakraç</p>
-        <p style="font-size:12px;color:#64748b">Full Stack Developer</p>
-        <a href="about.html" class="dev-link">Hakkımda <i class="fas fa-arrow-right" style="font-size:10px"></i></a>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <span>© 2026 BIST AI Tracker · Nexora AI</span>
-      <span id="footerDataNote">Veri: Yahoo Finance</span>
-    </div>
-  </div>
-</footer>
-</div>
-
-<div id="fabs">
-  <button class="fab fab-theme" id="themeBtn" title="Tema">🌙</button>
-  <button class="fab fab-ai" id="aiBtn" title="Nexora AI">🤖</button>
-</div>
-
-<script>
-
-/* Safe storage */
-var Store={
-  get:function(k,fb){try{if(typeof localStorage==='undefined')return fb;var v=localStorage.getItem(k);return v===null?fb:v}catch(e){return fb}},
-  set:function(k,v){try{if(typeof localStorage!=='undefined')localStorage.setItem(k,v)}catch(e){}},
-  getJSON:function(k,fb){try{var v=this.get(k,null);return v?JSON.parse(v):fb}catch(e){return fb}},
-  setJSON:function(k,v){try{this.set(k,JSON.stringify(v))}catch(e){}}
-};
-
-/* Nexora AI */
-var Nexora={
-  version:'4.3',theme:Store.get('theme','dark'),dailyQuestions:3,
-  usedQuestions:parseInt(Store.get('nexoraUsed','0'),10)||0,market:{BIST30:[]},
-  insights:[
-    {title:'Bankacılık Sektörü',text:'Bankacılık hisselerinde hacim artışı dikkat çekiyor. Gün içi hareketlilik yüksek olabilir. Risk yönetimine dikkat edin.',confidence:91},
-    {title:'Enerji Sektörü',text:'Enerji hisselerinde pozitif teknik görünüm devam ediyor. Momentum korunuyor.',confidence:87},
-    {title:'Savunma Sanayi',text:'Savunma sektöründe momentum güçlü. Haber akışı yakından takip edilmeli.',confidence:89},
-    {title:'Genel Piyasa',text:'BIST endeksinde volatilite artabilir. Pozisyon boyutlarını gözden geçirin.',confidence:84}
-  ],
-  init:function(){this.renderGreeting();this.updateCounter();this.renderInsight()},
-  renderGreeting:function(){
-    var h=new Date().getHours(),t=h<12?'Günaydın':h<18?'İyi Günler':'İyi Akşamlar';
-    var el=document.getElementById('nexoraGreeting');
-    if(el)el.innerHTML='<h2>'+t+' 👋</h2><p class="sub">Ben <strong>Nexora AI</strong>. Bugün size nasıl yardımcı olabilirim?</p>';
-  },
-  updateCounter:function(){var el=document.getElementById('questionCounter');if(el)el.textContent=Math.max(0,this.dailyQuestions-this.usedQuestions)+' / '+this.dailyQuestions},
-  renderInsight:function(){
-    var r=this.insights[Math.floor(Math.random()*this.insights.length)];
-    var t=document.getElementById('insightTitle'),x=document.getElementById('insightText'),s=document.getElementById('insightScore');
-    if(t)t.textContent=r.title;if(x)x.textContent=r.text;if(s)s.textContent='%'+r.confidence;
-  },
-  ask:function(){
-    var q=(document.getElementById('aiSearch')||{}).value||'';
-    if(!q.trim()){document.getElementById('aiSearch').focus();return}
-    if(this.usedQuestions>=this.dailyQuestions){alert('Günlük AI hakkınız doldu. Premium ile sınırsız analiz alın.');location.href='premium.html';return}
-    this.usedQuestions++;Store.set('nexoraUsed',String(this.usedQuestions));this.updateCounter();
-    location.href='ai-analiz.html?q='+encodeURIComponent(q.trim());
-  },
-  toggleTheme:function(){this.theme=this.theme==='dark'?'light':'dark';Store.set('theme',this.theme);var b=document.getElementById('themeBtn');if(b)b.textContent=this.theme==='dark'?'🌙':'☀️'}
-};
-
-/* BIST 30 */
-var BIST30=[
-  {symbol:'THYAO',name:'Türk Hava Yolları'},{symbol:'GARAN',name:'Garanti BBVA'},{symbol:'AKBNK',name:'Akbank'},
-  {symbol:'YKBNK',name:'Yapı Kredi'},{symbol:'ISCTR',name:'İş Bankası (C)'},{symbol:'ASELS',name:'Aselsan'},
-  {symbol:'EREGL',name:'Ereğli Demir Çelik'},{symbol:'KCHOL',name:'Koç Holding'},{symbol:'SAHOL',name:'Sabancı Holding'},
-  {symbol:'SISE',name:'Şişecam'},{symbol:'TUPRS',name:'Tüpraş'},{symbol:'BIMAS',name:'BİM'},
-  {symbol:'FROTO',name:'Ford Otosan'},{symbol:'TOASO',name:'Tofaş'},{symbol:'TCELL',name:'Turkcell'},
-  {symbol:'TTKOM',name:'Türk Telekom'},{symbol:'PGSUS',name:'Pegasus'},{symbol:'SASA',name:'Sasa Polyester'},
-  {symbol:'PETKM',name:'Petkim'},{symbol:'KRDMD',name:'Kardemir (D)'},{symbol:'ENKAI',name:'Enka İnşaat'},
-  {symbol:'EKGYO',name:'Emlak Konut'},{symbol:'GUBRF',name:'Gübre Fabrikaları'},{symbol:'HEKTS',name:'Hektaş'},
-  {symbol:'MGROS',name:'Migros'},{symbol:'AEFES',name:'Anadolu Efes'},{symbol:'TAVHL',name:'TAV Havalimanları'},
-  {symbol:'ASTOR',name:'Astor Enerji'},{symbol:'ODAS',name:'Odaş Elektrik'},{symbol:'VAKBN',name:'VakıfBank'}
-];
-
-var marketData=[],takipte=Store.getJSON('takipListesi',[]),liveCount=0;
-
-function parseYahoo(json){
-  try{
-    var meta=json.chart.result[0].meta;
-    if(!meta||meta.regularMarketPrice==null)return null;
-    var price=meta.regularMarketPrice;
-    var prev=meta.chartPreviousClose||meta.previousClose||price;
-    var change=prev?((price-prev)/prev)*100:0;
-    return{
-      price:+price.toFixed(2),
-      change:+change.toFixed(2),
-      volume:meta.regularMarketVolume||0,
-      ai:Math.min(95,Math.max(40,60+Math.round(change*3)+(Math.random()*10|0))),
-      live:true
-    };
-  }catch(e){return null}
-}
-
-async function fetchYahooDirect(symbol){
-  var url='https://query1.finance.yahoo.com/v8/finance/chart/'+symbol+'.IS?interval=1d&range=2d';
-  var res=await fetch(url,{mode:'cors'});
-  if(!res.ok)throw new Error('http '+res.status);
-  return parseYahoo(await res.json());
-}
-
-async function fetchYahooProxy(symbol){
-  var target=encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/'+symbol+'.IS?interval=1d&range=2d');
-  try{
-    var res=await fetch('https://api.allorigins.win/raw?url='+target);
-    if(res.ok){var data=parseYahoo(await res.json());if(data)return data}
-  }catch(e){}
-  try{
-    var res2=await fetch('https://corsproxy.io/?'+target);
-    if(res2.ok){var data2=parseYahoo(await res2.json());if(data2)return data2}
-  }catch(e){}
-  return null;
-}
-
-async function fetchStock(symbol){
-  try{var d=await fetchYahooDirect(symbol);if(d)return d}catch(e){}
-  try{var p=await fetchYahooProxy(symbol);if(p)return p}catch(e){}
-  return null;
-}
-
-async function loadLiveData(){
-  liveCount=0;
-  var statusEl=document.getElementById('dataStatus');
-  if(statusEl){statusEl.textContent='Yükleniyor...';statusEl.className='data-status'}
-
-  var results=await Promise.all(BIST30.map(async function(s){
-    var live=await fetchStock(s.symbol);
-    if(live){liveCount++;return Object.assign({},s,live)}
-    var seed=s.symbol.split('').reduce(function(a,c){return a+c.charCodeAt(0)},0);
-    return Object.assign({},s,{
-      price:+(20+(seed%400)+Math.random()*3).toFixed(2),
-      change:+(((seed%17)-8)*0.4+(Math.random()-0.5)).toFixed(2),
-      volume:Math.floor(1e6+Math.random()*3e7),
-      ai:50+(seed%40),
-      live:false
+  /* ---------- Mobile nav ---------- */
+  var menuBtn = document.getElementById("menuBtn");
+  var navLinks = document.getElementById("navLinks");
+  if (menuBtn && navLinks) {
+    menuBtn.addEventListener("click", function () {
+      navLinks.classList.toggle("open");
     });
-  }));
-
-  marketData=results;
-  Nexora.market.BIST30=results;
-  renderStocks();renderDashboard();renderTicker();updateIndices();
-
-  var el=document.getElementById('lastUpdate');
-  if(el)el.textContent='Son: '+new Date().toLocaleTimeString('tr-TR');
-
-  if(statusEl){
-    if(liveCount>=BIST30.length*0.5){
-      statusEl.textContent='● CANLI ('+liveCount+'/'+BIST30.length+')';
-      statusEl.className='data-status live';
-      document.getElementById('footerDataNote').textContent='Veri: Yahoo Finance (canlı)';
-    }else if(liveCount>0){
-      statusEl.textContent='◐ Kısmi canlı ('+liveCount+'/'+BIST30.length+')';
-      statusEl.className='data-status live';
-      document.getElementById('footerDataNote').textContent='Veri: Yahoo Finance (kısmi)';
-    }else{
-      statusEl.textContent='○ API engelli — yedek veri';
-      statusEl.className='data-status demo';
-      document.getElementById('footerDataNote').textContent='Veri: Yedek (CORS engeli)';
-    }
   }
-}
 
-function fmt(n){return n.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2})}
-function chClass(c){return c>=0?'up':'down'}
-function chIcon(c){return c>=0?'▲':'▼'}
+  /* ---------- Canvas network animation ---------- */
+  (function initCanvas() {
+    var c = document.getElementById("bgCanvas");
+    if (!c) return;
+    var ctx = c.getContext("2d");
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var pts = [];
+    var N = 48;
 
-function renderStocks(){
-  var box=document.getElementById('hisseListesi');if(!box)return;box.innerHTML='';
-  marketData.forEach(function(s){
-    var followed=takipte.indexOf(s.symbol)!==-1;
-    var div=document.createElement('div');
-    div.className='stock-card glass';
-    div.setAttribute('data-symbol',s.symbol);
-    div.innerHTML=
-      '<div class="sc-top"><div><div class="sc-sym">'+s.symbol+'</div><div class="sc-name">'+s.name+'</div></div>'+
-      '<span class="sc-badge '+(followed?'on':'off')+'">'+(followed?'Takipte':'Serbest')+'</span></div>'+
-      '<div class="sc-mid"><div><div class="sc-price">'+fmt(s.price)+' ₺</div>'+
-      '<div class="sc-chg '+chClass(s.change)+'">'+chIcon(s.change)+' '+(s.change>=0?'+':'')+s.change+'%</div></div>'+
-      '<div class="sc-ai"><div class="l">AI Skor</div><div class="v">'+s.ai+'/100</div></div></div>'+
-      '<button class="sc-btn '+(followed?'added':'add')+'" data-sym="'+s.symbol+'">'+(followed?'✓ Takipte':'+ Takip Et')+'</button>'+
-      '<a class="sc-link" href="'+s.symbol.toLowerCase()+'.html">Detay →</a>';
-    box.appendChild(div);
-  });
-  box.querySelectorAll('.sc-btn').forEach(function(btn){
-    btn.addEventListener('click',function(){toggleTakip(btn.getAttribute('data-sym'))});
-  });
-}
-
-function renderDashboard(){
-  if(!marketData.length)return;
-  var sorted=marketData.slice();
-  var gainers=sorted.slice().sort(function(a,b){return b.change-a.change}).slice(0,5);
-  var losers=sorted.slice().sort(function(a,b){return a.change-b.change}).slice(0,5);
-  var volume=sorted.slice().sort(function(a,b){return (b.volume||0)-(a.volume||0)}).slice(0,5);
-  var ai=sorted.slice().sort(function(a,b){return b.ai-a.ai}).slice(0,5);
-  function row(s){return '<div class="dash-row"><a href="'+s.symbol.toLowerCase()+'.html">'+s.symbol+'</a><span class="'+chClass(s.change)+'">'+(s.change>=0?'+':'')+s.change+'%</span></div>'}
-  document.getElementById('gainersList').innerHTML=gainers.map(row).join('');
-  document.getElementById('losersList').innerHTML=losers.map(row).join('');
-  document.getElementById('volumeList').innerHTML=volume.map(row).join('');
-  document.getElementById('aiRadarList').innerHTML=ai.map(function(s){
-    return '<div class="dash-row"><a href="'+s.symbol.toLowerCase()+'.html">'+s.symbol+'</a><span style="color:var(--violet);font-size:12px;font-weight:600">'+s.ai+'/100</span></div>';
-  }).join('');
-}
-
-function renderTicker(){
-  var track=document.getElementById('tickerTrack');if(!track||!marketData.length)return;
-  var items=marketData.map(function(s){
-    return '<span class="t-item"><b>'+s.symbol+'</b> '+fmt(s.price)+' <span class="'+chClass(s.change)+'">'+(s.change>=0?'+':'')+s.change+'%</span></span>';
-  }).join('<span style="color:#334155">·</span>');
-  track.innerHTML=items+items;
-}
-
-function updateIndices(){
-  if(!marketData.length)return;
-  var avg=marketData.reduce(function(a,s){return a+s.change},0)/marketData.length;
-  var e30=document.getElementById('idxBIST30'),e100=document.getElementById('idxBIST100');
-  if(e30){e30.textContent=(avg>=0?'+':'')+avg.toFixed(2)+'%';e30.className='val '+chClass(avg)}
-  if(e100){var c=avg*0.9;e100.textContent=(c>=0?'+':'')+c.toFixed(2)+'%';e100.className='val '+chClass(c)}
-  fetchYahooDirect('USDTRY=X').then(function(d){
-    if(d)document.getElementById('idxUSD').textContent=d.price.toFixed(2);
-  }).catch(function(){
-    fetchYahooProxy('USDTRY=X').then(function(d){if(d)document.getElementById('idxUSD').textContent=d.price.toFixed(2)}).catch(function(){});
-  });
-  (async function(){
-    try{
-      var res=await fetch('https://query1.finance.yahoo.com/v8/finance/chart/BTC-USD?interval=1d&range=1d');
-      if(res.ok){var j=await res.json();var p=j.chart.result[0].meta.regularMarketPrice;if(p)document.getElementById('idxBTC').textContent='$'+Math.round(p).toLocaleString()}
-    }catch(e){
-      try{
-        var res2=await fetch('https://api.allorigins.win/raw?url='+encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/BTC-USD?interval=1d&range=1d'));
-        if(res2.ok){var j2=await res2.json();var p2=j2.chart.result[0].meta.regularMarketPrice;if(p2)document.getElementById('idxBTC').textContent='$'+Math.round(p2).toLocaleString()}
-      }catch(e2){}
+    function resize() {
+      c.width = window.innerWidth * dpr;
+      c.height = window.innerHeight * dpr;
+      c.style.width = window.innerWidth + "px";
+      c.style.height = window.innerHeight + "px";
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
+    resize();
+    window.addEventListener("resize", resize);
+
+    for (var i = 0; i < N; i++) {
+      pts.push({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        vx: (Math.random() - 0.5) * 0.35,
+        vy: (Math.random() - 0.5) * 0.35,
+        r: 1.2 + Math.random() * 1.6
+      });
+    }
+
+    function frame() {
+      var w = window.innerWidth;
+      var h = window.innerHeight;
+      ctx.clearRect(0, 0, w, h);
+      var i, j, p, q, dx, dy, dist;
+
+      for (i = 0; i < N; i++) {
+        p = pts[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0 || p.x > w) p.vx *= -1;
+        if (p.y < 0 || p.y > h) p.vy *= -1;
+      }
+
+      for (i = 0; i < N; i++) {
+        for (j = i + 1; j < N; j++) {
+          dx = pts[i].x - pts[j].x;
+          dy = pts[i].y - pts[j].y;
+          dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 140) {
+            ctx.beginPath();
+            ctx.strokeStyle =
+              "rgba(16,185,129," + (0.11 * (1 - dist / 140)).toFixed(3) + ")";
+            ctx.lineWidth = 1;
+            ctx.moveTo(pts[i].x, pts[i].y);
+            ctx.lineTo(pts[j].x, pts[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      for (i = 0; i < N; i++) {
+        p = pts[i];
+        ctx.beginPath();
+        ctx.fillStyle = "rgba(34,211,238,0.55)";
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
   })();
-}
 
-function toggleTakip(symbol){
-  var i=takipte.indexOf(symbol);
-  if(i!==-1)takipte.splice(i,1);else takipte.push(symbol);
-  Store.setJSON('takipListesi',takipte);updateTakip();renderStocks();
-}
-
-function updateTakip(){
-  var list=document.getElementById('takipListesi'),badge=document.getElementById('takipSayisi'),empty=document.getElementById('takipEmpty');
-  if(!list)return;list.innerHTML='';
-  if(badge)badge.textContent=takipte.length;
-  if(takipte.length===0){if(empty)empty.style.display='block';list.style.display='none'}
-  else{if(empty)empty.style.display='none';list.style.display='grid';
-    takipte.forEach(function(s){list.innerHTML+='<a class="wl-item glass" href="'+s.toLowerCase()+'.html">'+s+'</a>'})}
-}
-
-document.getElementById('searchInput').addEventListener('input',function(e){
-  var v=e.target.value.toUpperCase().trim();
-  document.querySelectorAll('#hisseListesi .stock-card').forEach(function(c){
-    c.style.display=(c.getAttribute('data-symbol')||'').indexOf(v)!==-1?'':'none';
-  });
-});
-document.getElementById('mobileBtn').addEventListener('click',function(){
-  document.getElementById('mobileMenu').classList.toggle('open');
-  var icon=this.querySelector('i');icon.classList.toggle('fa-bars');icon.classList.toggle('fa-times');
-});
-document.getElementById('themeBtn').addEventListener('click',function(){Nexora.toggleTheme()});
-document.getElementById('aiBtn').addEventListener('click',function(){document.getElementById('aiSearch').focus();window.scrollTo({top:0,behavior:'smooth'})});
-document.getElementById('askAI').addEventListener('click',function(){Nexora.ask()});
-document.getElementById('aiSearch').addEventListener('keydown',function(e){if(e.key==='Enter')Nexora.ask()});
-document.getElementById('refreshBtn').addEventListener('click',function(){loadLiveData()});
-
-/* Canvas animation */
-(function(){
-  var canvas=document.getElementById('tvCanvas');if(!canvas)return;
-  var ctx=canvas.getContext('2d'),w,h,candles=[],particles=[],offset=0;
-  function resize(){w=canvas.width=window.innerWidth;h=canvas.height=window.innerHeight}
-  resize();window.addEventListener('resize',resize);
-  var price=100;
-  for(var i=0;i<90;i++){var open=price,close=open+(Math.random()-0.48)*4;candles.push({open:open,close:close,high:Math.max(open,close)+Math.random()*2,low:Math.min(open,close)-Math.random()*2});price=close}
-  for(var j=0;j<40;j++)particles.push({x:Math.random()*(w||800),y:Math.random()*(h||600),r:Math.random()*1.3+0.3,vx:(Math.random()-0.5)*0.25,vy:(Math.random()-0.5)*0.25,a:Math.random()*0.3+0.08});
-  function draw(){
-    ctx.clearRect(0,0,w,h);
-    ctx.strokeStyle='rgba(16,185,129,0.03)';ctx.lineWidth=1;
-    for(var x=0;x<w;x+=56){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}
-    for(var y=0;y<h;y+=56){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
-    var cw=12,gap=5,totalW=candles.length*(cw+gap),baseY=h*0.58,scale=3.1;
-    offset=(offset+0.28)%totalW;
-    for(var i=0;i<candles.length;i++){
-      var c=candles[i],x=i*(cw+gap)-offset;if(x<-cw)x+=totalW;if(x>w+cw)continue;
-      var up=c.close>=c.open;
-      ctx.strokeStyle=up?'rgba(16,185,129,0.28)':'rgba(239,68,68,0.25)';
-      ctx.fillStyle=up?'rgba(16,185,129,0.15)':'rgba(239,68,68,0.12)';ctx.lineWidth=1;
-      ctx.beginPath();ctx.moveTo(x+cw/2,baseY-c.high*scale);ctx.lineTo(x+cw/2,baseY-c.low*scale);ctx.stroke();
-      var top=baseY-Math.max(c.open,c.close)*scale,bot=baseY-Math.min(c.open,c.close)*scale;
-      ctx.fillRect(x,top,cw,Math.max(1,bot-top));ctx.strokeRect(x,top,cw,Math.max(1,bot-top));
-    }
-    ctx.beginPath();ctx.strokeStyle='rgba(34,211,238,0.2)';ctx.lineWidth=1.5;
-    for(var i=0;i<candles.length;i++){var x=i*(cw+gap)-offset+cw/2;if(x<-cw)x+=totalW;var avg=(candles[i].open+candles[i].close)/2,y=baseY-avg*scale;if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)}
-    ctx.stroke();
-    particles.forEach(function(p){p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=w;if(p.x>w)p.x=0;if(p.y<0)p.y=h;if(p.y>h)p.y=0;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(16,185,129,'+p.a+')';ctx.fill()});
-    requestAnimationFrame(draw);
+  /* ---------- Helpers ---------- */
+  function fmt(q) {
+    if (!q || q.price == null) return "—";
+    var p = Number(q.price);
+    var pct = Number(q.pct != null ? q.pct : q.changePercent);
+    var cls = pct > 0 ? "up" : pct < 0 ? "down" : "";
+    var sign = pct > 0 ? "+" : "";
+    return (
+      '<span class="' +
+      cls +
+      '">' +
+      p.toLocaleString("en-US", { maximumFractionDigits: 2 }) +
+      (isFinite(pct)
+        ? ' <small>(' + sign + pct.toFixed(2) + "%)</small>"
+        : "") +
+      "</span>"
+    );
   }
-  draw();
-})();
 
-Nexora.init();updateTakip();loadLiveData();setInterval(loadLiveData,60000);
-</script>
+  function riskTag(r) {
+    r = String(r || "Medium").toLowerCase();
+    if (r === "low" || r === "düşük")
+      return '<span class="tag tag-low">Düşük risk</span>';
+    if (r === "high" || r === "yüksek")
+      return '<span class="tag tag-high">Yüksek risk</span>';
+    return '<span class="tag tag-mid">Orta risk</span>';
+  }
+
+  async function quote(sym) {
+    if (!window.API || typeof API.getLiveQuote !== "function") return null;
+    try {
+      return await API.getLiveQuote(sym);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /* ---------- Featured mini strip (hero) ---------- */
+  var HERO = [
+    { id: "m_THYAO", ysym: "THYAO.IS" },
+    { id: "m_GARAN", ysym: "GARAN.IS" },
+    { id: "m_ASELS", ysym: "ASELS.IS" },
+    { id: "m_AAPL", ysym: "AAPL" },
+    { id: "m_NVDA", ysym: "NVDA" }
+  ];
+
+  async function loadHero() {
+    for (var i = 0; i < HERO.length; i++) {
+      var h = HERO[i];
+      var el = document.getElementById(h.id);
+      if (!el) continue;
+      var q = await quote(h.ysym);
+      el.innerHTML = fmt(q);
+      await new Promise(function (r) {
+        setTimeout(r, 90);
+      });
+    }
+  }
+
+  /* ---------- Home cards (clickable) ---------- */
+  var HOME_CARDS = [
+    {
+      symbol: "THYAO",
+      name: "Türk Hava Yolları",
+      market: "BIST",
+      flag: "🇹🇷",
+      sector: "Ulaştırma",
+      ysym: "THYAO.IS",
+      aiScore: 76,
+      risk: "Medium",
+      href: "stock.html?market=bist&symbol=THYAO"
+    },
+    {
+      symbol: "GARAN",
+      name: "Garanti BBVA",
+      market: "BIST",
+      flag: "🇹🇷",
+      sector: "Bankacılık",
+      ysym: "GARAN.IS",
+      aiScore: 81,
+      risk: "Low",
+      href: "stock.html?market=bist&symbol=GARAN"
+    },
+    {
+      symbol: "ASELS",
+      name: "Aselsan",
+      market: "BIST",
+      flag: "🇹🇷",
+      sector: "Savunma",
+      ysym: "ASELS.IS",
+      aiScore: 84,
+      risk: "Low",
+      href: "stock.html?market=bist&symbol=ASELS"
+    },
+    {
+      symbol: "BIMAS",
+      name: "BİM",
+      market: "BIST",
+      flag: "🇹🇷",
+      sector: "Perakende",
+      ysym: "BIMAS.IS",
+      aiScore: 85,
+      risk: "Low",
+      href: "stock.html?market=bist&symbol=BIMAS"
+    },
+    {
+      symbol: "AAPL",
+      name: "Apple Inc.",
+      market: "NASDAQ",
+      flag: "🇺🇸",
+      sector: "Technology",
+      ysym: "AAPL",
+      aiScore: 82,
+      risk: "Medium",
+      href: "stock.html?market=nasdaq&symbol=AAPL"
+    },
+    {
+      symbol: "NVDA",
+      name: "NVIDIA",
+      market: "NASDAQ",
+      flag: "🇺🇸",
+      sector: "Semiconductors",
+      ysym: "NVDA",
+      aiScore: 88,
+      risk: "Medium",
+      href: "stock.html?market=nasdaq&symbol=NVDA"
+    }
+  ];
+
+  function cardHTML(s, priceHtml) {
+    var score = Math.max(0, Math.min(100, Number(s.aiScore) || 50));
+    return (
+      '<a class="scard" href="' +
+      s.href +
+      '" data-symbol="' +
+      s.symbol +
+      '" title="' +
+      s.name +
+      ' — detay">' +
+      '<div class="scard-top">' +
+      "<div>" +
+      '<div class="scard-sym"><span>' +
+      (s.flag || "") +
+      "</span> " +
+      s.symbol +
+      "</div>" +
+      '<div class="scard-name">' +
+      s.name +
+      "</div>" +
+      "</div>" +
+      '<span class="scard-mkt">' +
+      s.market +
+      "</span>" +
+      "</div>" +
+      '<div class="scard-price">' +
+      (priceHtml || "—") +
+      "</div>" +
+      '<div class="ai-bar"><i style="width:' +
+      score +
+      '%"></i></div>' +
+      '<div class="scard-meta"><span>AI ' +
+      score +
+      "/100</span>" +
+      riskTag(s.risk) +
+      "</div>" +
+      "</a>"
+    );
+  }
+
+  async function loadHomeCards() {
+    var grid = document.getElementById("homeGrid");
+    if (!grid) return;
+
+    // first paint structure (clickable immediately)
+    grid.innerHTML = HOME_CARDS.map(function (s) {
+      return cardHTML(s, "—");
+    }).join("");
+
+    for (var i = 0; i < HOME_CARDS.length; i++) {
+      var s = HOME_CARDS[i];
+      var q = await quote(s.ysym);
+      var nodes = grid.querySelectorAll(".scard");
+      if (nodes[i]) {
+        var priceEl = nodes[i].querySelector(".scard-price");
+        if (priceEl) priceEl.innerHTML = fmt(q);
+      }
+      await new Promise(function (r) {
+        setTimeout(r, 100);
+      });
+    }
+  }
+
+  /* ---------- Movers panel ---------- */
+  async function loadMovers() {
+    var box = document.getElementById("movers");
+    if (!box) return;
+    var list = [
+      { label: "THYAO", ysym: "THYAO.IS" },
+      { label: "ASELS", ysym: "ASELS.IS" },
+      { label: "GARAN", ysym: "GARAN.IS" },
+      { label: "SASA", ysym: "SASA.IS" },
+      { label: "AAPL", ysym: "AAPL" }
+    ];
+    var rows = [];
+    for (var i = 0; i < list.length; i++) {
+      var q = await quote(list[i].ysym);
+      var pct = q ? Number(q.pct != null ? q.pct : q.changePercent) : NaN;
+      rows.push({
+        label: list[i].label,
+        ysym: list[i].ysym,
+        q: q,
+        pct: pct
+      });
+      await new Promise(function (r) {
+        setTimeout(r, 80);
+      });
+    }
+    rows.sort(function (a, b) {
+      return (Math.abs(b.pct) || 0) - (Math.abs(a.pct) || 0);
+    });
+    box.innerHTML = rows
+      .map(function (r) {
+        var href =
+          r.label.length <= 6 && r.ysym.indexOf(".IS") !== -1
+            ? "stock.html?market=bist&symbol=" + r.label
+            : "stock.html?market=nasdaq&symbol=" + r.label;
+        return (
+          '<a class="mini-row" href="' +
+          href +
+          '" style="display:flex">' +
+          '<span class="sym">' +
+          r.label +
+          "</span>" +
+          '<span class="px">' +
+          fmt(r.q) +
+          "</span>" +
+          "</a>"
+        );
+      })
+      .join("");
+  }
+
+  /* ---------- Nexora AI radar text ---------- */
+  async function loadNexora() {
+    var el = document.getElementById("nexoraOut");
+    if (!el) return;
+    var qThy = await quote("THYAO.IS");
+    var qAsels = await quote("ASELS.IS");
+    var qAapl = await quote("AAPL");
+
+    function side(q) {
+      if (!q || q.pct == null && q.changePercent == null) return "yatay";
+      var p = Number(q.pct != null ? q.pct : q.changePercent);
+      if (p > 1) return "güçlü yeşil";
+      if (p > 0) return "hafif alıcı";
+      if (p < -1) return "satıcı baskısı";
+      if (p < 0) return "hafif satıcı";
+      return "dengeli";
+    }
+
+    el.innerHTML =
+      "<strong>Radar özeti</strong><br/>" +
+      "THYAO " +
+      side(qThy) +
+      ", ASELS " +
+      side(qAsels) +
+      ", AAPL " +
+      side(qAapl) +
+      ". " +
+      "Kartlara tıklayarak detay ve tüm listeye geçebilirsin. " +
+      "Veri çoklu kaynaktan (failover) gelir; tek sağlayıcıya bağlı değilsin.";
+  }
+
+  /* ---------- Auth label (optional) ---------- */
+  try {
+    var session = localStorage.getItem("nexora_session");
+    if (session) {
+      var cta = document.querySelector(".nav-cta");
+      if (cta) {
+        cta.innerHTML =
+          '<a class="btn btn-soft" href="settings.html">Hesabım</a>' +
+          '<a class="btn btn-primary" href="portfolio.html">Portföy</a>';
+      }
+    }
+  } catch (e) {}
+
+  /* ---------- Boot ---------- */
+  loadHero();
+  loadHomeCards();
+  loadMovers();
+  loadNexora();
+
+  // soft refresh every 60s
+  setInterval(function () {
+    loadHero();
+    loadMovers();
+  }, 60000);
+})();
+  </script>
 </body>
 </html>
