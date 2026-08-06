@@ -591,7 +591,7 @@
   { "symbol": "GLBMD", "name": "Global Menkul Değerler", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Aracı Kurum", "plan": "free", "aiScore": 52, "risk": "High" },
   { "symbol": "GOZDE", "name": "Gözde Girişim", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Yatırım", "plan": "free", "aiScore": 58, "risk": "High" },
   { "symbol": "HEDEF", "name": "Hedef Holding", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Holding", "plan": "free", "aiScore": 53, "risk": "High" },
-  { "symbol": "INFO", "name": "Info Yatırım", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Aracı Kurum", "plan": "free", "aiScore": 57, "risk": "High" }
+  { "symbol": "INFO", "name": "Info Yatırım", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Aracı Kurum", "plan": "free", "aiScore": 57, "risk": "High" },
   { "symbol": "ISYAT", "name": "İş Yatırım Ortaklığı", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Yatırım", "plan": "free", "aiScore": 58, "risk": "Medium" },
   { "symbol": "IZFAS", "name": "İzmir Fuar", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Hizmet", "plan": "free", "aiScore": 53, "risk": "High" }
   ]
