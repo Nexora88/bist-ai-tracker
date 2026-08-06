@@ -1,4 +1,4 @@
-/* NEXORA — klasik script (export YOK) */
+
 window.API_KEYS = {
   finnhub: "d92gf21r01qraam0tf4gd92gf21r01qraam0tf50",
   twelveData: "f021e2f611c34dd892d465af169f4ae2",
