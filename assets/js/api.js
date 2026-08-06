@@ -1,12 +1,10 @@
 /**
  * =============================================================================
- *  BIST AI Tracker — Market Data Client
+ *  Nexora AI Tracker — Market Data Client
  *  Module: api.js
- *  Version: 4.1.0
- *  Author: Ahmet Eymen Bakraç (Nexora)
+ *  Version: 4.2.0
  *
- *  Keys: ONLY from secrets.js (window.NEXORA_KEYS or window.API_KEYS)
- *  Do not put API keys in this file.
+ *  Keys: only from secrets.js → window.API_KEYS or window.NEXORA_KEYS
  *
  *  <script src="assets/js/secrets.js"></script>
  *  <script src="assets/js/api.js"></script>
@@ -51,9 +49,13 @@
   var KEYS = readKeys();
 
   var CONFIG = {
-    version: "4.1.0",
-    requestTimeoutMs: 12e3,
-    quoteCacheTtlMs: 30e3,
+    version: "4.2.0",
+    /** Tek istek zaman aşımı (proxy dahil) */
+    requestTimeoutMs: 20000,
+    /** Aynı sembol için bellek önbelleği */
+    quoteCacheTtlMs: 60000,
+    /** Ana sayfa / arka plan yenileme aralığı (ms) — sayfalar bunu kullanabilir */
+    refreshIntervalMs: 90000,
     endpoints: {
       yahoo: "https://query1.finance.yahoo.com",
       fmp: "https://financialmodelingprep.com/api/v3",
@@ -63,13 +65,11 @@
       polygon: "https://api.polygon.io"
     },
     corsProxies: [
-      function (targetUrl) {
-        return (
-          "https://api.allorigins.win/raw?url=" + encodeURIComponent(targetUrl)
-        );
+      function (url) {
+        return "https://api.allorigins.win/raw?url=" + encodeURIComponent(url);
       },
-      function (targetUrl) {
-        return "https://corsproxy.io/?" + encodeURIComponent(targetUrl);
+      function (url) {
+        return "https://corsproxy.io/?" + encodeURIComponent(url);
       }
     ]
   };
@@ -78,19 +78,16 @@
     var store = new Map();
     return {
       get: function (key) {
-        var entry = store.get(key);
-        if (!entry) return null;
-        if (Date.now() > entry.expiresAt) {
+        var e = store.get(key);
+        if (!e) return null;
+        if (Date.now() > e.exp) {
           store.delete(key);
           return null;
         }
-        return entry.value;
+        return e.val;
       },
-      set: function (key, value, ttlMs) {
-        store.set(key, {
-          value: value,
-          expiresAt: Date.now() + (ttlMs || CONFIG.quoteCacheTtlMs)
-        });
+      set: function (key, val, ttl) {
+        store.set(key, { val: val, exp: Date.now() + (ttl || CONFIG.quoteCacheTtlMs) });
       },
       clear: function () {
         store.clear();
@@ -106,8 +103,7 @@
 
   function normalizeQuote(price, previousClose, currency, source) {
     price = Number(price);
-    previousClose =
-      previousClose != null ? Number(previousClose) : price;
+    previousClose = previousClose != null ? Number(previousClose) : price;
     if (!isFinite(price)) return null;
     var change = price - previousClose;
     var changePercent = previousClose ? (change / previousClose) * 100 : 0;
@@ -123,34 +119,33 @@
   }
 
   function fetchJsonOnce(url, timeoutMs) {
+    var ms = timeoutMs || CONFIG.requestTimeoutMs;
     var controller = new AbortController();
     var timer = setTimeout(function () {
       controller.abort();
-    }, timeoutMs || CONFIG.requestTimeoutMs);
+    }, ms);
 
     return fetch(url, { signal: controller.signal, mode: "cors" })
-      .then(function (response) {
+      .then(function (res) {
         clearTimeout(timer);
-        if (!response.ok) throw new Error("HTTP " + response.status);
-        return response.json();
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return res.json();
       })
       .catch(function (err) {
         clearTimeout(timer);
+        if (err && err.name === "AbortError") {
+          throw new Error("Timeout " + ms + "ms");
+        }
         throw err;
       });
   }
 
   function requestJson(url) {
-    return fetchJsonOnce(url, CONFIG.requestTimeoutMs).catch(function (
-      directError
-    ) {
-      if (typeof console !== "undefined" && console.warn) {
-        console.warn("[MarketData] direct fetch failed:", directError.message);
-      }
-      var chain = Promise.reject(directError);
-      CONFIG.corsProxies.forEach(function (buildProxyUrl) {
+    return fetchJsonOnce(url).catch(function (directErr) {
+      var chain = Promise.reject(directErr);
+      CONFIG.corsProxies.forEach(function (build) {
         chain = chain.catch(function () {
-          return fetchJsonOnce(buildProxyUrl(url), CONFIG.requestTimeoutMs);
+          return fetchJsonOnce(build(url));
         });
       });
       return chain;
@@ -168,12 +163,7 @@
     return requestJson(url).then(function (payload) {
       var row = Array.isArray(payload) ? payload[0] : payload;
       if (!row || row.price == null) throw new Error("FMP empty");
-      return normalizeQuote(
-        row.price,
-        row.previousClose,
-        row.currency || "USD",
-        "fmp"
-      );
+      return normalizeQuote(row.price, row.previousClose, row.currency || "USD", "fmp");
     });
   }
 
@@ -205,9 +195,7 @@
       if (!payload || payload.close == null) throw new Error("Twelve empty");
       var price = Number(payload.close);
       var prev =
-        payload.previous_close != null
-          ? Number(payload.previous_close)
-          : price;
+        payload.previous_close != null ? Number(payload.previous_close) : price;
       return normalizeQuote(price, prev, payload.currency || "", "twelve");
     });
   }
@@ -269,6 +257,10 @@
     });
   }
 
+  /**
+   * Sıra: key’li kaynaklar → Yahoo.
+   * BIST (.IS) için bazı US API’ler boş dönebilir; zincir devam eder.
+   */
   var PROVIDER_CHAIN = [
     { id: "fmp", invoke: quoteFromFmp, need: "fmp" },
     { id: "finnhub", invoke: quoteFromFinnhub, need: "finnhub" },
@@ -280,6 +272,7 @@
 
   var MarketData = {
     version: CONFIG.version,
+    refreshIntervalMs: CONFIG.refreshIntervalMs,
 
     reloadKeys: function () {
       KEYS = readKeys();
@@ -291,8 +284,8 @@
       if (!normalized) return Promise.resolve(null);
 
       var cacheKey = "quote:" + normalized;
-      var cached = cache.get(cacheKey);
-      if (cached) return Promise.resolve(cached);
+      var hit = cache.get(cacheKey);
+      if (hit) return Promise.resolve(hit);
 
       var sequence = Promise.resolve(null);
 
@@ -304,7 +297,7 @@
             if (typeof console !== "undefined" && console.warn) {
               console.warn(
                 "[MarketData] skip " + provider.id + ":",
-                err && err.message
+                err && err.message ? err.message : err
               );
             }
             return null;
@@ -318,10 +311,10 @@
       });
     },
 
-    getBistQuote: function (bistCode) {
-      var code = String(bistCode || "").trim();
-      if (code && code.indexOf(".") === -1) code += ".IS";
-      return this.getQuote(code);
+    getBistQuote: function (code) {
+      var c = String(code || "").trim();
+      if (c && c.indexOf(".") === -1) c += ".IS";
+      return this.getQuote(c);
     },
 
     getHistory: function (symbol, range, interval) {
@@ -340,7 +333,7 @@
       return requestJson(url);
     },
 
-    getCompanyNews: function (symbol, fromIsoDate, toIsoDate) {
+    getCompanyNews: function (symbol, fromIso, toIso) {
       var token = KEYS.news || KEYS.finnhub || "";
       if (!token) return Promise.resolve([]);
       var url =
@@ -348,9 +341,9 @@
         "/company-news?symbol=" +
         encodeURIComponent(stripSuffix(symbol)) +
         "&from=" +
-        encodeURIComponent(fromIsoDate) +
+        encodeURIComponent(fromIso) +
         "&to=" +
-        encodeURIComponent(toIsoDate) +
+        encodeURIComponent(toIso) +
         "&token=" +
         encodeURIComponent(token);
       return requestJson(url);
@@ -363,6 +356,8 @@
 
   var API = {
     VERSION: MarketData.version,
+    REFRESH_MS: CONFIG.refreshIntervalMs,
+
     getLiveQuote: function (symbol) {
       return MarketData.getQuote(symbol).then(function (q) {
         if (!q) return null;
@@ -376,18 +371,27 @@
         };
       });
     },
+
     getQuote: function (symbol) {
       return this.getLiveQuote(symbol);
     },
+
     getHistory: function (symbol, range, interval) {
       return MarketData.getHistory(symbol, range, interval);
     },
+
     getCompanyNews: function (symbol, from, to) {
       return MarketData.getCompanyNews(symbol, from, to);
     },
+
     reloadKeys: function () {
       return MarketData.reloadKeys();
     },
+
+    clearCache: function () {
+      MarketData.clearCache();
+    },
+
     Cache: cache
   };
 
@@ -404,7 +408,13 @@
     console.info(
       "[MarketData] v" +
         CONFIG.version +
-        " · keys from secrets.js: " +
+        " · timeout " +
+        CONFIG.requestTimeoutMs +
+        "ms · cache " +
+        CONFIG.quoteCacheTtlMs / 1000 +
+        "s · refresh " +
+        CONFIG.refreshIntervalMs / 1000 +
+        "s · keys: " +
         (loaded.length ? loaded.join(", ") : "none (Yahoo only)")
     );
   }
