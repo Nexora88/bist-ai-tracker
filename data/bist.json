@@ -480,7 +480,7 @@
   { "symbol": "YYAPI", "name": "Yeşil Yapı", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "İnşaat", "plan": "free", "aiScore": 52, "risk": "High" },
   { "symbol": "ZRGYO", "name": "Ziraat GYO", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "GYO", "plan": "free", "aiScore": 67, "risk": "Low" },
   { "symbol": "A1CAP", "name": "A1 Capital", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Aracı Kurum", "plan": "free", "aiScore": 56, "risk": "High" },
-  { "symbol": "RTALB", "name": "Rota Portföy", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Yatırım", "plan": "free", "aiScore": 54, "risk": "High" }
+  { "symbol": "RTALB", "name": "Rota Portföy", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Yatırım", "plan": "free", "aiScore": 54, "risk": "High" },
   
   
   { "symbol": "ALNTF", "name": "Alarko Alüminyum", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Metal", "plan": "free", "aiScore": 54, "risk": "High" },
