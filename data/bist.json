@@ -103,7 +103,7 @@
     { "symbol": "MAVI", "name": "Mavi Giyim", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Giyim", "plan": "free", "aiScore": 71, "risk": "Medium" },
     { "symbol": "DESA", "name": "Desa Deri", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Giyim", "plan": "free", "aiScore": 57, "risk": "High" },
     { "symbol": "QUAGR", "name": "Qua Granite", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "İnşaat Malzeme", "plan": "free", "aiScore": 61, "risk": "High" },
-    { "symbol": "BINHO", "name": "1000 Yatırımlar", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Yatırım", "plan": "free", "aiScore": 55, "risk": "High" }
+    { "symbol": "BINHO", "name": "1000 Yatırımlar", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Yatırım", "plan": "free", "aiScore": 55, "risk": "High" },
 
   { "symbol": "AKSA", "name": "Aksa Akrilik", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Kimya", "plan": "free", "aiScore": 64, "risk": "Medium" },
   { "symbol": "AKSGY", "name": "Akiş GYO", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "GYO", "plan": "free", "aiScore": 58, "risk": "Medium" },
@@ -594,4 +594,4 @@
   { "symbol": "INFO", "name": "Info Yatırım", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Aracı Kurum", "plan": "free", "aiScore": 57, "risk": "High" },
   { "symbol": "ISYAT", "name": "İş Yatırım Ortaklığı", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Yatırım", "plan": "free", "aiScore": 58, "risk": "Medium" },
   { "symbol": "IZFAS", "name": "İzmir Fuar", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Hizmet", "plan": "free", "aiScore": 53, "risk": "High" }
-  
+  ]
