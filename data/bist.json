@@ -6,7 +6,7 @@
   "tier": "free",
   "currency": "TRY",
   "suffix": ".IS",
-  "updated": "2026-08-06",
+  "updated": "2026-08-05",
   "stocks": [
     { "symbol": "THYAO", "name": "Türk Hava Yolları", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Ulaştırma", "plan": "free", "aiScore": 76, "risk": "Medium" },
     { "symbol": "GARAN", "name": "Garanti BBVA", "market": "BIST", "country": "Türkiye", "flag": "🇹🇷", "sector": "Bankacılık", "plan": "free", "aiScore": 81, "risk": "Low" },
