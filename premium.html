@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Premium · Nexora AI</title>
-  <meta name="description" content="Nexora Free, Pro ve Elite planları — piyasalar, AI ve portföy." />
+  <title>Premium · Nexora AI Planlar</title>
+  <meta name="description" content="Nexora Free, Pro ve Elite — piyasalar, AI, portföy. Sık sorulan sorular ve plan karşılaştırması." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
@@ -26,10 +26,10 @@
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      line-height: 1.5;
+      line-height: 1.55;
     }
     a { color: inherit; text-decoration: none; }
-    button { font: inherit; border: none; cursor: pointer; }
+    button { font: inherit; border: none; cursor: pointer; color: inherit; }
 
     .nav {
       position: sticky; top: 0; z-index: 40;
@@ -49,18 +49,18 @@
     .nav-links a:hover, .nav-links a.on { color: var(--text); background: rgba(255,255,255,0.05); }
     @media (max-width: 820px) { .nav-links { display: none; } }
 
-    .wrap { max-width: 1000px; margin: 0 auto; padding: 28px 16px 56px; }
+    .wrap { max-width: 1040px; margin: 0 auto; padding: 28px 16px 56px; }
 
-    .hero { text-align: center; margin-bottom: 28px; }
+    .hero { text-align: center; margin-bottom: 24px; }
     .badge {
-      display: inline-flex; align-items: center; gap: 8px;
+      display: inline-flex; gap: 8px; align-items: center;
       font-size: 12px; font-weight: 700; color: var(--accent);
       background: rgba(16,185,129,0.1);
       border: 1px solid rgba(16,185,129,0.28);
       padding: 6px 12px; border-radius: 999px; margin-bottom: 14px;
     }
     .hero h1 {
-      font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+      font-size: clamp(1.6rem, 3.5vw, 2.25rem);
       font-weight: 800; letter-spacing: -0.04em; line-height: 1.15;
     }
     .hero h1 span {
@@ -68,23 +68,22 @@
       -webkit-background-clip: text; background-clip: text; color: transparent;
     }
     .hero p {
-      color: var(--muted); font-size: 15px; max-width: 480px;
+      color: var(--muted); font-size: 15px; max-width: 520px;
       margin: 12px auto 0;
     }
 
-    /* welcome banner */
     .welcome {
       display: none;
       margin-bottom: 20px;
       padding: 16px 18px;
       border-radius: 16px;
-      background: linear-gradient(135deg, rgba(16,185,129,0.18), rgba(34,211,238,0.1));
+      background: linear-gradient(135deg, rgba(16,185,129,0.16), rgba(34,211,238,0.08));
       border: 1px solid rgba(16,185,129,0.35);
-      animation: fadeIn 0.4s ease;
+      animation: fadeIn 0.35s ease;
     }
     .welcome.show { display: block; }
     .welcome.elite {
-      background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(16,185,129,0.1));
+      background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(16,185,129,0.08));
       border-color: rgba(139,92,246,0.4);
     }
     .welcome h2 { font-size: 1.05rem; font-weight: 800; margin-bottom: 4px; }
@@ -95,18 +94,17 @@
     }
 
     .current {
-      text-align: center;
-      font-size: 13px;
-      color: var(--dim);
-      margin-bottom: 18px;
+      text-align: center; font-size: 13px; color: var(--dim);
+      margin-bottom: 20px;
     }
     .current strong { color: var(--cyan); }
 
+    /* plans */
     .grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 14px;
-      align-items: stretch;
+      margin-bottom: 36px;
     }
     @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
 
@@ -117,92 +115,132 @@
       border-radius: 20px;
       padding: 22px 18px 18px;
       display: flex; flex-direction: column;
-      transition: border-color 0.2s, transform 0.15s;
+      transition: 0.18s;
     }
     .plan:hover { transform: translateY(-3px); }
     .plan.featured {
       border-color: rgba(16,185,129,0.45);
-      box-shadow: 0 0 0 1px rgba(16,185,129,0.15), 0 24px 50px rgba(0,0,0,0.35);
+      box-shadow: 0 24px 50px rgba(0,0,0,0.35);
     }
     .plan.elite-card {
       border-color: rgba(139,92,246,0.4);
       background: linear-gradient(165deg, rgba(139,92,246,0.12), rgba(15,23,42,0.95));
     }
     .plan.active-plan {
-      outline: 2px solid rgba(34,211,238,0.5);
+      outline: 2px solid rgba(34,211,238,0.45);
       outline-offset: 2px;
     }
-
     .tag {
       position: absolute; top: 14px; right: 14px;
-      font-size: 10px; font-weight: 800; letter-spacing: 0.04em;
+      font-size: 10px; font-weight: 800;
       padding: 4px 9px; border-radius: 999px;
       background: rgba(16,185,129,0.15); color: #34d399;
     }
-    .tag.violet {
-      background: rgba(139,92,246,0.2); color: #c4b5fd;
-    }
+    .tag.violet { background: rgba(139,92,246,0.2); color: #c4b5fd; }
 
-    .plan h3 { font-size: 1.15rem; font-weight: 800; margin-bottom: 4px; }
+    .plan h3 { font-size: 1.15rem; font-weight: 800; }
     .plan .price {
       font-size: 2rem; font-weight: 800; letter-spacing: -0.03em;
       margin: 10px 0 4px;
     }
-    .plan .price small {
-      font-size: 13px; font-weight: 600; color: var(--muted);
-    }
-    .plan .desc { color: var(--muted); font-size: 13px; margin-bottom: 16px; }
-
-    .plan ul {
-      list-style: none;
-      flex: 1;
-      margin-bottom: 18px;
-    }
+    .plan .price small { font-size: 13px; font-weight: 600; color: var(--muted); }
+    .plan .desc { color: var(--muted); font-size: 13px; margin-bottom: 14px; }
+    .plan ul { list-style: none; flex: 1; margin-bottom: 16px; }
     .plan li {
-      font-size: 13.5px;
-      padding: 7px 0;
-      border-bottom: 1px solid var(--border);
-      color: var(--muted);
+      font-size: 13.5px; padding: 7px 0;
+      border-bottom: 1px solid var(--border); color: var(--muted);
     }
     .plan li:last-child { border-bottom: none; }
     .plan li strong { color: var(--text); font-weight: 650; }
 
     .btn {
-      width: 100%;
-      padding: 12px 14px;
-      border-radius: 12px;
-      font-size: 13.5px;
-      font-weight: 800;
-      transition: transform 0.15s, box-shadow 0.15s;
+      width: 100%; padding: 12px 14px; border-radius: 12px;
+      font-size: 13.5px; font-weight: 800;
     }
-    .btn:hover { transform: translateY(-1px); }
     .btn-ghost {
-      background: transparent;
-      color: var(--muted);
+      background: transparent; color: var(--muted);
       box-shadow: inset 0 0 0 1px var(--border);
     }
     .btn-pro {
       background: linear-gradient(135deg, var(--accent), #059669);
       color: #022c22;
-      box-shadow: 0 10px 28px rgba(16,185,129,0.25);
     }
     .btn-elite {
       background: linear-gradient(135deg, var(--violet), #6d28d9);
       color: #fff;
-      box-shadow: 0 10px 28px rgba(139,92,246,0.3);
     }
-    .btn:disabled {
-      opacity: 0.7;
-      cursor: default;
-      transform: none;
+    .btn:disabled { opacity: 0.7; cursor: default; }
+
+    /* compare table */
+    .section { margin-bottom: 36px; }
+    .section h2 {
+      font-size: 1.15rem; font-weight: 800; letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+    .section > .lead {
+      color: var(--muted); font-size: 14px; margin-bottom: 16px; max-width: 560px;
     }
 
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--panel);
+    }
+    table {
+      width: 100%; border-collapse: collapse;
+      font-size: 13.5px; min-width: 520px;
+    }
+    th, td {
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    th {
+      font-size: 12px; font-weight: 700; color: var(--dim);
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    td { color: var(--muted); }
+    td:first-child { color: var(--text); font-weight: 600; }
+    tr:last-child td { border-bottom: none; }
+    .yes { color: #34d399; font-weight: 700; }
+    .no { color: var(--dim); }
+
+    /* FAQ */
+    .faq { display: flex; flex-direction: column; gap: 8px; }
+    .faq-item {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .faq-item button {
+      width: 100%; text-align: left;
+      padding: 14px 16px;
+      font-size: 14px; font-weight: 700;
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 12px;
+      background: transparent;
+    }
+    .faq-item button span {
+      color: var(--dim); font-size: 18px; font-weight: 400;
+      transition: transform 0.2s;
+    }
+    .faq-item.open button span { transform: rotate(45deg); }
+    .faq-body {
+      display: none;
+      padding: 0 16px 14px;
+      color: var(--muted);
+      font-size: 13.5px;
+      line-height: 1.65;
+    }
+    .faq-item.open .faq-body { display: block; }
+    .faq-body a { color: var(--cyan); font-weight: 600; }
+
     .note {
-      margin-top: 22px;
+      margin-top: 8px;
+      font-size: 12.5px; color: var(--dim); line-height: 1.65;
       text-align: center;
-      font-size: 12.5px;
-      color: var(--dim);
-      line-height: 1.6;
     }
 
     footer {
@@ -229,9 +267,12 @@
 
   <main class="wrap">
     <div class="hero">
-      <div class="badge">Nexora Planlar</div>
-      <h1>Seviyeni seç,<br /><span>piyasayı genişlet</span></h1>
-      <p>Free ile başla. Pro ve Elite gerçekten `stock.html` kilitlerini açar — süs değil.</p>
+      <div class="badge">Planlar · gerçek kilit sistemi</div>
+      <h1>Free, Pro, Elite<br /><span>ne açar, ne kapalı?</span></h1>
+      <p>
+        Plan seçimi süs değil: <strong style="color:var(--text)">stock.html</strong> piyasa kilitleri
+        <code style="color:var(--cyan)">nexora_plan</code> ile çalışır. Aşağıda karşılaştırma ve SSS.
+      </p>
     </div>
 
     <div class="welcome" id="welcome">
@@ -239,61 +280,227 @@
       <p id="welcomeText"></p>
     </div>
 
-    <p class="current">Aktif plan: <strong id="currentPlan">free</strong></p>
+    <p class="current">Aktif planın: <strong id="currentPlan">Free</strong></p>
 
+    <!-- CARDS -->
     <div class="grid">
-      <!-- FREE -->
-      <article class="plan" data-plan="free" id="card-free">
+      <article class="plan" id="card-free" data-plan="free">
         <h3>Free</h3>
         <div class="price">$0 <small>/ ay</small></div>
-        <p class="desc">Başlamak için yeterli çekirdek.</p>
+        <p class="desc">Çekirdek ürün — kayıt olmadan da dene.</p>
         <ul>
-          <li><strong>BIST</strong> tam liste</li>
+          <li><strong>BIST</strong> tam JSON listesi</li>
           <li><strong>NASDAQ &amp; NYSE</strong></li>
-          <li>Hisse kartları + grafik</li>
-          <li>Portföy (yerel)</li>
-          <li>AI analiz (temel)</li>
+          <li>Kart + detay grafik</li>
+          <li>Portföy (tarayıcıda)</li>
+          <li>AI analiz (temel skor)</li>
+          <li>Haber · halka arz · temettü · bilanço sayfaları</li>
         </ul>
         <button type="button" class="btn btn-ghost" data-choose="free">Free seç</button>
       </article>
 
-      <!-- PRO -->
-      <article class="plan featured" data-plan="premium" id="card-premium">
+      <article class="plan featured" id="card-premium" data-plan="premium">
         <span class="tag">ÖNERİLEN</span>
         <h3>Pro</h3>
         <div class="price">$5 <small>/ ay</small></div>
-        <p class="desc">Avrupa ve daha fazla piyasa.</p>
+        <p class="desc">Avrupa piyasaları ve geniş keşif.</p>
         <ul>
-          <li>Free’deki her şey</li>
-          <li><strong>DAX / LSE</strong> erişimi</li>
-          <li>Halka arz · temettü · bilanço</li>
-          <li>Öncelikli veri denemesi</li>
-          <li>Pro rozeti (nav / ayarlar)</li>
+          <li>Free’deki <strong>her şey</strong></li>
+          <li><strong>DAX</strong> ve <strong>LSE</strong> kilidi açık</li>
+          <li>Pro rozeti / aktif plan vurgusu</li>
+          <li>Ayarlardan tek tıkla geçiş</li>
+          <li>Ödeme altyapısı gelince aynı plan anahtarı</li>
         </ul>
         <button type="button" class="btn btn-pro" data-choose="premium">Pro’ya geç</button>
       </article>
 
-      <!-- ELITE -->
-      <article class="plan elite-card" data-plan="elite" id="card-elite">
+      <article class="plan elite-card" id="card-elite" data-plan="elite">
         <span class="tag violet">ELITE</span>
         <h3>Elite</h3>
         <div class="price">$15 <small>/ ay</small></div>
         <p class="desc">Tam set — OTC ve global derinlik.</p>
         <ul>
-          <li>Pro’daki her şey</li>
-          <li><strong>OTCQB / OTCQX</strong></li>
-          <li>Tokyo · HK · ek borsalar</li>
-          <li>Elite karşılama &amp; vurgu</li>
-          <li>Erken özellik erişimi</li>
+          <li>Pro’daki <strong>her şey</strong></li>
+          <li><strong>OTCQB / OTCQX</strong> hedefi</li>
+          <li>Tokyo · HK ve ek borsalar (data hazır olunca)</li>
+          <li>Elite hoş geldin bandı</li>
+          <li>Yeni özelliklerde öncelik</li>
         </ul>
         <button type="button" class="btn btn-elite" data-choose="elite">Elite’e geç</button>
       </article>
     </div>
 
+    <!-- COMPARISON -->
+    <section class="section">
+      <h2>Karşılaştırma</h2>
+      <p class="lead">Hangi plan hangi kapıyı açıyor — net tablo.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Özellik</th>
+              <th>Free</th>
+              <th>Pro ($5)</th>
+              <th>Elite ($15)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>BIST · NASDAQ · NYSE</td>
+              <td class="yes">Var</td>
+              <td class="yes">Var</td>
+              <td class="yes">Var</td>
+            </tr>
+            <tr>
+              <td>DAX · LSE</td>
+              <td class="no">Kilitli</td>
+              <td class="yes">Açık</td>
+              <td class="yes">Açık</td>
+            </tr>
+            <tr>
+              <td>OTC / ek global</td>
+              <td class="no">Kilitli</td>
+              <td class="no">Kilitli</td>
+              <td class="yes">Açık</td>
+            </tr>
+            <tr>
+              <td>Hisse grafik detay</td>
+              <td class="yes">Var</td>
+              <td class="yes">Var</td>
+              <td class="yes">Var</td>
+            </tr>
+            <tr>
+              <td>Portföy K/Z</td>
+              <td class="yes">Yerel</td>
+              <td class="yes">Yerel</td>
+              <td class="yes">Yerel</td>
+            </tr>
+            <tr>
+              <td>AI Analiz</td>
+              <td class="yes">Temel</td>
+              <td class="yes">Temel+</td>
+              <td class="yes">Tam</td>
+            </tr>
+            <tr>
+              <td>Haber / IPO / Temettü / Bilanço</td>
+              <td class="yes">Sayfalar açık</td>
+              <td class="yes">Sayfalar açık</td>
+              <td class="yes">Sayfalar açık</td>
+            </tr>
+            <tr>
+              <td>Plan kaydı</td>
+              <td colspan="3" style="color:var(--cyan)">localStorage → nexora_plan (settings ile aynı)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- FAQ / Q&A -->
+    <section class="section">
+      <h2>Sık sorulan sorular</h2>
+      <p class="lead">Ödeme, kilit, veri ve iptal hakkında net cevaplar.</p>
+
+      <div class="faq" id="faq">
+        <div class="faq-item open">
+          <button type="button">
+            Pro veya Elite’e geçince gerçekten ne değişir?
+            <span>+</span>
+          </button>
+          <div class="faq-body">
+            <code>nexora_plan</code> değeri <strong>premium</strong> veya <strong>elite</strong> olur.
+            <a href="stock.html">stock.html</a> bu değere bakarak DAX / LSE (ve Elite’de OTC)
+            sekmelerinin kilidini açar. Ayarlar sayfasında da aynı plan görünür.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button">
+            Şu an gerçek ödeme alınıyor mu?
+            <span>+</span>
+          </button>
+          <div class="faq-body">
+            Hayır. Kart / Stripe henüz yok. Butonlar planı tarayıcıda kaydeder; ürün mantığını
+            bugünden test edersin. Ödeme gelince aynı plan anahtarı korunacak.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button">
+            Free’de AI ve portföy çalışır mı?
+            <span>+</span>
+          </button>
+          <div class="faq-body">
+            Evet. <a href="ai-analiz.html">AI Analiz</a> ve
+            <a href="portfolio.html">Portföy</a> Free’de açıktır.
+            Portföy verisi tarayıcıda (localStorage) tutulur.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button">
+            BIST verisi nereden geliyor?
+            <span>+</span>
+          </button>
+          <div class="faq-body">
+            Liste <code>data/bist.json</code> dosyasından yüklenir.
+            Canlı fiyatlar <code>api.js</code> çoklu kaynak (failover) ile alınır.
+            Ana sayfa bilerek hafif tutulur; ağır liste <a href="stock.html">Hisseler</a>’dedir.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button">
+            Planı nasıl düşürür veya değiştiririm?
+            <span>+</span>
+          </button>
+          <div class="faq-body">
+            Bu sayfadan başka bir plan seçmen veya
+            <a href="settings.html">Ayarlar → Plan</a> menüsü yeterli.
+            Anında uygulanır; sayfa yenilemen gerekebilir.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button">
+            Elite ile Pro farkı ne?
+            <span>+</span>
+          </button>
+          <div class="faq-body">
+            Pro: Avrupa (DAX, LSE). Elite: buna ek OTC ve geniş global listeler
+            (ilgili <code>data/*.json</code> dosyaları eklendikçe).
+            Elite seçince mor hoş geldin bandı da çıkar.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button">
+            Üyelik (login) zorunlu mu?
+            <span>+</span>
+          </button>
+          <div class="faq-body">
+            Plan kilidi şu an tarayıcıya bağlıdır; login olmadan da test edilir.
+            <a href="login.html">Giriş</a> / <a href="register.html">Kayıt</a>
+            Supabase ile ileride hesaba bağlanacak.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button">
+            İade / iptal politikası?
+            <span>+</span>
+          </button>
+          <div class="faq-body">
+            Gerçek ödeme olmadığı için ücret kesilmez.
+            İstediğin an Free’ye dönebilirsin; yerel plan kaydı silinir / değişir.
+          </div>
+        </div>
+      </div>
+    </section>
+
     <p class="note">
-      Ödeme altyapısı henüz yok: plan seçimi <strong>localStorage</strong> (`nexora_plan`) ile uygulanır.
-      Gerçek ödeme sonra bağlanır; kilit mantığı bugünden çalışır.
-      İstediğin an <a href="settings.html" style="color:var(--cyan)">Ayarlar</a>’dan da değiştirebilirsin.
+      Sorun veya öneri için <a href="about.html" style="color:var(--cyan)">Hakkında</a> sayfasına bakabilirsin.
+      Planını <a href="settings.html" style="color:var(--cyan)">Ayarlar</a>’dan da yönetirsin.
     </p>
   </main>
 
@@ -308,42 +515,30 @@
 (function () {
   "use strict";
 
-  var LABELS = {
-    free: "Free",
-    premium: "Pro",
-    elite: "Elite"
-  };
-
-  var MESSAGES = {
+  var LABELS = { free: "Free", premium: "Pro", elite: "Elite" };
+  var MSG = {
     free: {
       title: "Free plana geçtin",
-      text: "BIST, NASDAQ ve NYSE açık. İstediğin zaman Pro veya Elite’e yükselebilirsin."
+      text: "BIST, NASDAQ ve NYSE açık. Pro ile DAX/LSE, Elite ile OTC katmanı açılır."
     },
     premium: {
       title: "Hoş geldin, Pro üye",
-      text: "DAX ve LSE kilitleri açıldı. Hisseler sayfasından Avrupa piyasalarına geçebilirsin. İyi analizler."
+      text: "DAX ve LSE kilitleri açıldı. Hisseler sayfasından Avrupa sekmelerini dene. İyi analizler."
     },
     elite: {
       title: "Hoş geldin, Elite",
-      text: "Tüm plan kapıları açık — OTC ve geniş global listeler seninle. Nexora’nın en üst katındasın."
+      text: "Üst kat: OTC ve geniş global hedef listeler. Nexora’nın en geniş planındasın."
     }
   };
 
   function getPlan() {
-    try {
-      return (localStorage.getItem("nexora_plan") || "free").toLowerCase();
-    } catch (e) {
-      return "free";
-    }
+    try { return (localStorage.getItem("nexora_plan") || "free").toLowerCase(); }
+    catch (e) { return "free"; }
   }
-
-  function setPlan(plan) {
-    localStorage.setItem("nexora_plan", plan);
-  }
+  function setPlan(p) { localStorage.setItem("nexora_plan", p); }
 
   function paint(plan, showWelcome) {
     document.getElementById("currentPlan").textContent = LABELS[plan] || plan;
-
     ["free", "premium", "elite"].forEach(function (p) {
       var card = document.getElementById("card-" + p);
       if (!card) return;
@@ -355,17 +550,14 @@
         btn.disabled = true;
       } else {
         btn.disabled = false;
-        btn.textContent =
-          p === "free" ? "Free seç" : p === "premium" ? "Pro’ya geç" : "Elite’e geç";
+        btn.textContent = p === "free" ? "Free seç" : p === "premium" ? "Pro’ya geç" : "Elite’e geç";
       }
     });
-
     if (!showWelcome) return;
-
     var w = document.getElementById("welcome");
-    var msg = MESSAGES[plan] || MESSAGES.free;
-    document.getElementById("welcomeTitle").textContent = msg.title;
-    document.getElementById("welcomeText").textContent = msg.text;
+    var m = MSG[plan] || MSG.free;
+    document.getElementById("welcomeTitle").textContent = m.title;
+    document.getElementById("welcomeText").textContent = m.text;
     w.classList.toggle("elite", plan === "elite");
     w.classList.add("show");
   }
@@ -373,16 +565,22 @@
   document.querySelectorAll("[data-choose]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       var plan = btn.getAttribute("data-choose");
-      var prev = getPlan();
-      if (plan === prev) return;
+      if (plan === getPlan()) return;
       setPlan(plan);
       paint(plan, true);
-      try {
-        if (plan === "premium" || plan === "elite") {
-          localStorage.setItem("nexora_plan_welcome_" + plan, "1");
-        }
-      } catch (e) {}
     });
+  });
+
+  /* FAQ accordion */
+  document.getElementById("faq").addEventListener("click", function (e) {
+    var btn = e.target.closest(".faq-item > button");
+    if (!btn) return;
+    var item = btn.parentElement;
+    var open = item.classList.contains("open");
+    document.querySelectorAll(".faq-item").forEach(function (el) {
+      el.classList.remove("open");
+    });
+    if (!open) item.classList.add("open");
   });
 
   paint(getPlan(), false);
