@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Isı Haritası · Nexora AI</title>
+  <meta name="description" content="BIST hisseleri günlük getiri ısı haritası — Nexora AI." />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #060a12;
+      --panel: rgba(15, 23, 42, 0.9);
+      --border: rgba(148, 163, 184, 0.12);
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --dim: #64748b;
+      --accent: #10b981;
+      --cyan: #22d3ee;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Inter, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, select { font: inherit; color: inherit; border: none; background: none; cursor: pointer; }
+
+    .nav {
+      position: sticky; top: 0; z-index: 40;
+      height: 56px; display: flex; align-items: center; justify-content: space-between;
+      gap: 10px; padding: 0 16px;
+      background: rgba(6, 10, 18, 0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+    .brand { font-weight: 800; }
+    .brand em { font-style: normal; color: var(--accent); }
+    .nav-links { display: flex; flex-wrap: wrap; gap: 2px; }
+    .nav-links a {
+      font-size: 13px; font-weight: 600; color: var(--muted);
+      padding: 7px 10px; border-radius: 9px;
+    }
+    .nav-links a:hover, .nav-links a.on { color: var(--text); background: rgba(255,255,255,0.05); }
+    @media (max-width: 900px) { .nav-links { display: none; } }
+
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 20px 16px 48px; }
+
+    h1 { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.03em; }
+    h1 span {
+      background: linear-gradient(90deg, var(--accent), var(--cyan));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .sub { color: var(--muted); font-size: 13.5px; margin: 6px 0 16px; }
+
+    .toolbar {
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+      margin-bottom: 14px;
+    }
+    .toolbar select {
+      background: var(--panel);
+      box-shadow: inset 0 0 0 1px var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 10px 14px; border-radius: 10px;
+      font-size: 13px; font-weight: 700;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #059669);
+      color: #022c22;
+    }
+    .btn-soft {
+      background: rgba(30, 41, 59, 0.95);
+      color: var(--text);
+      box-shadow: inset 0 0 0 1px var(--border);
+    }
+    .status { font-size: 12.5px; color: var(--dim); }
+
+    .legend {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 12px; color: var(--dim);
+      margin-bottom: 12px; flex-wrap: wrap;
+    }
+    .legend .bar {
+      width: 120px; height: 10px; border-radius: 99px;
+      background: linear-gradient(90deg, #b91c1c, #1e293b, #059669);
+    }
+
+    .heat {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+      gap: 6px;
+    }
+    .cell {
+      border-radius: 10px;
+      padding: 10px 6px;
+      text-align: center;
+      min-height: 72px;
+      display: flex; flex-direction: column; justify-content: center;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: transform 0.12s, border-color 0.12s;
+    }
+    .cell:hover {
+      transform: scale(1.04);
+      border-color: rgba(255,255,255,0.25);
+      z-index: 1;
+    }
+    .cell .s { font-weight: 800; font-size: 12px; letter-spacing: -0.02em; }
+    .cell .p { font-size: 11px; font-weight: 700; margin-top: 4px; opacity: 0.95; }
+    .cell .n { font-size: 9px; opacity: 0.75; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .empty {
+      text-align: center; color: var(--muted);
+      padding: 40px 12px;
+      border: 1px dashed var(--border); border-radius: 14px;
+    }
+
+    .legal {
+      margin-top: 20px; padding: 12px 14px; border-radius: 12px;
+      background: rgba(251,191,36,0.06);
+      border: 1px solid rgba(251,191,36,0.2);
+      font-size: 12px; color: var(--muted); line-height: 1.55;
+    }
+    .legal strong { color: #fbbf24; }
+    .legal a { color: var(--cyan); font-weight: 600; }
+
+    footer {
+      text-align: center; color: var(--dim); font-size: 12px;
+      padding: 8px 16px 32px;
+    }
+    footer a { color: var(--muted); margin: 0 5px; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a class="brand" href="index.html">Nexora <em>AI</em></a>
+    <div class="nav-links">
+      <a href="index.html">Ana</a>
+      <a href="stock.html">Hisseler</a>
+      <a href="ara.html">Ara</a>
+      <a class="on" href="heatmap.html">Isı Haritası</a>
+      <a href="ai-analiz.html">AI</a>
+      <a href="portfolio.html">Portföy</a>
+      <a href="premium.html">Premium</a>
+    </div>
+    <a class="btn btn-soft" href="stock.html">Kartlar</a>
+  </nav>
+
+  <main class="wrap">
+    <h1>Isı <span>haritası</span></h1>
+    <p class="sub">
+      Günlük getiriye göre renk: yeşil yükseliş, kırmızı düşüş.
+      Liste <code style="color:var(--cyan)">data/bist.json</code> · fiyat <code style="color:var(--cyan)">api.js</code>.
+    </p>
+
+    <div class="toolbar">
+      <select id="mkt">
+        <option value="bist">BIST</option>
+        <option value="nasdaq">NASDAQ</option>
+        <option value="nyse">NYSE</option>
+      </select>
+      <select id="limit">
+        <option value="40">40 hisse</option>
+        <option value="60" selected>60 hisse</option>
+        <option value="100">100 hisse</option>
+      </select>
+      <button type="button" class="btn btn-primary" id="btnLoad">Yenile</button>
+      <span class="status" id="status">Hazır</span>
+    </div>
+
+    <div class="legend">
+      <span>Düşüş</span>
+      <div class="bar"></div>
+      <span>Yükseliş</span>
+      <span id="sumLine" style="margin-left:auto"></span>
+    </div>
+
+    <div class="heat" id="heat">
+      <div class="empty">Yenile’ye bas — fiyatlar yüklenir</div>
+    </div>
+
+    <div class="legal">
+      <strong>SPK:</strong> Yatırım tavsiyesi değildir.
+      <strong>Veri:</strong> Gecikmeli olabilir.
+      · <a href="kvkk.html">KVKK</a> · <a href="gizlilik.html">Gizlilik</a>
+    </div>
+  </main>
+
+  <footer>
+    Nexora AI ·
+    <a href="stock.html">Hisseler</a>
+    <a href="ara.html">Ara</a>
+    <a href="index.html">Ana</a>
+  </footer>
+
+  <script src="assets/js/secrets.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script>
+(function () {
+  "use strict";
+
+  function ysym(s, m) {
+    var x = String(s.symbol || "").trim().toUpperCase();
+    if (!x) return "";
+    if (s.suffix && x.indexOf(".") === -1) return x + s.suffix;
+    if (m === "bist" && x.indexOf(".") === -1) return x + ".IS";
+    return x;
+  }
+
+  function colorFor(pct) {
+    if (!isFinite(pct)) return { bg: "#1e293b", fg: "#94a3b8" };
+    // -5% .. +5% aralığına sıkıştır
+    var t = Math.max(-5, Math.min(5, pct)) / 5; // -1..1
+    if (t >= 0) {
+      var g = Math.round(16 + t * 100);
+      return { bg: "rgb(6," + (80 + Math.round(t * 100)) + "," + (40 + Math.round(t * 40)) + ")", fg: "#ecfdf5" };
+    }
+    var r = Math.round(80 + (-t) * 120);
+    return { bg: "rgb(" + r + ",30,40)", fg: "#fff1f2" };
+  }
+
+  function delay(ms) {
+    return new Promise(function (r) { setTimeout(r, ms); });
+  }
+
+  async function loadJSON(m) {
+    var res = await fetch("data/" + m + ".json", { cache: "no-store" });
+    if (!res.ok) throw new Error("JSON");
+    var data = await res.json();
+    var stocks = Array.isArray(data) ? data : data.stocks || [];
+    var suffix = data.suffix || (m === "bist" ? ".IS" : "");
+    stocks.forEach(function (s) {
+      if (!s.suffix && suffix) s.suffix = suffix;
+    });
+    return stocks;
+  }
+
+  async function run() {
+    var m = document.getElementById("mkt").value;
+    var limit = Number(document.getElementById("limit").value) || 60;
+    var heat = document.getElementById("heat");
+    var status = document.getElementById("status");
+    var sumLine = document.getElementById("sumLine");
+
+    status.textContent = "JSON yükleniyor…";
+    heat.innerHTML = '<div class="empty">Yükleniyor…</div>';
+
+    var stocks;
+    try {
+      stocks = (await loadJSON(m)).slice(0, limit);
+    } catch (e) {
+      heat.innerHTML = '<div class="empty">data/' + m + ".json yok</div>";
+      status.textContent = "Hata";
+      return;
+    }
+
+    if (!window.API || !API.getLiveQuote) {
+      heat.innerHTML = '<div class="empty">api.js yüklenemedi</div>';
+      status.textContent = "API yok";
+      return;
+    }
+
+    var cells = [];
+    var up = 0, down = 0, flat = 0;
+
+    heat.innerHTML = "";
+    for (var i = 0; i < stocks.length; i++) {
+      var s = stocks[i];
+      var pct = NaN;
+      var price = null;
+      try {
+        var q = await API.getLiveQuote(ysym(s, m));
+        if (q) {
+          price = q.price;
+          pct = Number(q.pct != null ? q.pct : q.changePercent);
+        }
+      } catch (e) {}
+
+      if (isFinite(pct)) {
+        if (pct > 0.05) up++;
+        else if (pct < -0.05) down++;
+        else flat++;
+      }
+
+      var c = colorFor(pct);
+      var a = document.createElement("a");
+      a.className = "cell";
+      a.href =
+        "stock.html?market=" + encodeURIComponent(m) +
+        "&symbol=" + encodeURIComponent(s.symbol);
+      a.style.background = c.bg;
+      a.style.color = c.fg;
+      a.title = (s.name || s.symbol) + (isFinite(pct) ? " " + pct.toFixed(2) + "%" : "");
+      a.innerHTML =
+        '<div class="s">' + s.symbol + "</div>" +
+        '<div class="p">' +
+        (isFinite(pct) ? (pct > 0 ? "+" : "") + pct.toFixed(2) + "%" : "—") +
+        "</div>" +
+        '<div class="n">' + (s.name || "") + "</div>";
+      heat.appendChild(a);
+      cells.push(a);
+
+      status.textContent = "Fiyat " + (i + 1) + "/" + stocks.length;
+      await delay(90);
+    }
+
+    sumLine.textContent =
+      "↑ " + up + " · ↓ " + down + " · → " + flat;
+    status.textContent = stocks.length + " hücre · " + m.toUpperCase();
+  }
+
+  document.getElementById("btnLoad").addEventListener("click", run);
+  document.getElementById("mkt").addEventListener("change", run);
+
+  // otomatik ilk yükleme
+  run();
+})();
+</script>
+</body>
+</html>
