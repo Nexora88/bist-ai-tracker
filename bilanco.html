@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bilanço · Nexora AI</title>
+  <meta name="description" content="Hisse bilanço ve finansal özet — Nexora AI." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #060a12;
+      --panel: rgba(15, 23, 42, 0.88);
+      --border: rgba(148, 163, 184, 0.12);
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --dim: #64748b;
+      --accent: #10b981;
+      --cyan: #22d3ee;
+      --rose: #f87171;
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Inter, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input, select { font: inherit; color: inherit; border: none; background: none; cursor: pointer; }
+
+    .nav {
+      position: sticky; top: 0; z-index: 40;
+      height: 56px; display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; padding: 0 16px;
+      background: rgba(6, 10, 18, 0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+    .brand { font-weight: 800; letter-spacing: -0.03em; }
+    .brand em { font-style: normal; color: var(--accent); }
+    .nav-links { display: flex; flex-wrap: wrap; gap: 2px; }
+    .nav-links a {
+      font-size: 13px; font-weight: 600; color: var(--muted);
+      padding: 7px 10px; border-radius: 9px;
+    }
+    .nav-links a:hover, .nav-links a.on { color: var(--text); background: rgba(255,255,255,0.05); }
+    @media (max-width: 800px) { .nav-links { display: none; } }
+
+    .wrap { max-width: 960px; margin: 0 auto; padding: 22px 16px 48px; }
+
+    .head { margin-bottom: 18px; }
+    .head h1 { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.03em; }
+    .head h1 span {
+      background: linear-gradient(90deg, var(--accent), var(--cyan));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .head p { color: var(--muted); font-size: 14px; margin-top: 6px; max-width: 540px; }
+
+    .search-panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      margin-bottom: 16px;
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    }
+    .search-panel input {
+      flex: 1; min-width: 160px;
+      background: rgba(30, 41, 59, 0.9);
+      box-shadow: inset 0 0 0 1px var(--border);
+      border-radius: 11px;
+      padding: 10px 12px;
+      outline: none;
+    }
+    .search-panel input:focus { box-shadow: inset 0 0 0 1px rgba(16,185,129,0.45); }
+    .btn {
+      padding: 10px 16px; border-radius: 11px;
+      font-size: 13px; font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), #059669);
+      color: #022c22;
+    }
+
+    .suggest {
+      width: 100%; display: none;
+      max-height: 200px; overflow: auto;
+      background: #0b1220;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+    }
+    .suggest.show { display: block; }
+    .suggest button {
+      display: block; width: 100%; text-align: left;
+      padding: 9px 12px; font-size: 13px;
+    }
+    .suggest button:hover { background: rgba(16,185,129,0.1); }
+    .suggest .sym { font-weight: 800; margin-right: 6px; }
+    .suggest .nm { color: var(--muted); }
+
+    .company {
+      display: none;
+      margin-bottom: 14px;
+    }
+    .company.show { display: block; }
+    .company .title {
+      font-size: 1.15rem; font-weight: 800;
+    }
+    .company .sub { color: var(--muted); font-size: 13px; margin-top: 2px; }
+
+    .metrics {
+      display: none;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .metrics.show { display: grid; }
+    @media (max-width: 700px) { .metrics { grid-template-columns: 1fr 1fr; } }
+
+    .metric {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+    }
+    .metric .lab {
+      font-size: 11px; font-weight: 700; color: var(--dim);
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .metric .val {
+      font-size: 1.15rem; font-weight: 800; margin-top: 6px;
+    }
+    .up { color: #34d399; }
+    .down { color: var(--rose); }
+
+    .panel {
+      display: none;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin-bottom: 14px;
+    }
+    .panel.show { display: block; }
+    .panel h2 {
+      font-size: 12px; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.05em;
+      margin-bottom: 12px;
+    }
+    .row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13.5px;
+    }
+    .row:last-child { border-bottom: none; }
+    .row span { color: var(--muted); }
+    .row strong { font-weight: 700; }
+
+    .empty {
+      text-align: center; color: var(--muted);
+      padding: 36px 12px; font-size: 14px;
+      background: var(--panel); border-radius: var(--radius);
+      border: 1px dashed var(--border);
+    }
+
+    .note {
+      margin-top: 8px; font-size: 12.5px; color: var(--dim); line-height: 1.6;
+    }
+
+    footer {
+      text-align: center; color: var(--dim); font-size: 12px;
+      padding: 12px 16px 36px;
+    }
+    footer a { color: var(--muted); margin: 0 6px; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a class="brand" href="index.html">Nexora <em>AI</em></a>
+    <div class="nav-links">
+      <a href="index.html">Ana Sayfa</a>
+      <a href="stock.html">Hisseler</a>
+      <a href="ai-analiz.html">AI Analiz</a>
+      <a href="portfolio.html">Portföy</a>
+      <a href="news.html">Haberler</a>
+      <a href="halka-arz.html">Halka Arz</a>
+      <a href="temettu.html">Temettü</a>
+      <a class="on" href="bilanco.html">Bilanço</a>
+    </div>
+    <a href="temettu.html" style="font-size:13px;font-weight:700;color:var(--accent)">← Temettü</a>
+  </nav>
+
+  <main class="wrap">
+    <div class="head">
+      <h1>Bilanço <span>&amp; Finansal</span></h1>
+      <p>
+        Sembol seç, dönem özetini gör.
+        Veriler <code style="color:var(--cyan)">data/bilanco.json</code> üzerinden gelir.
+      </p>
+    </div>
+
+    <div class="search-panel">
+      <input type="search" id="q" placeholder="ASELS, GARAN, THYAO…" autocomplete="off" />
+      <button type="button" class="btn" id="btnGo">Getir</button>
+      <div class="suggest" id="suggest"></div>
+    </div>
+
+    <div id="idle" class="empty">
+      Bir hisse yaz veya öneriden seç. Örnek: <strong>ASELS</strong>, <strong>GARAN</strong>
+    </div>
+
+    <div class="company" id="company">
+      <div class="title" id="cTitle">—</div>
+      <div class="sub" id="cSub">—</div>
+    </div>
+
+    <div class="metrics" id="metrics"></div>
+
+    <div class="panel" id="panelIncome">
+      <h2>Gelir tablosu (özet)</h2>
+      <div id="incomeRows"></div>
+    </div>
+
+    <div class="panel" id="panelBalance">
+      <h2>Bilanço (özet)</h2>
+      <div id="balanceRows"></div>
+    </div>
+
+    <p class="note">
+      Özet rakamlar bilgilendirme amaçlıdır. Resmi tablolar için KAP ve şirket raporlarına bakın.
+      İleride FMP gelir/bilanço API’si bağlanabilir.
+    </p>
+  </main>
+
+  <footer>
+    Nexora AI ·
+    <a href="halka-arz.html">Halka Arz</a>
+    <a href="temettu.html">Temettü</a>
+    <a href="news.html">Haberler</a>
+    <a href="stock.html">Hisseler</a>
+  </footer>
+
+  <script>
+(function () {
+  "use strict";
+
+  var db = {};
+  var symbols = [];
+
+  function fmt(n, suffix) {
+    if (n == null || n === "") return "—";
+    if (typeof n === "string") return n;
+    var x = Number(n);
+    if (!isFinite(x)) return "—";
+    var abs = Math.abs(x);
+    var s =
+      abs >= 1e9
+        ? (x / 1e9).toFixed(2) + " Mr"
+        : abs >= 1e6
+        ? (x / 1e6).toFixed(2) + " Mn"
+        : x.toLocaleString("tr-TR");
+    return s + (suffix || "");
+  }
+
+  function rows(htmlId, obj) {
+    var box = document.getElementById(htmlId);
+    if (!obj || typeof obj !== "object") {
+      box.innerHTML = '<div class="row"><span>Veri yok</span><strong>—</strong></div>';
+      return;
+    }
+    var keys = Object.keys(obj);
+    box.innerHTML = keys
+      .map(function (k) {
+        return (
+          '<div class="row"><span>' +
+          k +
+          "</span><strong>" +
+          fmt(obj[k]) +
+          "</strong></div>"
+        );
+      })
+      .join("");
+  }
+
+  function show(sym) {
+    sym = String(sym || "").trim().toUpperCase();
+    var item = db[sym];
+    var idle = document.getElementById("idle");
+    var company = document.getElementById("company");
+    var metrics = document.getElementById("metrics");
+    var pInc = document.getElementById("panelIncome");
+    var pBal = document.getElementById("panelBalance");
+
+    if (!item) {
+      idle.style.display = "block";
+      idle.textContent = sym
+        ? sym + " için bilanço kaydı yok. data/bilanco.json içine ekle."
+        : "Bir hisse seç.";
+      company.classList.remove("show");
+      metrics.classList.remove("show");
+      pInc.classList.remove("show");
+      pBal.classList.remove("show");
+      return;
+    }
+
+    idle.style.display = "none";
+    company.classList.add("show");
+    metrics.classList.add("show");
+    pInc.classList.add("show");
+    pBal.classList.add("show");
+
+    document.getElementById("cTitle").textContent =
+      (item.flag || "🇹🇷") + " " + item.symbol + " · " + (item.name || "");
+    document.getElementById("cSub").textContent =
+      (item.period || "") +
+      (item.currency ? " · " + item.currency : "") +
+      (item.sector ? " · " + item.sector : "");
+
+    var m = item.metrics || {};
+    metrics.innerHTML =
+      '<div class="metric"><div class="lab">Gelir</div><div class="val">' +
+      fmt(m.revenue) +
+      "</div></div>" +
+      '<div class="metric"><div class="lab">Net kâr</div><div class="val">' +
+      fmt(m.netIncome) +
+      "</div></div>" +
+      '<div class="metric"><div class="lab">F/K</div><div class="val">' +
+      (m.pe != null ? m.pe : "—") +
+      "</div></div>" +
+      '<div class="metric"><div class="lab">PD/DD</div><div class="val">' +
+      (m.pb != null ? m.pb : "—") +
+      "</div></div>" +
+      '<div class="metric"><div class="lab">ROE</div><div class="val">' +
+      (m.roe != null ? m.roe + "%" : "—") +
+      "</div></div>" +
+      '<div class="metric"><div class="lab">Borç/Özkaynak</div><div class="val">' +
+      (m.debtEquity != null ? m.debtEquity : "—") +
+      "</div></div>";
+
+    rows("incomeRows", item.income);
+    rows("balanceRows", item.balance);
+
+    history.replaceState(null, "", "bilanco.html?symbol=" + encodeURIComponent(sym));
+  }
+
+  function renderSuggest(q) {
+    var box = document.getElementById("suggest");
+    q = String(q || "").trim().toLowerCase();
+    if (!q) {
+      box.classList.remove("show");
+      return;
+    }
+    var hits = symbols
+      .filter(function (s) {
+        var it = db[s];
+        return (
+          s.toLowerCase().indexOf(q) === 0 ||
+          String((it && it.name) || "")
+            .toLowerCase()
+            .indexOf(q) !== -1
+        );
+      })
+      .slice(0, 8);
+    if (!hits.length) {
+      box.classList.remove("show");
+      return;
+    }
+    box.innerHTML = hits
+      .map(function (s) {
+        var it = db[s];
+        return (
+          '<button type="button" data-sym="' +
+          s +
+          '"><span class="sym">' +
+          s +
+          '</span><span class="nm">' +
+          ((it && it.name) || "") +
+          "</span></button>"
+        );
+      })
+      .join("");
+    box.classList.add("show");
+  }
+
+  var input = document.getElementById("q");
+  document.getElementById("btnGo").addEventListener("click", function () {
+    document.getElementById("suggest").classList.remove("show");
+    show(input.value);
+  });
+  input.addEventListener("input", function () {
+    renderSuggest(input.value);
+  });
+  input.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      document.getElementById("suggest").classList.remove("show");
+      show(input.value);
+    }
+  });
+  document.getElementById("suggest").addEventListener("click", function (e) {
+    var btn = e.target.closest("[data-sym]");
+    if (!btn) return;
+    input.value = btn.getAttribute("data-sym");
+    document.getElementById("suggest").classList.remove("show");
+    show(input.value);
+  });
+
+  fetch("data/bilanco.json", { cache: "no-store" })
+    .then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    })
+    .then(function (data) {
+      var items = Array.isArray(data) ? data : data.items || [];
+      items.forEach(function (it) {
+        if (!it.symbol) return;
+        var s = String(it.symbol).toUpperCase();
+        db[s] = it;
+        symbols.push(s);
+      });
+      var params = new URLSearchParams(location.search);
+      var sym = params.get("symbol");
+      if (sym) {
+        input.value = sym.toUpperCase();
+        show(sym);
+      }
+    })
+    .catch(function () {
+      document.getElementById("idle").textContent =
+        "data/bilanco.json yüklenemedi. Dosyayı data/ altına ekle.";
+    });
+})();
+</script>
+</body>
+</html>
