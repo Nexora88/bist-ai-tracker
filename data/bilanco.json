@@ -1,0 +1,61 @@
+{
+  "updated": "2026-08-11",
+  "items": [
+    {
+      "symbol": "ASELS",
+      "name": "Aselsan",
+      "flag": "🇹🇷",
+      "sector": "Savunma",
+      "period": "2025 / 12 ay",
+      "currency": "TRY",
+      "metrics": {
+        "revenue": 180400000000,
+        "netIncome": 66000000000,
+        "pe": 39.39,
+        "pb": 5.30,
+        "roe": 21.5,
+        "debtEquity": 0.0
+      },
+      "income": {
+        "Hasılat": 180400000000,
+        "Brüt kâr": 59000000000,
+        "Faaliyet kârı": 46000000000,
+        "Net kâr": 66000000000
+      },
+      "balance": {
+        "Toplam varlık": 412000000000,
+        "Dönen varlık": 198000000000,
+        "Toplam borç": 105256000000,
+        "Özkaynak": 306744183000
+      }
+    },
+    {
+      "symbol": "GARAN",
+      "name": "Garanti BBVA",
+      "flag": "🇹🇷",
+      "sector": "Bankacılık",
+      "period": "2025 / 12 ay",
+      "currency": "TRY",
+      "metrics": {
+        "revenue": 165312000000,
+        "netIncome": 110605000000,
+        "pe": 4.42,
+        "pb": 1.09,
+        "roe": 28.6,
+        "debtEquity": null
+      },
+      "income": {
+        "Faiz geliri": 574695610000,
+        "Net faiz geliri": 165312000000,
+        "Net kâr": 110605000000
+      },
+      "balance": {
+        "Toplam varlık": 2821177600000,
+        "Krediler": 1765151150000,
+        "Mevduat": 2563506000000,
+        "Özkaynak": 444370000000
+      }
+    }
+  ]
+}
+
