@@ -1,439 +1,440 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ayarlar | BIST AI Tracker</title>
-<meta name="description" content="BIST AI Tracker ayarlar: tema, veri yenileme, önbellek, bildirimler ve Nexora AI.">
-<meta name="theme-color" content="#0a0e17">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<style>
-:root{--bg:#0a0e17;--surface:#111827;--border:rgba(255,255,255,.06);--text:#f1f5f9;--muted:#94a3b8;--green:#22c55e;--red:#ef4444;--accent:#10b981;--cyan:#22d3ee;--violet:#a78bfa;--amber:#fbbf24}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5;-webkit-font-smoothing:antialiased}
-a{color:inherit;text-decoration:none}button{font-family:inherit;cursor:pointer;border:none;background:none}
-input,select{font-family:inherit}
-.container{max-width:960px;margin:0 auto;padding:0 20px}
-.glass{background:rgba(17,24,39,.75);backdrop-filter:blur(16px);border:1px solid var(--border)}
-.navbar{position:sticky;top:0;z-index:50;height:60px;background:rgba(10,14,23,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
-.nav-inner{display:flex;align-items:center;justify-content:space-between;height:60px;max-width:1280px;margin:0 auto;padding:0 20px}
-.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px}
-.logo .accent{color:var(--accent)}
-.nav-links{display:flex;gap:24px;font-size:13.5px;font-weight:500;color:var(--muted)}
-.nav-links a:hover,.nav-links a.active{color:var(--accent)}
-.nav-cta{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:7px 14px;border-radius:10px;background:rgba(245,158,11,.15);color:var(--amber);border:1px solid rgba(245,158,11,.3)}
-.mobile-btn{display:none;width:40px;height:40px;border-radius:10px;background:var(--surface);color:var(--muted);align-items:center;justify-content:center}
-.mobile-menu{display:none;border-top:1px solid var(--border);background:rgba(10,14,23,.98);padding:12px 20px}
-.mobile-menu.open{display:block}
-.mobile-menu a{display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;font-size:14px;color:var(--muted)}
-.mobile-menu a:hover,.mobile-menu a.active{background:rgba(16,185,129,.1);color:var(--accent)}
-@media(max-width:768px){.nav-links{display:none!important}.mobile-btn{display:flex!important}}
-.page-head{padding:36px 0 8px}
-.page-head h1{font-size:clamp(1.6rem,3vw,2.1rem);font-weight:800;letter-spacing:-.02em;background:linear-gradient(135deg,#34d399,#22d3ee 55%,#a78bfa);-webkit-background-clip:text;background-clip:text;color:transparent}
-.page-head p{color:var(--muted);font-size:14px;margin-top:6px}
-.settings-layout{display:grid;grid-template-columns:200px 1fr;gap:24px;padding:24px 0 48px}
-@media(max-width:700px){.settings-layout{grid-template-columns:1fr}.settings-nav{display:flex;flex-wrap:wrap;gap:6px}.settings-nav a{margin-bottom:0!important}}
-.settings-nav a{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:12px;font-size:13.5px;font-weight:500;color:var(--muted);transition:all .15s;margin-bottom:4px}
-.settings-nav a:hover{background:rgba(30,41,59,.8);color:#e2e8f0}
-.settings-nav a.active{background:rgba(16,185,129,.12);color:var(--accent);border:1px solid rgba(16,185,129,.25)}
-.settings-nav a i{width:18px;text-align:center;font-size:13px}
-.settings-panel{display:none}.settings-panel.active{display:block}
-.panel-card{padding:24px;border-radius:16px;margin-bottom:16px}
-.panel-card h2{font-size:16px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px}
-.panel-card .desc{font-size:12.5px;color:var(--muted);margin-bottom:20px}
-.setting-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px solid var(--border)}
-.setting-row:last-child{border-bottom:none}
-.setting-info{flex:1;min-width:0}
-.setting-info .label{font-size:14px;font-weight:600;color:#e2e8f0}
-.setting-info .hint{font-size:12px;color:#64748b;margin-top:2px}
-.toggle{position:relative;width:48px;height:28px;flex-shrink:0}
-.toggle input{opacity:0;width:0;height:0}
-.toggle .slider{position:absolute;inset:0;cursor:pointer;background:#334155;border-radius:999px;transition:.25s}
-.toggle .slider::before{content:'';position:absolute;width:22px;height:22px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.25s}
-.toggle input:checked + .slider{background:var(--accent)}
-.toggle input:checked + .slider::before{transform:translateX(20px)}
-.select{padding:9px 12px;border-radius:10px;background:rgba(15,23,42,.9);border:1px solid #334155;color:var(--text);font-size:13px;outline:none;min-width:140px}
-.select:focus{border-color:rgba(16,185,129,.5)}
-.range-wrap{display:flex;align-items:center;gap:12px;min-width:180px}
-.range-wrap input[type=range]{flex:1;accent-color:var(--accent);height:4px}
-.range-wrap .val{font-size:13px;font-weight:700;color:var(--accent);min-width:48px;text-align:right}
-.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
-.btn-danger{background:rgba(239,68,68,.12);color:var(--red);border:1px solid rgba(239,68,68,.25);padding:10px 16px;border-radius:10px;font-size:13px;font-weight:600}
-.btn-danger:hover{background:rgba(239,68,68,.2)}
-.btn-secondary{background:#1e293b;color:#e2e8f0;border:1px solid var(--border);padding:10px 16px;border-radius:10px;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:8px}
-.btn-secondary:hover{border-color:rgba(16,185,129,.3)}
-.meta-row{display:flex;justify-content:space-between;padding:10px 0;font-size:13px;border-bottom:1px solid var(--border);color:#cbd5e1}
-.meta-row:last-child{border-bottom:none}
-.meta-row span:last-child{color:#94a3b8;font-weight:500;max-width:55%;text-align:right}
-.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:#1e293b;border:1px solid rgba(16,185,129,.3);color:var(--accent);padding:12px 20px;border-radius:12px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:all .3s;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,.4)}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.footer{border-top:1px solid var(--border);padding:28px 0;font-size:12px;color:#64748b;text-align:center}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ayarlar · Nexora AI</title>
+  <meta name="description" content="Nexora plan, dil, veri ve bildirim ayarları." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #060a12;
+      --panel: rgba(15, 23, 42, 0.9);
+      --border: rgba(148, 163, 184, 0.12);
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --dim: #64748b;
+      --accent: #10b981;
+      --cyan: #22d3ee;
+      --rose: #f87171;
+      --amber: #fbbf24;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Inter, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, select { font: inherit; color: inherit; border: none; background: none; cursor: pointer; }
+
+    .nav {
+      position: sticky; top: 0; z-index: 40;
+      height: 56px; display: flex; align-items: center; justify-content: space-between;
+      gap: 10px; padding: 0 16px;
+      background: rgba(6, 10, 18, 0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+    .brand { font-weight: 800; letter-spacing: -0.03em; }
+    .brand em { font-style: normal; color: var(--accent); }
+    .nav-links { display: flex; flex-wrap: wrap; gap: 2px; }
+    .nav-links a {
+      font-size: 13px; font-weight: 600; color: var(--muted);
+      padding: 7px 10px; border-radius: 9px;
+    }
+    .nav-links a:hover, .nav-links a.on { color: var(--text); background: rgba(255,255,255,0.05); }
+    @media (max-width: 820px) { .nav-links { display: none; } }
+
+    .wrap { max-width: 720px; margin: 0 auto; padding: 20px 16px 48px; }
+
+    h1 { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.03em; }
+    h1 span {
+      background: linear-gradient(90deg, var(--accent), var(--cyan));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .sub { color: var(--muted); font-size: 13.5px; margin: 6px 0 18px; }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .card h2 {
+      font-size: 13px; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.05em;
+      margin-bottom: 12px;
+    }
+
+    .row {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 12px; flex-wrap: wrap;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .row:last-child { border-bottom: none; padding-bottom: 0; }
+    .row:first-of-type { padding-top: 0; }
+    .row .lab { font-weight: 650; font-size: 14px; }
+    .row .hint { display: block; font-size: 12.5px; color: var(--dim); margin-top: 3px; font-weight: 400; }
+
+    select {
+      background: rgba(30, 41, 59, 0.95);
+      box-shadow: inset 0 0 0 1px var(--border);
+      border-radius: 10px;
+      padding: 9px 12px;
+      min-width: 140px;
+      outline: none;
+    }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 9px 14px; border-radius: 10px;
+      font-size: 13px; font-weight: 700;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #059669);
+      color: #022c22;
+    }
+    .btn-soft {
+      background: rgba(30, 41, 59, 0.95);
+      color: var(--text);
+      box-shadow: inset 0 0 0 1px var(--border);
+    }
+    .btn-danger {
+      background: rgba(248, 113, 113, 0.12);
+      color: var(--rose);
+      box-shadow: inset 0 0 0 1px rgba(248, 113, 113, 0.25);
+    }
+
+    .status {
+      font-size: 12.5px; font-weight: 700;
+      padding: 4px 10px; border-radius: 999px;
+    }
+    .ok { background: rgba(16,185,129,0.12); color: #34d399; }
+    .warn { background: rgba(251,191,36,0.12); color: var(--amber); }
+    .off { background: rgba(100,116,139,0.2); color: var(--muted); }
+
+    .toast {
+      display: none;
+      margin-top: 12px;
+      padding: 10px 14px;
+      border-radius: 10px;
+      background: rgba(16,185,129,0.12);
+      border: 1px solid rgba(16,185,129,0.3);
+      color: #6ee7b7;
+      font-size: 13px; font-weight: 600;
+    }
+    .toast.show { display: block; }
+
+    .note {
+      margin-top: 14px;
+      font-size: 12.5px;
+      color: var(--dim);
+      line-height: 1.6;
+    }
+
+    footer {
+      text-align: center; color: var(--dim); font-size: 12px;
+      padding: 8px 16px 32px;
+    }
+    footer a { color: var(--muted); margin: 0 5px; font-weight: 600; }
+  </style>
 </head>
 <body>
-
-<nav class="navbar">
-  <div class="nav-inner">
-    <a href="index.html" class="logo"><span>📈</span> BIST <span class="accent">AI</span> Tracker</a>
+  <nav class="nav">
+    <a class="brand" href="index.html">Nexora <em>AI</em></a>
     <div class="nav-links">
       <a href="index.html">Ana Sayfa</a>
-      <a href="stock.html">Küresel Borsalar</a>
+      <a href="stock.html">Hisseler</a>
+      <a href="ai-analiz.html">AI Analiz</a>
       <a href="portfolio.html">Portföy</a>
-      <a href="ai-analiz.html">AI Merkezi</a>
+      <a href="news.html">Haberler</a>
       <a href="premium.html">Premium</a>
-      <a href="settings.html" class="active">Ayarlar</a>
+      <a class="on" href="settings.html">Ayarlar</a>
     </div>
-    <div style="display:flex;align-items:center;gap:10px">
-      <a href="premium.html" class="nav-cta"><i class="fas fa-crown" style="font-size:11px"></i> Premium</a>
-      <button class="mobile-btn" id="mobileBtn" aria-label="Menü"><i class="fas fa-bars"></i></button>
-    </div>
-  </div>
-  <div class="mobile-menu" id="mobileMenu">
-    <a href="index.html"><i class="fas fa-home" style="width:20px;text-align:center"></i> Ana Sayfa</a>
-    <a href="stock.html"><i class="fas fa-globe" style="width:20px;text-align:center"></i> Küresel Borsalar</a>
-    <a href="portfolio.html"><i class="fas fa-briefcase" style="width:20px;text-align:center"></i> Portföy</a>
-    <a href="ai-analiz.html"><i class="fas fa-robot" style="width:20px;text-align:center"></i> AI Merkezi</a>
-    <a href="premium.html"><i class="fas fa-crown" style="width:20px;text-align:center"></i> Premium</a>
-    <a href="settings.html" class="active"><i class="fas fa-cog" style="width:20px;text-align:center"></i> Ayarlar</a>
-    <a href="about.html"><i class="fas fa-rocket" style="width:20px;text-align:center"></i> Uygulama</a>
-  </div>
-</nav>
+    <a class="btn btn-soft" href="premium.html">Plan</a>
+  </nav>
 
-<div class="container">
-  <div class="page-head">
-    <h1>⚙️ Ayarlar</h1>
-    <p>Tema, veri yenileme, bildirimler, önbellek ve teknik tercihler</p>
-  </div>
+  <main class="wrap">
+    <h1>Ayarlar</h1>
+    <p class="sub">Sadece sitede gerçekten kullanılan tercihler. Sahte limit veya süs seçenek yok.</p>
 
-  <div class="settings-layout">
-    <nav class="settings-nav">
-      <a href="#genel" class="active" data-panel="genel"><i class="fas fa-sliders-h"></i> Genel</a>
-      <a href="#veri" data-panel="veri"><i class="fas fa-database"></i> Veri & Cache</a>
-      <a href="#gorunum" data-panel="gorunum"><i class="fas fa-palette"></i> Görünüm</a>
-      <a href="#bildirim" data-panel="bildirim"><i class="fas fa-bell"></i> Bildirimler</a>
-      <a href="#ai" data-panel="ai"><i class="fas fa-robot"></i> Nexora AI</a>
-      <a href="#gelismis" data-panel="gelismis"><i class="fas fa-cog"></i> Gelişmiş</a>
-    </nav>
-
-    <div>
-      <!-- GENEL -->
-      <div class="settings-panel active" id="panel-genel">
-        <div class="panel-card glass">
-          <h2><i class="fas fa-sliders-h" style="color:var(--accent)"></i> Genel Ayarlar</h2>
-          <p class="desc">Dil, varsayılan borsa ve temel tercihler</p>
-          <div class="setting-row">
-            <div class="setting-info"><div class="label">Dil</div><div class="hint">Arayüz dili</div></div>
-            <select class="select" id="setLang"><option value="tr">Türkçe</option><option value="en">English</option></select>
-          </div>
-          <div class="setting-row">
-            <div class="setting-info"><div class="label">Varsayılan Borsa</div><div class="hint">Ana sayfa ve stock.html açılış borsası</div></div>
-            <select class="select" id="setDefaultMarket">
-              <option value="BIST">BIST (Türkiye)</option>
-              <option value="NASDAQ">NASDAQ</option>
-              <option value="NYSE">NYSE</option>
-              <option value="DAX">DAX (Almanya)</option>
-              <option value="LSE">LSE (İngiltere)</option>
-              <option value="TSE">TSE (Japonya)</option>
-              <option value="HKEX">HKEX</option>
-              <option value="SSE">SSE (Çin)</option>
-              <option value="ASX">ASX</option>
-              <option value="TSX">TSX (Kanada)</option>
-              <option value="OTCQB">OTCQB</option>
-            </select>
-          </div>
-          <div class="setting-row">
-            <div class="setting-info"><div class="label">Para Birimi Gösterimi</div><div class="hint">Fiyatların yanında gösterilecek birim</div></div>
-            <select class="select" id="setCurrency">
-              <option value="auto">Otomatik (borsaya göre)</option>
-              <option value="TRY">TRY (₺)</option>
-              <option value="USD">USD ($)</option>
-              <option value="EUR">EUR (€)</option>
-            </select>
-          </div>
-          <div class="setting-row">
-            <div class="setting-info"><div class="label">Aktif Plan</div><div class="hint">Premium abonelik durumu</div></div>
-            <span id="planDisplay" style="font-weight:700;color:var(--amber)">Ücretsiz</span>
-          </div>
+    <!-- PLAN -->
+    <div class="card">
+      <h2>Plan</h2>
+      <div class="row">
+        <div>
+          <div class="lab">Aktif plan</div>
+          <span class="hint">stock.html piyasa kilidi: Free = BIST, NASDAQ, NYSE</span>
         </div>
+        <select id="plan">
+          <option value="free">Free</option>
+          <option value="premium">Premium</option>
+          <option value="elite">Elite</option>
+        </select>
       </div>
-
-      <!-- VERİ -->
-      <div class="settings-panel" id="panel-veri">
-        <div class="panel-card glass">
-          <h2><i class="fas fa-database" style="color:var(--cyan)"></i> Veri & Önbellek</h2>
-          <p class="desc">Yenileme aralığı, cache ve API davranışı</p>
-          <div class="setting-row">
-            <div class="setting-info"><div class="label">Otomatik Yenileme</div><div class="hint">Verileri periyodik olarak güncelle</div></div>
-            <label class="toggle"><input type="checkbox" id="setAutoRefresh" checked><span class="slider"></span></label>
-          </div>
-          <div class="setting-row">
-            <div class="setting-info"><div class="label">Yenileme Aralığı</div><div class="hint">Kaç saniyede bir yeni veri çekilsin</div></div>
-            <div class="range-wrap">
-              <input type="range" id="setRefreshInterval" min="15" max="300" step="15" value="60">
-              <span class="val" id="refreshVal">60 sn</span>
-            </div>
-          </div>
-          <div class="setting-row">
-            <div class="setting-info"><div class="label">Önbellek (Cache)</div><div class="hint">localStorage ile gereksiz istekleri azalt</div></div>
-            <label class="toggle"><input type="checkbox" id="setCacheEnabled" checked><span class="slider"></span></label>
-          </div>
-          <div class="setting-row">
-            <div class="setting-info"><div class="label">Önbellek Süresi</div><div class="hint">Cache geçerli kalma süresi</div></div>
-            <div class="range-wrap">
-              <input type="range" id="setCacheTTL" min="15" max="300" step="15" value="60">
-              <span class="val" id="cacheTTLVal">60 sn</span>
-            </div>
-          </div>
-          <div class="setting-row">
-            <div class="setting-info"><div class="label">CORS Proxy Kullan</div><div class="hint">Yahoo engellenirse alternatif proxy dene</div></div>
-            <label class="toggle"><input type="checkbox" id="setUseProxy" checked><span class="slider"></span></label>
-          </div>
-          <div class="btn-row">
-            <button class="btn-secondary" id="btnClearCache"><i class="fas fa-broom"></i> Önbelleği Temizle</button>
-            <button class="btn-secondary" id="btnForceRefresh"><i class="fas fa-sync"></i> Zorla Yenile</button>
-          </div>
+      <div class="row">
+        <div>
+          <div class="lab">Premium sayfası</div>
+          <span class="hint">Fiyat ve paket detayı</span>
         </div>
-      </div>
-
-            <!-- GÖRÜNÜM -->
-      <div class="settings-panel" id="panel-gorunum">
-        <div class="panel-card glass">
-          <h2><i class="fas fa-palette" style="color:var(--violet)"></i> Görünüm</h2>
-          <p class="desc">Tema, animasyon ve arayüz tercihleri</p>
-          <div class="setting-row">
-            <div class="setting-info"><div class="label">Koyu Tema</div><div class="hint">Finans platformları için önerilen görünüm</div></div>
-            <label class="toggle"><input type="checkbox" id="setDarkMode" checked><span class="slider"></span></label>
-          </div>
-          <div class="setting-row">
-            <div class="setting-info"><div class="label">Arka Plan Animasyonu</div><div class="hint">TradingView tarzı mum grafiği</div></div>
-            <label class="toggle"><input type="checkbox" id="setBgAnim" checked><span class="slider"></span></label>
-          </div>
-          <div class="setting-row">
-            <div class="setting-info"><div class="label">Animasyon Yoğunluğu</div><div class="hint">Canvas opacity</div></div>
-            <div class="range-wrap">
-              <input type="range" id="setAnimOpacity" min="5" max="50" step="5" value="28">
-              <span class="val" id="animOpacityVal">28%</span>
-            </div>
-          </div>
-          <div class="setting-row">
-            <div class="setting-info"><div class="label">Compact Kartlar</div><div class="hint">Hisse kartlarını daha sıkışık göster</div></div>
-            <label class="toggle"><input type="checkbox" id="setCompactCards"><span class="slider"></span></label>
-          </div>
-          <div class="setting-row">
-            <div class="setting-info"><div class="label">Ticker Bandı</div><div class="hint">Üstte kayan fiyat şeridi</div></div>
-            <label class="toggle"><input type="checkbox" id="setShowTicker" checked><span class="slider"></span></label>
-          </div>
-        </div>
-      </div>
-
-      <!-- BİLDİRİM -->
-      <div class="settings-panel" id="panel-bildirim">
-        <div class="panel-card glass">
-          <h2><i class="fas fa-bell" style="color:var(--amber)"></i> Bildirimler</h2>
-          <p class="desc">Fiyat alarmı ve tarayıcı bildirimleri</p>
-          <div class="setting-row">
-            <div class="setting-info"><div class="label">Bildirimlere İzin Ver</div><div class="hint">Fiyat alarmı için tarayıcı izni</div></div>
-            <button class="btn-secondary" id="btnRequestNotif">İzin İste</button>
-          </div>
-          <div class="setting-row">
-            <div class="setting-info"><div class="label">Fiyat Alarmları</div><div class="hint">Hedef fiyata ulaşınca bildirim</div></div>
-            <label class="toggle"><input type="checkbox" id="setAlarmsEnabled" checked><span class="slider"></span></label>
-          </div>
-          <div class="setting-row">
-            <div class="setting-info"><div class="label">Sesli Uyarı</div><div class="hint">Alarm tetiklenince bip sesi</div></div>
-            <label class="toggle"><input type="checkbox" id="setAlarmSound"><span class="slider"></span></label>
-          </div>
-        </div>
-      </div>
-
-      <!-- AI — limit sabit, değiştirilemez -->
-      <div class="settings-panel" id="panel-ai">
-        <div class="panel-card glass">
-          <h2><i class="fas fa-robot" style="color:var(--violet)"></i> Nexora AI</h2>
-          <p class="desc">Limitler planınıza göre sabittir; değiştirilemez</p>
-          <div class="setting-row">
-            <div class="setting-info"><div class="label">Plan Limiti</div><div class="hint">Ücretsiz: 3/gün · Pro & Elite: sınırsız</div></div>
-            <span id="aiLimitDisplay" style="font-weight:700;color:var(--violet)">3 / gün</span>
-          </div>
-          <div class="setting-row">
-            <div class="setting-info"><div class="label">Bugün Kullanılan</div><div class="hint">Günlük AI analiz hakkı</div></div>
-            <span id="usedQuestionsDisplay" style="font-weight:700;color:var(--accent)">0</span>
-          </div>
-          <div class="setting-row">
-            <div class="setting-info"><div class="label">Kalan Hak</div><div class="hint">Bugün kalan analiz sayısı</div></div>
-            <span id="remainQuestionsDisplay" style="font-weight:700;color:var(--cyan)">3</span>
-          </div>
-          <div class="btn-row">
-            <a href="premium.html" class="btn-secondary"><i class="fas fa-crown" style="color:var(--amber)"></i> Sınırsız için Premium</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- GELİŞMİŞ -->
-      <div class="settings-panel" id="panel-gelismis">
-        <div class="panel-card glass">
-          <h2><i class="fas fa-cog" style="color:var(--muted)"></i> Gelişmiş</h2>
-          <p class="desc">Hata ayıklama ve veri yönetimi</p>
-          <div class="setting-row">
-            <div class="setting-info"><div class="label">Debug Modu</div><div class="hint">Konsola detaylı log yaz</div></div>
-            <label class="toggle"><input type="checkbox" id="setDebug"><span class="slider"></span></label>
-          </div>
-          <div class="setting-row">
-            <div class="setting-info"><div class="label">Hareketi Azalt</div><div class="hint">Düşük cihazlarda canvas’ı kapat</div></div>
-            <label class="toggle"><input type="checkbox" id="setReduceMotion"><span class="slider"></span></label>
-          </div>
-          <div class="btn-row">
-            <button class="btn-secondary" id="btnExport"><i class="fas fa-download"></i> Ayarları Dışa Aktar</button>
-            <button class="btn-secondary" id="btnImport"><i class="fas fa-upload"></i> Ayarları İçe Aktar</button>
-            <button class="btn-danger" id="btnResetAll"><i class="fas fa-trash"></i> Tüm Verileri Sıfırla</button>
-          </div>
-        </div>
-        <div class="panel-card glass">
-          <h2><i class="fas fa-info-circle" style="color:var(--cyan)"></i> Sistem Bilgisi</h2>
-          <p class="desc">Uygulama ve tarayıcı bilgileri</p>
-          <div class="meta-row"><span>Sürüm</span><span>Nexora 4.4 · API 3.1</span></div>
-          <div class="meta-row"><span>Depolama</span><span id="storageInfo">—</span></div>
-          <div class="meta-row"><span>User Agent</span><span id="uaInfo" style="font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">—</span></div>
-        </div>
+        <a class="btn btn-soft" href="premium.html">Aç</a>
       </div>
     </div>
-  </div>
-</div>
 
-<footer class="footer"><div class="container">© 2026 BIST AI Tracker · Nexora AI</div></footer>
-<div class="toast" id="toast">Ayarlar kaydedildi</div>
+    <!-- LANGUAGE -->
+    <div class="card">
+      <h2>Dil</h2>
+      <div class="row">
+        <div>
+          <div class="lab">Arayüz dili</div>
+          <span class="hint">localStorage · nexora_lang (TR / EN). Çeviri sözlüğü adım adım genişler.</span>
+        </div>
+        <select id="lang">
+          <option value="tr">Türkçe</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+      <div class="row">
+        <div>
+          <div class="lab">Dil merkezi</div>
+          <span class="hint">language.html</span>
+        </div>
+        <a class="btn btn-soft" href="language.html">Aç</a>
+      </div>
+    </div>
 
-<script>
-var Store={
-  get:function(k,fb){try{if(typeof localStorage==='undefined')return fb;var v=localStorage.getItem(k);return v===null?fb:v}catch(e){return fb}},
-  set:function(k,v){try{if(typeof localStorage!=='undefined')localStorage.setItem(k,v)}catch(e){}},
-  getJSON:function(k,fb){try{var v=this.get(k,null);return v?JSON.parse(v):fb}catch(e){return fb}},
-  setJSON:function(k,v){try{this.set(k,JSON.stringify(v))}catch(e){}}
-};
-var DEFAULTS={
-  lang:'tr',defaultMarket:'BIST',currency:'auto',
-  autoRefresh:true,refreshInterval:60,cacheEnabled:true,cacheTTL:60,useProxy:true,
-  darkMode:true,bgAnim:true,animOpacity:28,compactCards:false,showTicker:true,
-  alarmsEnabled:true,alarmSound:false,debug:false,reduceMotion:false
-};
-function loadSettings(){return Object.assign({},DEFAULTS,Store.getJSON('nexora_settings',{}))}
-function saveSettings(s){Store.setJSON('nexora_settings',s);showToast('Ayarlar kaydedildi')}
-function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2200)}
+    <!-- DATA -->
+    <div class="card">
+      <h2>Yerel veri</h2>
+      <div class="row">
+        <div>
+          <div class="lab">Portföy</div>
+          <span class="hint" id="portHint">nexora_portfolio_v1</span>
+        </div>
+        <button type="button" class="btn btn-danger" id="btnClearPort">Portföyü sil</button>
+      </div>
+      <div class="row">
+        <div>
+          <div class="lab">Fiyat önbelleği</div>
+          <span class="hint">api.js bellek cache (sayfa yenilenince de temizlenir)</span>
+        </div>
+        <button type="button" class="btn btn-soft" id="btnClearCache">Cache temizle</button>
+      </div>
+      <div class="row">
+        <div>
+          <div class="lab">Oturum işareti</div>
+          <span class="hint">nexora_session — nav’da Hesabım gösterimi</span>
+        </div>
+        <span class="status" id="sessionBadge">—</span>
+      </div>
+      <div class="row">
+        <div>
+          <div class="lab">Çıkış (yerel)</div>
+          <span class="hint">Sadece bu tarayıcıdaki oturum bayrağını kaldırır</span>
+        </div>
+        <button type="button" class="btn btn-soft" id="btnLogout">Oturumu temizle</button>
+      </div>
+    </div>
 
-function applyToUI(s){
-  document.getElementById('setLang').value=s.lang;
-  document.getElementById('setDefaultMarket').value=s.defaultMarket;
-  document.getElementById('setCurrency').value=s.currency;
-  document.getElementById('setAutoRefresh').checked=s.autoRefresh;
-  document.getElementById('setRefreshInterval').value=s.refreshInterval;
-  document.getElementById('refreshVal').textContent=s.refreshInterval+' sn';
-  document.getElementById('setCacheEnabled').checked=s.cacheEnabled;
-  document.getElementById('setCacheTTL').value=s.cacheTTL;
-  document.getElementById('cacheTTLVal').textContent=s.cacheTTL+' sn';
-  document.getElementById('setUseProxy').checked=s.useProxy;
-  document.getElementById('setDarkMode').checked=s.darkMode;
-  document.getElementById('setBgAnim').checked=s.bgAnim;
-  document.getElementById('setAnimOpacity').value=s.animOpacity;
-  document.getElementById('animOpacityVal').textContent=s.animOpacity+'%';
-  document.getElementById('setCompactCards').checked=s.compactCards;
-  document.getElementById('setShowTicker').checked=s.showTicker;
-  document.getElementById('setAlarmsEnabled').checked=s.alarmsEnabled;
-  document.getElementById('setAlarmSound').checked=s.alarmSound;
-  document.getElementById('setDebug').checked=s.debug;
-  document.getElementById('setReduceMotion').checked=s.reduceMotion;
-  var used=parseInt(Store.get('nexoraUsed','0'),10)||0;
-  var plan=Store.get('nexora_plan','free');
-  var isPrem=plan==='pro'||plan==='elite';
-  document.getElementById('usedQuestionsDisplay').textContent=used;
-  document.getElementById('aiLimitDisplay').textContent=isPrem?'Sınırsız':'3 / gün';
-  document.getElementById('remainQuestionsDisplay').textContent=isPrem?'∞':Math.max(0,3-used);
-  document.getElementById('planDisplay').textContent=plan==='pro'?'Pro ($5)':plan==='elite'?'Elite ($12)':'Ücretsiz';
-  document.getElementById('uaInfo').textContent=navigator.userAgent;
-  try{
-    var bytes=0;
-    for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);bytes+=(localStorage.getItem(k)||'').length}
-    document.getElementById('storageInfo').textContent=(bytes/1024).toFixed(1)+' KB';
-  }catch(e){document.getElementById('storageInfo').textContent='Erişilemiyor'}
-}
+    <!-- NOTIFICATIONS -->
+    <div class="card">
+      <h2>Bildirim</h2>
+      <div class="row">
+        <div>
+          <div class="lab">Tarayıcı izni</div>
+          <span class="hint">alarm.js fiyat alarmı için gerekli (destekleyen tarayıcılarda)</span>
+        </div>
+        <span class="status" id="notifBadge">—</span>
+      </div>
+      <div class="row">
+        <div>
+          <div class="lab">İzin iste</div>
+          <span class="hint">Sistem diyaloğunu açar</span>
+        </div>
+        <button type="button" class="btn btn-primary" id="btnNotif">İzin ver</button>
+      </div>
+    </div>
 
-function readFromUI(){
-  return{
-    lang:document.getElementById('setLang').value,
-    defaultMarket:document.getElementById('setDefaultMarket').value,
-    currency:document.getElementById('setCurrency').value,
-    autoRefresh:document.getElementById('setAutoRefresh').checked,
-    refreshInterval:parseInt(document.getElementById('setRefreshInterval').value,10),
-    cacheEnabled:document.getElementById('setCacheEnabled').checked,
-    cacheTTL:parseInt(document.getElementById('setCacheTTL').value,10),
-    useProxy:document.getElementById('setUseProxy').checked,
-    darkMode:document.getElementById('setDarkMode').checked,
-    bgAnim:document.getElementById('setBgAnim').checked,
-    animOpacity:parseInt(document.getElementById('setAnimOpacity').value,10),
-    compactCards:document.getElementById('setCompactCards').checked,
-    showTicker:document.getElementById('setShowTicker').checked,
-    alarmsEnabled:document.getElementById('setAlarmsEnabled').checked,
-    alarmSound:document.getElementById('setAlarmSound').checked,
-    debug:document.getElementById('setDebug').checked,
-    reduceMotion:document.getElementById('setReduceMotion').checked
-  };
-}
+    <!-- API STATUS (read-only) -->
+    <div class="card">
+      <h2>Veri katmanı (salt okunur)</h2>
+      <div class="row">
+        <div>
+          <div class="lab">api.js</div>
+          <span class="hint">Sürüm ve yüklenen key’ler konsolda da görünür</span>
+        </div>
+        <span class="status" id="apiBadge">—</span>
+      </div>
+      <div class="row">
+        <div>
+          <div class="lab">Yenileme aralığı</div>
+          <span class="hint">API.REFRESH_MS — kodda tanımlı, burada sadece bilgi</span>
+        </div>
+        <span class="status off" id="refreshBadge">—</span>
+      </div>
+    </div>
 
-function bindEvents(){
-  document.querySelectorAll('.settings-nav a').forEach(function(a){
-    a.addEventListener('click',function(e){
-      e.preventDefault();
-      document.querySelectorAll('.settings-nav a').forEach(function(x){x.classList.remove('active')});
-      document.querySelectorAll('.settings-panel').forEach(function(x){x.classList.remove('active')});
-      a.classList.add('active');
-      document.getElementById('panel-'+a.getAttribute('data-panel')).classList.add('active');
+    <div class="toast" id="toast">Kaydedildi</div>
+
+    <p class="note">
+      Plan seçimi <strong>stock.html</strong> kilitlerini etkiler.
+      Portföy silme geri alınamaz.
+      API anahtarları bu sayfada gösterilmez / düzenlenmez (secrets.js).
+    </p>
+  </main>
+
+  <footer>
+    Nexora AI ·
+    <a href="about.html">Hakkında</a>
+    <a href="login.html">Giriş</a>
+    <a href="premium.html">Premium</a>
+  </footer>
+
+  <script src="assets/js/secrets.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script>
+(function () {
+  "use strict";
+
+  function toast(msg) {
+    var el = document.getElementById("toast");
+    el.textContent = msg || "Kaydedildi";
+    el.classList.add("show");
+    setTimeout(function () { el.classList.remove("show"); }, 2200);
+  }
+
+  function get(k, fallback) {
+    try {
+      return localStorage.getItem(k) || fallback;
+    } catch (e) {
+      return fallback;
+    }
+  }
+
+  function set(k, v) {
+    localStorage.setItem(k, v);
+  }
+
+  /* plan */
+  var planEl = document.getElementById("plan");
+  planEl.value = get("nexora_plan", "free");
+  planEl.addEventListener("change", function () {
+    set("nexora_plan", planEl.value);
+    toast("Plan: " + planEl.value);
+  });
+
+  /* lang */
+  var langEl = document.getElementById("lang");
+  langEl.value = get("nexora_lang", "tr");
+  langEl.addEventListener("change", function () {
+    set("nexora_lang", langEl.value);
+    toast("Dil: " + langEl.value);
+  });
+
+  /* portfolio count */
+  function portInfo() {
+    var n = 0;
+    try {
+      var arr = JSON.parse(localStorage.getItem("nexora_portfolio_v1") || "[]");
+      if (Array.isArray(arr)) n = arr.length;
+    } catch (e) {}
+    document.getElementById("portHint").textContent =
+      n + " pozisyon · nexora_portfolio_v1";
+  }
+  portInfo();
+
+  document.getElementById("btnClearPort").addEventListener("click", function () {
+    if (!confirm("Tüm portföy pozisyonları silinsin mi?")) return;
+    localStorage.removeItem("nexora_portfolio_v1");
+    portInfo();
+    toast("Portföy temizlendi");
+  });
+
+  document.getElementById("btnClearCache").addEventListener("click", function () {
+    if (window.API && typeof API.clearCache === "function") {
+      API.clearCache();
+      toast("Fiyat cache temizlendi");
+    } else {
+      toast("Cache API yok — sayfayı yenilemen yeterli");
+    }
+  });
+
+  /* session */
+  function sessionUI() {
+    var s = get("nexora_session", "");
+    var badge = document.getElementById("sessionBadge");
+    if (s) {
+      badge.textContent = "Var";
+      badge.className = "status ok";
+    } else {
+      badge.textContent = "Yok";
+      badge.className = "status off";
+    }
+  }
+  sessionUI();
+
+  document.getElementById("btnLogout").addEventListener("click", function () {
+    localStorage.removeItem("nexora_session");
+    sessionUI();
+    toast("Yerel oturum temizlendi");
+  });
+
+  /* notifications */
+  function notifUI() {
+    var badge = document.getElementById("notifBadge");
+    if (!("Notification" in window)) {
+      badge.textContent = "Destek yok";
+      badge.className = "status off";
+      return;
+    }
+    var p = Notification.permission;
+    if (p === "granted") {
+      badge.textContent = "Açık";
+      badge.className = "status ok";
+    } else if (p === "denied") {
+      badge.textContent = "Reddedildi";
+      badge.className = "status warn";
+    } else {
+      badge.textContent = "Sorulmadı";
+      badge.className = "status off";
+    }
+  }
+  notifUI();
+
+  document.getElementById("btnNotif").addEventListener("click", function () {
+    if (!("Notification" in window)) {
+      toast("Bu tarayıcı bildirim desteklemiyor");
+      return;
+    }
+    Notification.requestPermission().then(function () {
+      notifUI();
+      toast("Bildirim durumu güncellendi");
     });
   });
-  ['setLang','setDefaultMarket','setCurrency','setAutoRefresh','setCacheEnabled','setUseProxy',
-   'setDarkMode','setBgAnim','setCompactCards','setShowTicker','setAlarmsEnabled','setAlarmSound',
-   'setDebug','setReduceMotion'].forEach(function(id){
-    var el=document.getElementById(id);
-    if(el) el.addEventListener('change',function(){saveSettings(readFromUI())});
-  });
-  document.getElementById('setRefreshInterval').addEventListener('input',function(){document.getElementById('refreshVal').textContent=this.value+' sn'});
-  document.getElementById('setRefreshInterval').addEventListener('change',function(){saveSettings(readFromUI())});
-  document.getElementById('setCacheTTL').addEventListener('input',function(){document.getElementById('cacheTTLVal').textContent=this.value+' sn'});
-  document.getElementById('setCacheTTL').addEventListener('change',function(){saveSettings(readFromUI())});
-  document.getElementById('setAnimOpacity').addEventListener('input',function(){document.getElementById('animOpacityVal').textContent=this.value+'%'});
-  document.getElementById('setAnimOpacity').addEventListener('change',function(){saveSettings(readFromUI())});
 
-  document.getElementById('btnClearCache').onclick=function(){Store.set('bist_cache_v1','');showToast('Önbellek temizlendi')};
-  document.getElementById('btnForceRefresh').onclick=function(){Store.set('bist_cache_v1','');showToast('Bir sonraki yüklemede zorla yenilenecek')};
-  document.getElementById('btnRequestNotif').onclick=function(){
-    if(!('Notification' in window)){showToast('Tarayıcı bildirim desteklemiyor');return}
-    Notification.requestPermission().then(function(p){showToast(p==='granted'?'Bildirim izni verildi':'İzin reddedildi')});
-  };
-  document.getElementById('btnResetAll').onclick=function(){
-    if(!confirm('Tüm ayarlar, takip listesi ve önbellek silinecek. Emin misiniz?'))return;
-    try{['nexora_settings','takipListesi','bist_cache_v1','nexoraUsed','theme','nexora_plan','nexora_billing'].forEach(function(k){localStorage.removeItem(k)})}catch(e){}
-    applyToUI(DEFAULTS);showToast('Tüm veriler sıfırlandı');
-  };
-  document.getElementById('btnExport').onclick=function(){
-    var blob=new Blob([JSON.stringify(readFromUI(),null,2)],{type:'application/json'});
-    var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='nexora-settings.json';a.click();
-    showToast('Ayarlar dışa aktarıldı');
-  };
-  document.getElementById('btnImport').onclick=function(){
-    var inp=document.createElement('input');inp.type='file';inp.accept='.json';
-    inp.onchange=function(){
-      var f=inp.files[0];if(!f)return;
-      var r=new FileReader();
-      r.onload=function(){try{saveSettings(Object.assign({},DEFAULTS,JSON.parse(r.result)));applyToUI(loadSettings());showToast('Ayarlar içe aktarıldı')}catch(e){showToast('Geçersiz dosya')}};
-      r.readAsText(f);
-    };
-    inp.click();
-  };
-  var mb=document.getElementById('mobileBtn');
-  if(mb) mb.addEventListener('click',function(){document.getElementById('mobileMenu').classList.toggle('open')});
-}
-applyToUI(loadSettings());
-bindEvents();
+  /* api read-only */
+  var apiBadge = document.getElementById("apiBadge");
+  var refreshBadge = document.getElementById("refreshBadge");
+  if (window.API) {
+    apiBadge.textContent = "v" + (API.VERSION || "?");
+    apiBadge.className = "status ok";
+    if (API.REFRESH_MS) {
+      refreshBadge.textContent = Math.round(API.REFRESH_MS / 1000) + " sn";
+    } else {
+      refreshBadge.textContent = "—";
+    }
+  } else {
+    apiBadge.textContent = "Yüklenmedi";
+    apiBadge.className = "status warn";
+    refreshBadge.textContent = "—";
+  }
+})();
 </script>
 </body>
 </html>
