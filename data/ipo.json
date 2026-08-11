@@ -1,0 +1,39 @@
+{
+  "updated": "2026-08-11",
+  "market": "multi",
+  "items": [
+    {
+      "symbol": "ORNEK",
+      "name": "Örnek Teknoloji A.Ş.",
+      "market": "BIST",
+      "flag": "🇹🇷",
+      "date": "2026-09-15",
+      "priceRange": "18.50 – 21.00",
+      "currency": "TRY",
+      "status": "upcoming",
+      "sector": "Teknoloji"
+    },
+    {
+      "symbol": "DEMO",
+      "name": "Demo Enerji",
+      "market": "BIST",
+      "flag": "🇹🇷",
+      "date": "2026-08-20",
+      "priceRange": "12.00 – 14.00",
+      "currency": "TRY",
+      "status": "open",
+      "sector": "Enerji"
+    },
+    {
+      "symbol": "XYZ",
+      "name": "XYZ Gıda",
+      "market": "BIST",
+      "flag": "🇹🇷",
+      "date": "2026-07-10",
+      "priceRange": "9.80",
+      "currency": "TRY",
+      "status": "done",
+      "sector": "Gıda"
+    }
+  ]
+}
