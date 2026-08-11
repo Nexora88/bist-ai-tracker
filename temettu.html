@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Temettü · Nexora AI</title>
+  <meta name="description" content="BIST temettü takvimi ve verimleri — Nexora AI." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #060a12;
+      --panel: rgba(15, 23, 42, 0.88);
+      --border: rgba(148, 163, 184, 0.12);
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --dim: #64748b;
+      --accent: #10b981;
+      --cyan: #22d3ee;
+      --amber: #fbbf24;
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Inter, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input, select { font: inherit; color: inherit; border: none; background: none; cursor: pointer; }
+
+    .nav {
+      position: sticky; top: 0; z-index: 40;
+      height: 56px; display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; padding: 0 16px;
+      background: rgba(6, 10, 18, 0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+    .brand { font-weight: 800; letter-spacing: -0.03em; }
+    .brand em { font-style: normal; color: var(--accent); }
+    .nav-links { display: flex; flex-wrap: wrap; gap: 2px; }
+    .nav-links a {
+      font-size: 13px; font-weight: 600; color: var(--muted);
+      padding: 7px 10px; border-radius: 9px;
+    }
+    .nav-links a:hover, .nav-links a.on { color: var(--text); background: rgba(255,255,255,0.05); }
+    @media (max-width: 800px) { .nav-links { display: none; } }
+
+    .wrap { max-width: 960px; margin: 0 auto; padding: 22px 16px 48px; }
+
+    .head { margin-bottom: 18px; }
+    .head h1 { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.03em; }
+    .head h1 span {
+      background: linear-gradient(90deg, var(--accent), var(--cyan));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .head p { color: var(--muted); font-size: 14px; margin-top: 6px; max-width: 540px; }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 600px) { .summary { grid-template-columns: 1fr; } }
+    .summary .box {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+    }
+    .summary .lab {
+      font-size: 11px; font-weight: 700; color: var(--dim);
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .summary .val { font-size: 1.2rem; font-weight: 800; margin-top: 4px; }
+
+    .toolbar {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      margin-bottom: 14px;
+    }
+    .toolbar input, .toolbar select {
+      background: var(--panel);
+      box-shadow: inset 0 0 0 1px var(--border);
+      border-radius: 11px;
+      padding: 10px 12px;
+      outline: none;
+      font-size: 13.5px;
+    }
+    .toolbar input { flex: 1; min-width: 160px; }
+    .toolbar input:focus { box-shadow: inset 0 0 0 1px rgba(16,185,129,0.45); }
+
+    .list { display: flex; flex-direction: column; gap: 10px; }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      display: grid;
+      grid-template-columns: 1.3fr 0.9fr 0.9fr 0.8fr;
+      gap: 10px;
+      align-items: center;
+      transition: border-color 0.15s;
+    }
+    .card:hover { border-color: rgba(16,185,129,0.35); }
+    @media (max-width: 720px) {
+      .card { grid-template-columns: 1fr 1fr; }
+    }
+
+    .sym { font-weight: 800; font-size: 15px; }
+    .name { color: var(--muted); font-size: 12.5px; margin-top: 2px; }
+    .meta { font-size: 12.5px; color: var(--dim); }
+    .meta strong { color: var(--text); font-weight: 700; display: block; font-size: 13.5px; }
+    .yield {
+      font-weight: 800; color: #34d399; font-size: 15px;
+    }
+
+    .empty {
+      text-align: center; color: var(--muted);
+      padding: 36px 12px; font-size: 14px;
+      background: var(--panel); border-radius: var(--radius);
+      border: 1px dashed var(--border);
+    }
+
+    .note {
+      margin-top: 18px; font-size: 12.5px; color: var(--dim); line-height: 1.6;
+    }
+
+    footer {
+      text-align: center; color: var(--dim); font-size: 12px;
+      padding: 12px 16px 36px;
+    }
+    footer a { color: var(--muted); margin: 0 6px; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a class="brand" href="index.html">Nexora <em>AI</em></a>
+    <div class="nav-links">
+      <a href="index.html">Ana Sayfa</a>
+      <a href="stock.html">Hisseler</a>
+      <a href="ai-analiz.html">AI Analiz</a>
+      <a href="portfolio.html">Portföy</a>
+      <a href="news.html">Haberler</a>
+      <a href="halka-arz.html">Halka Arz</a>
+      <a class="on" href="temettu.html">Temettü</a>
+      <a href="premium.html">Premium</a>
+    </div>
+    <a href="halka-arz.html" style="font-size:13px;font-weight:700;color:var(--accent)">Halka Arz →</a>
+  </nav>
+
+  <main class="wrap">
+    <div class="head">
+      <h1>Temettü <span>Takvimi</span></h1>
+      <p>
+        BIST temettü verimleri ve tarihler.
+        Liste <code style="color:var(--cyan)">data/temettu.json</code> ile yönetilir.
+      </p>
+    </div>
+
+    <div class="summary">
+      <div class="box">
+        <div class="lab">Kayıt</div>
+        <div class="val" id="sumCount">—</div>
+      </div>
+      <div class="box">
+        <div class="lab">Ort. verim</div>
+        <div class="val" id="sumAvg">—</div>
+      </div>
+      <div class="box">
+        <div class="lab">En yüksek</div>
+        <div class="val" id="sumMax">—</div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <input type="search" id="q" placeholder="Sembol veya şirket ara (ASELS, garanti…)" autocomplete="off" />
+      <select id="sort">
+        <option value="yield">Verime göre</option>
+        <option value="date">Tarihe göre</option>
+        <option value="symbol">Sembole göre</option>
+      </select>
+    </div>
+
+    <div class="list" id="list">
+      <div class="empty">Yükleniyor…</div>
+    </div>
+
+    <p class="note">
+      Temettü verimi bilgilendirme amaçlıdır; kesin tutar ve tarihler için KAP / şirket bildirimlerine bakın.
+    </p>
+  </main>
+
+  <footer>
+    Nexora AI ·
+    <a href="halka-arz.html">Halka Arz</a>
+    <a href="bilanco.html">Bilanço</a>
+    <a href="news.html">Haberler</a>
+    <a href="stock.html">Hisseler</a>
+  </footer>
+
+  <script>
+(function () {
+  "use strict";
+
+  var all = [];
+
+  function card(item) {
+    var y = item.yield != null ? Number(item.yield) : null;
+    var yieldTxt = y != null && isFinite(y) ? y.toFixed(2) + "%" : "—";
+    var amount = item.amount != null ? item.amount + " " + (item.currency || "TRY") : (item.dividend || "—");
+    var date = item.exDate || item.date || item.payDate || "—";
+    var href = "stock.html?market=bist&symbol=" + encodeURIComponent(item.symbol || "");
+
+    return (
+      '<a class="card" href="' + href + '">' +
+        "<div>" +
+          '<div class="sym">' + (item.flag || "🇹🇷") + " " + (item.symbol || "—") + "</div>" +
+          '<div class="name">' + (item.name || "") + "</div>" +
+        "</div>" +
+        '<div class="meta"><strong>' + amount + "</strong>Temettü</div>" +
+        '<div class="meta"><strong>' + date + "</strong>Tarih</div>" +
+        '<div class="yield">' + yieldTxt + "</div>" +
+      "</a>"
+    );
+  }
+
+  function summary(rows) {
+    document.getElementById("sumCount").textContent = String(rows.length);
+    var yields = rows
+      .map(function (x) { return Number(x.yield); })
+      .filter(function (n) { return isFinite(n); });
+    if (!yields.length) {
+      document.getElementById("sumAvg").textContent = "—";
+      document.getElementById("sumMax").textContent = "—";
+      return;
+    }
+    var sum = yields.reduce(function (a, b) { return a + b; }, 0);
+    var max = Math.max.apply(null, yields);
+    document.getElementById("sumAvg").textContent = (sum / yields.length).toFixed(2) + "%";
+    document.getElementById("sumMax").textContent = max.toFixed(2) + "%";
+  }
+
+  function apply() {
+    var q = (document.getElementById("q").value || "").trim().toLowerCase();
+    var sort = document.getElementById("sort").value;
+
+    var rows = all.filter(function (x) {
+      if (!q) return true;
+      return (
+        String(x.symbol || "").toLowerCase().indexOf(q) !== -1 ||
+        String(x.name || "").toLowerCase().indexOf(q) !== -1
+      );
+    });
+
+    rows.sort(function (a, b) {
+      if (sort === "symbol") {
+        return String(a.symbol || "").localeCompare(String(b.symbol || ""));
+      }
+      if (sort === "date") {
+        return String(b.exDate || b.date || "").localeCompare(String(a.exDate || a.date || ""));
+      }
+      return (Number(b.yield) || 0) - (Number(a.yield) || 0);
+    });
+
+    summary(rows);
+
+    var box = document.getElementById("list");
+    if (!rows.length) {
+      box.innerHTML = '<div class="empty">Kayıt yok. data/temettu.json dosyasını kontrol et.</div>';
+      return;
+    }
+    box.innerHTML = rows.map(card).join("");
+  }
+
+  document.getElementById("q").addEventListener("input", apply);
+  document.getElementById("sort").addEventListener("change", apply);
+
+  fetch("data/temettu.json", { cache: "no-store" })
+    .then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    })
+    .then(function (data) {
+      all = Array.isArray(data) ? data : data.items || data.dividends || [];
+      apply();
+    })
+    .catch(function () {
+      all = [
+        { symbol: "GARAN", name: "Garanti BBVA", flag: "🇹🇷", amount: "1.25", currency: "TRY", yield: 4.2, exDate: "2026-05-12" },
+        { symbol: "THYAO", name: "Türk Hava Yolları", flag: "🇹🇷", amount: "2.00", currency: "TRY", yield: 2.1, exDate: "2026-06-03" },
+        { symbol: "BIMAS", name: "BİM", flag: "🇹🇷", amount: "8.50", currency: "TRY", yield: 2.8, exDate: "2026-04-22" },
+        { symbol: "AKBNK", name: "Akbank", flag: "🇹🇷", amount: "1.10", currency: "TRY", yield: 3.9, exDate: "2026-05-08" }
+      ];
+      apply();
+    });
+})();
+</script>
+</body>
+</html>
