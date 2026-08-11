@@ -1,0 +1,214 @@
+/* Nexora · portfolio.css — sade v1 */
+
+:root {
+  --bg: #060a12;
+  --panel: rgba(15, 23, 42, 0.88);
+  --border: rgba(148, 163, 184, 0.12);
+  --text: #f1f5f9;
+  --muted: #94a3b8;
+  --dim: #64748b;
+  --accent: #10b981;
+  --cyan: #22d3ee;
+  --rose: #f87171;
+  --amber: #fbbf24;
+  --radius: 16px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: Inter, system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.5;
+}
+
+a { color: inherit; text-decoration: none; }
+button, input { font: inherit; color: inherit; }
+
+/* nav */
+.nav {
+  position: sticky; top: 0; z-index: 40;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 0 16px; height: 56px;
+  background: rgba(6, 10, 18, 0.9);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+}
+.brand { font-weight: 800; letter-spacing: -0.03em; }
+.brand em { font-style: normal; color: var(--accent); }
+.nav-links { display: flex; gap: 4px; flex-wrap: wrap; }
+.nav-links a {
+  font-size: 13px; font-weight: 600; color: var(--muted);
+  padding: 7px 10px; border-radius: 9px;
+}
+.nav-links a:hover, .nav-links a.on { color: var(--text); background: rgba(255,255,255,0.05); }
+@media (max-width: 720px) { .nav-links { display: none; } }
+
+/* layout */
+.wrap { max-width: 960px; margin: 0 auto; padding: 20px 16px 48px; }
+
+.page-title {
+  font-size: 1.35rem; font-weight: 800; letter-spacing: -0.03em;
+  margin-bottom: 4px;
+}
+.page-sub { color: var(--muted); font-size: 13.5px; margin-bottom: 18px; }
+
+/* summary */
+.summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 18px;
+}
+@media (max-width: 600px) { .summary { grid-template-columns: 1fr; } }
+
+.summary .box {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+}
+.summary .lab {
+  font-size: 11px; font-weight: 700; color: var(--dim);
+  text-transform: uppercase; letter-spacing: 0.04em;
+}
+.summary .val {
+  font-size: 1.25rem; font-weight: 800; margin-top: 4px;
+}
+.up { color: #34d399; }
+.down { color: var(--rose); }
+
+/* form */
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 16px;
+}
+.panel h2 {
+  font-size: 13px; font-weight: 700; color: var(--muted);
+  margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.04em;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr auto;
+  gap: 8px;
+  align-items: end;
+}
+@media (max-width: 700px) {
+  .form-row { grid-template-columns: 1fr 1fr; }
+}
+
+.field label {
+  display: block; font-size: 11px; font-weight: 600;
+  color: var(--dim); margin-bottom: 4px;
+}
+.field input {
+  width: 100%;
+  background: rgba(30, 41, 59, 0.85);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  outline: none;
+}
+.field input:focus { border-color: rgba(16, 185, 129, 0.45); }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 10px 14px; border-radius: 10px;
+  font-size: 13px; font-weight: 700; border: none; cursor: pointer;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent), #059669);
+  color: #022c22;
+}
+.btn-soft {
+  background: rgba(30, 41, 59, 0.9);
+  color: var(--text);
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+.btn-danger {
+  background: rgba(248, 113, 113, 0.12);
+  color: var(--rose);
+  box-shadow: inset 0 0 0 1px rgba(248, 113, 113, 0.25);
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+/* suggest */
+.suggest {
+  display: none;
+  margin-top: 6px;
+  background: #0b1220;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  max-height: 180px;
+  overflow: auto;
+}
+.suggest.show { display: block; }
+.suggest button {
+  display: block; width: 100%; text-align: left;
+  padding: 9px 12px; background: none; border: none;
+  cursor: pointer; font-size: 13px;
+}
+.suggest button:hover { background: rgba(16, 185, 129, 0.1); }
+.suggest .sym { font-weight: 800; margin-right: 6px; }
+.suggest .nm { color: var(--muted); }
+
+/* table / list */
+.list { display: flex; flex-direction: column; gap: 8px; }
+
+.row {
+  display: grid;
+  grid-template-columns: 1.1fr 0.8fr 0.8fr 0.9fr auto;
+  gap: 8px;
+  align-items: center;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 13.5px;
+}
+@media (max-width: 700px) {
+  .row {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+  .row .actions { grid-column: 1 / -1; }
+}
+
+.row .sym { font-weight: 800; }
+.row .name { color: var(--muted); font-size: 12px; }
+.row .muted { color: var(--dim); font-size: 12px; }
+
+.empty {
+  text-align: center;
+  color: var(--muted);
+  padding: 28px 12px;
+  font-size: 14px;
+}
+
+/* chart box (simple) */
+.chart-box {
+  height: 180px;
+  background: rgba(30, 41, 59, 0.4);
+  border-radius: 12px;
+  border: 1px dashed var(--border);
+  display: grid;
+  place-items: center;
+  color: var(--dim);
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+footer {
+  text-align: center;
+  color: var(--dim);
+  font-size: 12px;
+  padding: 16px;
+}
+footer a { color: var(--muted); margin: 0 5px; font-weight: 600; }
