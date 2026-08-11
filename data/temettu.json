@@ -1,0 +1,42 @@
+{
+  "updated": "2026-08-11",
+  "currency": "TRY",
+  "items": [
+    {
+      "symbol": "GARAN",
+      "name": "Garanti BBVA",
+      "flag": "🇹🇷",
+      "amount": "1.25",
+      "currency": "TRY",
+      "yield": 4.2,
+      "exDate": "2026-05-12"
+    },
+    {
+      "symbol": "THYAO",
+      "name": "Türk Hava Yolları",
+      "flag": "🇹🇷",
+      "amount": "2.00",
+      "currency": "TRY",
+      "yield": 2.1,
+      "exDate": "2026-06-03"
+    },
+    {
+      "symbol": "BIMAS",
+      "name": "BİM",
+      "flag": "🇹🇷",
+      "amount": "8.50",
+      "currency": "TRY",
+      "yield": 2.8,
+      "exDate": "2026-04-22"
+    },
+    {
+      "symbol": "AKBNK",
+      "name": "Akbank",
+      "flag": "🇹🇷",
+      "amount": "1.10",
+      "currency": "TRY",
+      "yield": 3.9,
+      "exDate": "2026-05-08"
+    }
+  ]
+}
