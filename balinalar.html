@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Balina Avcısı · Nexora AI</title>
+  <meta name="description" content="Büyük alım-satım hareketleri ve balina bildirimleri — Nexora Balina Avcısı." />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #060a12;
+      --panel: rgba(15, 23, 42, 0.92);
+      --border: rgba(148, 163, 184, 0.12);
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --dim: #64748b;
+      --accent: #10b981;
+      --cyan: #22d3ee;
+      --rose: #f87171;
+      --amber: #fbbf24;
+      --violet: #a78bfa;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Inter, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input, select { font: inherit; color: inherit; border: none; background: none; cursor: pointer; }
+
+    .nav {
+      position: sticky; top: 0; z-index: 40;
+      height: 56px; display: flex; align-items: center; justify-content: space-between;
+      gap: 10px; padding: 0 16px;
+      background: rgba(6, 10, 18, 0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+    .brand { font-weight: 800; letter-spacing: -0.03em; }
+    .brand em { font-style: normal; color: var(--accent); }
+    .nav-links { display: flex; flex-wrap: wrap; gap: 2px; }
+    .nav-links a {
+      font-size: 13px; font-weight: 600; color: var(--muted);
+      padding: 7px 10px; border-radius: 9px;
+    }
+    .nav-links a:hover, .nav-links a.on { color: var(--text); background: rgba(255,255,255,0.05); }
+    @media (max-width: 900px) { .nav-links { display: none; } }
+
+    .wrap { max-width: 900px; margin: 0 auto; padding: 24px 16px 56px; }
+
+    .hero { margin-bottom: 20px; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 12px; font-weight: 700; color: var(--cyan);
+      background: rgba(34, 211, 238, 0.1);
+      border: 1px solid rgba(34, 211, 238, 0.28);
+      padding: 6px 12px; border-radius: 999px; margin-bottom: 12px;
+    }
+    h1 {
+      font-size: clamp(1.5rem, 3.2vw, 2rem);
+      font-weight: 800; letter-spacing: -0.03em; line-height: 1.15;
+      margin-bottom: 10px;
+    }
+    h1 span {
+      background: linear-gradient(90deg, var(--cyan), var(--accent));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .lead {
+      color: var(--muted); font-size: 15px; max-width: 560px; line-height: 1.7;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 18px 0;
+    }
+    @media (max-width: 600px) { .stats { grid-template-columns: 1fr; } }
+    .stat {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      text-align: center;
+    }
+    .stat .n {
+      font-size: 1.25rem; font-weight: 800;
+      background: linear-gradient(135deg, #22d3ee, #34d399);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .stat .l { font-size: 12px; color: var(--dim); margin-top: 4px; font-weight: 600; }
+
+    .toolbar {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      margin-bottom: 14px;
+    }
+    .toolbar input, .toolbar select {
+      background: var(--panel);
+      box-shadow: inset 0 0 0 1px var(--border);
+      border-radius: 11px;
+      padding: 10px 12px;
+      outline: none;
+      font-size: 13.5px;
+    }
+    .toolbar input { flex: 1; min-width: 140px; }
+    .toolbar input:focus { box-shadow: inset 0 0 0 1px rgba(34,211,238,0.45); }
+    .chip {
+      font-size: 12px; font-weight: 700;
+      padding: 8px 12px; border-radius: 999px;
+      color: var(--muted);
+      background: rgba(30, 41, 59, 0.9);
+      box-shadow: inset 0 0 0 1px var(--border);
+    }
+    .chip.on {
+      color: #022c22;
+      background: linear-gradient(135deg, var(--cyan), var(--accent));
+      box-shadow: none;
+    }
+
+    .feed { display: flex; flex-direction: column; gap: 12px; }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      transition: border-color 0.15s, transform 0.15s;
+    }
+    .card:hover {
+      border-color: rgba(34, 211, 238, 0.35);
+      transform: translateY(-2px);
+    }
+    .card.buy { border-left: 3px solid #34d399; }
+    .card.sell { border-left: 3px solid #f87171; }
+
+    .card-top {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      align-items: center; justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .emoji {
+      font-size: 1.5rem;
+      line-height: 1;
+    }
+    .headline {
+      font-size: 1rem; font-weight: 800; letter-spacing: -0.02em;
+      line-height: 1.35; flex: 1; min-width: 200px;
+    }
+    .side {
+      font-size: 11px; font-weight: 800;
+      padding: 4px 10px; border-radius: 999px;
+    }
+    .side.buy {
+      background: rgba(16, 185, 129, 0.14); color: #34d399;
+    }
+    .side.sell {
+      background: rgba(248, 113, 113, 0.14); color: #f87171;
+    }
+
+    .meta {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      margin-bottom: 10px;
+    }
+    .meta span {
+      font-size: 12px; font-weight: 650; color: var(--muted);
+      background: rgba(30, 41, 59, 0.9);
+      padding: 4px 10px; border-radius: 999px;
+      box-shadow: inset 0 0 0 1px var(--border);
+    }
+
+    .detail {
+      font-size: 13.5px; color: var(--muted); line-height: 1.65;
+    }
+    .detail strong { color: #e2e8f0; font-weight: 700; }
+
+    .card-actions {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      margin-top: 12px;
+    }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 8px 12px; border-radius: 10px;
+      font-size: 12.5px; font-weight: 700;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #059669);
+      color: #022c22;
+    }
+    .btn-soft {
+      background: rgba(30, 41, 59, 0.95);
+      color: var(--text);
+      box-shadow: inset 0 0 0 1px var(--border);
+    }
+
+    .empty {
+      text-align: center; color: var(--muted);
+      padding: 40px 12px;
+      border: 1px dashed var(--border);
+      border-radius: 14px;
+    }
+
+    .info {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: rgba(34, 211, 238, 0.06);
+      border: 1px solid rgba(34, 211, 238, 0.2);
+      font-size: 13px; color: var(--muted); line-height: 1.65;
+    }
+    .info strong { color: var(--text); }
+
+    .legal {
+      margin-top: 16px;
+      font-size: 12px; color: var(--dim); line-height: 1.55;
+    }
+    .legal a { color: var(--cyan); font-weight: 600; }
+
+    footer {
+      text-align: center; color: var(--dim); font-size: 12px;
+      padding: 8px 16px 36px;
+    }
+    footer a { color: var(--muted); margin: 0 5px; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a class="brand" href="index.html">Nexora <em>AI</em></a>
+    <div class="nav-links">
+      <a href="index.html">Ana</a>
+      <a href="stock.html">Hisseler</a>
+      <a class="on" href="balinalar.html">Balinalar</a>
+      <a href="radar.html">Pusula</a>
+      <a href="oyun.html">Lig</a>
+      <a href="about.html">Hakkımızda</a>
+    </div>
+    <a class="btn btn-soft" href="stock.html">Hisseler</a>
+  </nav>
+
+  <main class="wrap">
+    <header class="hero">
+      <div class="badge">🐋 Büyük abileri izle</div>
+      <h1>Balina <span>Avcısı</span></h1>
+      <p class="lead">
+        Milyonluk lotlar, kurumsal hareketler ve dikkat çeken pay alım-satımları —
+        sade dil ve emoji ile. Grafik bilmesen de “kim ne almış?” sorusuna hızlı bakış.
+      </p>
+    </header>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="n" id="stTotal">—</div>
+        <div class="l">Kayıtlı hareket</div>
+      </div>
+      <div class="stat">
+        <div class="n" id="stBuy">—</div>
+        <div class="l">Alım yönlü</div>
+      </div>
+      <div class="stat">
+        <div class="n" id="stSell">—</div>
+        <div class="l">Satım yönlü</div>
+      </div>
+    </div>
+
+    <div class="toolbar" id="filters">
+      <input type="search" id="q" placeholder="Sembol, kurum veya özet ara…" autocomplete="off" />
+      <select id="side">
+        <option value="all">Tüm yönler</option>
+        <option value="buy">Sadece alım</option>
+        <option value="sell">Sadece satım</option>
+      </select>
+      <button type="button" class="chip on" data-size="all">Hepsi</button>
+      <button type="button" class="chip" data-size="mega">Sadece dev 🐋</button>
+    </div>
+
+    <div class="feed" id="feed">
+      <div class="empty">Yükleniyor…</div>
+    </div>
+
+    <div class="info">
+      <strong>Nasıl okunur?</strong>
+      Yeşil kenar = alım baskısı izlenimi, kırmızı = satım.
+      “Dev balina” büyük hacimli bildirimler içindir.
+      Bu ekran <strong>tüyo garantisi değildir</strong>; resmi duyurular ve kendi analizin esastır.
+      Liste örnek / derlenmiş kayıtlardan beslenir; canlı KAP akışı bağlandıkça güncellenir.
+    </div>
+
+    <p class="legal">
+      Yatırım tavsiyesi değildir. Veriler gecikmeli veya özetlenmiş olabilir.
+      · <a href="kvkk.html">KVKK</a> · <a href="gizlilik.html">Gizlilik</a>
+    </p>
+  </main>
+
+  <footer>
+    Nexora AI · Balina Avcısı
+    <a href="radar.html">Pusula</a>
+    <a href="stock.html">Hisseler</a>
+    <a href="about.html">Hakkımızda</a>
+  </footer>
+
+  <script>
+(function () {
+  "use strict";
+
+  var all = [];
+  var sizeMode = "all";
+
+  /** Örnek veri — gerçek akış bağlanana kadar vitrin */
+  var DEMO = [
+    {
+      id: "1",
+      emoji: "🐋",
+      headline: "BIST’te dev balina yakalandı",
+      actor: "Örnek Yatırım Fonları",
+      symbol: "EREGL",
+      name: "Ereğli Demir Çelik",
+      side: "buy",
+      qty: 5000000,
+      notional: "Yüksek hacim",
+      size: "mega",
+      date: "2026-08-11",
+      note: "EREGL hissesinde dikkat çeken büyüklükte alım bildirimi. Hacim, günlük ortalamanın belirgin üzerinde."
+    },
+    {
+      id: "2",
+      emoji: "🦈",
+      headline: "Kurumsal masa harekete geçti",
+      actor: "Anadolu Portföy (örnek)",
+      symbol: "THYAO",
+      name: "Türk Hava Yolları",
+      side: "buy",
+      qty: 1200000,
+      notional: "Orta-yüksek",
+      size: "large",
+      date: "2026-08-10",
+      note: "Havacılık hissesinde kurumsal tarafta alım izlenimi. Kısa vadeli gürültüden ayırmak gerekir."
+    },
+    {
+      id: "3",
+      emoji: "🐋",
+      headline: "Büyük satım dalgası",
+      actor: "Uluslararası fon (örnek)",
+      symbol: "BIMAS",
+      name: "BİM",
+      side: "sell",
+      qty: 2800000,
+      notional: "Yüksek hacim",
+      size: "mega",
+      date: "2026-08-09",
+      note: "Perakende devinde dikkat çeken satım. Tek başına trend kırılımı anlamına gelmez."
+    },
+    {
+      id: "4",
+      emoji: "🐬",
+      headline: "Yönetici pay artışı",
+      actor: "Şirket insayderi (örnek)",
+      symbol: "ASELS",
+      name: "Aselsan",
+      side: "buy",
+      qty: 150000,
+      notional: "Orta",
+      size: "mid",
+      date: "2026-08-08",
+      note: "Savunma hissesinde içeriden alım teması. Küçük lot bile psikolojik etki yaratabilir."
+    },
+    {
+      id: "5",
+      emoji: "🦈",
+      headline: "Bankacılıkta kurumsal tur",
+      actor: "Yerli emeklilik fonu (örnek)",
+      symbol: "GARAN",
+      name: "Garanti BBVA",
+      side: "buy",
+      qty: 3500000,
+      notional: "Yüksek",
+      size: "mega",
+      date: "2026-08-07",
+      note: "Likit banka hissesinde güçlü alım. Sektör genelinden bağımsız okumayın."
+    },
+    {
+      id: "6",
+      emoji: "🐟",
+      headline: "Hafif kâr realizasyonu",
+      actor: "Özel portföy (örnek)",
+      symbol: "TUPRS",
+      name: "Tüpraş",
+      side: "sell",
+      qty: 420000,
+      notional: "Orta",
+      size: "mid",
+      date: "2026-08-06",
+      note: "Enerji tarafında sınırlı satım. Balina sınıfına sınırda."
+    },
+    {
+      id: "7",
+      emoji: "🐋",
+      headline: "ABD tarafında büyük alım teması",
+      actor: "Kurumsal masa (örnek)",
+      symbol: "AAPL",
+      name: "Apple",
+      side: "buy",
+      qty: 900000,
+      notional: "Yüksek (USD)",
+      size: "mega",
+      date: "2026-08-05",
+      note: "Global teknoloji isminde dikkat çeken alım özeti. Kur ve seans farkını unutmayın."
+    },
+    {
+      id: "8",
+      emoji: "🦈",
+      headline: "Satış baskısı izlenimi",
+      actor: "Yabancı raporlu akış (örnek)",
+      symbol: "SASA",
+      name: "Sasa Polyester",
+      side: "sell",
+      qty: 6100000,
+      notional: "Çok yüksek",
+      size: "mega",
+      date: "2026-08-04",
+      note: "Yüksek adetli satım bildirimi. Volatil isimlerde abartılı yorumdan kaçının."
+    }
+  ];
+
+  function fmtQty(n) {
+    if (n == null || !isFinite(n)) return "—";
+    return Number(n).toLocaleString("tr-TR");
+  }
+
+  function card(item) {
+    var side = item.side === "sell" ? "sell" : "buy";
+    var sideLabel = side === "buy" ? "ALIM" : "SATIM";
+    var stockUrl =
+      "stock.html?symbol=" +
+      encodeURIComponent(item.symbol || "") +
+      (item.symbol === "AAPL" ? "&market=nasdaq" : "&market=bist");
+    var radarUrl =
+      "radar.html?sembol=" + encodeURIComponent(item.symbol || "");
+    var chatUrl =
+      "sohbet.html?oda=" + encodeURIComponent(item.symbol || "");
+
+    return (
+      '<article class="card ' +
+      side +
+      '">' +
+      '<div class="card-top">' +
+      '<div style="display:flex;gap:10px;align-items:flex-start;flex:1">' +
+      '<span class="emoji">' +
+      (item.emoji || "🐋") +
+      "</span>" +
+      '<div class="headline">' +
+      escapeHtml(item.headline) +
+      "</div>" +
+      "</div>" +
+      '<span class="side ' +
+      side +
+      '">' +
+      sideLabel +
+      "</span>" +
+      "</div>" +
+      '<div class="meta">' +
+      "<span>" +
+      escapeHtml(item.symbol) +
+      (item.name ? " · " + escapeHtml(item.name) : "") +
+      "</span>" +
+      "<span>" +
+      escapeHtml(item.actor || "Kurumsal") +
+      "</span>" +
+      "<span>" +
+      escapeHtml(item.date || "") +
+      "</span>" +
+      (item.size === "mega" ? "<span>Dev balina</span>" : "") +
+      "</div>" +
+      '<div class="detail">' +
+      "<strong>" +
+      escapeHtml(item.actor || "") +
+      "</strong>, <strong>" +
+      escapeHtml(item.symbol) +
+      "</strong> için yaklaşık <strong>" +
+      fmtQty(item.qty) +
+      "</strong> adet " +
+      (side === "buy" ? "alım" : "satım") +
+      " teması." +
+      (item.notional
+        ? " Hacim notu: <strong>" + escapeHtml(item.notional) + "</strong>."
+        : "") +
+      (item.note ? " " + escapeHtml(item.note) : "") +
+      "</div>" +
+      '<div class="card-actions">' +
+      '<a class="btn btn-primary" href="' +
+      stockUrl +
+      '">Hisse kartı</a>' +
+      '<a class="btn btn-soft" href="' +
+      radarUrl +
+      '">Pusula</a>' +
+      '<a class="btn btn-soft" href="' +
+      chatUrl +
+      '">Sohbet odası</a>' +
+      "</div>" +
+      "</article>"
+    );
+  }
+
+  function escapeHtml(s) {
+    return String(s || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function stats(rows) {
+    var buy = 0,
+      sell = 0;
+    rows.forEach(function (x) {
+      if (x.side === "sell") sell++;
+      else buy++;
+    });
+    document.getElementById("stTotal").textContent = String(rows.length);
+    document.getElementById("stBuy").textContent = String(buy);
+    document.getElementById("stSell").textContent = String(sell);
+  }
+
+  function apply() {
+    var q = (document.getElementById("q").value || "").trim().toLowerCase();
+    var side = document.getElementById("side").value;
+    var rows = all.filter(function (x) {
+      if (side !== "all" && x.side !== side) return false;
+      if (sizeMode === "mega" && x.size !== "mega") return false;
+      if (!q) return true;
+      var blob = (
+        x.symbol +
+        " " +
+        (x.name || "") +
+        " " +
+        (x.actor || "") +
+        " " +
+        (x.headline || "") +
+        " " +
+        (x.note || "")
+      ).toLowerCase();
+      return blob.indexOf(q) !== -1;
+    });
+
+    stats(rows);
+    var feed = document.getElementById("feed");
+    if (!rows.length) {
+      feed.innerHTML = '<div class="empty">Bu filtrede balina yok</div>';
+      return;
+    }
+    feed.innerHTML = rows.map(card).join("");
+  }
+
+  document.getElementById("q").addEventListener("input", apply);
+  document.getElementById("side").addEventListener("change", apply);
+  document.getElementById("filters").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-size]");
+    if (!b) return;
+    sizeMode = b.getAttribute("data-size");
+    document.querySelectorAll("[data-size]").forEach(function (c) {
+      c.classList.toggle("on", c === b);
+    });
+    apply();
+  });
+
+  function boot(data) {
+    all = Array.isArray(data) ? data : data.items || DEMO;
+    all.sort(function (a, b) {
+      return String(b.date || "").localeCompare(String(a.date || ""));
+    });
+    apply();
+  }
+
+  fetch("data/balinalar.json", { cache: "no-store" })
+    .then(function (r) {
+      if (!r.ok) throw new Error("no");
+      return r.json();
+    })
+    .then(boot)
+    .catch(function () {
+      boot(DEMO);
+    });
+})();
+  </script>
+</body>
+</html>
