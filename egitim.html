@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nexora Akademi · Finansal Görevler</title>
+  <meta name="description" content="Borsayı öğren, mini testleri çöz, sanal lig bakiyeni büyüt — Nexora Akademi." />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #060a12;
+      --panel: rgba(15, 23, 42, 0.92);
+      --border: rgba(148, 163, 184, 0.12);
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --dim: #64748b;
+      --accent: #10b981;
+      --cyan: #22d3ee;
+      --rose: #f87171;
+      --amber: #fbbf24;
+      --violet: #a78bfa;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Inter, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; color: inherit; border: none; background: none; cursor: pointer; }
+
+    .nav {
+      position: sticky; top: 0; z-index: 40;
+      height: 56px; display: flex; align-items: center; justify-content: space-between;
+      gap: 10px; padding: 0 16px;
+      background: rgba(6, 10, 18, 0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+    .brand { font-weight: 800; letter-spacing: -0.03em; }
+    .brand em { font-style: normal; color: var(--accent); }
+    .nav-links { display: flex; flex-wrap: wrap; gap: 2px; }
+    .nav-links a {
+      font-size: 13px; font-weight: 600; color: var(--muted);
+      padding: 7px 10px; border-radius: 9px;
+    }
+    .nav-links a:hover, .nav-links a.on { color: var(--text); background: rgba(255,255,255,0.05); }
+    @media (max-width: 900px) { .nav-links { display: none; } }
+
+    .wrap { max-width: 760px; margin: 0 auto; padding: 24px 16px 56px; }
+
+    .hero { margin-bottom: 20px; }
+    .badge {
+      display: inline-flex; gap: 8px; align-items: center;
+      font-size: 12px; font-weight: 700; color: var(--violet);
+      background: rgba(167, 139, 250, 0.12);
+      border: 1px solid rgba(167, 139, 250, 0.3);
+      padding: 6px 12px; border-radius: 999px; margin-bottom: 12px;
+    }
+    h1 {
+      font-size: clamp(1.5rem, 3.2vw, 2rem);
+      font-weight: 800; letter-spacing: -0.03em; line-height: 1.15;
+      margin-bottom: 10px;
+    }
+    h1 span {
+      background: linear-gradient(90deg, var(--violet), var(--cyan));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .lead { color: var(--muted); font-size: 15px; max-width: 520px; line-height: 1.7; }
+
+    .progress-bar {
+      margin: 18px 0 8px;
+      height: 10px; border-radius: 99px;
+      background: #1e293b; overflow: hidden;
+    }
+    .progress-bar > i {
+      display: block; height: 100%;
+      background: linear-gradient(90deg, var(--violet), var(--accent));
+      border-radius: 99px;
+      transition: width 0.4s ease;
+    }
+    .progress-meta {
+      display: flex; justify-content: space-between;
+      font-size: 12.5px; color: var(--dim); margin-bottom: 18px;
+    }
+
+    .stats {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+      margin-bottom: 18px;
+    }
+    @media (max-width: 560px) { .stats { grid-template-columns: 1fr; } }
+    .stat {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 14px; padding: 14px; text-align: center;
+    }
+    .stat .n { font-size: 1.2rem; font-weight: 800; color: #34d399; }
+    .stat .l { font-size: 12px; color: var(--dim); margin-top: 4px; font-weight: 600; }
+
+    .levels { display: flex; flex-direction: column; gap: 12px; }
+
+    .level {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      transition: border-color 0.15s;
+    }
+    .level.done { border-color: rgba(16, 185, 129, 0.35); }
+    .level.locked { opacity: 0.55; }
+    .level-top {
+      display: flex; justify-content: space-between; gap: 10px;
+      align-items: flex-start; flex-wrap: wrap;
+    }
+    .level h2 { font-size: 1.05rem; font-weight: 800; letter-spacing: -0.02em; }
+    .level .desc { font-size: 13.5px; color: var(--muted); margin-top: 6px; line-height: 1.55; }
+    .reward {
+      font-size: 12px; font-weight: 800;
+      padding: 5px 10px; border-radius: 999px;
+      background: rgba(251, 191, 36, 0.12); color: var(--amber);
+      white-space: nowrap;
+    }
+    .level-foot {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      margin-top: 14px; align-items: center;
+    }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 9px 14px; border-radius: 10px;
+      font-size: 13px; font-weight: 700;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #059669);
+      color: #022c22;
+    }
+    .btn-soft {
+      background: rgba(30, 41, 59, 0.95);
+      color: var(--text);
+      box-shadow: inset 0 0 0 1px var(--border);
+    }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    /* quiz modal */
+    .overlay {
+      display: none;
+      position: fixed; inset: 0; z-index: 60;
+      background: rgba(2, 6, 14, 0.72);
+      backdrop-filter: blur(6px);
+      align-items: center; justify-content: center;
+      padding: 16px;
+    }
+    .overlay.show { display: flex; }
+    .quiz {
+      width: min(440px, 100%);
+      background: #0b1220;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px 18px;
+      max-height: min(90vh, 640px);
+      overflow: auto;
+    }
+    .quiz h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 6px; }
+    .quiz .step { font-size: 12px; color: var(--dim); margin-bottom: 14px; }
+    .quiz .q {
+      font-size: 15px; font-weight: 650; line-height: 1.55;
+      margin-bottom: 14px; color: #e2e8f0;
+    }
+    .opts { display: flex; flex-direction: column; gap: 8px; }
+    .opt {
+      text-align: left;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(30, 41, 59, 0.9);
+      border: 1px solid var(--border);
+      font-size: 13.5px; font-weight: 600;
+      transition: 0.12s;
+    }
+    .opt:hover { border-color: rgba(16, 185, 129, 0.4); }
+    .opt.correct {
+      border-color: rgba(16, 185, 129, 0.55);
+      background: rgba(16, 185, 129, 0.12);
+      color: #6ee7b7;
+    }
+    .opt.wrong {
+      border-color: rgba(248, 113, 113, 0.5);
+      background: rgba(248, 113, 113, 0.1);
+      color: #fecaca;
+    }
+    .quiz-foot {
+      display: flex; justify-content: space-between; gap: 8px;
+      margin-top: 16px; flex-wrap: wrap;
+    }
+    .feedback {
+      margin-top: 12px; font-size: 13px; color: var(--muted); line-height: 1.55;
+      min-height: 1.2em;
+    }
+
+    .toast {
+      position: fixed; left: 50%; bottom: 22px; z-index: 80;
+      transform: translateX(-50%) translateY(12px);
+      background: #0f172a; border: 1px solid rgba(16,185,129,0.4);
+      color: #a7f3d0; padding: 12px 16px; border-radius: 12px;
+      font-size: 13.5px; font-weight: 700;
+      opacity: 0; pointer-events: none; transition: 0.25s;
+      max-width: min(400px, calc(100vw - 24px)); text-align: center;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.err { border-color: rgba(248,113,113,0.45); color: #fecaca; }
+
+    .legal {
+      margin-top: 22px; font-size: 12px; color: var(--dim); line-height: 1.55;
+    }
+    .legal a { color: var(--cyan); font-weight: 600; }
+
+    footer {
+      text-align: center; color: var(--dim); font-size: 12px;
+      padding: 8px 16px 36px;
+    }
+    footer a { color: var(--muted); margin: 0 5px; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="toast" id="toast"></div>
+
+  <nav class="nav">
+    <a class="brand" href="index.html">Nexora <em>AI</em></a>
+    <div class="nav-links">
+      <a href="index.html">Ana</a>
+      <a href="stock.html">Hisseler</a>
+      <a class="on" href="egitim.html">Akademi</a>
+      <a href="oyun.html">Lig</a>
+      <a href="radar.html">Pusula</a>
+      <a href="about.html">Hakkımızda</a>
+    </div>
+    <a class="btn btn-soft" href="oyun.html">Lige git</a>
+  </nav>
+
+  <main class="wrap">
+    <header class="hero">
+      <div class="badge">🎓 Öğren · çöz · kazan</div>
+      <h1>Nexora <span>Akademi</span></h1>
+      <p class="lead">
+        Kısa dersler, mini testler. Doğru bildikçe sanal lig bakiyene ödül eklenir.
+        Sıfırdan başlayanlar için sade dil — abartısız, adım adım.
+      </p>
+    </header>
+
+    <div class="progress-bar"><i id="progFill" style="width:0%"></i></div>
+    <div class="progress-meta">
+      <span id="progText">0 / 0 görev</span>
+      <span id="progXp">0 XP</span>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="n" id="stDone">0</div>
+        <div class="l">Tamamlanan</div>
+      </div>
+      <div class="stat">
+        <div class="n" id="stReward">0 ₺</div>
+        <div class="l">Akademi ödülü (sanal)</div>
+      </div>
+      <div class="stat">
+        <div class="n" id="stStreak">0</div>
+        <div class="l">Seri (gün)</div>
+      </div>
+    </div>
+
+    <div class="levels" id="levels"></div>
+
+    <p class="legal">
+      Eğitim içeriği bilgilendirme amaçlıdır; yatırım tavsiyesi değildir.
+      Ödüller yalnızca sanal lig bakiyesine işler, gerçek para değildir.
+      · <a href="kvkk.html">KVKK</a> · <a href="gizlilik.html">Gizlilik</a>
+    </p>
+  </main>
+
+  <footer>
+    Nexora Akademi ·
+    <a href="oyun.html">Lig</a>
+    <a href="about.html">Hakkımızda</a>
+    <a href="index.html">Ana</a>
+  </footer>
+
+  <!-- Quiz overlay -->
+  <div class="overlay" id="overlay">
+    <div class="quiz" role="dialog" aria-modal="true">
+      <h3 id="quizTitle">Görev</h3>
+      <div class="step" id="quizStep">Soru 1 / 3</div>
+      <div class="q" id="quizQ">—</div>
+      <div class="opts" id="quizOpts"></div>
+      <div class="feedback" id="quizFb"></div>
+      <div class="quiz-foot">
+        <button type="button" class="btn btn-soft" id="btnClose">Kapat</button>
+        <button type="button" class="btn btn-primary" id="btnNext" disabled>Devam</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+(function () {
+  "use strict";
+
+  var PROGRESS_KEY = "nexora_academy_v1";
+  var GAME_KEY = "nexora_game_v2";
+
+  /**
+   * Görev kataloğu — zamanla çoğaltılır.
+   * Her görev: id, title, desc, reward (sanal ₺), unlockAfter (önceki id veya null), questions[]
+   */
+  var LESSONS = [
+    {
+      id: "temel-1",
+      title: "Borsa nedir?",
+      desc: "Hisse, borsa ve yatırımcı kavramlarına yumuşak giriş.",
+      reward: 300,
+      unlockAfter: null,
+      questions: [
+        {
+          q: "Borsa en sade haliyle ne işe yarar?",
+          options: [
+            "Sadece altın satmak için",
+            "Şirket paylarının alınıp satıldığı düzenli pazar",
+            "Sadece devlet tahvili basmak için",
+            "Yalnızca döviz bozdurmak için"
+          ],
+          answer: 1,
+          explain: "Borsa; şirket payları ve diğer menkul kıymetlerin alınıp satıldığı organize piyasadır."
+        },
+        {
+          q: "Bir şirketin ‘hissesi’ neyi temsil eder?",
+          options: [
+            "Şirkete olan borcu",
+            "Şirketteki ortaklık payını",
+            "Sadece temettü kuponunu",
+            "Yalnızca kredi notunu"
+          ],
+          answer: 1,
+          explain: "Hisse senedi, ilgili şirketteki ortaklık payını temsil eder."
+        },
+        {
+          q: "Yüksek getiri vaadi genelde ne ile birlikte gelir?",
+          options: [
+            "Sıfır risk",
+            "Daha yüksek belirsizlik / risk",
+            "Devlet garantisi",
+            "Anında nakit iade"
+          ],
+          answer: 1,
+          explain: "Finansta getiri ile risk çoğu zaman birlikte düşünülür; ‘garantili yüksek kazanç’ şüphelidir."
+        }
+      ]
+    },
+    {
+      id: "temel-2",
+      title: "F/K oranı nedir?",
+      desc: "Fiyat / kazanç oranını günlük dilde öğren.",
+      reward: 500,
+      unlockAfter: "temel-1",
+      questions: [
+        {
+          q: "F/K oranı kabaca neyi gösterir?",
+          options: [
+            "Şirketin toplam borcunu",
+            "Yatırımcıların kazanca göre hisseye biçtiği çarpanı",
+            "Günlük işlem adedini",
+            "Temettü ödeme gününü"
+          ],
+          answer: 1,
+          explain: "F/K (fiyat/kazanç), hisse fiyatının şirket kazancına göre ne kadar ‘pahalı veya ucuz’ göründüğüne dair bir çarpandır."
+        },
+        {
+          q: "Tek başına düşük F/K her zaman ‘ucuz ve iyi’ midir?",
+          options: [
+            "Evet, her zaman al sinyali",
+            "Hayır; sektör, büyüme ve risk de bakılmalı",
+            "Evet, SPK garantilidir",
+            "Sadece bankalarda geçerlidir"
+          ],
+          answer: 1,
+          explain: "F/K tek başına yeterli değildir; sektör ortalaması, büyüme ve risk profili birlikte okunur."
+        },
+        {
+          q: "Zarar eden bir şirkette F/K genelde nasıl yorumlanır?",
+          options: [
+            "Her zaman en iyi alım fırsatıdır",
+            "Klasik F/K anlamsız veya yanıltıcı olabilir",
+            "Mutlaka 1’dir",
+            "Otomatik olarak negatiftir ve al demektir"
+          ],
+          answer: 1,
+          explain: "Kazanç yoksa veya negatifse klasik F/K kullanımı zayıflar; başka metriklere bakılır."
+        }
+      ]
+    },
+    {
+      id: "temel-3",
+      title: "Temettü ne demek?",
+      desc: "Şirketin kâr paylaşımı ve yatırımcıya yansıması.",
+      reward: 400,
+      unlockAfter: "temel-2",
+      questions: [
+        {
+          q: "Temettü en sade tanımıyla nedir?",
+          options: [
+            "Şirketin yeni hisse basması",
+            "Kârdan ortaklara dağıtılan pay",
+            "Borsanın işlem ücreti",
+            "Döviz çevrim farkı"
+          ],
+          answer: 1,
+          explain: "Temettü, şirketin dağıtılabilir kârından ortaklara aktarılan paydır."
+        },
+        {
+          q: "Yüksek temettü verimi tek başına neyi garanti etmez?",
+          options: [
+            "Gelecekteki fiyat artışını",
+            "Şirketin adını",
+            "İşlem saatlerini",
+            "Takas süresini"
+          ],
+          answer: 0,
+          explain: "Verim geçmişe veya anlık fiyata bağlıdır; gelecek fiyatını veya sürdürülebilirliği garanti etmez."
+        },
+        {
+          q: "Temettü sonrası hisse fiyatında sık görülen davranış?",
+          options: [
+            "Fiyat her zaman ikiye katlanır",
+            "Dağıtım etkisiyle fiyatın ayarlanması (teorik olarak)",
+            "Hisse işlemden kalkar",
+            "Otomatik olarak bedelsiz sermaye artar"
+          ],
+          answer: 1,
+          explain: "Temettü dağıtımı sonrası fiyatta teorik bir ayarlama görülür; piyasa koşulları bunu değiştirebilir."
+        }
+      ]
+    },
+    {
+      id: "risk-1",
+      title: "Risk ve çeşitlendirme",
+      desc: "Tüm yumurtaları aynı sepete koymamak neden konuşulur?",
+      reward: 500,
+      unlockAfter: "temel-3",
+      questions: [
+        {
+          q: "Çeşitlendirme neyi amaçlar?",
+          options: [
+            "Tek hisseyle maksimum kaldıraç",
+            "Riskin tek bir varlığa kilitlenmesini azaltmak",
+            "Vergiyi sıfırlamak",
+            "Garanti getiri sağlamak"
+          ],
+          answer: 1,
+          explain: "Çeşitlendirme, portföyü tek bir şirketin kaderine bağlamamayı hedefler."
+        },
+        {
+          q: "‘Garanti kazanç’ vaadi genelde neyi düşündürmeli?",
+          options: [
+            "Güvenilir resmi taahhüt",
+            "Şüphe ve ek araştırma ihtiyacı",
+            "Otomatik Nexora onayı",
+            "Riskin kalktığını"
+          ],
+          answer: 1,
+          explain: "Piyasada garantili yüksek getiri iddiaları temkinle karşılanır."
+        },
+        {
+          q: "Volatilite neyi anlatır?",
+          options: [
+            "Sadece şirketin çalışan sayısını",
+            "Fiyat dalgalanmasının şiddetini",
+            "Temettü gününü",
+            "Halka arz fiyatını"
+          ],
+          answer: 1,
+          explain: "Volatilite, fiyatın ne kadar savrulduğuna dair bir ifadedir."
+        }
+      ]
+    },
+    {
+      id: "okur-1",
+      title: "Tabloyu sakin okumak",
+      desc: "Yeşil-kırmızı günlerde soğukkanlı kalma pratiği.",
+      reward: 450,
+      unlockAfter: "risk-1",
+      questions: [
+        {
+          q: "Tek bir kırmızı gün ne anlama gelmek zorunda değildir?",
+          options: [
+            "Şirketin battığı",
+            "Kısa vadeli fiyat hareketi olabileceği",
+            "SPK’nın işlemi iptal ettiği",
+            "Temettünün kesildiği"
+          ],
+          answer: 1,
+          // wait answer should be index of correct - "Şirketin battığı" is wrong, correct is that it DOESN'T have to mean bankruptcy - the question is "ne anlama gelmek zorunda değildir" so answer is "Şirketin battığı" as what it doesn't have to mean... Actually reading again: "Tek bir kırmızı gün ne anlama gelmek zorunda değildir?" means "what does a red day NOT necessarily mean?" so answer is "Şirketin battığı" index 0.
+          explain: "Günlük düşüş, iflas anlamına gelmek zorunda değildir; bağlam şarttır."
+        },
+        {
+          q: "Haber okurken iyi bir alışkanlık hangisidir?",
+          options: [
+            "Sadece manşete bakıp hemen işlem",
+            "Kaynağı ve abartı dilini sorgulamak",
+            "Her tweeti al sinyali saymak",
+            "Sadece grup sohbetine güvenmek"
+          ],
+          answer: 1,
+          explain: "Kaynak ve dil kontrolü, manipülasyona karşı temel savunmadır."
+        },
+        {
+          q: "Nexora’daki AI skoru neyi iddia etmez?",
+          options: [
+            "Kesin al-sat emri",
+            "Özet bir bakış sunabileceğini",
+            "Risk etiketinin görünebileceğini",
+            "Eğitimin faydalı olabileceğini"
+          ],
+          answer: 0,
+          explain: "AI skor ve özetler yatırım tavsiyesi veya kesin emir değildir."
+        }
+      ]
+    }
+  ];
+
+  // fix the first question answer for okur-1 - already answer: 0 for "Şirketin battığı"
+
+  function toast(msg, err) {
+    var el = document.getElementById("toast");
+    el.textContent = msg;
+    el.className = "toast show" + (err ? " err" : "");
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function () {
+      el.classList.remove("show");
+    }, 3200);
+  }
+
+  function loadProgress() {
+    try {
+      var p = JSON.parse(localStorage.getItem(PROGRESS_KEY) || "{}");
+      return {
+        done: Array.isArray(p.done) ? p.done : [],
+        xp: p.xp || 0,
+        earned: p.earned || 0,
+        streak: p.streak || 0,
+        lastDay: p.lastDay || ""
+      };
+    } catch (e) {
+      return { done: [], xp: 0, earned: 0, streak: 0, lastDay: "" };
+    }
+  }
+
+  function saveProgress(p) {
+    localStorage.setItem(PROGRESS_KEY, JSON.stringify(p));
+  }
+
+  function todayKey() {
+    var d = new Date();
+    return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+  }
+
+  function touchStreak(p) {
+    var t = todayKey();
+    if (p.lastDay === t) return p;
+    var y = new Date();
+    y.setDate(y.getDate() - 1);
+    var yk = y.getFullYear() + "-" + (y.getMonth() + 1) + "-" + y.getDate();
+    p.streak = p.lastDay === yk ? (p.streak || 0) + 1 : 1;
+    p.lastDay = t;
+    return p;
+  }
+
+  function creditGame(amount) {
+    try {
+      var g = JSON.parse(localStorage.getItem(GAME_KEY) || "null");
+      if (!g || typeof g.cash !== "number") {
+        g = { cash: 100000, positions: [], lastDaily: "", lastHH: "", version: 2 };
+      }
+      g.cash = Math.round((g.cash + amount) * 100) / 100;
+      localStorage.setItem(GAME_KEY, JSON.stringify(g));
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function isDone(p, id) {
+    return p.done.indexOf(id) !== -1;
+  }
+
+  function isUnlocked(p, lesson) {
+    if (!lesson.unlockAfter) return true;
+    return isDone(p, lesson.unlockAfter);
+  }
+
+  function renderList() {
+    var p = loadProgress();
+    var box = document.getElementById("levels");
+    box.innerHTML = LESSONS.map(function (L, idx) {
+      var done = isDone(p, L.id);
+      var unlocked = isUnlocked(p, L);
+      var cls = done ? "level done" : unlocked ? "level" : "level locked";
+      var btn;
+      if (done) {
+        btn = '<button type="button" class="btn btn-soft" disabled>Tamamlandı ✓</button>';
+      } else if (!unlocked) {
+        btn = '<button type="button" class="btn btn-soft" disabled>Kilitli</button>';
+      } else {
+        btn =
+          '<button type="button" class="btn btn-primary" data-start="' +
+          L.id +
+          '">Göreve başla</button>';
+      }
+      return (
+        '<article class="' +
+        cls +
+        '">' +
+        '<div class="level-top">' +
+        "<div>" +
+        "<h2>" +
+        (idx + 1) +
+        ". " +
+        L.title +
+        "</h2>" +
+        '<p class="desc">' +
+        L.desc +
+        "</p>" +
+        "</div>" +
+        '<span class="reward">Ödül +' +
+        L.reward +
+        " ₺</span>" +
+        "</div>" +
+        '<div class="level-foot">' +
+        btn +
+        (unlocked && !done
+          ? '<span style="font-size:12px;color:var(--dim)">' +
+            L.questions.length +
+            " soru</span>"
+          : "") +
+        "</div>" +
+        "</article>"
+      );
+    }).join("");
+
+    var total = LESSONS.length;
+    var doneN = p.done.filter(function (id) {
+      return LESSONS.some(function (L) {
+        return L.id === id;
+      });
+    }).length;
+    var pct = total ? Math.round((doneN / total) * 100) : 0;
+    document.getElementById("progFill").style.width = pct + "%";
+    document.getElementById("progText").textContent = doneN + " / " + total + " görev";
+    document.getElementById("progXp").textContent = (p.xp || 0) + " XP";
+    document.getElementById("stDone").textContent = String(doneN);
+    document.getElementById("stReward").textContent =
+      (p.earned || 0).toLocaleString("tr-TR") + " ₺";
+    document.getElementById("stStreak").textContent = String(p.streak || 0);
+  }
+
+  /* —— quiz state —— */
+  var quiz = {
+    lesson: null,
+    index: 0,
+    correct: 0,
+    locked: false
+  };
+
+  function openQuiz(id) {
+    var L = LESSONS.find(function (x) {
+      return x.id === id;
+    });
+    if (!L) return;
+    var p = loadProgress();
+    if (!isUnlocked(p, L) || isDone(p, L.id)) return;
+    quiz.lesson = L;
+    quiz.index = 0;
+    quiz.correct = 0;
+    quiz.locked = false;
+    document.getElementById("overlay").classList.add("show");
+    showQuestion();
+  }
+
+  function showQuestion() {
+    var L = quiz.lesson;
+    var i = quiz.index;
+    var item = L.questions[i];
+    document.getElementById("quizTitle").textContent = L.title;
+    document.getElementById("quizStep").textContent =
+      "Soru " + (i + 1) + " / " + L.questions.length;
+    document.getElementById("quizQ").textContent = item.q;
+    document.getElementById("quizFb").textContent = "";
+    document.getElementById("btnNext").disabled = true;
+    quiz.locked = false;
+
+    var opts = document.getElementById("quizOpts");
+    opts.innerHTML = item.options
+      .map(function (o, idx) {
+        return (
+          '<button type="button" class="opt" data-idx="' +
+          idx +
+          '">' +
+          o +
+          "</button>"
+        );
+      })
+      .join("");
+  }
+
+  document.getElementById("quizOpts").addEventListener("click", function (e) {
+    var btn = e.target.closest("[data-idx]");
+    if (!btn || quiz.locked) return;
+    quiz.locked = true;
+    var idx = Number(btn.getAttribute("data-idx"));
+    var item = quiz.lesson.questions[quiz.index];
+    var nodes = document.querySelectorAll("#quizOpts .opt");
+    nodes.forEach(function (n, j) {
+      if (j === item.answer) n.classList.add("correct");
+      if (j === idx && idx !== item.answer) n.classList.add("wrong");
+    });
+    if (idx === item.answer) {
+      quiz.correct++;
+      document.getElementById("quizFb").textContent =
+        "Doğru. " + (item.explain || "");
+    } else {
+      document.getElementById("quizFb").textContent =
+        "Bu kez olmadı. " + (item.explain || "");
+    }
+    document.getElementById("btnNext").disabled = false;
+  });
+
+  document.getElementById("btnNext").addEventListener("click", function () {
+    if (quiz.index < quiz.lesson.questions.length - 1) {
+      quiz.index++;
+      showQuestion();
+      return;
+    }
+    finishQuiz();
+  });
+
+  function finishQuiz() {
+    var L = quiz.lesson;
+    var need = Math.ceil(L.questions.length * 0.67);
+    document.getElementById("overlay").classList.remove("show");
+
+    if (quiz.correct < need) {
+      toast(
+        "Geçmek için en az " +
+          need +
+          " doğru gerekli. (" +
+          quiz.correct +
+          "/" +
+          L.questions.length +
+          ")",
+        true
+      );
+      return;
+    }
+
+    var p = loadProgress();
+    if (isDone(p, L.id)) {
+      toast("Bu görev zaten tamamlanmış.");
+      return;
+    }
+    p.done.push(L.id);
+    p.xp = (p.xp || 0) + 50 + L.reward / 10;
+    p.earned = (p.earned || 0) + L.reward;
+    p = touchStreak(p);
+    saveProgress(p);
+    creditGame(L.reward);
+    renderList();
+    toast(
+      "Tebrikler! +" +
+        L.reward +
+        " ₺ sanal lig bakiyene eklendi. (" +
+        quiz.correct +
+        "/" +
+        L.questions.length +
+        " doğru)"
+    );
+  }
+
+  document.getElementById("btnClose").addEventListener("click", function () {
+    document.getElementById("overlay").classList.remove("show");
+  });
+  document.getElementById("overlay").addEventListener("click", function (e) {
+    if (e.target === this) this.classList.remove("show");
+  });
+
+  document.getElementById("levels").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-start]");
+    if (!b) return;
+    openQuiz(b.getAttribute("data-start"));
+  });
+
+  renderList();
+})();
+  </script>
+</body>
+</html>
