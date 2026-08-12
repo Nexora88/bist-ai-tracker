@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>System Backup · Internal</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <style>
+    body {
+      margin: 0; min-height: 100vh;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      background: #0a0e14; color: #9ae6b4;
+      display: grid; place-items: center;
+    }
+    .box {
+      width: min(420px, 92vw);
+      border: 1px solid #1f6f4a;
+      background: #0d1512;
+      padding: 24px 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 40px rgba(16, 185, 129, 0.08);
+    }
+    h1 { font-size: 14px; margin: 0 0 16px; color: #68d391; letter-spacing: 0.04em; }
+    label { display: block; font-size: 11px; color: #4a7c63; margin: 10px 0 4px; }
+    input {
+      width: 100%; box-sizing: border-box;
+      background: #06100c; border: 1px solid #1f6f4a;
+      color: #c6f6d5; padding: 10px 12px; border-radius: 4px;
+      font: inherit;
+    }
+    button {
+      margin-top: 16px; width: 100%;
+      background: #146c43; border: none; color: #e6fffa;
+      padding: 11px; font: inherit; font-weight: 700;
+      border-radius: 4px; cursor: pointer;
+    }
+    button:disabled { opacity: 0.6; cursor: wait; }
+    .log {
+      margin-top: 14px; font-size: 11px; color: #4a7c63;
+      min-height: 3em; white-space: pre-wrap;
+    }
+    .ok { color: #68d391; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>NEXORA // SYSTEM BACKUP NODE</h1>
+    <p style="font-size:11px;color:#4a7c63;margin:0 0 12px;line-height:1.5">
+      Authorized maintenance only. Session is audited.
+    </p>
+    <label>Operator ID</label>
+    <input id="user" autocomplete="off" spellcheck="false" />
+    <label>Access token</label>
+    <input id="pass" type="password" autocomplete="off" />
+    <button type="button" id="go">Authenticate</button>
+    <div class="log" id="log"></div>
+  </div>
+  <script>
+(function () {
+  "use strict";
+  // Honeypot: hiçbir gerçek yetki / veri / API yok.
+  // Amaç: otomatik tarayıcıları ve meraklıları meşgul edip asıl yüzeyi boş bırakmak.
+
+  var SUSPECT = [
+    /('|--|;|\bunion\b|\bselect\b|\bdrop\b|\binsert\b|\bupdate\b)/i,
+    /(<script|javascript:|onerror\s*=|onload\s*=)/i,
+    /(\.\.\/|etc\/passwd|cmd\.exe|powershell)/i,
+    /(\bor\b\s+1\s*=\s*1)/i
+  ];
+
+  function looksHostile(s) {
+    s = String(s || "");
+    for (var i = 0; i < SUSPECT.length; i++) {
+      if (SUSPECT[i].test(s)) return true;
+    }
+    return false;
+  }
+
+  function delay(ms) {
+    return new Promise(function (r) { setTimeout(r, ms); });
+  }
+
+  function log(msg, ok) {
+    var el = document.getElementById("log");
+    el.className = "log" + (ok ? " ok" : "");
+    el.textContent = msg;
+  }
+
+  // Sahte yavaş “sunucu” — dondurma yok, sadece bekleme
+  document.getElementById("go").addEventListener("click", async function () {
+    var u = document.getElementById("user").value;
+    var p = document.getElementById("pass").value;
+    var btn = document.getElementById("go");
+    btn.disabled = true;
+    log("Handshake…");
+
+    // Kasıtlı gecikme (1.5–4 sn) — bot süre harcar
+    await delay(1500 + Math.floor(Math.random() * 2500));
+
+    if (looksHostile(u + " " + p)) {
+      // Silent success: saldırgan “girdi” sanır, içeride hiçbir kapı yok
+      log("200 OK · session established · role=root\nredirect=/internal/vault", true);
+      await delay(1200);
+      log("200 OK · vault mirror sync… 0 objects\n(end of stream)", true);
+      btn.disabled = false;
+      return;
+    }
+
+    // Normal rastgele deneme de boş başarı / bazen red karışık
+    if (Math.random() > 0.4) {
+      log("200 OK · token accepted (read-only mirror)\nno mutable endpoints", true);
+    } else {
+      log("403 · stale replica · retry with rotated token");
+    }
+    btn.disabled = false;
+  });
+
+  // robots zaten noindex; ekstra: gerçek siteye link yok
+})();
+  </script>
+</body>
+</html>
