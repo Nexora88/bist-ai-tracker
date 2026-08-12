@@ -3,24 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Nexora AI Analiz · Hisse Skoru & Teknik Radar</title>
-  <meta name="description" content="Nexora AI ile BIST ve global hisselerde teknik skor, trend, risk ve haber destekli analiz." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <title>AI Analiz · Nexora AI</title>
+  <meta name="description" content="Hisse bazlı Nexora AI skoru, yön özeti ve soru-cevap. Yatırım tavsiyesi değildir." />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
       --bg: #060a12;
-      --panel: rgba(15, 23, 42, 0.85);
+      --panel: rgba(15, 23, 42, 0.92);
       --border: rgba(148, 163, 184, 0.12);
       --text: #f1f5f9;
       --muted: #94a3b8;
       --dim: #64748b;
       --accent: #10b981;
       --cyan: #22d3ee;
-      --violet: #8b5cf6;
+      --violet: #a78bfa;
       --amber: #fbbf24;
       --rose: #f87171;
-      --nav-h: 64px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -28,49 +26,90 @@
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      line-height: 1.5;
+      line-height: 1.55;
     }
     a { color: inherit; text-decoration: none; }
-    button, input, select { font: inherit; }
-
-    #bgCanvas {
-      position: fixed; inset: 0; z-index: 0;
-      width: 100%; height: 100%; pointer-events: none;
-    }
-    .shell { position: relative; z-index: 1; }
+    button, input, select { font: inherit; color: inherit; border: none; background: none; cursor: pointer; }
 
     .nav {
-      position: sticky; top: 0; z-index: 50;
-      height: var(--nav-h);
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 12px; padding: 0 18px;
-      background: rgba(6, 10, 18, 0.88);
-      backdrop-filter: blur(16px);
+      position: sticky; top: 0; z-index: 40;
+      height: 56px; display: flex; align-items: center; justify-content: space-between;
+      gap: 10px; padding: 0 16px;
+      background: rgba(6, 10, 18, 0.92);
+      backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border);
     }
-    .brand {
-      display: flex; align-items: center; gap: 10px;
-      font-weight: 800; letter-spacing: -0.04em;
-    }
-    .brand-mark {
-      width: 32px; height: 32px; border-radius: 10px;
-      background: linear-gradient(135deg, var(--accent), var(--cyan));
-      display: grid; place-items: center;
-      color: #022c22; font-weight: 900; font-size: 13px;
-    }
+    .brand { font-weight: 800; letter-spacing: -0.03em; }
     .brand em { font-style: normal; color: var(--accent); }
     .nav-links { display: flex; flex-wrap: wrap; gap: 2px; }
     .nav-links a {
       font-size: 13px; font-weight: 600; color: var(--muted);
-      padding: 8px 11px; border-radius: 10px;
+      padding: 7px 10px; border-radius: 9px;
     }
-    .nav-links a:hover, .nav-links a.on {
-      color: var(--text); background: rgba(255,255,255,0.05);
+    .nav-links a:hover, .nav-links a.on { color: var(--text); background: rgba(255,255,255,0.05); }
+    @media (max-width: 900px) { .nav-links { display: none; } }
+
+    .wrap { max-width: 820px; margin: 0 auto; padding: 24px 16px 56px; }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 12px; font-weight: 700; color: var(--violet);
+      background: rgba(167, 139, 250, 0.12);
+      border: 1px solid rgba(167, 139, 250, 0.3);
+      padding: 6px 12px; border-radius: 999px; margin-bottom: 12px;
+    }
+    h1 {
+      font-size: clamp(1.45rem, 3.2vw, 1.95rem);
+      font-weight: 800; letter-spacing: -0.03em; line-height: 1.15;
+      margin-bottom: 10px;
+    }
+    h1 span {
+      background: linear-gradient(90deg, var(--accent), var(--violet));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .lead {
+      color: var(--muted); font-size: 15px; max-width: 540px;
+      line-height: 1.7; margin-bottom: 22px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px 16px;
+      margin-bottom: 14px;
+    }
+    .panel h2 {
+      font-size: 12px; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.04em;
+      margin-bottom: 12px;
+    }
+
+    .search-row {
+      display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .search-row input {
+      flex: 1; min-width: 140px;
+      background: rgba(30, 41, 59, 0.9);
+      box-shadow: inset 0 0 0 1px var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      outline: none;
+      font-size: 15px;
+    }
+    .search-row input:focus {
+      box-shadow: inset 0 0 0 1px rgba(16,185,129,0.45);
+    }
+    .search-row select {
+      background: rgba(30, 41, 59, 0.9);
+      box-shadow: inset 0 0 0 1px var(--border);
+      border-radius: 12px;
+      padding: 12px;
     }
     .btn {
       display: inline-flex; align-items: center; justify-content: center;
-      padding: 10px 16px; border-radius: 11px;
-      font-size: 13px; font-weight: 700; border: none; cursor: pointer;
+      padding: 12px 16px; border-radius: 12px;
+      font-size: 13.5px; font-weight: 700;
     }
     .btn-primary {
       background: linear-gradient(135deg, var(--accent), #059669);
@@ -82,691 +121,548 @@
       box-shadow: inset 0 0 0 1px var(--border);
     }
 
-    .wrap { max-width: 1120px; margin: 0 auto; padding: 24px 16px 56px; }
-
-    .page-head { margin-bottom: 20px; }
-    .page-head h1 {
-      font-size: clamp(1.5rem, 3vw, 2rem);
-      font-weight: 800; letter-spacing: -0.04em;
-    }
-    .page-head h1 span {
-      background: linear-gradient(90deg, var(--accent), var(--cyan));
-      -webkit-background-clip: text; background-clip: text; color: transparent;
-    }
-    .page-head p { color: var(--muted); font-size: 14px; margin-top: 6px; max-width: 560px; }
-
-    .search-panel {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 16px;
-      margin-bottom: 18px;
-      display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
-    }
-    .search-panel input, .search-panel select {
-      background: rgba(30, 41, 59, 0.9);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 11px 14px;
-      color: var(--text);
-      outline: none;
-    }
-    .search-panel input { flex: 1; min-width: 160px; }
-    .search-panel input:focus, .search-panel select:focus {
-      border-color: rgba(16,185,129,0.45);
-    }
     .suggest {
-      width: 100%;
-      display: none;
-      max-height: 220px;
-      overflow: auto;
-      background: #0f172a;
-      border: 1px solid var(--border);
-      border-radius: 12px;
+      display: none; margin-top: 8px;
+      background: #0b1220; border: 1px solid var(--border);
+      border-radius: 12px; max-height: 180px; overflow: auto;
     }
     .suggest.show { display: block; }
     .suggest button {
       display: block; width: 100%; text-align: left;
-      padding: 10px 14px; background: transparent; border: none;
-      color: var(--text); cursor: pointer; font-size: 13px;
+      padding: 10px 14px; font-size: 13.5px;
     }
     .suggest button:hover { background: rgba(16,185,129,0.1); }
-    .suggest .sym { font-weight: 800; margin-right: 8px; }
-    .suggest .nm { color: var(--muted); }
+    .suggest .s { font-weight: 800; margin-right: 8px; }
+    .suggest .n { color: var(--muted); }
 
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr 0.85fr;
-      gap: 14px;
-      margin-bottom: 16px;
+    .score-row {
+      display: flex; flex-wrap: wrap; gap: 16px;
+      align-items: center; margin-bottom: 14px;
     }
-    @media (max-width: 900px) {
-      .hero-grid { grid-template-columns: 1fr; }
+    .score-ring {
+      width: 96px; height: 96px; border-radius: 50%;
+      display: grid; place-items: center;
+      background: conic-gradient(var(--accent) calc(var(--p) * 1%), #1e293b 0);
+      position: relative;
     }
-    .card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 16px;
+    .score-ring::after {
+      content: "";
+      position: absolute; inset: 8px;
+      border-radius: 50%;
+      background: #0b1220;
     }
-    .card h3 {
-      font-size: 12px; font-weight: 700; color: var(--muted);
-      text-transform: uppercase; letter-spacing: 0.05em;
+    .score-ring span {
+      position: relative; z-index: 1;
+      font-size: 1.4rem; font-weight: 800;
+    }
+    .score-meta h3 {
+      font-size: 1.15rem; font-weight: 800; letter-spacing: -0.02em;
+    }
+    .score-meta p { color: var(--muted); font-size: 13.5px; margin-top: 4px; }
+    .bias {
+      display: inline-block; margin-top: 8px;
+      font-size: 12px; font-weight: 800;
+      padding: 5px 11px; border-radius: 999px;
+    }
+    .bias.up { background: rgba(16,185,129,0.14); color: #34d399; }
+    .bias.down { background: rgba(248,113,113,0.14); color: #f87171; }
+    .bias.flat { background: rgba(251,191,36,0.12); color: var(--amber); }
+
+    .summary {
+      font-size: 15px; color: #e2e8f0; line-height: 1.7;
+      padding: 14px;
+      border-radius: 14px;
+      background: rgba(16, 185, 129, 0.07);
+      border: 1px solid rgba(16, 185, 129, 0.2);
       margin-bottom: 12px;
     }
-
-    .score-wrap { text-align: center; padding: 8px 0 4px; }
-    .score-value {
-      font-size: 3.2rem; font-weight: 800; letter-spacing: -0.05em;
-      line-height: 1;
+    .reasons {
+      list-style: none;
+      display: flex; flex-direction: column; gap: 8px;
     }
-    .score-value.buy { color: #34d399; }
-    .score-value.hold { color: var(--amber); }
-    .score-value.sell { color: var(--rose); }
-    .score-sub { color: var(--dim); font-size: 13px; margin-top: 4px; }
-    .score-badge {
-      display: inline-block; margin-top: 12px;
-      padding: 6px 14px; border-radius: 999px;
-      font-size: 12px; font-weight: 800;
-    }
-    .badge-buy { background: rgba(16,185,129,0.15); color: #34d399; }
-    .badge-hold { background: rgba(251,191,36,0.15); color: var(--amber); }
-    .badge-sell { background: rgba(239,68,68,0.15); color: var(--rose); }
-    .bar {
-      height: 10px; border-radius: 99px; background: #1e293b;
-      overflow: hidden; margin-top: 14px;
-    }
-    .bar > i {
-      display: block; height: 100%; border-radius: 99px;
-      background: linear-gradient(90deg, var(--accent), var(--cyan));
-      width: 0; transition: width 0.6s ease;
-    }
-
-    .quote-sym { font-size: 1.4rem; font-weight: 800; }
-    .quote-name { color: var(--muted); font-size: 13px; margin-bottom: 10px; }
-    .quote-price { font-size: 1.6rem; font-weight: 800; }
-    .quote-price .up { color: #34d399; }
-    .quote-price .down { color: var(--rose); }
-    .quote-meta {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 8px; margin-top: 14px; font-size: 12.5px;
-    }
-    .quote-meta div {
-      background: rgba(30,41,59,0.6);
-      border-radius: 10px; padding: 8px 10px;
-    }
-    .quote-meta span { display: block; color: var(--dim); font-size: 11px; }
-
-    .status-list { list-style: none; font-size: 13px; }
-    .status-list li {
-      display: flex; justify-content: space-between;
-      padding: 8px 0; border-bottom: 1px solid var(--border);
-    }
-    .status-list li:last-child { border-bottom: none; }
-    .ok { color: #34d399; }
-    .warn { color: var(--amber); }
-    .bad { color: var(--rose); }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px; margin-bottom: 16px;
-    }
-    @media (max-width: 800px) {
-      .stats-grid { grid-template-columns: 1fr 1fr; }
-    }
-    .stat-card {
-      background: var(--panel);
+    .reasons li {
+      font-size: 13.5px; color: var(--muted);
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(30, 41, 59, 0.6);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 14px;
+      line-height: 1.5;
     }
-    .stat-card .lab {
-      font-size: 11px; font-weight: 700; color: var(--dim);
-      text-transform: uppercase; letter-spacing: 0.04em;
-    }
-    .stat-card .val {
-      font-size: 1.15rem; font-weight: 800; margin-top: 6px;
+    .reasons li strong { color: var(--text); }
+
+    .links {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      margin-top: 14px;
     }
 
-    .breakdown {
-      display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap: 14px; margin-bottom: 16px;
+    .qa-box textarea {
+      width: 100%;
+      min-height: 88px;
+      background: rgba(30, 41, 59, 0.9);
+      box-shadow: inset 0 0 0 1px var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      outline: none;
+      resize: vertical;
+      line-height: 1.5;
+      margin-bottom: 10px;
     }
-    @media (max-width: 800px) {
-      .breakdown { grid-template-columns: 1fr; }
+    .qa-box textarea:focus {
+      box-shadow: inset 0 0 0 1px rgba(167,139,250,0.45);
     }
-    .meter-row {
-      display: grid;
-      grid-template-columns: 90px 1fr 42px;
-      gap: 10px; align-items: center;
-      margin-bottom: 10px; font-size: 13px;
+    .answer {
+      margin-top: 12px;
+      font-size: 14px; color: #e2e8f0; line-height: 1.65;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(167, 139, 250, 0.08);
+      border: 1px solid rgba(167, 139, 250, 0.22);
+      display: none;
     }
-    .meter-row .mbar {
-      height: 8px; border-radius: 99px; background: #1e293b; overflow: hidden;
-    }
-    .meter-row .mbar > i {
-      display: block; height: 100%;
-      background: linear-gradient(90deg, var(--violet), var(--cyan));
-    }
+    .answer.show { display: block; }
 
-    .verdict {
-      font-size: 14px; color: var(--muted);
-      line-height: 1.6;
+    .chips {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      margin-bottom: 10px;
     }
-    .verdict strong { color: var(--text); }
+    .chip {
+      font-size: 12px; font-weight: 650;
+      padding: 6px 11px; border-radius: 999px;
+      background: rgba(30, 41, 59, 0.9);
+      color: var(--muted);
+      box-shadow: inset 0 0 0 1px var(--border);
+    }
+    .chip:hover { color: var(--text); border-color: var(--violet); }
 
-    .actions {
-      display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px;
+    .about-ai p {
+      font-size: 14px; color: var(--muted); line-height: 1.7;
+      margin-bottom: 10px;
     }
+    .about-ai p strong { color: #e2e8f0; }
+    .about-ai ul {
+      margin: 0 0 0 18px; color: var(--muted); font-size: 13.5px;
+    }
+    .about-ai li { margin-bottom: 6px; }
 
-    .empty {
-      text-align: center; color: var(--muted);
-      padding: 40px 16px; font-size: 14px;
+    .legal {
+      margin-top: 18px;
+      font-size: 12px; color: var(--dim); line-height: 1.6;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(251, 191, 36, 0.06);
+      border: 1px solid rgba(251, 191, 36, 0.2);
     }
+    .legal a { color: var(--cyan); font-weight: 600; }
 
     footer {
       text-align: center; color: var(--dim); font-size: 12px;
       padding: 8px 16px 36px;
     }
-    footer a { color: var(--muted); margin: 0 6px; font-weight: 600; }
+    footer a { color: var(--muted); margin: 0 5px; font-weight: 600; }
+
+    .idle {
+      text-align: center; color: var(--muted);
+      padding: 28px 12px; font-size: 14px;
+    }
   </style>
 </head>
 <body>
-  <canvas id="bgCanvas"></canvas>
-  <div class="shell">
-    <nav class="nav">
-      <a class="brand" href="index.html">
-        <span class="brand-mark">N</span>
-        Nexora <em>AI</em>
-      </a>
-      <div class="nav-links">
-        <a href="index.html">Ana Sayfa</a>
-        <a href="stock.html">Hisseler</a>
-        <a class="on" href="ai-analiz.html">AI Analiz</a>
-        <a href="portfolio.html">Portföy</a>
-        <a href="news.html">Haberler</a>
-        <a href="premium.html">Premium</a>
-        <a href="settings.html">Ayarlar</a>
-      </div>
-      <a class="btn btn-soft" href="stock.html">Hisse listesi</a>
-    </nav>
+  <nav class="nav">
+    <a class="brand" href="index.html">Nexora <em>AI</em></a>
+    <div class="nav-links">
+      <a href="index.html">Ana</a>
+      <a href="stock.html">Hisseler</a>
+      <a class="on" href="ai-analiz.html">AI Analiz</a>
+      <a href="radar.html">Pusula</a>
+      <a href="sinyaller.html">Sinyaller</a>
+      <a href="about.html">Hakkımızda</a>
+    </div>
+    <a class="btn btn-soft" href="stock.html">Kartlar</a>
+  </nav>
 
-    <main class="wrap">
-      <div class="page-head">
-        <h1>Nexora <span>AI Analiz</span></h1>
-        <p>
-          Sembol yaz, skoru gör. Teknik ağırlık, trend ve risk birleşik puanlanır.
-          Veri <code style="color:#22d3ee">api.js</code> failover zincirinden gelir.
-        </p>
-      </div>
+  <main class="wrap">
+    <div class="badge">Nexora AI · özet skor &amp; soru-cevap</div>
+    <h1>Analizi <span>sadeleştir</span></h1>
+    <p class="lead">
+      Bir sembol seç; Nexora kayıtlı skor, risk ve kısa yön özetini bir araya getirir.
+      Amaç “ne alacağını söylemek” değil — tabloyu daha hızlı okunur kılmak.
+      Karar her zaman senin.
+    </p>
 
-      <div class="search-panel">
-        <input id="symInput" type="search" placeholder="Örn: ASELS, THYAO, AAPL…" autocomplete="off" />
-        <select id="mktSelect">
+    <div class="panel">
+      <h2>Hisse seç</h2>
+      <div class="search-row">
+        <input id="q" type="search" placeholder="ASELS, THYAO, AAPL…" autocomplete="off" />
+        <select id="mkt">
           <option value="bist">BIST</option>
           <option value="nasdaq">NASDAQ</option>
           <option value="nyse">NYSE</option>
         </select>
-        <button type="button" class="btn btn-primary" id="btnAnalyze">Analiz Et</button>
-        <div class="suggest" id="suggest"></div>
+        <button type="button" class="btn btn-primary" id="btnRun">Analiz et</button>
       </div>
+      <div class="suggest" id="suggest"></div>
+    </div>
 
-      <div id="idle" class="card empty">
-        Bir hisse seç veya yaz. Örnek: <strong>ASELS</strong>, <strong>GARAN</strong>, <strong>AAPL</strong>
+    <div class="panel" id="result">
+      <div class="idle" id="idle">
+        Henüz analiz yok. Yukarıdan bir sembol yaz veya öneriden seç.
       </div>
-
-      <div id="result" style="display:none">
-        <div class="hero-grid">
-          <div class="card">
-            <h3>AI Skor</h3>
-            <div class="score-wrap">
-              <div class="score-value hold" id="scoreVal">—</div>
-              <div class="score-sub">/ 100</div>
-              <div class="score-badge badge-hold" id="scoreBadge">—</div>
-              <div class="bar"><i id="scoreBar"></i></div>
-            </div>
-          </div>
-
-          <div class="card">
-            <h3>Fiyat</h3>
-            <div class="quote-sym" id="qSym">—</div>
-            <div class="quote-name" id="qName">—</div>
-            <div class="quote-price" id="qPrice">—</div>
-            <div class="quote-meta">
-              <div><span>Piyasa</span><strong id="qMkt">—</strong></div>
-              <div><span>Sektör</span><strong id="qSec">—</strong></div>
-              <div><span>Kaynak</span><strong id="qSrc">—</strong></div>
-              <div><span>Risk</span><strong id="qRisk">—</strong></div>
-            </div>
-          </div>
-
-          <div class="card">
-            <h3>Sistem</h3>
-            <ul class="status-list">
-              <li><span>Veri</span><span id="stData" class="warn">Bekliyor</span></li>
-              <li><span>JSON meta</span><span id="stJson" class="warn">—</span></li>
-              <li><span>Skor motoru</span><span class="ok">Hazır</span></li>
-              <li><span>Güncelleme</span><span id="stTime">—</span></li>
-            </ul>
+      <div id="body" hidden>
+        <div class="score-row">
+          <div class="score-ring" id="ring" style="--p:50"><span id="scoreNum">50</span></div>
+          <div class="score-meta">
+            <h3 id="title">—</h3>
+            <p id="sub">—</p>
+            <span class="bias flat" id="bias">Nötr</span>
           </div>
         </div>
-
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="lab">Trend</div>
-            <div class="val" id="sTrend">—</div>
-          </div>
-          <div class="stat-card">
-            <div class="lab">Teknik</div>
-            <div class="val" id="sTech">—</div>
-          </div>
-          <div class="stat-card">
-            <div class="lab">Momentum</div>
-            <div class="val" id="sMom">—</div>
-          </div>
-          <div class="stat-card">
-            <div class="lab">Güven</div>
-            <div class="val" id="sConf">—</div>
-          </div>
-        </div>
-
-        <div class="breakdown">
-          <div class="card">
-            <h3>Skor kırılımı</h3>
-            <div class="meter-row">
-              <span>Trend</span>
-              <div class="mbar"><i id="mTrend"></i></div>
-              <span id="mTrendN">0</span>
-            </div>
-            <div class="meter-row">
-              <span>Teknik</span>
-              <div class="mbar"><i id="mTech"></i></div>
-              <span id="mTechN">0</span>
-            </div>
-            <div class="meter-row">
-              <span>Haber</span>
-              <div class="mbar"><i id="mNews"></i></div>
-              <span id="mNewsN">0</span>
-            </div>
-            <div class="meter-row">
-              <span>Risk</span>
-              <div class="mbar"><i id="mRisk"></i></div>
-              <span id="mRiskN">0</span>
-            </div>
-          </div>
-          <div class="card">
-            <h3>Yorum</h3>
-            <div class="verdict" id="verdict">—</div>
-            <div class="actions">
-              <a class="btn btn-primary" id="btnDetail" href="stock.html">Hisse detay</a>
-              <a class="btn btn-soft" id="btnPort" href="portfolio.html">Portföye ekle</a>
-            </div>
-          </div>
-        </div>
+        <div class="summary" id="summary">—</div>
+        <h2 style="margin-top:4px">Neden bu özet?</h2>
+        <ul class="reasons" id="reasons"></ul>
+        <div class="links" id="links"></div>
       </div>
-    </main>
+    </div>
 
-    <footer>
-      Nexora AI Analiz ·
-      <a href="about.html">Ahmet Eymen Bakraç</a>
-      <a href="index.html">Ana Sayfa</a>
-      <a href="premium.html">Premium</a>
-    </footer>
-  </div>
+    <div class="panel qa-box">
+      <h2>Nexora’ya sor</h2>
+      <p style="font-size:13.5px;color:var(--muted);margin-bottom:10px;line-height:1.55">
+        Kısa sorular için. “Garanti kazanç” veya kesin al-sat talepleri yanıtlanmaz;
+        eğitim ve çerçeve dilinde cevaplanır.
+      </p>
+      <div class="chips">
+        <button type="button" class="chip" data-ask="Bu skor ne anlama geliyor?">Skor ne demek?</button>
+        <button type="button" class="chip" data-ask="Risk etiketi nasıl okunur?">Risk nasıl okunur?</button>
+        <button type="button" class="chip" data-ask="Pusula ile AI farkı nedir?">Pusula farkı</button>
+      </div>
+      <textarea id="ask" placeholder="Örn: Bu skoru nasıl yorumlamalıyım?"></textarea>
+      <button type="button" class="btn btn-primary" id="btnAsk">Yanıtla</button>
+      <div class="answer" id="answer"></div>
+    </div>
+
+    <div class="panel about-ai">
+      <h2>Nexora AI nasıl düşünür?</h2>
+      <p>
+        Sistem; listelenmiş <strong>AI skoru</strong>, <strong>risk etiketi</strong>,
+        sektör bilgisi ve mümkünse güncel fiyat hareketini bir araya getirerek
+        kısa bir yön özeti üretir. Bu bir kara kutu “al emri” değildir.
+      </p>
+      <p>
+        Yüksek skor, tek başına alım çağrısı sayılmaz. Düşük skor da “sat ve unut”
+        anlamına gelmez. Özet, dikkatini nereye vermen gerektiğine dair bir çerçevedir.
+      </p>
+      <ul>
+        <li>Skor bandı ve risk birlikte okunur.</li>
+        <li>Günlük sert hareketler özeti güncelleyebilir; panik dili kullanılmaz.</li>
+        <li>Detaylı grafik ve piyasa listesi için hisse kartlarına, basit ibre için Pusula’ya bak.</li>
+        <li>Onaylı uzun yazılar Makaleler bölümünde; burası hızlı bakış içindir.</li>
+      </ul>
+    </div>
+
+    <p class="legal">
+      <strong style="color:var(--amber)">SPK / bilgilendirme:</strong>
+      Burada yer alan yorum ve skorlar yatırım danışmanlığı kapsamında değildir.
+      Kişiye özel tavsiye yerine geçmez. Veriler gecikmeli olabilir.
+      · <a href="kvkk.html">KVKK</a> · <a href="gizlilik.html">Gizlilik</a>
+      · <a href="radar.html">Pusula</a>
+    </p>
+  </main>
+
+  <footer>
+    Nexora AI ·
+    <a href="stock.html">Hisseler</a>
+    <a href="sinyaller.html">Sinyaller</a>
+    <a href="egitim.html">Akademi</a>
+    <a href="about.html">Hakkımızda</a>
+  </footer>
 
   <script src="assets/js/secrets.js"></script>
   <script src="assets/js/api.js"></script>
+  <script src="assets/js/nexora-ai.js"></script>
   <script>
 (function () {
   "use strict";
 
-  var stocksCache = [];
-  var currentMarket = "bist";
+  var catalog = {};
+  var current = null;
 
-  /* canvas */
-  (function () {
-    var c = document.getElementById("bgCanvas");
-    if (!c) return;
-    var ctx = c.getContext("2d");
-    var dpr = Math.min(devicePixelRatio || 1, 2);
-    var pts = [];
-    var N = 36;
-    function resize() {
-      c.width = innerWidth * dpr;
-      c.height = innerHeight * dpr;
-      c.style.width = innerWidth + "px";
-      c.style.height = innerHeight + "px";
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
-    resize();
-    addEventListener("resize", resize);
-    for (var i = 0; i < N; i++) {
-      pts.push({
-        x: Math.random() * innerWidth,
-        y: Math.random() * innerHeight,
-        vx: (Math.random() - 0.5) * 0.28,
-        vy: (Math.random() - 0.5) * 0.28,
-        r: 1 + Math.random() * 1.3
-      });
-    }
-    function frame() {
-      var w = innerWidth, h = innerHeight, i, j, p, dx, dy, d;
-      ctx.clearRect(0, 0, w, h);
-      for (i = 0; i < N; i++) {
-        p = pts[i];
-        p.x += p.vx; p.y += p.vy;
-        if (p.x < 0 || p.x > w) p.vx *= -1;
-        if (p.y < 0 || p.y > h) p.vy *= -1;
-      }
-      for (i = 0; i < N; i++) {
-        for (j = i + 1; j < N; j++) {
-          dx = pts[i].x - pts[j].x;
-          dy = pts[i].y - pts[j].y;
-          d = Math.sqrt(dx * dx + dy * dy);
-          if (d < 120) {
-            ctx.beginPath();
-            ctx.strokeStyle = "rgba(16,185,129," + (0.09 * (1 - d / 120)).toFixed(3) + ")";
-            ctx.moveTo(pts[i].x, pts[i].y);
-            ctx.lineTo(pts[j].x, pts[j].y);
-            ctx.stroke();
-          }
-        }
-      }
-      for (i = 0; i < N; i++) {
-        ctx.beginPath();
-        ctx.fillStyle = "rgba(34,211,238,0.45)";
-        ctx.arc(pts[i].x, pts[i].y, pts[i].r, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      requestAnimationFrame(frame);
-    }
-    requestAnimationFrame(frame);
-  })();
-
-  function ysym(s, market) {
-    var sym = String(s.symbol || s || "").trim();
-    if (!sym) return "";
-    if (typeof s === "object" && s.suffix) {
-      return sym.indexOf(".") === -1 ? sym + s.suffix : sym;
-    }
-    if (market === "bist" && sym.indexOf(".") === -1) return sym + ".IS";
-    return sym;
+  function ysym(s, m) {
+    var x = String(s.symbol || s).toUpperCase();
+    if (s.suffix && x.indexOf(".") === -1) return x + s.suffix;
+    if (m === "bist" && x.indexOf(".") === -1) return x + ".IS";
+    return x;
   }
 
-  function fmt(q) {
-    if (!q || q.price == null) return "—";
-    var p = Number(q.price);
-    var pct = Number(q.pct != null ? q.pct : q.changePercent);
-    var cls = pct > 0 ? "up" : pct < 0 ? "down" : "";
-    var sign = pct > 0 ? "+" : "";
-    return (
-      '<span class="' + cls + '">' +
-      p.toLocaleString("en-US", { maximumFractionDigits: 2 }) +
-      (isFinite(pct) ? " <small style=\"font-size:13px\">(" + sign + pct.toFixed(2) + "%)</small>" : "") +
-      "</span>"
-    );
-  }
-
-  async function loadMarket(key) {
-    currentMarket = key;
+  async function loadCatalog(m) {
+    if (catalog[m]) return catalog[m];
     try {
-      var res = await fetch("data/" + key + ".json", { cache: "no-store" });
-      if (!res.ok) throw new Error("HTTP " + res.status);
+      var res = await fetch("data/" + m + ".json", { cache: "no-store" });
       var data = await res.json();
-      stocksCache = Array.isArray(data) ? data : data.stocks || [];
-      var suffix = data.suffix || (key === "bist" ? ".IS" : "");
-      stocksCache.forEach(function (s) {
+      var list = Array.isArray(data) ? data : data.stocks || [];
+      var suffix = data.suffix || (m === "bist" ? ".IS" : "");
+      list.forEach(function (s) {
         if (!s.suffix && suffix) s.suffix = suffix;
-        if (!s.market) s.market = (data.market || key).toUpperCase();
-        if (!s.flag && data.flag) s.flag = data.flag;
       });
-      document.getElementById("stJson").textContent = stocksCache.length + " sembol";
-      document.getElementById("stJson").className = "ok";
+      catalog[m] = list;
     } catch (e) {
-      stocksCache = [];
-      document.getElementById("stJson").textContent = "JSON yok";
-      document.getElementById("stJson").className = "warn";
+      catalog[m] = [];
     }
+    return catalog[m];
   }
 
-  function findMeta(symbol) {
-    var u = String(symbol).toUpperCase();
-    for (var i = 0; i < stocksCache.length; i++) {
-      if (String(stocksCache[i].symbol).toUpperCase() === u) return stocksCache[i];
+  function findMeta(symbol, market) {
+    var u = symbol.toUpperCase();
+    var list = catalog[market] || [];
+    for (var i = 0; i < list.length; i++) {
+      if (String(list[i].symbol).toUpperCase() === u) return list[i];
     }
-    return null;
+    return { symbol: u, name: u, market: market.toUpperCase(), aiScore: 55, risk: "Medium" };
   }
 
-  /** Basit ama tutarlı skor motoru (JSON aiScore + fiyat değişimi) */
-  function computeScore(meta, quote) {
-    var base = meta && meta.aiScore != null ? Number(meta.aiScore) : 55;
-    var pct = quote ? Number(quote.pct != null ? quote.pct : quote.changePercent) : 0;
-    if (!isFinite(pct)) pct = 0;
+  function suggest(q, market) {
+    var box = document.getElementById("suggest");
+    q = String(q || "").trim().toLowerCase();
+    if (!q) { box.classList.remove("show"); return; }
+    var hits = (catalog[market] || []).filter(function (s) {
+      return (
+        String(s.symbol).toLowerCase().indexOf(q) === 0 ||
+        String(s.name || "").toLowerCase().indexOf(q) !== -1
+      );
+    }).slice(0, 8);
+    if (!hits.length) { box.classList.remove("show"); return; }
+    box.innerHTML = hits.map(function (s) {
+      return (
+        '<button type="button" data-s="' + s.symbol + '">' +
+        '<span class="s">' + s.symbol + '</span>' +
+        '<span class="n">' + (s.name || "") + "</span></button>"
+      );
+    }).join("");
+    box.classList.add("show");
+  }
 
-    var trend = 50 + Math.max(-25, Math.min(25, pct * 4));
-    var tech = base;
-    var news = 50 + (pct > 0 ? 8 : pct < 0 ? -6 : 0);
-    var riskMap = { low: 78, medium: 55, high: 32 };
-    var riskKey = String((meta && meta.risk) || "Medium").toLowerCase();
-    var risk = riskMap[riskKey] != null ? riskMap[riskKey] : 55;
+  function biasFrom(score, pct) {
+    if (score >= 70 || (isFinite(pct) && pct >= 2)) return { t: "Olumlu eğilim", c: "up" };
+    if (score <= 40 || (isFinite(pct) && pct <= -2)) return { t: "Temkinli eğilim", c: "down" };
+    return { t: "Nötr / dengeli", c: "flat" };
+  }
 
-    var total = Math.round(
-      trend * 0.28 + tech * 0.42 + news * 0.12 + risk * 0.18
+  function buildReasons(meta, pct) {
+    var r = [];
+    var score = Number(meta.aiScore);
+    if (isFinite(score)) {
+      r.push(
+        "<strong>Kayıtlı AI skoru " +
+          score +
+          "/100.</strong> Bu değer listedeki değerlendirme bandını yansıtır; tek başına emir değildir."
+      );
+    }
+    r.push(
+      "<strong>Risk: " +
+        (meta.risk || "Orta") +
+        ".</strong> Yüksek risk, dalgalanmanın daha sert olabileceğini hatırlatır."
     );
-    total = Math.max(5, Math.min(98, total));
-
-    var label = "NÖTR / TUT";
-    var cls = "hold";
-    if (total >= 72) { label = "GÜÇLÜ AL"; cls = "buy"; }
-    else if (total >= 58) { label = "AL"; cls = "buy"; }
-    else if (total <= 35) { label = "SAT"; cls = "sell"; }
-    else if (total <= 48) { label = "ZAYIF"; cls = "sell"; }
-
-    return {
-      total: total,
-      trend: Math.round(trend),
-      tech: Math.round(tech),
-      news: Math.round(news),
-      risk: Math.round(risk),
-      label: label,
-      cls: cls,
-      confidence: meta && meta.aiScore != null ? "Yüksek" : "Orta"
-    };
-  }
-
-  function verdictText(meta, score, quote) {
-    var name = (meta && meta.name) || (meta && meta.symbol) || "Hisse";
-    var pct = quote ? Number(quote.pct != null ? quote.pct : quote.changePercent) : null;
-    var move =
-      pct == null || !isFinite(pct)
-        ? "günlük hareket verisi sınırlı"
-        : pct > 0
-        ? "seans içinde pozitif (" + pct.toFixed(2) + "%)"
-        : pct < 0
-        ? "seans içinde negatif (" + pct.toFixed(2) + "%)"
-        : "yatay";
-
-    return (
-      "<strong>" + name + "</strong> için birleşik skor <strong>" + score.total +
-      "/100</strong> → <strong>" + score.label + "</strong>. " +
-      "Trend bileşeni " + score.trend + ", teknik/JSON tabanı " + score.tech +
-      ", risk ayarı " + score.risk + ". Fiyat tarafı: " + move +
-      ". Bu bir yatırım tavsiyesi değildir; kararını kendi araştırmanla ver."
+    if (meta.sector) {
+      r.push(
+        "<strong>Sektör: " +
+          meta.sector +
+          ".</strong> Sektör rüzgârı tek hisseyi de sürükleyebilir."
+      );
+    }
+    if (isFinite(pct)) {
+      r.push(
+        "<strong>Günlük değişim %" +
+          (pct > 0 ? "+" : "") +
+          pct.toFixed(2) +
+          ".</strong> Kısa vadeli hareket; trend teyidi için daha uzun pencereye bak."
+      );
+    } else {
+      r.push(
+        "<strong>Anlık getiri net değil.</strong> Özet, skor ve risk üzerinden kuruldu."
+      );
+    }
+    r.push(
+      "<strong>Yöntem:</strong> Nexora kural tabanlı özet üretir; sihirli kehanet iddiası yoktur."
     );
+    return r;
   }
 
-  async function analyze(symbol) {
-    symbol = String(symbol || "").trim().toUpperCase();
+  function buildSummary(meta, pct, bias) {
+    var name = meta.name || meta.symbol;
+    var score = Number(meta.aiScore);
+    var line =
+      name +
+      " için Nexora özeti: skor " +
+      (isFinite(score) ? score : "—") +
+      ", risk " +
+      (meta.risk || "Orta") +
+      ", görünüm «" +
+      bias.t +
+      "».";
+    if (isFinite(pct)) {
+      line +=
+        " Günlük hareket %" +
+        (pct > 0 ? "+" : "") +
+        pct.toFixed(2) +
+        " seviyesinde.";
+    }
+    line +=
+      " Bu metin bilgilendirme amaçlıdır; alım-satım tavsiyesi değildir.";
+    return line;
+  }
+
+  async function run(symbol) {
+    var market = document.getElementById("mkt").value;
+    symbol = String(symbol || document.getElementById("q").value).trim().toUpperCase();
     if (!symbol) return;
 
-    document.getElementById("idle").style.display = "none";
-    document.getElementById("result").style.display = "block";
-    document.getElementById("stData").textContent = "Yükleniyor…";
-    document.getElementById("stData").className = "warn";
+    await loadCatalog(market);
+    var meta = findMeta(symbol, market);
+    current = { meta: meta, market: market };
 
-    var meta = findMeta(symbol);
-    if (!meta) {
-      meta = {
-        symbol: symbol,
-        name: symbol,
-        market: currentMarket.toUpperCase(),
-        sector: "—",
-        risk: "Medium",
-        aiScore: 55
-      };
-    }
-
-    var quoteSym = ysym(meta, currentMarket);
-    var quote = null;
+    var pct = NaN;
     if (window.API && API.getLiveQuote) {
       try {
-        quote = await API.getLiveQuote(quoteSym);
+        var q = await API.getLiveQuote(ysym(meta, market));
+        if (q) pct = Number(q.pct != null ? q.pct : q.changePercent);
       } catch (e) {}
     }
 
-    var score = computeScore(meta, quote);
+    var score = Number(meta.aiScore);
+    if (!isFinite(score)) score = 55;
+    if (window.NexoraAI && typeof NexoraAI.computeScore === "function") {
+      try {
+        var cs = NexoraAI.computeScore(meta, { pct: pct });
+        if (cs && isFinite(cs.score)) score = cs.score;
+      } catch (e) {}
+    }
 
-    document.getElementById("qSym").textContent =
-      (meta.flag || "") + " " + meta.symbol;
-    document.getElementById("qName").textContent = meta.name || "—";
-    document.getElementById("qPrice").innerHTML = fmt(quote);
-    document.getElementById("qMkt").textContent = meta.market || currentMarket.toUpperCase();
-    document.getElementById("qSec").textContent = meta.sector || "—";
-    document.getElementById("qSrc").textContent =
-      (quote && quote.source) || "—";
-    document.getElementById("qRisk").textContent = meta.risk || "—";
+    var bias = biasFrom(score, pct);
+    document.getElementById("idle").hidden = true;
+    document.getElementById("body").hidden = false;
+    document.getElementById("ring").style.setProperty("--p", String(score));
+    document.getElementById("scoreNum").textContent = String(Math.round(score));
+    document.getElementById("title").textContent =
+      (meta.flag ? meta.flag + " " : "") + meta.symbol;
+    document.getElementById("sub").textContent =
+      (meta.name || "") +
+      (meta.sector ? " · " + meta.sector : "") +
+      " · " +
+      (meta.market || market.toUpperCase());
+    var b = document.getElementById("bias");
+    b.textContent = bias.t;
+    b.className = "bias " + bias.c;
+    document.getElementById("summary").textContent = buildSummary(meta, pct, bias);
+    document.getElementById("reasons").innerHTML = buildReasons(meta, pct)
+      .map(function (x) { return "<li>" + x + "</li>"; })
+      .join("");
+    document.getElementById("links").innerHTML =
+      '<a class="btn btn-primary" href="stock.html?symbol=' +
+      encodeURIComponent(meta.symbol) +
+      "&market=" +
+      encodeURIComponent(market) +
+      '">Hisse kartı</a>' +
+      '<a class="btn btn-soft" href="radar.html?sembol=' +
+      encodeURIComponent(meta.symbol) +
+      "&piyasa=" +
+      encodeURIComponent(market) +
+      '">Pusula</a>' +
+      '<a class="btn btn-soft" href="sinyaller.html?add=' +
+      encodeURIComponent(meta.symbol) +
+      "&market=" +
+      encodeURIComponent(market) +
+      '">Takibe ekle</a>' +
+      '<a class="btn btn-soft" href="sohbet.html?oda=' +
+      encodeURIComponent(meta.symbol) +
+      '">Sohbet</a>';
 
-    var sv = document.getElementById("scoreVal");
-    sv.textContent = score.total;
-    sv.className = "score-value " + score.cls;
-    var badge = document.getElementById("scoreBadge");
-    badge.textContent = score.label;
-    badge.className =
-      "score-badge " +
-      (score.cls === "buy" ? "badge-buy" : score.cls === "sell" ? "badge-sell" : "badge-hold");
-    document.getElementById("scoreBar").style.width = score.total + "%";
-
-    document.getElementById("sTrend").textContent = score.trend;
-    document.getElementById("sTech").textContent = score.tech;
-    document.getElementById("sMom").textContent =
-      quote && isFinite(Number(quote.pct)) ? Number(quote.pct).toFixed(2) + "%" : "—";
-    document.getElementById("sConf").textContent = score.confidence;
-
-    document.getElementById("mTrend").style.width = score.trend + "%";
-    document.getElementById("mTech").style.width = score.tech + "%";
-    document.getElementById("mNews").style.width = score.news + "%";
-    document.getElementById("mRisk").style.width = score.risk + "%";
-    document.getElementById("mTrendN").textContent = score.trend;
-    document.getElementById("mTechN").textContent = score.tech;
-    document.getElementById("mNewsN").textContent = score.news;
-    document.getElementById("mRiskN").textContent = score.risk;
-
-    document.getElementById("verdict").innerHTML = verdictText(meta, score, quote);
-    document.getElementById("btnDetail").href =
-      "stock.html?market=" + encodeURIComponent(currentMarket) +
-      "&symbol=" + encodeURIComponent(meta.symbol);
-    document.getElementById("btnPort").href =
-      "portfolio.html?add=" + encodeURIComponent(meta.symbol);
-
-    document.getElementById("stData").textContent = quote ? "Canlı" : "Kısmi";
-    document.getElementById("stData").className = quote ? "ok" : "warn";
-    document.getElementById("stTime").textContent = new Date().toLocaleTimeString("tr-TR");
-
+    document.getElementById("suggest").classList.remove("show");
     history.replaceState(
       null,
       "",
-      "ai-analiz.html?symbol=" + encodeURIComponent(meta.symbol) +
-        "&market=" + encodeURIComponent(currentMarket)
+      "ai-analiz.html?symbol=" +
+        encodeURIComponent(meta.symbol) +
+        "&market=" +
+        encodeURIComponent(market)
     );
   }
 
-  /* suggest */
-  var input = document.getElementById("symInput");
-  var suggest = document.getElementById("suggest");
-
-  function renderSuggest(q) {
-    q = String(q || "").trim().toLowerCase();
-    if (!q || q.length < 1) {
-      suggest.classList.remove("show");
-      suggest.innerHTML = "";
-      return;
+  function fallbackAnswer(q) {
+    q = String(q || "").toLowerCase();
+    if (q.indexOf("skor") !== -1) {
+      return "Skor, listedeki değerlendirme bandını özetler. Yüksek skor olumlu çerçeve, düşük skor temkin sinyali olabilir; ikisi de kesin emir değildir.";
     }
-    var hits = stocksCache
-      .filter(function (s) {
-        return (
-          String(s.symbol).toLowerCase().indexOf(q) === 0 ||
-          String(s.name || "").toLowerCase().indexOf(q) !== -1
-        );
-      })
-      .slice(0, 8);
-    if (!hits.length) {
-      suggest.classList.remove("show");
-      return;
+    if (q.indexOf("risk") !== -1) {
+      return "Risk etiketi, dalgalanma ve belirsizlik beklentisini sadeleştirir. Yüksek risk = daha sert savrulma ihtimali; portföy büyüklüğünü buna göre düşün.";
     }
-    suggest.innerHTML = hits
-      .map(function (s) {
-        return (
-          '<button type="button" data-sym="' + s.symbol + '">' +
-          '<span class="sym">' + s.symbol + "</span>" +
-          '<span class="nm">' + (s.name || "") + "</span></button>"
-        );
-      })
-      .join("");
-    suggest.classList.add("show");
+    if (q.indexOf("pusula") !== -1) {
+      return "Pusula, grafik sevmeyenler için tek ibreli sade görünüm sunar. AI Analiz ise skor, gerekçe maddeleri ve soru-cevap ile daha metinsel bir özet verir.";
+    }
+    if (q.indexOf("al") !== -1 || q.indexOf("sat") !== -1) {
+      return "Nexora al-sat emri vermez. Özet bilgilendirme içindir; karar ve risk sana aittir.";
+    }
+    if (current) {
+      return (
+        current.meta.symbol +
+        " için yukarıdaki skor ve gerekçe maddelerine bak. Daha sade ibre istersen Pusula’yı, kart ve grafik için Hisseler’i kullan."
+      );
+    }
+    return "Önce bir hisse analiz et, sonra sorunu yaz. Genel sorularda da skor / risk / pusula farkını açıklayabilirim.";
   }
 
-  input.addEventListener("input", function () {
-    renderSuggest(input.value);
-  });
-  suggest.addEventListener("click", function (e) {
-    var btn = e.target.closest("[data-sym]");
-    if (!btn) return;
-    input.value = btn.getAttribute("data-sym");
-    suggest.classList.remove("show");
-    analyze(input.value);
-  });
-
-  document.getElementById("btnAnalyze").addEventListener("click", function () {
-    suggest.classList.remove("show");
-    analyze(input.value);
-  });
-  input.addEventListener("keydown", function (e) {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      suggest.classList.remove("show");
-      analyze(input.value);
+  async function ask() {
+    var q = document.getElementById("ask").value.trim();
+    if (!q) return;
+    var el = document.getElementById("answer");
+    el.classList.add("show");
+    el.textContent = "Düşünülüyor…";
+    var text = "";
+    if (window.NexoraAI && typeof NexoraAI.ask === "function") {
+      try {
+        text = await NexoraAI.ask(q, current);
+      } catch (e) {
+        text = "";
+      }
     }
+    if (!text) text = fallbackAnswer(q);
+    el.textContent = text;
+  }
+
+  document.getElementById("btnRun").addEventListener("click", function () { run(); });
+  document.getElementById("q").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") { e.preventDefault(); run(); }
+  });
+  document.getElementById("q").addEventListener("input", function () {
+    suggest(this.value, document.getElementById("mkt").value);
+  });
+  document.getElementById("mkt").addEventListener("change", async function () {
+    await loadCatalog(this.value);
+    suggest(document.getElementById("q").value, this.value);
+  });
+  document.getElementById("suggest").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-s]");
+    if (!b) return;
+    document.getElementById("q").value = b.getAttribute("data-s");
+    run(b.getAttribute("data-s"));
+  });
+  document.getElementById("btnAsk").addEventListener("click", ask);
+  document.querySelector(".chips").addEventListener("click", function (e) {
+    var c = e.target.closest("[data-ask]");
+    if (!c) return;
+    document.getElementById("ask").value = c.getAttribute("data-ask");
+    ask();
   });
 
-  document.getElementById("mktSelect").addEventListener("change", async function () {
-    await loadMarket(this.value);
-    if (input.value.trim()) analyze(input.value);
-  });
-
-  /* boot */
-  (async function () {
-    var params = new URLSearchParams(location.search);
-    var m = (params.get("market") || "bist").toLowerCase();
-    var sel = document.getElementById("mktSelect");
-    if ([].some.call(sel.options, function (o) { return o.value === m; })) {
-      sel.value = m;
-    }
-    await loadMarket(sel.value);
-    var sym = params.get("symbol");
+  var params = new URLSearchParams(location.search);
+  var m = (params.get("market") || "bist").toLowerCase();
+  var sel = document.getElementById("mkt");
+  if ([].some.call(sel.options, function (o) { return o.value === m; })) sel.value = m;
+  loadCatalog(sel.value).then(function () {
+    var sym = params.get("symbol") || params.get("sembol");
     if (sym) {
-      input.value = sym.toUpperCase();
-      analyze(sym);
+      document.getElementById("q").value = sym.toUpperCase();
+      run(sym);
     }
-  })();
+  });
 })();
   </script>
-
-<script src="assets/js/secrets.js"></script>
-<script src="assets/js/api.js"></script>
-<script src="assets/js/nexora-ai.js"></script> <!-- varsa skorlu cevap -->
-<script src="assets/js/nexora-bubble.js"></script>
-  
 </body>
 </html>
