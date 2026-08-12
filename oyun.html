@@ -3,52 +3,120 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Sanal Portföy Oyunu · Nexora AI</title>
-  <meta name="description" content="100.000 TL sanal bakiye ile kağıt portföy — Nexora oyun modu." />
+  <title>Nexora Lig · Sanal Portföy Oyunu</title>
+  <meta name="description" content="100.000 TL sanal bakiye, lig kademeleri, günlük ödül ve Happy Hour — Nexora Lig." />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #060a12; --panel: rgba(15,23,42,.92); --border: rgba(148,163,184,.12);
-      --text: #f1f5f9; --muted: #94a3b8; --dim: #64748b;
-      --accent: #10b981; --cyan: #22d3ee; --rose: #f87171; --amber: #fbbf24;
+      --bg: #060a12;
+      --panel: rgba(15, 23, 42, 0.92);
+      --border: rgba(148, 163, 184, 0.12);
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --dim: #64748b;
+      --accent: #10b981;
+      --cyan: #22d3ee;
+      --rose: #f87171;
+      --amber: #fbbf24;
+      --violet: #a78bfa;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: Inter, system-ui, sans-serif;
-      background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.5;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
     }
     a { color: inherit; text-decoration: none; }
     button, input, select { font: inherit; color: inherit; border: none; background: none; cursor: pointer; }
 
     .nav {
-      position: sticky; top: 0; z-index: 40; height: 56px;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 16px; gap: 10px;
-      background: rgba(6,10,18,.92); backdrop-filter: blur(14px);
+      position: sticky; top: 0; z-index: 40;
+      height: 56px; display: flex; align-items: center; justify-content: space-between;
+      gap: 10px; padding: 0 16px;
+      background: rgba(6, 10, 18, 0.92);
+      backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border);
     }
-    .brand { font-weight: 800; }
+    .brand { font-weight: 800; letter-spacing: -0.03em; }
     .brand em { font-style: normal; color: var(--accent); }
     .nav-links { display: flex; flex-wrap: wrap; gap: 2px; }
     .nav-links a {
       font-size: 13px; font-weight: 600; color: var(--muted);
       padding: 7px 10px; border-radius: 9px;
     }
-    .nav-links a:hover, .nav-links a.on { color: var(--text); background: rgba(255,255,255,.05); }
+    .nav-links a:hover, .nav-links a.on { color: var(--text); background: rgba(255,255,255,0.05); }
     @media (max-width: 900px) { .nav-links { display: none; } }
 
     .wrap { max-width: 960px; margin: 0 auto; padding: 20px 16px 48px; }
 
-    h1 { font-size: 1.35rem; font-weight: 800; letter-spacing: -.03em; }
+    h1 { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.03em; }
     h1 span {
       background: linear-gradient(90deg, var(--accent), var(--cyan));
       -webkit-background-clip: text; background-clip: text; color: transparent;
     }
     .sub { color: var(--muted); font-size: 13.5px; margin: 6px 0 16px; }
 
+    /* toast */
+    .toast {
+      position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(20px);
+      background: #0f172a; border: 1px solid rgba(16,185,129,0.35);
+      color: #e2e8f0; padding: 12px 16px; border-radius: 12px;
+      font-size: 13.5px; font-weight: 600; z-index: 100;
+      opacity: 0; pointer-events: none; transition: 0.25s;
+      max-width: min(420px, calc(100vw - 24px)); text-align: center;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.err { border-color: rgba(248,113,113,0.45); }
+
+    /* league banner */
+    .league {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+      gap: 12px; padding: 16px 18px; margin-bottom: 14px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(139,92,246,0.1));
+      border: 1px solid rgba(16,185,129,0.25);
+    }
+    .league .rank {
+      font-size: 1.15rem; font-weight: 800; letter-spacing: -0.02em;
+    }
+    .league .rank span { color: var(--cyan); }
+    .league .next { font-size: 12.5px; color: var(--muted); margin-top: 4px; }
+    .pills { display: flex; flex-wrap: wrap; gap: 6px; }
+    .pill {
+      font-size: 11px; font-weight: 700; padding: 5px 10px; border-radius: 999px;
+      background: rgba(30,41,59,0.9); color: var(--dim);
+      box-shadow: inset 0 0 0 1px var(--border);
+    }
+    .pill.on {
+      color: #022c22;
+      background: linear-gradient(135deg, var(--accent), #059669);
+      box-shadow: none;
+    }
+
+    /* rewards */
+    .rewards {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+      margin-bottom: 14px;
+    }
+    @media (max-width: 640px) { .rewards { grid-template-columns: 1fr; } }
+    .rew {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 14px; padding: 14px;
+    }
+    .rew h3 { font-size: 13px; font-weight: 800; margin-bottom: 4px; }
+    .rew p { font-size: 12.5px; color: var(--muted); margin-bottom: 10px; }
+    .rew .cd {
+      font-size: 18px; font-weight: 800; letter-spacing: -0.02em;
+      color: var(--amber); margin-bottom: 8px; font-variant-numeric: tabular-nums;
+    }
+    .rew .st { font-size: 12px; color: var(--dim); margin-bottom: 8px; }
+
     .summary {
       display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
     @media (max-width: 720px) { .summary { grid-template-columns: 1fr 1fr; } }
     .box {
@@ -57,9 +125,9 @@
     }
     .box .lab {
       font-size: 11px; font-weight: 700; color: var(--dim);
-      text-transform: uppercase; letter-spacing: .04em;
+      text-transform: uppercase; letter-spacing: 0.04em;
     }
-    .box .val { font-size: 1.15rem; font-weight: 800; margin-top: 4px; }
+    .box .val { font-size: 1.1rem; font-weight: 800; margin-top: 4px; }
     .up { color: #34d399; }
     .down { color: var(--rose); }
 
@@ -69,12 +137,12 @@
     }
     .panel h2 {
       font-size: 12px; font-weight: 700; color: var(--muted);
-      text-transform: uppercase; letter-spacing: .04em; margin-bottom: 12px;
+      text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 12px;
     }
 
     .form {
       display: grid;
-      grid-template-columns: 1.2fr .9fr .7fr .9fr auto;
+      grid-template-columns: 1.2fr 0.9fr 0.7fr 0.9fr auto;
       gap: 8px; align-items: end;
     }
     @media (max-width: 720px) {
@@ -87,11 +155,11 @@
     }
     .field input, .field select {
       width: 100%;
-      background: rgba(30,41,59,.9);
+      background: rgba(30, 41, 59, 0.9);
       box-shadow: inset 0 0 0 1px var(--border);
       border-radius: 10px; padding: 10px 12px; outline: none;
     }
-    .field input:focus { box-shadow: inset 0 0 0 1px rgba(16,185,129,.45); }
+    .field input:focus { box-shadow: inset 0 0 0 1px rgba(16,185,129,0.45); }
 
     .suggest {
       display: none; margin-top: 6px;
@@ -103,7 +171,7 @@
       display: block; width: 100%; text-align: left;
       padding: 8px 12px; font-size: 13px;
     }
-    .suggest button:hover { background: rgba(16,185,129,.1); }
+    .suggest button:hover { background: rgba(16,185,129,0.1); }
     .suggest .s { font-weight: 800; margin-right: 6px; }
     .suggest .n { color: var(--muted); }
 
@@ -117,25 +185,21 @@
       color: #022c22;
     }
     .btn-soft {
-      background: rgba(30,41,59,.95); color: var(--text);
+      background: rgba(30, 41, 59, 0.95); color: var(--text);
       box-shadow: inset 0 0 0 1px var(--border);
     }
-    .btn-danger {
-      background: rgba(248,113,113,.12); color: var(--rose);
-      box-shadow: inset 0 0 0 1px rgba(248,113,113,.25);
-      padding: 6px 10px; font-size: 12px;
-    }
     .btn-amber {
-      background: rgba(251,191,36,.12); color: var(--amber);
-      box-shadow: inset 0 0 0 1px rgba(251,191,36,.25);
+      background: rgba(251, 191, 36, 0.14); color: var(--amber);
+      box-shadow: inset 0 0 0 1px rgba(251, 191, 36, 0.3);
     }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
     .list { display: flex; flex-direction: column; gap: 8px; }
     .row {
       display: grid;
-      grid-template-columns: 1.2fr .8fr .8fr .9fr auto;
+      grid-template-columns: 1.2fr 0.8fr 0.8fr 0.9fr auto;
       gap: 8px; align-items: center;
-      background: rgba(15,23,42,.7);
+      background: rgba(15, 23, 42, 0.7);
       border: 1px solid var(--border);
       border-radius: 12px; padding: 12px 14px; font-size: 13.5px;
     }
@@ -152,13 +216,11 @@
       padding: 28px 12px; border: 1px dashed var(--border); border-radius: 12px;
     }
 
-    .banner {
-      margin-bottom: 14px; padding: 12px 14px; border-radius: 12px;
-      background: linear-gradient(135deg, rgba(16,185,129,.12), rgba(34,211,238,.08));
-      border: 1px solid rgba(16,185,129,.25);
-      font-size: 13px; color: var(--muted);
+    .info {
+      font-size: 12.5px; color: var(--dim); line-height: 1.65;
+      margin-top: 8px;
     }
-    .banner strong { color: var(--text); }
+    .info strong { color: var(--muted); }
 
     .legal {
       margin-top: 16px; font-size: 12px; color: var(--dim); line-height: 1.55;
@@ -173,29 +235,50 @@
   </style>
 </head>
 <body>
+  <div class="toast" id="toast"></div>
+
   <nav class="nav">
     <a class="brand" href="index.html">Nexora <em>AI</em></a>
     <div class="nav-links">
       <a href="index.html">Ana</a>
       <a href="stock.html">Hisseler</a>
       <a href="portfolio.html">Portföy</a>
-      <a class="on" href="oyun.html">Oyun</a>
+      <a class="on" href="oyun.html">Lig</a>
       <a href="heatmap.html">Isı</a>
       <a href="premium.html">Premium</a>
     </div>
-    <button type="button" class="btn btn-amber" id="btnReset">Sıfırla</button>
+    <button type="button" class="btn btn-amber" id="btnReset">Yeni sezon</button>
   </nav>
 
   <main class="wrap">
-    <h1>Sanal <span>portföy</span></h1>
+    <h1>Nexora <span>Lig</span></h1>
     <p class="sub">
-      Başlangıç: <strong style="color:var(--text)">100.000 TL</strong> sahte bakiye.
-      Gerçek para yok — al/sat, K/Z gör. Veri tarayıcıda saklanır.
+      Sanal 100.000 ₺ ile başla. Kâr ettikçe lig atla. Günlük ödül ve Happy Hour ile bakiyeni büyüt.
+      Gerçek para yoktur — rekabet ve öğrenme içindir.
     </p>
 
-    <div class="banner">
-      <strong>Oyun modu.</strong> Fiyatlar <code style="color:var(--cyan)">api.js</code> ile çekilir (gecikmeli olabilir).
-      Bu bir yarışma liderliği değil; kendi skorunu takip edersin. İleride leaderboard eklenebilir.
+    <div class="league">
+      <div>
+        <div class="rank">Lig: <span id="leagueName">Tahta</span></div>
+        <div class="next" id="leagueNext">Bir üst kademe için getiri hedefi yükleniyor…</div>
+      </div>
+      <div class="pills" id="leaguePills"></div>
+    </div>
+
+    <div class="rewards">
+      <div class="rew">
+        <h3>Günlük giriş ödülü</h3>
+        <p>Her takvim gününde ilk ziyarette <strong style="color:var(--text)">+50 ₺</strong> sanal nakit.</p>
+        <div class="st" id="dailyStatus">Kontrol ediliyor…</div>
+        <button type="button" class="btn btn-primary" id="btnDaily">Ödülü al</button>
+      </div>
+      <div class="rew">
+        <h3>Happy Hour</h3>
+        <p>Hafta içi <strong style="color:var(--text)">12:00–13:00</strong> veya <strong style="color:var(--text)">17:30–18:30</strong> içinde +200 ₺.</p>
+        <div class="cd" id="hhCountdown">—</div>
+        <div class="st" id="hhStatus">—</div>
+        <button type="button" class="btn btn-primary" id="btnHH" disabled>Etkinlik ödülü</button>
+      </div>
     </div>
 
     <div class="summary">
@@ -204,7 +287,7 @@
         <div class="val" id="sumCash">—</div>
       </div>
       <div class="box">
-        <div class="lab">Pozisyon değeri</div>
+        <div class="lab">Pozisyon</div>
         <div class="val" id="sumPos">—</div>
       </div>
       <div class="box">
@@ -249,29 +332,40 @@
           <button type="button" class="btn btn-primary" id="btnGo" style="width:100%">Uygula</button>
         </div>
       </div>
-      <p style="margin-top:10px;font-size:12px;color:var(--dim)">
-        Alış/satış <strong style="color:var(--muted)">anlık API fiyatı</strong> ile yapılır (manuel fiyat yok).
+      <p class="info">
+        Fiyat, işlem anındaki piyasa kotasyonundan alınır. Elle fiyat girilemez.
+        <strong>Yetersiz bakiyede işlem reddedilir</strong> ve ekranda uyarı gösterilir.
       </p>
     </div>
 
     <div class="panel">
       <h2>Pozisyonlar</h2>
       <div class="list" id="list">
-        <div class="empty">Pozisyon yok — hisse al</div>
+        <div class="empty">Pozisyon yok — ilk alımını yap</div>
       </div>
     </div>
 
+    <div class="panel">
+      <h2>Lig kademeleri &amp; ödüller</h2>
+      <p class="info" style="margin:0">
+        <strong>Tahta → Bronz → Gümüş → Altın → Platin → Elmas → Şampiyon</strong>
+        toplam getiriye göre yükselir.
+        Sezon sonunda Elmas ve Şampiyon zirvesi için Pro/Elite sürprizleri ve onaylı içerik hakkı
+        yol haritasındadır. Şimdilik lig ve ödül motoru bu ekranda çalışır; sıralama tablosu sonraki adımda.
+      </p>
+    </div>
+
     <p class="legal">
-      <strong style="color:var(--amber)">SPK:</strong> Oyun / simülasyon; yatırım tavsiyesi değildir.
+      Simülasyon amaçlıdır; yatırım tavsiyesi değildir. Sanal bakiye gerçek para değildir.
       · <a href="kvkk.html">KVKK</a> · <a href="gizlilik.html">Gizlilik</a>
     </p>
   </main>
 
   <footer>
     Nexora AI ·
-    <a href="portfolio.html">Gerçek portföy takibi</a>
+    <a href="portfolio.html">Portföy</a>
     <a href="stock.html">Hisseler</a>
-    <a href="index.html">Ana</a>
+    <a href="about.html">Hakkımızda</a>
   </footer>
 
   <script src="assets/js/secrets.js"></script>
@@ -280,28 +374,83 @@
 (function () {
   "use strict";
 
-  var KEY = "nexora_game_v1";
+  var KEY = "nexora_game_v2";
   var START = 100000;
-  var state = { cash: START, positions: [] };
-  // positions: { symbol, market, name, qty, avg }
+  var DAILY = 50;
+  var HH = 200;
+
+  var LEAGUES = [
+    { id: "tahta", name: "Tahta", minPct: -Infinity },
+    { id: "bronz", name: "Bronz", minPct: 0 },
+    { id: "gumus", name: "Gümüş", minPct: 5 },
+    { id: "altin", name: "Altın", minPct: 12 },
+    { id: "platin", name: "Platin", minPct: 25 },
+    { id: "elmas", name: "Elmas", minPct: 40 },
+    { id: "sampiyon", name: "Şampiyon", minPct: 60 }
+  ];
+
+  var state = {
+    cash: START,
+    positions: [],
+    lastDaily: "",
+    lastHH: "",
+    version: 2
+  };
+
   var catalog = {};
+  var lastEquity = START;
+
+  function toast(msg, isErr) {
+    var el = document.getElementById("toast");
+    el.textContent = msg;
+    el.className = "toast show" + (isErr ? " err" : "");
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function () {
+      el.classList.remove("show");
+    }, 3200);
+  }
 
   function money(n) {
     if (n == null || !isFinite(n)) return "—";
-    return n.toLocaleString("tr-TR", { maximumFractionDigits: 2 }) + " ₺";
+    return (
+      n.toLocaleString("tr-TR", { maximumFractionDigits: 2 }) + " ₺"
+    );
+  }
+
+  function todayKey() {
+    var d = new Date();
+    return (
+      d.getFullYear() +
+      "-" +
+      String(d.getMonth() + 1).padStart(2, "0") +
+      "-" +
+      String(d.getDate()).padStart(2, "0")
+    );
   }
 
   function load() {
     try {
       var raw = JSON.parse(localStorage.getItem(KEY) || "null");
       if (raw && typeof raw.cash === "number" && Array.isArray(raw.positions)) {
-        state = raw;
+        state.cash = raw.cash;
+        state.positions = raw.positions;
+        state.lastDaily = raw.lastDaily || "";
+        state.lastHH = raw.lastHH || "";
       }
     } catch (e) {}
   }
 
   function save() {
-    localStorage.setItem(KEY, JSON.stringify(state));
+    localStorage.setItem(
+      KEY,
+      JSON.stringify({
+        cash: state.cash,
+        positions: state.positions,
+        lastDaily: state.lastDaily,
+        lastHH: state.lastHH,
+        version: 2
+      })
+    );
   }
 
   function ysym(symbol, market) {
@@ -341,10 +490,187 @@
     }
   }
 
+  function leagueFromPct(pct) {
+    var cur = LEAGUES[0];
+    for (var i = 0; i < LEAGUES.length; i++) {
+      if (pct >= LEAGUES[i].minPct) cur = LEAGUES[i];
+    }
+    return cur;
+  }
+
+  function nextLeague(pct) {
+    for (var i = 0; i < LEAGUES.length; i++) {
+      if (LEAGUES[i].minPct > pct) return LEAGUES[i];
+    }
+    return null;
+  }
+
+  function paintLeague(pct) {
+    var L = leagueFromPct(pct);
+    var N = nextLeague(pct);
+    document.getElementById("leagueName").textContent = L.name;
+    document.getElementById("leagueNext").textContent = N
+      ? "Sonraki: " +
+        N.name +
+        " · hedef getiri ≥ %" +
+        N.minPct +
+        " (şimdi %" +
+        pct.toFixed(2) +
+        ")"
+      : "En üst kademedesin — Şampiyon. Sezon ödülleri yakında.";
+
+    var pills = document.getElementById("leaguePills");
+    pills.innerHTML = LEAGUES.map(function (x) {
+      return (
+        '<span class="pill' +
+        (x.id === L.id ? " on" : "") +
+        '">' +
+        x.name +
+        "</span>"
+      );
+    }).join("");
+  }
+
+  /* —— Happy Hour (yerel saat, hafta içi) —— */
+  function hhWindow() {
+    var now = new Date();
+    var day = now.getDay(); // 0 paz
+    if (day === 0 || day === 6) {
+      return { active: false, label: "Hafta sonu — Happy Hour yok", end: null, slot: null };
+    }
+    var mins = now.getHours() * 60 + now.getMinutes();
+    var slots = [
+      { start: 12 * 60, end: 13 * 60, id: "noon" },
+      { start: 17 * 60 + 30, end: 18 * 60 + 30, id: "close" }
+    ];
+    for (var i = 0; i < slots.length; i++) {
+      var s = slots[i];
+      if (mins >= s.start && mins < s.end) {
+        return {
+          active: true,
+          label: "Happy Hour açık",
+          end: s.end,
+          slot: todayKey() + "_" + s.id
+        };
+      }
+    }
+    // sonraki pencere
+    for (var j = 0; j < slots.length; j++) {
+      if (mins < slots[j].start) {
+        return {
+          active: false,
+          label: "Sonraki Happy Hour yaklaşıyor",
+          end: slots[j].start,
+          slot: null,
+          untilStart: true
+        };
+      }
+    }
+    return { active: false, label: "Bugünkü Happy Hour bitti", end: null, slot: null };
+  }
+
+  function formatRemain(totalSec) {
+    if (totalSec < 0) totalSec = 0;
+    var h = Math.floor(totalSec / 3600);
+    var m = Math.floor((totalSec % 3600) / 60);
+    var s = totalSec % 60;
+    if (h > 0) {
+      return (
+        String(h).padStart(2, "0") +
+        ":" +
+        String(m).padStart(2, "0") +
+        ":" +
+        String(s).padStart(2, "0")
+      );
+    }
+    return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+  }
+
+  function tickHH() {
+    var w = hhWindow();
+    var cd = document.getElementById("hhCountdown");
+    var st = document.getElementById("hhStatus");
+    var btn = document.getElementById("btnHH");
+    var now = new Date();
+    var mins = now.getHours() * 60 + now.getMinutes();
+    var secs = now.getSeconds();
+
+    if (w.active) {
+      var left = (w.end - mins) * 60 - secs;
+      cd.textContent = formatRemain(left);
+      if (state.lastHH === w.slot) {
+        st.textContent = "Bu seans ödülü alındı";
+        btn.disabled = true;
+      } else {
+        st.textContent = "Ödülü alabilirsin (+200 ₺)";
+        btn.disabled = false;
+      }
+      return;
+    }
+
+    if (w.end != null && w.untilStart) {
+      var left2 = (w.end - mins) * 60 - secs;
+      cd.textContent = formatRemain(left2);
+      st.textContent = w.label;
+      btn.disabled = true;
+      return;
+    }
+
+    cd.textContent = "—";
+    st.textContent = w.label;
+    btn.disabled = true;
+  }
+
+  function updateDailyUI() {
+    var st = document.getElementById("dailyStatus");
+    var btn = document.getElementById("btnDaily");
+    if (state.lastDaily === todayKey()) {
+      st.textContent = "Bugünün ödülü alındı";
+      btn.disabled = true;
+    } else {
+      st.textContent = "Bugün henüz alınmadı";
+      btn.disabled = false;
+    }
+  }
+
+  function claimDaily() {
+    if (state.lastDaily === todayKey()) {
+      toast("Bugünün günlük ödülünü zaten aldın.", true);
+      return;
+    }
+    state.cash += DAILY;
+    state.lastDaily = todayKey();
+    save();
+    updateDailyUI();
+    render();
+    toast("Günlük ödül: +" + DAILY + " ₺ sanal nakit yüklendi.");
+  }
+
+  function claimHH() {
+    var w = hhWindow();
+    if (!w.active || !w.slot) {
+      toast("Happy Hour şu an aktif değil.", true);
+      return;
+    }
+    if (state.lastHH === w.slot) {
+      toast("Bu Happy Hour ödülünü zaten aldın.", true);
+      return;
+    }
+    state.cash += HH;
+    state.lastHH = w.slot;
+    save();
+    tickHH();
+    render();
+    toast("Happy Hour: +" + HH + " ₺ sanal nakit!");
+  }
+
   function suggest(q, market) {
     var box = document.getElementById("suggest");
     q = String(q || "").trim().toLowerCase();
-    if (!q) { box.classList.remove("show"); return; }
+    if (!q) {
+      box.classList.remove("show");
+      return;
+    }
     var hits = (catalog[market] || [])
       .filter(function (s) {
         return (
@@ -353,14 +679,23 @@
         );
       })
       .slice(0, 8);
-    if (!hits.length) { box.classList.remove("show"); return; }
-    box.innerHTML = hits.map(function (s) {
-      return (
-        '<button type="button" data-s="' + s.symbol + '">' +
-        '<span class="s">' + s.symbol + '</span>' +
-        '<span class="n">' + (s.name || "") + "</span></button>"
-      );
-    }).join("");
+    if (!hits.length) {
+      box.classList.remove("show");
+      return;
+    }
+    box.innerHTML = hits
+      .map(function (s) {
+        return (
+          '<button type="button" data-s="' +
+          s.symbol +
+          '"><span class="s">' +
+          s.symbol +
+          '</span><span class="n">' +
+          (s.name || "") +
+          "</span></button>"
+        );
+      })
+      .join("");
     box.classList.add("show");
   }
 
@@ -369,7 +704,7 @@
     var posValue = 0;
 
     if (!state.positions.length) {
-      box.innerHTML = '<div class="empty">Pozisyon yok — hisse al</div>';
+      box.innerHTML = '<div class="empty">Pozisyon yok — ilk alımını yap</div>';
     } else {
       var html = [];
       for (var i = 0; i < state.positions.length; i++) {
@@ -386,34 +721,52 @@
         html.push(
           '<div class="row">' +
             "<div>" +
-              '<div class="sym">' + p.symbol + "</div>" +
-              '<div class="name">' + (p.name || "") + " · " + p.market.toUpperCase() + "</div>" +
+            '<div class="sym">' +
+            p.symbol +
+            "</div>" +
+            '<div class="name">' +
+            (p.name || "") +
+            " · " +
+            p.market.toUpperCase() +
+            "</div>" +
             "</div>" +
             "<div>" +
-              "<div>" + p.qty + " adet</div>" +
-              '<div class="muted">Ort. ' + money(p.avg) + "</div>" +
+            "<div>" +
+            p.qty +
+            " adet</div>" +
+            '<div class="muted">Ort. ' +
+            money(p.avg) +
+            "</div>" +
             "</div>" +
             "<div>" +
-              "<div>" + (price != null ? money(price) : "—") + "</div>" +
-              '<div class="muted">Güncel</div>' +
+            "<div>" +
+            (price != null ? money(price) : "—") +
             "</div>" +
-            '<div class="' + cls + '">' +
-              (pl != null ? sign + money(pl) : "—") +
+            '<div class="muted">Güncel</div>' +
+            "</div>" +
+            '<div class="' +
+            cls +
+            '">' +
+            (pl != null ? sign + money(pl) : "—") +
             "</div>" +
             '<div class="act">' +
-              '<a class="btn btn-soft" href="stock.html?market=' +
-                encodeURIComponent(p.market) +
-                "&symbol=" + encodeURIComponent(p.symbol) +
-              '">Detay</a>' +
+            '<a class="btn btn-soft" href="stock.html?market=' +
+            encodeURIComponent(p.market) +
+            "&symbol=" +
+            encodeURIComponent(p.symbol) +
+            '">Detay</a>' +
             "</div>" +
-          "</div>"
+            "</div>"
         );
-        await new Promise(function (r) { setTimeout(r, 70); });
+        await new Promise(function (r) {
+          setTimeout(r, 70);
+        });
       }
       box.innerHTML = html.join("");
     }
 
     var total = state.cash + posValue;
+    lastEquity = total;
     var ret = total - START;
     var retPct = (ret / START) * 100;
 
@@ -422,9 +775,15 @@
     document.getElementById("sumTotal").textContent = money(total);
     var el = document.getElementById("sumRet");
     el.textContent =
-      (ret >= 0 ? "+" : "") + money(ret) +
-      " (" + (ret >= 0 ? "+" : "") + retPct.toFixed(2) + "%)";
+      (ret >= 0 ? "+" : "") +
+      money(ret) +
+      " (" +
+      (ret >= 0 ? "+" : "") +
+      retPct.toFixed(2) +
+      "%)";
     el.className = "val " + (ret >= 0 ? "up" : "down");
+
+    paintLeague(retPct);
   }
 
   async function trade() {
@@ -433,25 +792,40 @@
     var qty = Number(document.getElementById("qty").value);
     var side = document.getElementById("side").value;
 
-    if (!symbol || !isFinite(qty) || qty <= 0) {
-      alert("Sembol ve adet gerekli");
+    if (!symbol) {
+      toast("Sembol yazmalısın.", true);
+      return;
+    }
+    if (!isFinite(qty) || qty <= 0) {
+      toast("Geçerli bir adet gir.", true);
+      return;
+    }
+    // hile: abartı adet
+    if (qty > 1e7) {
+      toast("Adet limiti aşıldı.", true);
       return;
     }
 
     var q = await quote(symbol, market);
-    if (!q || q.price == null) {
-      alert("Fiyat alınamadı — sembol veya API’yi kontrol et");
+    if (!q || q.price == null || !isFinite(Number(q.price)) || Number(q.price) <= 0) {
+      toast("Fiyat alınamadı. Sembolü veya bağlantıyı kontrol et.", true);
       return;
     }
     var price = Number(q.price);
     var cost = price * qty;
 
     if (side === "buy") {
-      if (cost > state.cash + 1e-9) {
-        alert("Yetersiz nakit. Nakit: " + money(state.cash));
+      if (cost > state.cash + 1e-6) {
+        toast(
+          "Yetersiz bakiye. Nakit: " +
+            money(state.cash) +
+            " · Gereken: " +
+            money(cost),
+          true
+        );
         return;
       }
-      state.cash -= cost;
+      state.cash = Math.round((state.cash - cost) * 100) / 100;
       var existing = state.positions.find(function (p) {
         return p.symbol === symbol && p.market === market;
       });
@@ -468,21 +842,29 @@
           avg: price
         });
       }
+      toast("Alım gerçekleşti: " + qty + " × " + symbol + " @ " + money(price));
     } else {
       var pos = state.positions.find(function (p) {
         return p.symbol === symbol && p.market === market;
       });
-      if (!pos || pos.qty < qty) {
-        alert("Yetersiz pozisyon");
+      if (!pos || pos.qty < qty - 1e-9) {
+        toast(
+          "Yetersiz pozisyon. Elindeki: " +
+            (pos ? pos.qty : 0) +
+            " adet " +
+            symbol,
+          true
+        );
         return;
       }
-      pos.qty -= qty;
-      state.cash += cost;
-      if (pos.qty <= 1e-9) {
+      pos.qty = Math.round((pos.qty - qty) * 1e6) / 1e6;
+      state.cash = Math.round((state.cash + cost) * 100) / 100;
+      if (pos.qty <= 1e-8) {
         state.positions = state.positions.filter(function (p) {
           return !(p.symbol === symbol && p.market === market);
         });
       }
+      toast("Satış gerçekleşti: " + qty + " × " + symbol + " @ " + money(price));
     }
 
     save();
@@ -493,6 +875,9 @@
   }
 
   document.getElementById("btnGo").addEventListener("click", trade);
+  document.getElementById("btnDaily").addEventListener("click", claimDaily);
+  document.getElementById("btnHH").addEventListener("click", claimHH);
+
   document.getElementById("sym").addEventListener("input", function () {
     suggest(this.value, document.getElementById("mkt").value);
   });
@@ -506,22 +891,35 @@
     document.getElementById("sym").value = b.getAttribute("data-s");
     document.getElementById("suggest").classList.remove("show");
   });
+
   document.getElementById("btnReset").addEventListener("click", function () {
-    if (!confirm("Oyun sıfırlansın mı? 100.000 TL’ye dönülür.")) return;
-    state = { cash: START, positions: [] };
+    if (
+      !confirm(
+        "Yeni sezon? Nakit 100.000 ₺ olur, pozisyonlar silinir. Günlük / Happy Hour kayıtları da sıfırlanır."
+      )
+    ) {
+      return;
+    }
+    state = {
+      cash: START,
+      positions: [],
+      lastDaily: "",
+      lastHH: "",
+      version: 2
+    };
     save();
+    updateDailyUI();
+    tickHH();
     render();
+    toast("Yeni sezon başladı. Bol şans!");
   });
 
   load();
+  updateDailyUI();
+  tickHH();
+  setInterval(tickHH, 1000);
   loadCatalog("bist").then(render);
 })();
 </script>
-
-<script src="assets/js/secrets.js"></script>
-<script src="assets/js/api.js"></script>
-<script src="assets/js/nexora-ai.js"></script> <!-- varsa skorlu cevap -->
-<script src="assets/js/nexora-bubble.js"></script>
-  
 </body>
 </html>
