@@ -3,23 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Nexora AI · BIST & Global Piyasa</title>
-  <meta name="description" content="Nexora AI — hisse, portföy, AI analiz, haber, halka arz, temettü ve bilanço." />
-  <meta property="og:title" content="Nexora AI Tracker" />
-  <meta property="og:description" content="Yapay zeka destekli borsa takip platformu" />
+  <title>Nexora AI · Piyasa, skor ve lig aynı yerde</title>
+  <meta name="description" content="Nexora AI ile hisse takibi, yapay zekâ özeti, sanal lig, akademi ve topluluk. Net arayüz, güçlü keşif." />
+  <meta name="theme-color" content="#060a12" />
+  <meta property="og:title" content="Nexora AI" />
+  <meta property="og:description" content="Piyasayı daha net gör. AI özeti, portföy, lig ve daha fazlası." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #070b14;
-      --panel: rgba(15, 23, 42, 0.72);
+      --bg: #060a12;
+      --panel: rgba(15, 23, 42, 0.78);
       --border: rgba(148, 163, 184, 0.12);
       --text: #f1f5f9;
       --muted: #94a3b8;
       --dim: #64748b;
       --accent: #10b981;
       --cyan: #22d3ee;
-      --violet: #8b5cf6;
+      --violet: #a78bfa;
+      --amber: #fbbf24;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
@@ -28,10 +30,12 @@
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      line-height: 1.5;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
     a { color: inherit; text-decoration: none; }
+    button { font: inherit; border: none; background: none; cursor: pointer; color: inherit; }
 
     #bg {
       position: fixed; inset: 0; z-index: 0;
@@ -39,245 +43,219 @@
     }
     .glow {
       position: fixed; z-index: 0; pointer-events: none;
-      width: 420px; height: 420px; border-radius: 50%;
-      filter: blur(100px); opacity: 0.18;
+      width: 480px; height: 480px; border-radius: 50%;
+      filter: blur(110px); opacity: 0.16;
     }
-    .glow.a { top: -120px; left: -80px; background: #059669; }
-    .glow.b { bottom: 10%; right: -100px; background: #0ea5e9; opacity: 0.12; }
+    .glow.a { top: -160px; left: -100px; background: #059669; }
+    .glow.b { bottom: 8%; right: -120px; background: #0284c7; opacity: 0.11; }
 
     .shell { position: relative; z-index: 1; }
 
     .nav {
       position: sticky; top: 0; z-index: 50;
-      height: 58px; display: flex; align-items: center; justify-content: space-between;
-      gap: 10px; padding: 0 16px;
-      background: rgba(7, 11, 20, 0.82);
+      height: 60px; display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; padding: 0 18px;
+      background: rgba(6, 10, 18, 0.86);
       backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
     }
     .brand {
-      display: flex; align-items: center; gap: 9px;
-      font-weight: 800; letter-spacing: -0.03em;
+      display: flex; align-items: center; gap: 10px;
+      font-weight: 800; letter-spacing: -0.03em; font-size: 16px;
     }
     .mark {
-      width: 30px; height: 30px; border-radius: 9px;
+      width: 32px; height: 32px; border-radius: 10px;
       background: linear-gradient(135deg, var(--accent), var(--cyan));
       display: grid; place-items: center;
-      color: #022c22; font-size: 12px; font-weight: 900;
-      box-shadow: 0 0 20px rgba(16,185,129,0.35);
+      color: #022c22; font-size: 13px; font-weight: 900;
+      box-shadow: 0 0 22px rgba(16, 185, 129, 0.35);
     }
     .brand em { font-style: normal; color: var(--accent); }
     .nav-links { display: flex; flex-wrap: wrap; gap: 2px; }
     .nav-links a {
-      font-size: 12.5px; font-weight: 600; color: var(--muted);
-      padding: 7px 9px; border-radius: 9px;
+      font-size: 13px; font-weight: 600; color: var(--muted);
+      padding: 8px 10px; border-radius: 9px;
     }
     .nav-links a:hover, .nav-links a.on {
-      color: var(--text); background: rgba(255,255,255,0.05);
+      color: var(--text); background: rgba(255, 255, 255, 0.05);
     }
     .nav-right { display: flex; gap: 8px; align-items: center; }
+    @media (max-width: 960px) { .nav-links { display: none; } }
+
     .btn {
       display: inline-flex; align-items: center; justify-content: center;
-      padding: 8px 13px; border-radius: 10px;
-      font-size: 12.5px; font-weight: 700;
-      transition: transform 0.15s;
+      padding: 10px 16px; border-radius: 11px;
+      font-size: 13px; font-weight: 700;
+      transition: transform 0.15s, box-shadow 0.15s;
     }
     .btn:hover { transform: translateY(-1px); }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #059669);
+      color: #022c22;
+      box-shadow: 0 10px 28px rgba(16, 185, 129, 0.22);
+    }
     .btn-ghost {
       color: var(--muted);
       box-shadow: inset 0 0 0 1px var(--border);
     }
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent), #059669);
-      color: #022c22;
-    }
-    @media (max-width: 900px) {
-      .nav-links { display: none; }
+    .btn-violet {
+      background: linear-gradient(135deg, var(--violet), #6d28d9);
+      color: #fff;
     }
 
-    .wrap { max-width: 1080px; margin: 0 auto; padding: 28px 16px 56px; }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 28px 18px 64px; }
 
-    /* hero */
+    /* HERO */
     .hero {
       display: grid;
       grid-template-columns: 1.15fr 0.85fr;
-      gap: 24px;
+      gap: 28px;
       align-items: center;
-      margin-bottom: 32px;
+      margin-bottom: 36px;
+      padding-top: 12px;
     }
-    @media (max-width: 860px) { .hero { grid-template-columns: 1fr; } }
+    @media (max-width: 900px) { .hero { grid-template-columns: 1fr; } }
 
     .eyebrow {
       display: inline-flex; align-items: center; gap: 8px;
       font-size: 12px; font-weight: 700; color: var(--accent);
-      background: rgba(16,185,129,0.1);
-      border: 1px solid rgba(16,185,129,0.25);
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.28);
       padding: 6px 12px; border-radius: 999px;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
     .eyebrow i {
       width: 7px; height: 7px; border-radius: 50%; background: var(--accent);
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5);
       animation: pulse 1.8s infinite;
     }
     @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.5); }
-      70% { box-shadow: 0 0 0 9px rgba(16,185,129,0); }
-      100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.45); }
+      70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
     }
 
     .hero h1 {
-      font-size: clamp(1.75rem, 4vw, 2.5rem);
-      font-weight: 800; letter-spacing: -0.045em; line-height: 1.12;
-      margin-bottom: 12px;
+      font-size: clamp(1.85rem, 4.2vw, 2.75rem);
+      font-weight: 800; letter-spacing: -0.045em; line-height: 1.1;
+      margin-bottom: 14px;
     }
     .hero h1 span {
-      background: linear-gradient(90deg, var(--accent), var(--cyan), var(--violet));
+      background: linear-gradient(100deg, var(--accent), var(--cyan), var(--violet));
       -webkit-background-clip: text; background-clip: text; color: transparent;
     }
     .hero-lead {
-      color: var(--muted); font-size: 15px; max-width: 460px; margin-bottom: 18px;
+      color: var(--muted); font-size: 16px; max-width: 480px;
+      line-height: 1.7; margin-bottom: 22px;
     }
-    .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
+    .hero-note { font-size: 12.5px; color: var(--dim); max-width: 420px; line-height: 1.5; }
 
     .hero-card {
       background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 16px;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-      animation: float 6s ease-in-out infinite;
+      border-radius: 22px;
+      padding: 18px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+      animation: float 7s ease-in-out infinite;
     }
     @keyframes float {
       0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-6px); }
+      50% { transform: translateY(-7px); }
     }
-    .hero-card h3 {
+    .hero-card .label {
       font-size: 11px; font-weight: 700; color: var(--dim);
       text-transform: uppercase; letter-spacing: 0.06em;
       margin-bottom: 10px;
     }
     #spark {
-      width: 100%; height: 100px;
-      border-radius: 12px;
-      background: rgba(6,10,18,0.4);
+      width: 100%; height: 110px;
+      border-radius: 14px;
+      background: rgba(6, 10, 18, 0.45);
       border: 1px solid var(--border);
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
-    .mini-links {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
+    .mini-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
     }
-    .mini-links a {
+    .mini-grid a {
       font-size: 12.5px; font-weight: 650;
-      padding: 10px 12px; border-radius: 11px;
-      background: rgba(30,41,59,0.7);
+      padding: 11px 12px; border-radius: 12px;
+      background: rgba(30, 41, 59, 0.75);
       border: 1px solid var(--border);
       transition: 0.15s;
     }
-    .mini-links a:hover {
-      border-color: rgba(16,185,129,0.4);
+    .mini-grid a:hover {
+      border-color: rgba(16, 185, 129, 0.4);
       color: var(--cyan);
     }
 
+    /* strip */
+    .strip {
+      display: flex; flex-wrap: wrap; gap: 10px 18px;
+      justify-content: space-between; align-items: center;
+      padding: 14px 18px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(34,211,238,0.06));
+      border: 1px solid rgba(16, 185, 129, 0.22);
+      margin-bottom: 36px;
+    }
+    .strip p { font-size: 13.5px; color: var(--muted); }
+    .strip strong { color: var(--text); }
+
     /* sections */
-    .sec {
-      margin-bottom: 28px;
-      animation: rise 0.6s ease backwards;
-    }
-    .sec:nth-child(2) { animation-delay: 0.05s; }
-    .sec:nth-child(3) { animation-delay: 0.1s; }
-    .sec:nth-child(4) { animation-delay: 0.15s; }
-    @keyframes rise {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    .sec { margin-bottom: 40px; }
     .sec-head {
       display: flex; justify-content: space-between; align-items: end;
-      gap: 10px; margin-bottom: 12px; flex-wrap: wrap;
+      gap: 12px; flex-wrap: wrap; margin-bottom: 16px;
     }
     .sec-head h2 {
-      font-size: 1.05rem; font-weight: 800; letter-spacing: -0.02em;
+      font-size: 1.25rem; font-weight: 800; letter-spacing: -0.03em;
     }
-    .sec-head p { font-size: 12.5px; color: var(--dim); }
+    .sec-head p { font-size: 13.5px; color: var(--dim); max-width: 360px; }
 
-    /* map of site */
-    .map {
+    .features {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 10px;
-    }
-    .map a {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 14px 12px;
-      transition: 0.18s;
-    }
-    .map a:hover {
-      border-color: rgba(16,185,129,0.4);
-      transform: translateY(-3px);
-    }
-    .map .ic {
-      width: 32px; height: 32px; border-radius: 9px;
-      display: grid; place-items: center;
-      background: rgba(16,185,129,0.12);
-      font-size: 14px; margin-bottom: 8px;
-    }
-    .map h3 { font-size: 13px; font-weight: 750; margin-bottom: 2px; }
-    .map p { font-size: 11.5px; color: var(--dim); }
-
-    /* dual */
-    .dual {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(3, 1fr);
       gap: 12px;
     }
-    @media (max-width: 700px) { .dual { grid-template-columns: 1fr; } }
-    .panel {
+    @media (max-width: 900px) { .features { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 560px) { .features { grid-template-columns: 1fr; } }
+
+    .feat {
       background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 16px;
-      backdrop-filter: blur(10px);
+      border-radius: 18px;
+      padding: 18px 16px;
+      transition: border-color 0.15s, transform 0.15s;
+      display: flex; flex-direction: column;
+      min-height: 168px;
     }
-    .panel h3 {
-      font-size: 13px; font-weight: 800; margin-bottom: 10px;
+    .feat:hover {
+      border-color: rgba(16, 185, 129, 0.35);
+      transform: translateY(-3px);
     }
-    .panel ul { list-style: none; }
-    .panel li {
-      display: flex; justify-content: space-between;
-      padding: 8px 0; border-bottom: 1px solid var(--border);
-      font-size: 13px;
+    .feat .ico {
+      width: 40px; height: 40px; border-radius: 12px;
+      display: grid; place-items: center;
+      background: rgba(16, 185, 129, 0.12);
+      font-size: 18px; margin-bottom: 12px;
     }
-    .panel li:last-child { border-bottom: none; }
-    .panel li a { font-weight: 650; }
-    .panel li a:hover { color: var(--cyan); }
-    .panel li span { color: var(--dim); font-size: 12px; }
-
-    .promo {
-      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
-      gap: 12px; padding: 16px 18px;
-      border-radius: 16px;
-      background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(34,211,238,0.08));
-      border: 1px solid rgba(16,185,129,0.25);
-      margin-bottom: 28px;
+    .feat h3 {
+      font-size: 15px; font-weight: 800; letter-spacing: -0.02em;
+      margin-bottom: 6px;
     }
-    .promo strong { display: block; margin-bottom: 2px; }
-    .promo p { color: var(--muted); font-size: 13px; }
-    .promo a {
-      font-weight: 800; font-size: 13px;
-      background: linear-gradient(135deg, var(--accent), var(--cyan));
-      color: #022c22; padding: 10px 16px; border-radius: 11px;
-      white-space: nowrap;
+    .feat p {
+      font-size: 13.5px; color: var(--muted); line-height: 1.55;
+      flex: 1;
+    }
+    .feat .go {
+      margin-top: 12px;
+      font-size: 12.5px; font-weight: 700; color: var(--cyan);
     }
 
-    footer {
-      text-align: center; color: var(--dim); font-size: 12px;
-      padding: 8px 16px 40px;
-    }
-    footer a { color: var(--muted); margin: 0 5px; font-weight: 600; }
+    /* PART 1 ends mid-features — continue in part 2 */
   </style>
 </head>
 <body>
@@ -295,165 +273,294 @@
         <a class="on" href="index.html">Ana</a>
         <a href="stock.html">Hisseler</a>
         <a href="ai-analiz.html">AI</a>
-        <a href="portfolio.html">Portföy</a>
-        <a href="news.html">Haber</a>
+        <a href="radar.html">Pusula</a>
+        <a href="oyun.html">Lig</a>
         <a href="premium.html">Premium</a>
-        <a href="settings.html">Ayarlar</a>
+        <a href="about.html">Hakkımızda</a>
       </div>
       <div class="nav-right">
         <a class="btn btn-ghost" href="login.html">Giriş</a>
-        <a class="btn btn-primary" href="register.html">Kayıt</a>
+        <a class="btn btn-primary" href="register.html">Başla</a>
       </div>
     </nav>
 
     <main class="wrap">
       <section class="hero">
         <div>
-          <div class="eyebrow"><i></i> Nexora · tek panelden tüm araçlar</div>
-          <h1>Piyasayı izle,<br /><span>AI ile yorumla</span></h1>
+          <div class="eyebrow"><i></i> Piyasa zekâsı · sade deneyim</div>
+          <h1>Kararı sen ver.<br /><span>Tabloyu biz netleştirelim.</span></h1>
           <p class="hero-lead">
-            Hisse kartları, portföy, AI skor, haber, halka arz, temettü ve bilanço —
-            sade sayfalar, net bağlantılar.
+            Nexora AI; hisse kartları, yapay zekâ özeti, portföy takibi ve
+            sanal ligi aynı dilde birleştirir. Gürültüyü azaltır,
+            önemli olanı öne çıkarır — abartısız, okunur, karar öncesi yanınızda.
           </p>
           <div class="hero-actions">
-            <a class="btn btn-primary" href="stock.html">Hisselere git</a>
-            <a class="btn btn-ghost" href="ai-analiz.html">AI Analiz</a>
-            <a class="btn btn-ghost" href="portfolio.html">Portföy</a>
+            <a class="btn btn-primary" href="stock.html">Hisselere göz at</a>
+            <a class="btn btn-ghost" href="ai-analiz.html">AI özetini dene</a>
+            <a class="btn btn-violet" href="oyun.html">Lige katıl</a>
           </div>
+          <p class="hero-note">
+            İçerikler yatırım tavsiyesi değildir. Veriler gecikmeli olabilir.
+          </p>
         </div>
 
         <aside class="hero-card">
-          <h3>Yumuşak özet · sparkline</h3>
-          <canvas id="spark" width="400" height="100"></canvas>
-          <div class="mini-links">
-            <a href="stock.html?market=bist">BIST listesi</a>
-            <a href="premium.html">Pro / Elite</a>
-            <a href="halka-arz.html">Halka arz</a>
-            <a href="temettu.html">Temettü</a>
+          <div class="label">Canlı his · yumuşak ritim</div>
+          <canvas id="spark" width="420" height="110"></canvas>
+          <div class="mini-grid">
+            <a href="radar.html">Pusula görünümü</a>
+            <a href="heatmap.html">Isı haritası</a>
+            <a href="sinyaller.html">Sinyal merkezi</a>
+            <a href="premium.html">Pro &amp; Elite</a>
           </div>
         </aside>
       </section>
 
-      <div class="promo">
-        <div>
-          <strong>Pro $5 · Elite $15</strong>
-          <p>DAX, LSE ve daha fazlası — plan seçimi gerçekten kilit açar.</p>
-        </div>
-        <a href="premium.html">Planları gör</a>
+      <div class="strip">
+        <p>
+          <strong>Free ile başla.</strong> Pro ve Elite daha geniş piyasa alanı açar —
+          süs değil, gerçek erişim katmanı.
+        </p>
+        <a class="btn btn-primary" href="premium.html">Planları incele</a>
       </div>
 
-      <!-- TÜM SAYFALAR -->
       <section class="sec">
         <div class="sec-head">
           <div>
-            <h2>Site haritası</h2>
-            <p>Tüm sayfalar — tıkla, git</p>
+            <h2>Ne sunuyoruz?</h2>
+            <p>Takip, analiz, oyun ve topluluk — tek ekosistem.</p>
           </div>
         </div>
-        <div class="map">
-          <a href="index.html">
-            <div class="ic">🏠</div>
-            <h3>Ana Sayfa</h3>
-            <p>index.html</p>
+        <div class="features">
+          <a class="feat" href="stock.html">
+            <div class="ico">📈</div>
+            <h3>Hisse kartları</h3>
+            <p>Arama, skor çubuğu, risk etiketi ve detaylı görünüm. Piyasayı tararken kaybolma.</p>
+            <span class="go">Keşfet →</span>
           </a>
-          <a href="stock.html">
-            <div class="ic">📈</div>
-            <h3>Hisseler</h3>
-            <p>stock.html</p>
-          </a>
-          <a href="ai-analiz.html">
-            <div class="ic">🤖</div>
+          <a class="feat" href="ai-analiz.html">
+            <div class="ico">🤖</div>
             <h3>AI Analiz</h3>
-            <p>ai-analiz.html</p>
+            <p>Hisse bazlı skor ve yön özeti. Karmaşık jargon yerine okunur cümleler.</p>
+            <span class="go">Analiz et →</span>
           </a>
-          <a href="portfolio.html">
-            <div class="ic">💼</div>
-            <h3>Portföy</h3>
-            <p>portfolio.html</p>
+          <a class="feat" href="radar.html">
+            <div class="ico">🧭</div>
+            <h3>Nexora Pusulası</h3>
+            <p>Grafik sevmeyenler için tek ibre: güçleniyor mu, zayıflıyor mu?</p>
+            <span class="go">Pusulayı aç →</span>
           </a>
-          <a href="news.html">
-            <div class="ic">📰</div>
-            <h3>Haberler</h3>
-            <p>news.html</p>
+          <a class="feat" href="portfolio.html">
+            <div class="ico">💼</div>
+            <h3>Portföy takibi</h3>
+            <p>Alış ve adetle güncel kâr/zarar. Kendi pozisyonunu net gör.</p>
+            <span class="go">Portföye git →</span>
           </a>
-          <a href="halka-arz.html">
-            <div class="ic">🆕</div>
-            <h3>Halka Arz</h3>
-            <p>halka-arz.html</p>
+          <a class="feat" href="oyun.html">
+            <div class="ico">🏆</div>
+            <h3>Nexora Lig</h3>
+            <p>Sanal bakiye ile yarış. Kademe atla, günlük ödül ve Happy Hour ile ritmi bozma.</p>
+            <span class="go">Lige gir →</span>
           </a>
-          <a href="temettu.html">
-            <div class="ic">💰</div>
-            <h3>Temettü</h3>
-            <p>temettu.html</p>
+          <a class="feat" href="heatmap.html">
+            <div class="ico">🗺</div>
+            <h3>Isı haritası</h3>
+            <p>Günün yükselen ve düşenlerini renklerle tek bakışta oku.</p>
+            <span class="go">Haritayı gör →</span>
           </a>
-          <a href="bilanco.html">
-            <div class="ic">📋</div>
-            <h3>Bilanço</h3>
-            <p>bilanco.html</p>
+
+                  <a class="feat" href="balinalar.html">
+            <div class="ico">🐋</div>
+            <h3>Balina Avcısı</h3>
+            <p>Büyük hacimli hareketleri sade dil ve emoji ile izle. “Kim ne almış?” sorusuna hızlı bakış.</p>
+            <span class="go">Balinaları gör →</span>
           </a>
-          <a href="premium.html">
-            <div class="ic">⭐</div>
-            <h3>Premium</h3>
-            <p>premium.html</p>
+          <a class="feat" href="egitim.html">
+            <div class="ico">🎓</div>
+            <h3>Akademi</h3>
+            <p>Kısa testlerle öğren. Doğru bildikçe sanal lig bakiyen büyür — eğitim ile oyun yan yana.</p>
+            <span class="go">Öğrenmeye başla →</span>
           </a>
-          <a href="settings.html">
-            <div class="ic">⚙️</div>
-            <h3>Ayarlar</h3>
-            <p>settings.html</p>
+          <a class="feat" href="sinyaller.html">
+            <div class="ico">🔔</div>
+            <h3>Sinyal merkezi</h3>
+            <p>Takip listendeki olağanüstü hareketlerde Nexora uyarır. Panik değil, net hatırlatma.</p>
+            <span class="go">Uyarıları aç →</span>
           </a>
-          <a href="language.html">
-            <div class="ic">🌍</div>
-            <h3>Dil</h3>
-            <p>language.html</p>
+          <a class="feat" href="tahmin.html">
+            <div class="ico">🏛️</div>
+            <h3>Tahmin Arenası</h3>
+            <p>Günün sorusunu seç, akşam doğruysa sanal ödül kazan. Şans değil; takip ve muhakeme.</p>
+            <span class="go">Tahmin yap →</span>
           </a>
-          <a href="about.html">
-            <div class="ic">👤</div>
-            <h3>Hakkında</h3>
-            <p>about.html</p>
+          <a class="feat" href="makale.html">
+            <div class="ico">📝</div>
+            <h3>Onaylı makaleler</h3>
+            <p>Her yazı vitrine çıkmaz. Kurucu onaylı kalite; Büyük Usta unvanı nadir ve hak edilir.</p>
+            <span class="go">Yazıları oku →</span>
           </a>
-          <a href="login.html">
-            <div class="ic">🔑</div>
-            <h3>Giriş</h3>
-            <p>login.html</p>
+          <a class="feat" href="sohbet.html">
+            <div class="ico">💬</div>
+            <h3>Sohbet odaları</h3>
+            <p>Genel salon veya hisse odası. Küfür, siyaset ve manipülasyon filtrelenir; beğeni ile nabız.</p>
+            <span class="go">Sohbete gir →</span>
           </a>
-          <a href="register.html">
-            <div class="ic">✍️</div>
-            <h3>Kayıt</h3>
-            <p>register.html</p>
+          <a class="feat" href="profil.html">
+            <div class="ico">🎭</div>
+            <h3>Profil &amp; koleksiyon</h3>
+            <p>Puanla avatar, çerçeve ve isim stili aç. Vitrinin ligdeki yerin kadar konuşsun.</p>
+            <span class="go">Profilini düzenle →</span>
+          </a>
+          <a class="feat" href="ara.html">
+            <div class="ico">🔎</div>
+            <h3>Hızlı arama</h3>
+            <p>Sembol veya şirket adı yaz; karta, AI özetine veya portföye tek adımda geç.</p>
+            <span class="go">Ara →</span>
+          </a>
+          <a class="feat" href="news.html">
+            <div class="ico">📰</div>
+            <h3>Haber &amp; keşif</h3>
+            <p>Günün akışı, halka arz ve temettü gibi başlıklar ayrı sayfalarda düzenli durur.</p>
+            <span class="go">Haberlere bak →</span>
           </a>
         </div>
       </section>
 
-      <section class="sec dual">
-        <div class="panel">
-          <h3>Piyasa &amp; analiz</h3>
-          <ul>
-            <li><a href="stock.html?market=bist">BIST kartları</a><span>stock</span></li>
-            <li><a href="stock.html?market=nasdaq">NASDAQ</a><span>stock</span></li>
-            <li><a href="ai-analiz.html">Nexora AI skor</a><span>ai-analiz</span></li>
-            <li><a href="portfolio.html">Portföy K/Z</a><span>portfolio</span></li>
-          </ul>
+      <section class="sec">
+        <div class="sec-head">
+          <div>
+            <h2>Neden Nexora?</h2>
+            <p>Üç cümlede ürün felsefesi.</p>
+          </div>
         </div>
-        <div class="panel">
-          <h3>Haber &amp; şirket</h3>
-          <ul>
-            <li><a href="news.html">Haber akışı</a><span>news</span></li>
-            <li><a href="halka-arz.html">Halka arz takvimi</a><span>ipo</span></li>
-            <li><a href="temettu.html">Temettü</a><span>temettü</span></li>
-            <li><a href="bilanco.html">Bilanço özeti</a><span>bilanço</span></li>
-          </ul>
+        <div class="why">
+          <div class="why-card">
+            <h3>Netlik</h3>
+            <p>Kalabalık ekranlar yorar. Nexora önemli olanı öne çıkarır; karar yine senindir.</p>
+          </div>
+          <div class="why-card">
+            <h3>AI, abartısız</h3>
+            <p>Skor ve tek cümlelik özet; “garanti kazanç” dili yok. Güven, sakin anlatımdan gelir.</p>
+          </div>
+          <div class="why-card">
+            <h3>Öğren &amp; yarış</h3>
+            <p>Akademi, lig, tahmin arenası ve topluluk — piyasayı hem takip et hem içselleştir.</p>
+          </div>
         </div>
       </section>
+
+      <section class="sec cta-block">
+        <h2>Bir sonraki adım sizin</h2>
+        <p>
+          Hisseleri tara, bir sembolü AI ile oku veya sanal ligde yerini al.
+          Premium ile alanı genişletmek istersen planlar hazır.
+        </p>
+        <div class="hero-actions" style="justify-content:center">
+          <a class="btn btn-primary" href="register.html">Hesap oluştur</a>
+          <a class="btn btn-ghost" href="stock.html">Misafir keşfet</a>
+          <a class="btn btn-ghost" href="about.html">Hikâyemiz</a>
+        </div>
+      </section>
+
+      <div class="legal-box">
+        <strong>SPK uyarısı:</strong>
+        Burada yer alan yatırım bilgi, yorum ve tavsiyeleri yatırım danışmanlığı kapsamında değildir.
+        Yatırım danışmanlığı hizmeti, yetkili kuruluşlar tarafından kişilerin risk ve getiri tercihleri
+        dikkate alınarak kişiye özel sunulmaktadır. Bu sitedeki içerikler genel bilgilendirme amaçlıdır.
+        <br /><br />
+        <strong>Veri gecikmesi:</strong>
+        Gösterilen fiyatlar üçüncü taraf kaynaklardan gelir; resmi anlık veri yayını yerine geçmez.
+        Veriler gecikmeli olabilir. Karar vermeden önce resmi kaynakları kontrol edin.
+        <br /><br />
+        <a href="kvkk.html">KVKK</a> ·
+        <a href="gizlilik.html">Gizlilik</a> ·
+        <a href="about.html">Hakkımızda</a>
+      </div>
     </main>
 
     <footer>
-      Nexora AI · Ahmet Eymen Bakraç
-      <a href="about.html">Hakkında</a>
-      <a href="settings.html">Ayarlar</a>
-      <a href="premium.html">Premium</a>
-      <a href="language.html">Dil</a>
+      <div class="foot-inner">
+        <div>
+          <strong>Nexora AI</strong>
+          <span>Ahmet Eymen Bakraç</span>
+        </div>
+        <div class="foot-links">
+          <a href="premium.html">Premium</a>
+          <a href="egitim.html">Akademi</a>
+          <a href="oyun.html">Lig</a>
+          <a href="makale.html">Makaleler</a>
+          <a href="settings.html">Ayarlar</a>
+          <a href="kvkk.html">KVKK</a>
+        </div>
+      </div>
     </footer>
   </div>
+
+  <style>
+    /* 2. kısım stilleri */
+    .why {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 720px) { .why { grid-template-columns: 1fr; } }
+    .why-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px 16px;
+    }
+    .why-card h3 {
+      font-size: 15px; font-weight: 800; margin-bottom: 8px;
+    }
+    .why-card p { font-size: 13.5px; color: var(--muted); line-height: 1.6; margin: 0; }
+
+    .cta-block {
+      text-align: center;
+      padding: 32px 20px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(139,92,246,0.08));
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+    .cta-block h2 {
+      font-size: 1.35rem; font-weight: 800; letter-spacing: -0.03em;
+      margin-bottom: 10px;
+    }
+    .cta-block > p {
+      color: var(--muted); font-size: 15px; max-width: 480px;
+      margin: 0 auto 18px; line-height: 1.65;
+    }
+
+    .legal-box {
+      margin-top: 28px;
+      padding: 16px 18px;
+      border-radius: 14px;
+      background: rgba(251, 191, 36, 0.06);
+      border: 1px solid rgba(251, 191, 36, 0.2);
+      font-size: 12.5px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+    .legal-box strong { color: var(--amber); }
+    .legal-box a { color: var(--cyan); font-weight: 600; }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 22px 18px 40px;
+    }
+    .foot-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; flex-wrap: wrap; gap: 14px;
+      justify-content: space-between; align-items: center;
+    }
+    footer strong { display: block; font-size: 14px; }
+    footer span { font-size: 12px; color: var(--dim); }
+    .foot-links a {
+      font-size: 12.5px; font-weight: 600; color: var(--muted);
+      margin-left: 12px;
+    }
+    .foot-links a:hover { color: var(--text); }
+  </style>
 
   <script>
 (function () {
@@ -464,9 +571,9 @@
     var c = document.getElementById("bg");
     if (!c) return;
     var ctx = c.getContext("2d");
-    var dpr = Math.min(devicePixelRatio || 1, 2);
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
     var pts = [];
-    var N = 36;
+    var N = 34;
 
     function resize() {
       c.width = innerWidth * dpr;
@@ -482,8 +589,8 @@
       pts.push({
         x: Math.random() * innerWidth,
         y: Math.random() * innerHeight,
-        vx: (Math.random() - 0.5) * 0.25,
-        vy: (Math.random() - 0.5) * 0.25,
+        vx: (Math.random() - 0.5) * 0.22,
+        vy: (Math.random() - 0.5) * 0.22,
         r: 1 + Math.random() * 1.2
       });
     }
@@ -504,7 +611,7 @@
           d = Math.sqrt(dx * dx + dy * dy);
           if (d < 120) {
             ctx.beginPath();
-            ctx.strokeStyle = "rgba(16,185,129," + (0.08 * (1 - d / 120)).toFixed(3) + ")";
+            ctx.strokeStyle = "rgba(16,185,129," + (0.07 * (1 - d / 120)).toFixed(3) + ")";
             ctx.moveTo(pts[i].x, pts[i].y);
             ctx.lineTo(pts[j].x, pts[j].y);
             ctx.stroke();
@@ -513,7 +620,7 @@
       }
       for (i = 0; i < N; i++) {
         ctx.beginPath();
-        ctx.fillStyle = "rgba(34,211,238,0.4)";
+        ctx.fillStyle = "rgba(34,211,238,0.35)";
         ctx.arc(pts[i].x, pts[i].y, pts[i].r, 0, Math.PI * 2);
         ctx.fill();
       }
@@ -522,30 +629,29 @@
     requestAnimationFrame(frame);
   })();
 
-  /* soft sparkline (decorative, no API) */
+  /* decorative sparkline */
   (function () {
     var c = document.getElementById("spark");
     if (!c) return;
     var ctx = c.getContext("2d");
-    var dpr = Math.min(devicePixelRatio || 1, 2);
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
     var W = c.clientWidth || 400;
-    var H = 100;
+    var H = 110;
     c.width = W * dpr;
     c.height = H * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     var pts = [];
-    var n = 40;
-    var v = 50;
-    for (var i = 0; i < n; i++) {
-      v += (Math.random() - 0.48) * 4;
+    var v = 52;
+    for (var i = 0; i < 42; i++) {
+      v += (Math.random() - 0.48) * 3.5;
       pts.push(v);
     }
 
-    function draw(t) {
+    function draw() {
       var min = Math.min.apply(null, pts);
       var max = Math.max.apply(null, pts);
-      var pad = 8;
+      var pad = 10;
       ctx.clearRect(0, 0, W, H);
       ctx.beginPath();
       for (var i = 0; i < pts.length; i++) {
@@ -562,21 +668,13 @@
       ctx.closePath();
       ctx.fillStyle = "rgba(52,211,153,0.1)";
       ctx.fill();
-
-      /* soft drift */
-      pts.push(pts[pts.length - 1] + (Math.random() - 0.5) * 2.5);
+      pts.push(pts[pts.length - 1] + (Math.random() - 0.5) * 2.2);
       pts.shift();
       requestAnimationFrame(draw);
     }
     requestAnimationFrame(draw);
   })();
 })();
-</script>
-
-<script src="assets/js/secrets.js"></script>
-<script src="assets/js/api.js"></script>
-<script src="assets/js/nexora-ai.js"></script> <!-- varsa skorlu cevap -->
-<script src="assets/js/nexora-bubble.js"></script>
-  
+  </script>
 </body>
-</html>
+  </html>
