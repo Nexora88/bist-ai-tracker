@@ -4,101 +4,239 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ara · Nexora AI</title>
-  <meta name="description" content="BIST ve global hisselerde hızlı arama — kart veya AI analiz." />
+  <meta name="description" content="Hisse, sektör ve piyasa ara — Nexora AI hızlı arama." />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #060a12; --panel: rgba(15,23,42,.92); --border: rgba(148,163,184,.12);
-      --text: #f1f5f9; --muted: #94a3b8; --dim: #64748b; --accent: #10b981; --cyan: #22d3ee;
+      --bg: #060a12;
+      --panel: rgba(15, 23, 42, 0.92);
+      --border: rgba(148, 163, 184, 0.12);
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --dim: #64748b;
+      --accent: #10b981;
+      --cyan: #22d3ee;
+      --violet: #a78bfa;
+      --amber: #fbbf24;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: Inter, system-ui, sans-serif;
-      background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.5;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
     }
     a { color: inherit; text-decoration: none; }
-    button, input, select { font: inherit; color: inherit; border: none; background: none; }
+    button, input, select { font: inherit; color: inherit; border: none; background: none; cursor: pointer; }
 
     .nav {
+      position: sticky; top: 0; z-index: 40;
       height: 56px; display: flex; align-items: center; justify-content: space-between;
-      padding: 0 16px; border-bottom: 1px solid var(--border);
-      background: rgba(6,10,18,.92); position: sticky; top: 0; z-index: 20;
+      gap: 10px; padding: 0 16px;
+      background: rgba(6, 10, 18, 0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
     }
-    .brand { font-weight: 800; }
+    .brand { font-weight: 800; letter-spacing: -0.03em; }
     .brand em { font-style: normal; color: var(--accent); }
-    .nav a.back { font-size: 13px; font-weight: 600; color: var(--muted); }
+    .nav-links { display: flex; flex-wrap: wrap; gap: 2px; }
+    .nav-links a {
+      font-size: 13px; font-weight: 600; color: var(--muted);
+      padding: 7px 10px; border-radius: 9px;
+    }
+    .nav-links a:hover, .nav-links a.on { color: var(--text); background: rgba(255,255,255,0.05); }
+    @media (max-width: 900px) { .nav-links { display: none; } }
 
-    .wrap { max-width: 640px; margin: 0 auto; padding: 28px 16px 48px; }
+    .wrap { max-width: 760px; margin: 0 auto; padding: 28px 16px 56px; }
 
-    h1 { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.03em; }
+    .hero { text-align: center; margin-bottom: 22px; }
+    .badge {
+      display: inline-flex; gap: 8px; align-items: center;
+      font-size: 12px; font-weight: 700; color: var(--cyan);
+      background: rgba(34, 211, 238, 0.1);
+      border: 1px solid rgba(34, 211, 238, 0.28);
+      padding: 6px 12px; border-radius: 999px; margin-bottom: 14px;
+    }
+    h1 {
+      font-size: clamp(1.55rem, 3.5vw, 2.1rem);
+      font-weight: 800; letter-spacing: -0.04em; line-height: 1.15;
+      margin-bottom: 10px;
+    }
     h1 span {
       background: linear-gradient(90deg, var(--accent), var(--cyan));
       -webkit-background-clip: text; background-clip: text; color: transparent;
     }
-    .sub { color: var(--muted); font-size: 14px; margin: 8px 0 20px; }
+    .lead {
+      color: var(--muted); font-size: 15px; max-width: 440px;
+      margin: 0 auto; line-height: 1.65;
+    }
 
-    .search-box {
+    .search-shell {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 16px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      margin-bottom: 18px;
+    }
+    .search-row {
       display: flex; gap: 8px; flex-wrap: wrap;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 12px;
-      margin-bottom: 16px;
     }
-    .search-box input {
+    .search-row input {
       flex: 1; min-width: 160px;
-      background: rgba(30,41,59,.9);
+      background: rgba(30, 41, 59, 0.95);
       box-shadow: inset 0 0 0 1px var(--border);
-      border-radius: 11px;
-      padding: 12px 14px;
-      outline: none;
-      font-size: 15px;
-    }
-    .search-box input:focus { box-shadow: inset 0 0 0 1px rgba(16,185,129,.45); }
-    .search-box select {
-      background: rgba(30,41,59,.9);
-      box-shadow: inset 0 0 0 1px var(--border);
-      border-radius: 11px;
-      padding: 12px 12px;
-      cursor: pointer;
-    }
-
-    .list { display: flex; flex-direction: column; gap: 8px; }
-    .row {
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 10px; flex-wrap: wrap;
-      background: var(--panel);
-      border: 1px solid var(--border);
       border-radius: 14px;
-      padding: 12px 14px;
-      transition: border-color .15s;
+      padding: 14px 16px;
+      font-size: 16px;
+      outline: none;
     }
-    .row:hover { border-color: rgba(16,185,129,.35); }
-    .sym { font-weight: 800; font-size: 15px; }
-    .name { color: var(--muted); font-size: 12.5px; }
-    .actions { display: flex; gap: 6px; flex-wrap: wrap; }
+    .search-row input:focus {
+      box-shadow: inset 0 0 0 1px rgba(16,185,129,0.5);
+    }
+    .search-row select {
+      background: rgba(30, 41, 59, 0.95);
+      box-shadow: inset 0 0 0 1px var(--border);
+      border-radius: 14px;
+      padding: 14px 12px;
+      font-size: 14px;
+    }
     .btn {
-      display: inline-flex; padding: 8px 12px; border-radius: 9px;
-      font-size: 12.5px; font-weight: 700; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 14px 18px; border-radius: 14px;
+      font-size: 14px; font-weight: 700;
     }
     .btn-primary {
       background: linear-gradient(135deg, var(--accent), #059669);
       color: #022c22;
     }
     .btn-soft {
-      background: rgba(30,41,59,.95);
-      box-shadow: inset 0 0 0 1px var(--border);
+      background: rgba(30, 41, 59, 0.95);
       color: var(--text);
+      box-shadow: inset 0 0 0 1px var(--border);
+      padding: 8px 12px;
+      font-size: 12.5px;
+      border-radius: 10px;
+    }
+
+    .hint {
+      font-size: 12.5px; color: var(--dim);
+      margin-top: 10px; text-align: center;
+    }
+
+    .quick {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .quick button, .quick a {
+      font-size: 12.5px; font-weight: 700;
+      padding: 8px 12px; border-radius: 999px;
+      color: var(--muted);
+      background: rgba(30, 41, 59, 0.9);
+      box-shadow: inset 0 0 0 1px var(--border);
+    }
+    .quick button:hover, .quick a:hover {
+      color: var(--text);
+      border-color: rgba(16,185,129,0.35);
+    }
+
+    .status {
+      font-size: 13px; color: var(--dim);
+      margin-bottom: 10px;
+      min-height: 1.2em;
+    }
+
+    .results { display: flex; flex-direction: column; gap: 10px; }
+
+    .item {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 16px;
+      transition: border-color 0.15s, transform 0.15s;
+    }
+    .item:hover {
+      border-color: rgba(16, 185, 129, 0.35);
+      transform: translateY(-1px);
+    }
+    .item-top {
+      display: flex; flex-wrap: wrap;
+      justify-content: space-between; gap: 8px;
+      align-items: flex-start;
+      margin-bottom: 6px;
+    }
+    .item .sym {
+      font-size: 1.05rem; font-weight: 800; letter-spacing: -0.02em;
+    }
+    .item .mkt {
+      font-size: 11px; font-weight: 700; color: var(--dim);
+    }
+    .item .name {
+      font-size: 13.5px; color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .meta {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      margin-bottom: 12px;
+    }
+    .pill {
+      font-size: 11.5px; font-weight: 700;
+      padding: 4px 10px; border-radius: 999px;
+      background: rgba(30, 41, 59, 0.95);
+      color: var(--muted);
+      box-shadow: inset 0 0 0 1px var(--border);
+    }
+    .actions {
+      display: flex; flex-wrap: wrap; gap: 6px;
     }
 
     .empty {
-      text-align: center; color: var(--dim); padding: 32px 12px;
-      border: 1px dashed var(--border); border-radius: 14px; font-size: 14px;
+      text-align: center;
+      padding: 36px 16px;
+      border: 1px dashed var(--border);
+      border-radius: 16px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
     }
-    .hint { font-size: 12.5px; color: var(--dim); margin-top: 16px; line-height: 1.6; }
+    .empty strong { color: var(--text); }
+
+    .destinations {
+      margin-top: 28px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    @media (min-width: 560px) {
+      .destinations { grid-template-columns: repeat(4, 1fr); }
+    }
+    .dest {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 12px;
+      text-align: center;
+      transition: 0.15s;
+    }
+    .dest:hover {
+      border-color: rgba(16, 185, 129, 0.35);
+      transform: translateY(-2px);
+    }
+    .dest .ico { font-size: 1.25rem; margin-bottom: 6px; }
+    .dest .t { font-size: 13px; font-weight: 800; }
+    .dest .d { font-size: 11.5px; color: var(--dim); margin-top: 3px; }
+
+    .legal {
+      margin-top: 22px;
+      font-size: 12px; color: var(--dim); text-align: center; line-height: 1.55;
+    }
+    .legal a { color: var(--cyan); font-weight: 600; }
 
     footer {
-      text-align: center; font-size: 12px; color: var(--dim); padding: 12px 16px 32px;
+      text-align: center; color: var(--dim); font-size: 12px;
+      padding: 8px 16px 36px;
     }
     footer a { color: var(--muted); margin: 0 5px; font-weight: 600; }
   </style>
@@ -106,37 +244,101 @@
 <body>
   <nav class="nav">
     <a class="brand" href="index.html">Nexora <em>AI</em></a>
-    <a class="back" href="index.html">← Ana sayfa</a>
+    <div class="nav-links">
+      <a href="index.html">Ana</a>
+      <a href="stock.html">Hisseler</a>
+      <a class="on" href="ara.html">Ara</a>
+      <a href="ai-analiz.html">AI</a>
+      <a href="radar.html">Pusula</a>
+      <a href="premium.html">Premium</a>
+    </div>
+    <a class="btn btn-soft" href="stock.html">Kartlar</a>
   </nav>
 
   <main class="wrap">
-    <h1>Hisse <span>ara</span></h1>
-    <p class="sub">THYAO, EREGL, Apple… Yaz, karta veya AI analize git.</p>
+    <header class="hero">
+      <div class="badge">Hızlı bul · tek adımda devam et</div>
+      <h1>Ne arıyorsun?</h1>
+      <p class="lead">
+        Sembol, şirket adı veya sektör yaz.
+        Sonuçtan karta, AI özetine, pusulaya veya sohbete geç.
+      </p>
+    </header>
 
-    <div class="search-box">
-      <input id="q" type="search" placeholder="Sembol veya şirket adı" autocomplete="off" autofocus />
-      <select id="mkt">
-        <option value="bist">BIST</option>
-        <option value="nasdaq">NASDAQ</option>
-        <option value="nyse">NYSE</option>
-      </select>
+    <div class="search-shell">
+      <div class="search-row">
+        <input
+          id="q"
+          type="search"
+          placeholder="Örn: ASELS, THYAO, banka, Apple…"
+          autocomplete="off"
+          autofocus
+          enterkeyhint="search"
+        />
+        <select id="mkt">
+          <option value="bist">BIST</option>
+          <option value="nasdaq">NASDAQ</option>
+          <option value="nyse">NYSE</option>
+          <option value="all">Tümü</option>
+        </select>
+        <button type="button" class="btn btn-primary" id="btnGo">Ara</button>
+      </div>
+      <p class="hint">Yazarken sonuçlar güncellenir · en az 1 karakter</p>
     </div>
 
-    <div class="list" id="list">
-      <div class="empty">Aramaya başla — en az 1 karakter</div>
+    <div class="quick" id="quick">
+      <button type="button" data-q="ASELS">ASELS</button>
+      <button type="button" data-q="THYAO">THYAO</button>
+      <button type="button" data-q="GARAN">GARAN</button>
+      <button type="button" data-q="AAPL">AAPL</button>
+      <button type="button" data-q="savunma">Savunma</button>
+      <button type="button" data-q="banka">Banka</button>
+      <a href="heatmap.html">Isı haritası</a>
+      <a href="balinalar.html">Balinalar</a>
     </div>
 
-    <p class="hint">
-      Sonuçlar <code style="color:var(--cyan)">data/{piyasa}.json</code> içinden gelir.
-      Canlı fiyat için <a href="stock.html" style="color:var(--cyan)">Hisseler</a> detayına geç.
+    <div class="status" id="status"></div>
+    <div class="results" id="results">
+      <div class="empty">
+        <strong>Aramaya hazır.</strong><br />
+        Popüler sembollerden birini seç veya kutuya yazmaya başla.
+      </div>
+    </div>
+
+    <div class="destinations">
+      <a class="dest" href="stock.html">
+        <div class="ico">📈</div>
+        <div class="t">Hisseler</div>
+        <div class="d">Kart listesi</div>
+      </a>
+      <a class="dest" href="ai-analiz.html">
+        <div class="ico">🤖</div>
+        <div class="t">AI Analiz</div>
+        <div class="d">Skor &amp; özet</div>
+      </a>
+      <a class="dest" href="radar.html">
+        <div class="ico">🧭</div>
+        <div class="t">Pusula</div>
+        <div class="d">Basit yön</div>
+      </a>
+      <a class="dest" href="portfolio.html">
+        <div class="ico">💼</div>
+        <div class="t">Portföy</div>
+        <div class="d">Pozisyonların</div>
+      </a>
+    </div>
+
+    <p class="legal">
+      Arama sonuçları bilgilendirme amaçlıdır.
+      · <a href="kvkk.html">KVKK</a> · <a href="gizlilik.html">Gizlilik</a>
     </p>
   </main>
 
   <footer>
-    <a href="stock.html">Hisseler</a>
-    <a href="ai-analiz.html">AI Analiz</a>
-    <a href="kvkk.html">KVKK</a>
-    <a href="gizlilik.html">Gizlilik</a>
+    Nexora AI ·
+    <a href="index.html">Ana</a>
+    <a href="sinyaller.html">Sinyaller</a>
+    <a href="about.html">Hakkımızda</a>
   </footer>
 
   <script>
@@ -146,100 +348,174 @@
   var cache = {};
   var timer = null;
 
-  async function load(m) {
+  async function loadMarket(m) {
     if (cache[m]) return cache[m];
-    var res = await fetch("data/" + m + ".json", { cache: "no-store" });
-    if (!res.ok) throw new Error("JSON yok");
-    var data = await res.json();
-    cache[m] = Array.isArray(data) ? data : data.stocks || [];
-    return cache[m];
+    try {
+      var res = await fetch("data/" + m + ".json", { cache: "no-store" });
+      var data = await res.json();
+      var list = Array.isArray(data) ? data : data.stocks || [];
+      list.forEach(function (s) {
+        if (!s.market) s.market = m.toUpperCase();
+        s._m = m;
+      });
+      cache[m] = list;
+      return list;
+    } catch (e) {
+      cache[m] = [];
+      return [];
+    }
   }
 
-  function row(s, m) {
-    var stockUrl =
-      "stock.html?market=" + encodeURIComponent(m) +
-      "&symbol=" + encodeURIComponent(s.symbol);
-    var aiUrl =
-      "ai-analiz.html?symbol=" + encodeURIComponent(s.symbol) +
-      "&market=" + encodeURIComponent(m);
+  async function universe(mkt) {
+    if (mkt === "all") {
+      var a = await loadMarket("bist");
+      var b = await loadMarket("nasdaq");
+      var c = await loadMarket("nyse");
+      return a.concat(b, c);
+    }
+    return loadMarket(mkt);
+  }
+
+  function match(s, q) {
+    q = q.toLowerCase();
     return (
-      '<div class="row">' +
-        "<div>" +
-          '<div class="sym">' + (s.flag || "") + " " + s.symbol + "</div>" +
-          '<div class="name">' + (s.name || "") +
-          (s.sector ? " · " + s.sector : "") + "</div>" +
-        "</div>" +
-        '<div class="actions">' +
-          '<a class="btn btn-primary" href="' + stockUrl + '">Kart</a>' +
-          '<a class="btn btn-soft" href="' + aiUrl + '">AI</a>' +
-          '<a class="btn btn-soft" href="portfolio.html?add=' +
-            encodeURIComponent(s.symbol) + "&market=" + encodeURIComponent(m) +
-          '">Portföy</a>' +
-        "</div>" +
-      "</div>"
+      String(s.symbol).toLowerCase().indexOf(q) !== -1 ||
+      String(s.name || "").toLowerCase().indexOf(q) !== -1 ||
+      String(s.sector || "").toLowerCase().indexOf(q) !== -1
     );
   }
 
-  async function run() {
-    var q = (document.getElementById("q").value || "").trim().toLowerCase();
-    var m = document.getElementById("mkt").value;
-    var box = document.getElementById("list");
+  function scoreMatch(s, q) {
+    q = q.toLowerCase();
+    var sym = String(s.symbol).toLowerCase();
+    var name = String(s.name || "").toLowerCase();
+    if (sym === q) return 100;
+    if (sym.indexOf(q) === 0) return 80;
+    if (name.indexOf(q) === 0) return 60;
+    if (sym.indexOf(q) !== -1) return 40;
+    if (name.indexOf(q) !== -1) return 30;
+    if (String(s.sector || "").toLowerCase().indexOf(q) !== -1) return 20;
+    return 0;
+  }
+
+  function row(s) {
+    var m = s._m || String(s.market || "bist").toLowerCase();
+    return (
+      '<article class="item">' +
+      '<div class="item-top">' +
+      '<div class="sym">' +
+      (s.flag ? s.flag + " " : "") +
+      s.symbol +
+      "</div>" +
+      '<div class="mkt">' +
+      (s.market || m.toUpperCase()) +
+      "</div>" +
+      "</div>" +
+      '<div class="name">' +
+      (s.name || "") +
+      "</div>" +
+      '<div class="meta">' +
+      (s.sector ? '<span class="pill">' + s.sector + "</span>" : "") +
+      (s.aiScore != null ? '<span class="pill">AI ' + s.aiScore + "</span>" : "") +
+      (s.risk ? '<span class="pill">Risk ' + s.risk + "</span>" : "") +
+      "</div>" +
+      '<div class="actions">' +
+      '<a class="btn btn-soft" href="stock.html?symbol=' +
+      encodeURIComponent(s.symbol) +
+      "&market=" +
+      encodeURIComponent(m) +
+      '">Kart</a>' +
+      '<a class="btn btn-soft" href="ai-analiz.html?symbol=' +
+      encodeURIComponent(s.symbol) +
+      "&market=" +
+      encodeURIComponent(m) +
+      '">AI Analiz</a>' +
+      '<a class="btn btn-soft" href="radar.html?sembol=' +
+      encodeURIComponent(s.symbol) +
+      "&piyasa=" +
+      encodeURIComponent(m) +
+      '">Pusula</a>' +
+      '<a class="btn btn-soft" href="sohbet.html?oda=' +
+      encodeURIComponent(s.symbol) +
+      '">Sohbet</a>' +
+      '<a class="btn btn-soft" href="sinyaller.html?add=' +
+      encodeURIComponent(s.symbol) +
+      "&market=" +
+      encodeURIComponent(m) +
+      '">Takip</a>' +
+      "</div>" +
+      "</article>"
+    );
+  }
+
+  async function search() {
+    var q = (document.getElementById("q").value || "").trim();
+    var mkt = document.getElementById("mkt").value;
+    var box = document.getElementById("results");
+    var st = document.getElementById("status");
 
     if (!q) {
-      box.innerHTML = '<div class="empty">Aramaya başla — en az 1 karakter</div>';
+      st.textContent = "";
+      box.innerHTML =
+        '<div class="empty"><strong>Aramaya hazır.</strong><br />Popüler sembollerden birini seç veya kutuya yazmaya başla.</div>';
       return;
     }
 
-    box.innerHTML = '<div class="empty">Aranıyor…</div>';
-    try {
-      var stocks = await load(m);
-      var hits = stocks
-        .filter(function (s) {
-          return (
-            String(s.symbol).toLowerCase().indexOf(q) !== -1 ||
-            String(s.name || "").toLowerCase().indexOf(q) !== -1 ||
-            String(s.sector || "").toLowerCase().indexOf(q) !== -1
-          );
-        })
-        .slice(0, 30);
+    st.textContent = "Aranıyor…";
+    var list = await universe(mkt);
+    var hits = list
+      .filter(function (s) {
+        return match(s, q);
+      })
+      .map(function (s) {
+        return { s: s, sc: scoreMatch(s, q) };
+      })
+      .sort(function (a, b) {
+        return b.sc - a.sc;
+      })
+      .slice(0, 24)
+      .map(function (x) {
+        return x.s;
+      });
 
-      if (!hits.length) {
-        box.innerHTML = '<div class="empty">Sonuç yok</div>';
-        return;
-      }
-      box.innerHTML = hits.map(function (s) { return row(s, m); }).join("");
-    } catch (e) {
+    if (!hits.length) {
+      st.textContent = "Sonuç yok";
       box.innerHTML =
-        '<div class="empty">data/' + m + ".json yüklenemedi</div>";
+        '<div class="empty"><strong>Eşleşme bulunamadı.</strong><br />Yazımı kontrol et veya piyasayı değiştir.</div>';
+      return;
     }
+
+    st.textContent = hits.length + " sonuç";
+    box.innerHTML = hits.map(row).join("");
   }
 
-  document.getElementById("q").addEventListener("input", function () {
+  function debounced() {
     clearTimeout(timer);
-    timer = setTimeout(run, 180);
+    timer = setTimeout(search, 180);
+  }
+
+  document.getElementById("q").addEventListener("input", debounced);
+  document.getElementById("mkt").addEventListener("change", search);
+  document.getElementById("btnGo").addEventListener("click", search);
+  document.getElementById("q").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      search();
+    }
   });
-  document.getElementById("mkt").addEventListener("change", run);
+  document.getElementById("quick").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-q]");
+    if (!b) return;
+    document.getElementById("q").value = b.getAttribute("data-q");
+    search();
+  });
 
   var params = new URLSearchParams(location.search);
   if (params.get("q")) {
     document.getElementById("q").value = params.get("q");
+    search();
   }
-  if (params.get("market")) {
-    var sel = document.getElementById("mkt");
-    var m = params.get("market").toLowerCase();
-    if ([].some.call(sel.options, function (o) { return o.value === m; })) {
-      sel.value = m;
-    }
-  }
-  if (document.getElementById("q").value) run();
 })();
-
-</script>
-
-<script src="assets/js/secrets.js"></script>
-<script src="assets/js/api.js"></script>
-<script src="assets/js/nexora-ai.js"></script> <!-- varsa skorlu cevap -->
-<script src="assets/js/nexora-bubble.js"></script>
-  
+  </script>
 </body>
 </html>
