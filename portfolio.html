@@ -4,13 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Portföy · Nexora AI</title>
-  <meta name="description" content="Nexora portföy takibi — alış fiyatı, adet, güncel K/Z." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <meta name="description" content="Alış fiyatı ve adetle portföy takibi — kâr/zarar özeti, Nexora AI." />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
       --bg: #060a12;
-      --panel: rgba(15, 23, 42, 0.9);
+      --panel: rgba(15, 23, 42, 0.92);
       --border: rgba(148, 163, 184, 0.12);
       --text: #f1f5f9;
       --muted: #94a3b8;
@@ -18,6 +17,7 @@
       --accent: #10b981;
       --cyan: #22d3ee;
       --rose: #f87171;
+      --amber: #fbbf24;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -46,22 +46,36 @@
       padding: 7px 10px; border-radius: 9px;
     }
     .nav-links a:hover, .nav-links a.on { color: var(--text); background: rgba(255,255,255,0.05); }
-    @media (max-width: 820px) { .nav-links { display: none; } }
+    @media (max-width: 900px) { .nav-links { display: none; } }
 
-    .wrap { max-width: 960px; margin: 0 auto; padding: 20px 16px 48px; }
+    .wrap { max-width: 900px; margin: 0 auto; padding: 22px 16px 48px; }
 
-    h1 { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.03em; }
+    .badge {
+      display: inline-flex; gap: 8px; align-items: center;
+      font-size: 12px; font-weight: 700; color: var(--cyan);
+      background: rgba(34, 211, 238, 0.1);
+      border: 1px solid rgba(34, 211, 238, 0.25);
+      padding: 6px 12px; border-radius: 999px; margin-bottom: 12px;
+    }
+    h1 {
+      font-size: clamp(1.4rem, 3vw, 1.85rem);
+      font-weight: 800; letter-spacing: -0.03em;
+      margin-bottom: 8px;
+    }
     h1 span {
       background: linear-gradient(90deg, var(--accent), var(--cyan));
       -webkit-background-clip: text; background-clip: text; color: transparent;
     }
-    .sub { color: var(--muted); font-size: 13.5px; margin: 6px 0 16px; }
+    .lead {
+      color: var(--muted); font-size: 14.5px; max-width: 520px;
+      line-height: 1.65; margin-bottom: 18px;
+    }
 
     .summary {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 10px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
     @media (max-width: 600px) { .summary { grid-template-columns: 1fr; } }
     .box {
@@ -74,7 +88,10 @@
       font-size: 11px; font-weight: 700; color: var(--dim);
       text-transform: uppercase; letter-spacing: 0.04em;
     }
-    .box .val { font-size: 1.2rem; font-weight: 800; margin-top: 4px; }
+    .box .val {
+      font-size: 1.2rem; font-weight: 800; margin-top: 4px;
+      font-variant-numeric: tabular-nums;
+    }
     .up { color: #34d399; }
     .down { color: var(--rose); }
 
@@ -82,8 +99,8 @@
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 14px;
-      margin-bottom: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
     }
     .panel h2 {
       font-size: 12px; font-weight: 700; color: var(--muted);
@@ -93,7 +110,7 @@
 
     .form {
       display: grid;
-      grid-template-columns: 1.3fr 0.9fr 0.7fr 0.9fr auto;
+      grid-template-columns: 1.3fr 0.9fr 0.8fr 0.8fr auto;
       gap: 8px;
       align-items: end;
     }
@@ -102,7 +119,7 @@
       .form .go { grid-column: 1 / -1; }
     }
     .field label {
-      display: block; font-size: 11px; font-weight: 600;
+      display: block; font-size: 11px; font-weight: 650;
       color: var(--dim); margin-bottom: 4px;
     }
     .field input, .field select {
@@ -110,24 +127,20 @@
       background: rgba(30, 41, 59, 0.9);
       box-shadow: inset 0 0 0 1px var(--border);
       border-radius: 10px;
-      padding: 10px 12px;
+      padding: 11px 12px;
       outline: none;
     }
     .field input:focus { box-shadow: inset 0 0 0 1px rgba(16,185,129,0.45); }
 
     .suggest {
-      display: none;
-      margin-top: 6px;
-      background: #0b1220;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      max-height: 180px;
-      overflow: auto;
+      display: none; margin-top: 6px;
+      background: #0b1220; border: 1px solid var(--border);
+      border-radius: 10px; max-height: 160px; overflow: auto;
     }
     .suggest.show { display: block; }
     .suggest button {
       display: block; width: 100%; text-align: left;
-      padding: 9px 12px; font-size: 13px;
+      padding: 8px 12px; font-size: 13px;
     }
     .suggest button:hover { background: rgba(16,185,129,0.1); }
     .suggest .s { font-weight: 800; margin-right: 6px; }
@@ -135,7 +148,7 @@
 
     .btn {
       display: inline-flex; align-items: center; justify-content: center;
-      padding: 10px 14px; border-radius: 10px;
+      padding: 11px 14px; border-radius: 10px;
       font-size: 13px; font-weight: 700;
     }
     .btn-primary {
@@ -151,25 +164,26 @@
       background: rgba(248, 113, 113, 0.12);
       color: var(--rose);
       box-shadow: inset 0 0 0 1px rgba(248, 113, 113, 0.25);
-      padding: 6px 10px;
+      padding: 7px 10px;
       font-size: 12px;
     }
 
     .list { display: flex; flex-direction: column; gap: 8px; }
     .row {
       display: grid;
-      grid-template-columns: 1.2fr 0.8fr 0.8fr 0.9fr auto;
-      gap: 8px;
-      align-items: center;
-      background: var(--panel);
+      grid-template-columns: 1.2fr 0.7fr 0.8fr 0.9fr auto;
+      gap: 8px; align-items: center;
+      background: rgba(15, 23, 42, 0.65);
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 12px 14px;
       font-size: 13.5px;
     }
     @media (max-width: 700px) {
-      .row { grid-template-columns: 1fr 1fr; }
-      .row .act { grid-column: 1 / -1; }
+      .row {
+        grid-template-columns: 1fr 1fr;
+      }
+      .row .act { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; }
     }
     .row .sym { font-weight: 800; }
     .row .name { color: var(--muted); font-size: 12px; }
@@ -177,36 +191,65 @@
 
     .empty {
       text-align: center; color: var(--muted);
-      padding: 28px 12px; font-size: 14px;
-      border: 1px dashed var(--border); border-radius: 12px;
+      padding: 32px 12px;
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      font-size: 14px;
     }
+
+    .hint {
+      font-size: 12.5px; color: var(--dim); line-height: 1.55;
+      margin-top: 10px;
+    }
+
+    .toast {
+      position: fixed; left: 50%; bottom: 22px; z-index: 80;
+      transform: translateX(-50%) translateY(12px);
+      background: #0f172a; border: 1px solid rgba(16,185,129,0.35);
+      color: #a7f3d0; padding: 12px 16px; border-radius: 12px;
+      font-size: 13.5px; font-weight: 650;
+      opacity: 0; pointer-events: none; transition: 0.25s;
+      max-width: min(400px, calc(100vw - 24px)); text-align: center;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.err { border-color: rgba(248,113,113,0.45); color: #fecaca; }
+
+    .legal {
+      margin-top: 16px;
+      font-size: 12px; color: var(--dim); line-height: 1.55;
+    }
+    .legal a { color: var(--cyan); font-weight: 600; }
 
     footer {
       text-align: center; color: var(--dim); font-size: 12px;
-      padding: 8px 16px 32px;
+      padding: 8px 16px 36px;
     }
     footer a { color: var(--muted); margin: 0 5px; font-weight: 600; }
   </style>
 </head>
 <body>
+  <div class="toast" id="toast"></div>
+
   <nav class="nav">
     <a class="brand" href="index.html">Nexora <em>AI</em></a>
     <div class="nav-links">
-      <a href="index.html">Ana Sayfa</a>
+      <a href="index.html">Ana</a>
       <a href="stock.html">Hisseler</a>
-      <a href="ai-analiz.html">AI Analiz</a>
       <a class="on" href="portfolio.html">Portföy</a>
-      <a href="news.html">Haberler</a>
-      <a href="halka-arz.html">Halka Arz</a>
-      <a href="temettu.html">Temettü</a>
+      <a href="oyun.html">Lig</a>
+      <a href="ai-analiz.html">AI</a>
       <a href="premium.html">Premium</a>
     </div>
-    <a class="btn btn-soft" href="stock.html">Hisse ekle</a>
+    <a class="btn btn-soft" href="oyun.html">Sanal lig</a>
   </nav>
 
   <main class="wrap">
-    <h1>Portföy <span>takibi</span></h1>
-    <p class="sub">Alış fiyatı ve adet gir; güncel fiyat <code style="color:var(--cyan)">api.js</code> ile gelir. Veriler tarayıcıda saklanır.</p>
+    <div class="badge">Gerçek portföy takibi · tarayıcında saklanır</div>
+    <h1>Portföy <span>özeti</span></h1>
+    <p class="lead">
+      Alış fiyatı ve adet gir; güncel değer ve kâr/zarar otomatik hesaplanır.
+      Bu ekran sanal ligden ayrıdır — kendi gerçek (veya not ettiğin) pozisyonların için.
+    </p>
 
     <div class="summary">
       <div class="box">
@@ -218,7 +261,7 @@
         <div class="val" id="sumValue">—</div>
       </div>
       <div class="box">
-        <div class="lab">K / Z</div>
+        <div class="lab">Kâr / zarar</div>
         <div class="val" id="sumPl">—</div>
       </div>
     </div>
@@ -226,9 +269,9 @@
     <div class="panel">
       <h2>Pozisyon ekle</h2>
       <div class="form">
-        <div class="field" style="position:relative">
+        <div class="field">
           <label>Sembol</label>
-          <input id="sym" type="text" placeholder="ASELS, AAPL…" autocomplete="off" />
+          <input id="sym" type="text" placeholder="ASELS, THYAO…" autocomplete="off" />
           <div class="suggest" id="suggest"></div>
         </div>
         <div class="field">
@@ -241,32 +284,42 @@
         </div>
         <div class="field">
           <label>Adet</label>
-          <input id="qty" type="number" min="0" step="any" placeholder="10" />
+          <input id="qty" type="number" min="0" step="any" placeholder="100" />
         </div>
         <div class="field">
           <label>Alış fiyatı</label>
-          <input id="buy" type="number" min="0" step="any" placeholder="0.00" />
+          <input id="avg" type="number" min="0" step="any" placeholder="0.00" />
         </div>
         <div class="field go">
           <label>&nbsp;</label>
           <button type="button" class="btn btn-primary" id="btnAdd" style="width:100%">Ekle</button>
         </div>
       </div>
+      <p class="hint">
+        Aynı sembol tekrar eklenirse ortalama maliyet güncellenir.
+        Silmek için satırdaki kaldır düğmesini kullan.
+      </p>
     </div>
 
     <div class="panel">
       <h2>Pozisyonlar</h2>
       <div class="list" id="list">
-        <div class="empty">Henüz pozisyon yok</div>
+        <div class="empty">Henüz pozisyon yok — yukarıdan ekle</div>
       </div>
     </div>
+
+    <p class="legal">
+      Portföy özeti bilgilendirme içindir; yatırım tavsiyesi değildir. Fiyatlar gecikmeli olabilir.
+      · <a href="stock.html">Hisseler</a> · <a href="sinyaller.html">Sinyaller</a>
+      · <a href="kvkk.html">KVKK</a>
+    </p>
   </main>
 
   <footer>
     Nexora AI ·
-    <a href="stock.html">Hisseler</a>
-    <a href="ai-analiz.html">AI Analiz</a>
-    <a href="settings.html">Ayarlar</a>
+    <a href="oyun.html">Lig (sanal)</a>
+    <a href="ai-analiz.html">AI</a>
+    <a href="radar.html">Pusula</a>
   </footer>
 
   <script src="assets/js/secrets.js"></script>
@@ -276,22 +329,33 @@
   "use strict";
 
   var KEY = "nexora_portfolio_v1";
-  var catalog = {};   // market -> stocks[]
-  var positions = []; // {id, symbol, market, name, qty, buy, added}
+  var catalog = {};
+  var positions = [];
 
-  function uid() {
-    return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+  function toast(msg, err) {
+    var el = document.getElementById("toast");
+    el.textContent = msg;
+    el.className = "toast show" + (err ? " err" : "");
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function () {
+      el.classList.remove("show");
+    }, 2800);
+  }
+
+  function money(n, cur) {
+    if (n == null || !isFinite(n)) return "—";
+    var s = n.toLocaleString("tr-TR", { maximumFractionDigits: 2 });
+    return cur === "USD" ? "$" + n.toLocaleString("en-US", { maximumFractionDigits: 2 }) : s + " ₺";
   }
 
   function load() {
     try {
-      positions = JSON.parse(localStorage.getItem(KEY) || "[]");
-      if (!Array.isArray(positions)) positions = [];
+      var a = JSON.parse(localStorage.getItem(KEY) || "[]");
+      positions = Array.isArray(a) ? a : [];
     } catch (e) {
       positions = [];
     }
   }
-
   function save() {
     localStorage.setItem(KEY, JSON.stringify(positions));
   }
@@ -303,22 +367,16 @@
     return s;
   }
 
-  function money(n) {
-    if (n == null || !isFinite(n)) return "—";
-    return n.toLocaleString("en-US", { maximumFractionDigits: 2 });
-  }
-
-  async function loadCatalog(market) {
-    if (catalog[market]) return catalog[market];
+  async function loadCatalog(m) {
+    if (catalog[m]) return catalog[m];
     try {
-      var res = await fetch("data/" + market + ".json", { cache: "no-store" });
-      if (!res.ok) throw new Error("HTTP");
+      var res = await fetch("data/" + m + ".json", { cache: "no-store" });
       var data = await res.json();
-      catalog[market] = Array.isArray(data) ? data : data.stocks || [];
+      catalog[m] = Array.isArray(data) ? data : data.stocks || [];
     } catch (e) {
-      catalog[market] = [];
+      catalog[m] = [];
     }
-    return catalog[market];
+    return catalog[m];
   }
 
   function findName(symbol, market) {
@@ -346,8 +404,7 @@
       box.classList.remove("show");
       return;
     }
-    var list = catalog[market] || [];
-    var hits = list
+    var hits = (catalog[market] || [])
       .filter(function (s) {
         return (
           String(s.symbol).toLowerCase().indexOf(q) === 0 ||
@@ -362,9 +419,13 @@
     box.innerHTML = hits
       .map(function (s) {
         return (
-          '<button type="button" data-s="' + s.symbol + '">' +
-          '<span class="s">' + s.symbol + "</span>" +
-          '<span class="n">' + (s.name || "") + "</span></button>"
+          '<button type="button" data-s="' +
+          s.symbol +
+          '"><span class="s">' +
+          s.symbol +
+          '</span><span class="n">' +
+          (s.name || "") +
+          "</span></button>"
         );
       })
       .join("");
@@ -374,10 +435,11 @@
   async function render() {
     var box = document.getElementById("list");
     if (!positions.length) {
-      box.innerHTML = '<div class="empty">Henüz pozisyon yok</div>';
+      box.innerHTML = '<div class="empty">Henüz pozisyon yok — yukarıdan ekle</div>';
       document.getElementById("sumCost").textContent = "—";
       document.getElementById("sumValue").textContent = "—";
       document.getElementById("sumPl").textContent = "—";
+      document.getElementById("sumPl").className = "val";
       return;
     }
 
@@ -387,144 +449,168 @@
 
     for (var i = 0; i < positions.length; i++) {
       var p = positions[i];
-      var cost = Number(p.qty) * Number(p.buy);
+      var cost = p.avg * p.qty;
       totalCost += cost;
-
       var q = await quote(p.symbol, p.market);
       var price = q && q.price != null ? Number(q.price) : null;
-      var value = price != null ? price * Number(p.qty) : null;
-      if (value != null) totalValue += value;
-      var pl = value != null ? value - cost : null;
-      var plPct = pl != null && cost ? (pl / cost) * 100 : null;
+      var val = price != null ? price * p.qty : null;
+      if (val != null) totalValue += val;
+      var pl = val != null ? val - cost : null;
       var cls = pl == null ? "" : pl >= 0 ? "up" : "down";
       var sign = pl != null && pl > 0 ? "+" : "";
+      var cur = p.market === "bist" ? "TRY" : "USD";
 
       html.push(
-        '<div class="row" data-id="' + p.id + '">' +
+        '<div class="row">' +
           "<div>" +
-            '<div class="sym">' + p.symbol + "</div>" +
-            '<div class="name">' + (p.name || "") + " · " + (p.market || "").toUpperCase() + "</div>" +
+          '<div class="sym">' +
+          p.symbol +
+          "</div>" +
+          '<div class="name">' +
+          (p.name || "") +
+          " · " +
+          String(p.market || "").toUpperCase() +
+          "</div>" +
           "</div>" +
           "<div>" +
-            "<div>" + money(p.buy) + " × " + p.qty + "</div>" +
-            '<div class="muted">Maliyet ' + money(cost) + "</div>" +
+          "<div>" +
+          p.qty +
+          " adet</div>" +
+          '<div class="muted">Ort. ' +
+          money(p.avg, cur) +
+          "</div>" +
           "</div>" +
           "<div>" +
-            "<div>" + (price != null ? money(price) : "—") + "</div>" +
-            '<div class="muted">Güncel</div>' +
+          "<div>" +
+          (price != null ? money(price, cur) : "—") +
           "</div>" +
-          "<div class='" + cls + "'>" +
-            (pl != null
-              ? sign + money(pl) +
-                (plPct != null ? " <span class='muted'>(" + sign + plPct.toFixed(1) + "%)</span>" : "")
-              : "—") +
+          '<div class="muted">Güncel</div>' +
+          "</div>" +
+          '<div class="' +
+          cls +
+          '">' +
+          (pl != null ? sign + money(pl, cur) : "—") +
           "</div>" +
           '<div class="act">' +
-            '<button type="button" class="btn btn-danger" data-del="' + p.id + '">Sil</button> ' +
-            '<a class="btn btn-soft" href="stock.html?market=' +
-              encodeURIComponent(p.market) +
-              "&symbol=" +
-              encodeURIComponent(p.symbol) +
-              '">Detay</a>' +
+          '<a class="btn btn-soft" href="stock.html?symbol=' +
+          encodeURIComponent(p.symbol) +
+          "&market=" +
+          encodeURIComponent(p.market) +
+          '">Kart</a>' +
+          '<a class="btn btn-soft" href="ai-analiz.html?symbol=' +
+          encodeURIComponent(p.symbol) +
+          "&market=" +
+          encodeURIComponent(p.market) +
+          '">AI</a>' +
+          '<button type="button" class="btn btn-danger" data-del="' +
+          i +
+          '">Kaldır</button>' +
           "</div>" +
-        "</div>"
+          "</div>"
       );
 
-      await new Promise(function (r) { setTimeout(r, 80); });
+      await new Promise(function (r) {
+        setTimeout(r, 60);
+      });
     }
 
     box.innerHTML = html.join("");
 
+    var plAll = totalValue - totalCost;
     document.getElementById("sumCost").textContent = money(totalCost);
-    document.getElementById("sumValue").textContent =
-      totalValue ? money(totalValue) : "—";
-    var plAll = totalValue ? totalValue - totalCost : null;
+    document.getElementById("sumValue").textContent = totalValue
+      ? money(totalValue)
+      : "—";
     var el = document.getElementById("sumPl");
-    if (plAll == null) {
+    if (!totalValue) {
       el.textContent = "—";
       el.className = "val";
     } else {
-      var s = plAll > 0 ? "+" : "";
-      el.textContent = s + money(plAll);
+      el.textContent =
+        (plAll >= 0 ? "+" : "") +
+        money(plAll) +
+        " (" +
+        (plAll >= 0 ? "+" : "") +
+        ((plAll / totalCost) * 100).toFixed(2) +
+        "%)";
       el.className = "val " + (plAll >= 0 ? "up" : "down");
     }
   }
 
-  function add() {
+  function addPos() {
     var symbol = document.getElementById("sym").value.trim().toUpperCase();
     var market = document.getElementById("mkt").value;
     var qty = Number(document.getElementById("qty").value);
-    var buy = Number(document.getElementById("buy").value);
-    if (!symbol || !isFinite(qty) || qty <= 0 || !isFinite(buy) || buy <= 0) {
-      alert("Sembol, adet ve alış fiyatı gerekli.");
+    var avg = Number(document.getElementById("avg").value);
+
+    if (!symbol || symbol.length < 2) {
+      toast("Sembol yaz.", true);
       return;
     }
-    positions.push({
-      id: uid(),
-      symbol: symbol,
-      market: market,
-      name: findName(symbol, market),
-      qty: qty,
-      buy: buy,
-      added: Date.now()
+    if (!isFinite(qty) || qty <= 0) {
+      toast("Geçerli adet gir.", true);
+      return;
+    }
+    if (!isFinite(avg) || avg <= 0) {
+      toast("Geçerli alış fiyatı gir.", true);
+      return;
+    }
+
+    var existing = positions.find(function (p) {
+      return p.symbol === symbol && p.market === market;
     });
+    if (existing) {
+      var newQty = existing.qty + qty;
+      existing.avg = (existing.avg * existing.qty + avg * qty) / newQty;
+      existing.qty = newQty;
+      toast(symbol + " güncellendi (ortalama maliyet).");
+    } else {
+      positions.push({
+        symbol: symbol,
+        market: market,
+        name: findName(symbol, market),
+        qty: qty,
+        avg: avg,
+        addedAt: Date.now()
+      });
+      toast(symbol + " portföye eklendi.");
+    }
     save();
     document.getElementById("sym").value = "";
     document.getElementById("qty").value = "";
-    document.getElementById("buy").value = "";
+    document.getElementById("avg").value = "";
     document.getElementById("suggest").classList.remove("show");
     render();
   }
 
-  document.getElementById("btnAdd").addEventListener("click", add);
-
+  document.getElementById("btnAdd").addEventListener("click", addPos);
   document.getElementById("sym").addEventListener("input", function () {
     suggest(this.value, document.getElementById("mkt").value);
   });
-
   document.getElementById("mkt").addEventListener("change", async function () {
     await loadCatalog(this.value);
     suggest(document.getElementById("sym").value, this.value);
   });
-
   document.getElementById("suggest").addEventListener("click", function (e) {
     var b = e.target.closest("[data-s]");
     if (!b) return;
     document.getElementById("sym").value = b.getAttribute("data-s");
     document.getElementById("suggest").classList.remove("show");
   });
-
   document.getElementById("list").addEventListener("click", function (e) {
     var b = e.target.closest("[data-del]");
     if (!b) return;
-    var id = b.getAttribute("data-del");
-    positions = positions.filter(function (p) { return p.id !== id; });
+    var i = Number(b.getAttribute("data-del"));
+    if (!confirm("Bu pozisyon kaldırılsın mı?")) return;
+    positions.splice(i, 1);
     save();
+    toast("Pozisyon kaldırıldı.");
     render();
   });
 
-  /* boot */
   load();
-  loadCatalog("bist").then(function () {
-    var params = new URLSearchParams(location.search);
-    var addSym = params.get("add");
-    if (addSym) {
-      document.getElementById("sym").value = addSym.toUpperCase();
-      var m = (params.get("market") || "bist").toLowerCase();
-      var sel = document.getElementById("mkt");
-      if ([].some.call(sel.options, function (o) { return o.value === m; })) {
-        sel.value = m;
-        return loadCatalog(m);
-      }
-    }
-  }).then(render);
+  loadCatalog("bist").then(render);
 })();
-</script>
-
-<script src="assets/js/secrets.js"></script>
-<script src="assets/js/api.js"></script>
-<script src="assets/js/nexora-ai.js"></script> <!-- varsa skorlu cevap -->
-<script src="assets/js/nexora-bubble.js"></script>
-  
+  </script>
 </body>
 </html>
