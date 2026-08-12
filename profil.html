@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Profil &amp; Mağaza · Nexora AI</title>
+  <meta name="description" content="Nexora profilini özelleştir — avatar, çerçeve, isim stili. Puanlarla koleksiyon." />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #060a12;
+      --panel: rgba(15, 23, 42, 0.92);
+      --border: rgba(148, 163, 184, 0.12);
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --dim: #64748b;
+      --accent: #10b981;
+      --cyan: #22d3ee;
+      --violet: #a78bfa;
+      --amber: #fbbf24;
+      --rose: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Inter, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; color: inherit; border: none; background: none; cursor: pointer; }
+
+    .nav {
+      position: sticky; top: 0; z-index: 40;
+      height: 56px; display: flex; align-items: center; justify-content: space-between;
+      gap: 10px; padding: 0 16px;
+      background: rgba(6, 10, 18, 0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+    .brand { font-weight: 800; letter-spacing: -0.03em; }
+    .brand em { font-style: normal; color: var(--accent); }
+    .nav-links { display: flex; flex-wrap: wrap; gap: 2px; }
+    .nav-links a {
+      font-size: 13px; font-weight: 600; color: var(--muted);
+      padding: 7px 10px; border-radius: 9px;
+    }
+    .nav-links a:hover, .nav-links a.on { color: var(--text); background: rgba(255,255,255,0.05); }
+    @media (max-width: 900px) { .nav-links { display: none; } }
+
+    .wrap { max-width: 900px; margin: 0 auto; padding: 24px 16px 56px; }
+
+    .badge {
+      display: inline-flex; gap: 8px; align-items: center;
+      font-size: 12px; font-weight: 700; color: var(--amber);
+      background: rgba(251, 191, 36, 0.1);
+      border: 1px solid rgba(251, 191, 36, 0.28);
+      padding: 6px 12px; border-radius: 999px; margin-bottom: 12px;
+    }
+    h1 {
+      font-size: clamp(1.45rem, 3vw, 1.95rem);
+      font-weight: 800; letter-spacing: -0.03em;
+      margin-bottom: 8px;
+    }
+    h1 span {
+      background: linear-gradient(90deg, var(--amber), var(--violet), var(--cyan));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .lead { color: var(--muted); font-size: 15px; max-width: 520px; line-height: 1.65; margin-bottom: 20px; }
+
+    /* profile card */
+    .showcase {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 18px;
+      align-items: center;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 560px) {
+      .showcase { grid-template-columns: 1fr; text-align: center; justify-items: center; }
+    }
+
+    .avatar-ring {
+      width: 104px; height: 104px; border-radius: 50%;
+      padding: 4px;
+      background: #1e293b;
+      display: grid; place-items: center;
+    }
+    .avatar-ring.frame-none { background: #1e293b; }
+    .avatar-ring.frame-emerald {
+      background: linear-gradient(135deg, #10b981, #34d399, #059669);
+      box-shadow: 0 0 24px rgba(16, 185, 129, 0.35);
+    }
+    .avatar-ring.frame-diamond {
+      background: linear-gradient(135deg, #e0f2fe, #22d3ee, #a78bfa, #e0f2fe);
+      box-shadow: 0 0 28px rgba(34, 211, 238, 0.4);
+      animation: spinBorder 6s linear infinite;
+    }
+    .avatar-ring.frame-gold {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b, #fde68a);
+      box-shadow: 0 0 24px rgba(251, 191, 36, 0.35);
+    }
+    .avatar-ring.frame-matrix {
+      background: linear-gradient(135deg, #022c22, #10b981, #022c22);
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.45);
+    }
+    @keyframes spinBorder {
+      to { filter: hue-rotate(30deg); }
+    }
+    .avatar-inner {
+      width: 92px; height: 92px; border-radius: 50%;
+      background: #0b1220;
+      display: grid; place-items: center;
+      font-size: 2rem;
+    }
+
+    .name-line {
+      font-size: 1.35rem; font-weight: 800; letter-spacing: -0.03em;
+    }
+    .name-line.style-default { color: var(--text); }
+    .name-line.style-emerald { color: #34d399; }
+    .name-line.style-matrix {
+      color: #4ade80;
+      text-shadow: 0 0 12px rgba(74, 222, 128, 0.55);
+      font-family: ui-monospace, monospace;
+    }
+    .name-line.style-violet {
+      background: linear-gradient(90deg, #c4b5fd, #22d3ee);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .name-line.style-gold { color: #fbbf24; }
+
+    .sub-line { color: var(--muted); font-size: 13.5px; margin-top: 4px; }
+    .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .pill {
+      font-size: 11px; font-weight: 800;
+      padding: 4px 10px; border-radius: 999px;
+      background: rgba(30, 41, 59, 0.95);
+      color: var(--muted);
+      box-shadow: inset 0 0 0 1px var(--border);
+    }
+    .pill.hot {
+      background: rgba(167, 139, 250, 0.15);
+      color: #c4b5fd;
+    }
+
+    .points {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      margin-bottom: 18px;
+    }
+    .points .box {
+      flex: 1; min-width: 120px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 14px;
+    }
+    .points .lab {
+      font-size: 11px; font-weight: 700; color: var(--dim);
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .points .val {
+      font-size: 1.2rem; font-weight: 800; margin-top: 4px;
+      color: var(--amber);
+    }
+
+    .tabs {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      margin-bottom: 14px;
+    }
+    .tab {
+      font-size: 13px; font-weight: 700;
+      padding: 8px 14px; border-radius: 999px;
+      color: var(--muted);
+      background: rgba(30, 41, 59, 0.9);
+      box-shadow: inset 0 0 0 1px var(--border);
+    }
+    .tab.on {
+      color: #022c22;
+      background: linear-gradient(135deg, var(--amber), #f59e0b);
+      box-shadow: none;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .panel h2 {
+      font-size: 12px; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.04em;
+      margin-bottom: 12px;
+    }
+
+    .field { margin-bottom: 12px; }
+    .field label {
+      display: block; font-size: 12px; font-weight: 650;
+      color: var(--dim); margin-bottom: 5px;
+    }
+    .field input {
+      width: 100%; max-width: 320px;
+      background: rgba(30, 41, 59, 0.9);
+      box-shadow: inset 0 0 0 1px var(--border);
+      border-radius: 11px;
+      padding: 11px 12px;
+      outline: none;
+    }
+    .field input:focus { box-shadow: inset 0 0 0 1px rgba(16,185,129,0.45); }
+
+    .shop {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+    }
+    .item {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .item.owned { border-color: rgba(16, 185, 129, 0.35); }
+    .item.equipped {
+      border-color: rgba(251, 191, 36, 0.5);
+      box-shadow: 0 0 0 1px rgba(251, 191, 36, 0.15);
+    }
+    .item .preview {
+      height: 56px;
+      display: grid; place-items: center;
+      font-size: 1.6rem;
+      border-radius: 12px;
+      background: #0b1220;
+    }
+    .item h3 { font-size: 14px; font-weight: 800; }
+    .item p { font-size: 12.5px; color: var(--muted); flex: 1; line-height: 1.45; }
+    .item .price {
+      font-size: 13px; font-weight: 800; color: var(--amber);
+    }
+    .item .req {
+      font-size: 11.5px; color: var(--dim);
+    }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 9px 12px; border-radius: 10px;
+      font-size: 12.5px; font-weight: 700;
+      width: 100%;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #059669);
+      color: #022c22;
+    }
+    .btn-soft {
+      background: rgba(30, 41, 59, 0.95);
+      color: var(--text);
+      box-shadow: inset 0 0 0 1px var(--border);
+    }
+    .btn-amber {
+      background: rgba(251, 191, 36, 0.15);
+      color: var(--amber);
+      box-shadow: inset 0 0 0 1px rgba(251, 191, 36, 0.3);
+    }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .toast {
+      position: fixed; left: 50%; bottom: 22px; z-index: 80;
+      transform: translateX(-50%) translateY(12px);
+      background: #0f172a; border: 1px solid rgba(16,185,129,0.4);
+      color: #a7f3d0; padding: 12px 16px; border-radius: 12px;
+      font-size: 13.5px; font-weight: 700;
+      opacity: 0; pointer-events: none; transition: 0.25s;
+      max-width: min(400px, calc(100vw - 24px)); text-align: center;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.err { border-color: rgba(248,113,113,0.45); color: #fecaca; }
+
+    .howto {
+      font-size: 13.5px; color: var(--muted); line-height: 1.65;
+    }
+    .howto li { margin: 0 0 6px 18px; }
+    .howto strong { color: #e2e8f0; }
+
+    .legal {
+      margin-top: 14px; font-size: 12px; color: var(--dim); line-height: 1.55;
+    }
+    .legal a { color: var(--cyan); font-weight: 600; }
+
+    footer {
+      text-align: center; color: var(--dim); font-size: 12px;
+      padding: 8px 16px 36px;
+    }
+    footer a { color: var(--muted); margin: 0 5px; font-weight: 600; }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="toast" id="toast"></div>
+
+  <nav class="nav">
+    <a class="brand" href="index.html">Nexora <em>AI</em></a>
+    <div class="nav-links">
+      <a href="index.html">Ana</a>
+      <a href="oyun.html">Lig</a>
+      <a href="makale.html">Makaleler</a>
+      <a class="on" href="profil.html">Profil</a>
+      <a href="egitim.html">Akademi</a>
+      <a href="about.html">Hakkımızda</a>
+    </div>
+    <span class="btn btn-amber" id="pointsPill" style="width:auto">0 puan</span>
+  </nav>
+
+  <main class="wrap">
+    <div class="badge">🎭 Koleksiyon &amp; vitrin</div>
+    <h1>Profil <span>&amp; Mağaza</span></h1>
+    <p class="lead">
+      Lig, akademi ve arenadan biriken Nexora puanlarıyla avatar, çerçeve ve isim stili aç.
+      Vitrinin burada parlar — özellikle genç topluluk için sosyal katman.
+    </p>
+
+    <!-- SHOWCASE -->
+    <section class="showcase">
+      <div class="avatar-ring frame-none" id="ring">
+        <div class="avatar-inner" id="avatarFace">🦊</div>
+      </div>
+      <div>
+        <div class="name-line style-default" id="displayName">Gezgin</div>
+        <div class="sub-line" id="displaySub">Nexora üyesi</div>
+        <div class="badges" id="displayBadges"></div>
+      </div>
+    </section>
+
+    <div class="points">
+      <div class="box">
+        <div class="lab">Nexora puanı</div>
+        <div class="val" id="ptsVal">0</div>
+      </div>
+      <div class="box">
+        <div class="lab">Lig (yaklaşık)</div>
+        <div class="val" id="leagueVal" style="color:var(--cyan)">—</div>
+      </div>
+      <div class="box">
+        <div class="lab">Sahip olunan</div>
+        <div class="val" id="ownedVal" style="color:var(--text)">0</div>
+      </div>
+    </div>
+
+    <div class="tabs" id="tabs">
+      <button type="button" class="tab on" data-tab="edit">Kimlik</button>
+      <button type="button" class="tab" data-tab="shop">Mağaza</button>
+      <button type="button" class="tab" data-tab="how">Puan nasıl?</button>
+    </div>
+
+    <!-- EDIT -->
+    <section id="tab-edit">
+      <div class="panel">
+        <h2>Görünen ad</h2>
+        <div class="field">
+          <label>Takma ad (2–20 karakter)</label>
+          <input id="nameInput" type="text" maxlength="20" placeholder="Adın veya rumuzun" />
+        </div>
+        <button type="button" class="btn btn-primary" id="btnSaveName" style="width:auto">Kaydet</button>
+      </div>
+    </section>
+
+    <!-- SHOP -->
+    <section id="tab-shop" class="hidden">
+      <div class="panel">
+        <h2>Avatarlar</h2>
+        <div class="shop" id="shopAvatar"></div>
+      </div>
+      <div class="panel">
+        <h2>Çerçeveler</h2>
+        <div class="shop" id="shopFrame"></div>
+      </div>
+      <div class="panel">
+        <h2>İsim stilleri</h2>
+        <div class="shop" id="shopStyle"></div>
+      </div>
+    </section>
+
+    <!-- HOW -->
+    <section id="tab-how" class="hidden">
+      <div class="panel">
+        <h2>Puan kazanma</h2>
+        <ul class="howto">
+          <li><strong>Lig / oyun:</strong> Sanal portföy getirin ve lig kademen puan havuzunu besler.</li>
+          <li><strong>Akademi:</strong> Görev bitirmek XP ve dolaylı puan ekler.</li>
+          <li><strong>Tahmin Arenası:</strong> Doğru tahmin ödülü sanal bakiyeye gider; profil puanı da artar.</li>
+          <li><strong>Makale / Büyük Usta:</strong> Onaylı yazarlık ileride ekstra kilit açar (Elmas / unvan çerçeveleri).</li>
+          <li>Puanlar kozmetik içindir; yatırım tavsiyesi veya gerçek para değildir.</li>
+        </ul>
+      </div>
+    </section>
+
+    <p class="legal">
+      Kozmetik ürünler sanal koleksiyondur.
+      · <a href="oyun.html">Lig</a> · <a href="egitim.html">Akademi</a> · <a href="tahmin.html">Tahmin</a>
+    </p>
+  </main>
+
+  <footer>
+    Nexora AI ·
+    <a href="makale.html">Makaleler</a>
+    <a href="about.html">Hakkımızda</a>
+    <a href="index.html">Ana</a>
+  </footer>
+
+  <script>
+(function () {
+  "use strict";
+
+  var KEY = "nexora_profile_v1";
+  var GAME_KEY = "nexora_game_v2";
+  var ACADEMY_KEY = "nexora_academy_v1";
+  var ARENA_KEY = "nexora_arena_v1";
+  var ARTICLES_KEY = "nexora_articles_pub_v1";
+
+  var CATALOG = {
+    avatar: [
+      { id: "fox", name: "Tilki", emoji: "🦊", price: 0, desc: "Varsayılan dost." },
+      { id: "owl", name: "Baykuş", emoji: "🦉", price: 80, desc: "Gece analisti havası." },
+      { id: "rocket", name: "Roket", emoji: "🚀", price: 120, desc: "Momentum sevenler." },
+      { id: "whale", name: "Balina", emoji: "🐋", price: 200, desc: "Büyük hareket avcısı." },
+      { id: "crown", name: "Taç", emoji: "👑", price: 350, desc: "Lig zirvesi hayali.", needLeague: "elmas" },
+      { id: "dragon", name: "Ejder", emoji: "🐉", price: 400, desc: "Efsane koleksiyon." }
+    ],
+    frame: [
+      { id: "none", name: "Sade", price: 0, desc: "Çerçevesiz net görünüm.", className: "frame-none" },
+      { id: "emerald", name: "Zümrüt", price: 100, desc: "Yeşil ışık halkası.", className: "frame-emerald" },
+      { id: "gold", name: "Altın", price: 180, desc: "Sıcak lig ışıltısı.", className: "frame-gold" },
+      { id: "matrix", name: "Matrix", price: 220, desc: "Yeşil matris çerçevesi.", className: "frame-matrix" },
+      { id: "diamond", name: "Elmas", price: 500, desc: "Üst kademe parıltı.", className: "frame-diamond", needLeague: "elmas" }
+    ],
+    style: [
+      { id: "default", name: "Klasik", price: 0, desc: "Temiz beyaz isim.", className: "style-default" },
+      { id: "emerald", name: "Zümrüt yazı", price: 90, desc: "Yeşil vurgu.", className: "style-emerald" },
+      { id: "violet", name: "Neon mor", price: 140, desc: "Gradyan isim.", className: "style-violet" },
+      { id: "gold", name: "Altın yazı", price: 160, desc: "Lig şıklığı.", className: "style-gold" },
+      { id: "matrix", name: "Matrix yeşili", price: 250, desc: "Monospace + glow.", className: "style-matrix", needUsta: true }
+    ]
+  };
+
+  var LEAGUES = [
+    { id: "tahta", minPct: -Infinity },
+    { id: "bronz", minPct: 0 },
+    { id: "gumus", minPct: 5 },
+    { id: "altin", minPct: 12 },
+    { id: "platin", minPct: 25 },
+    { id: "elmas", minPct: 40 },
+    { id: "sampiyon", minPct: 60 }
+  ];
+
+  function toast(msg, err) {
+    var el = document.getElementById("toast");
+    el.textContent = msg;
+    el.className = "toast show" + (err ? " err" : "");
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function () {
+      el.classList.remove("show");
+    }, 2800);
+  }
+
+  function defaultProfile() {
+    return {
+      name: "Gezgin",
+      avatar: "fox",
+      frame: "none",
+      style: "default",
+      owned: {
+        avatar: ["fox"],
+        frame: ["none"],
+        style: ["default"]
+      },
+      spent: 0,
+      bonusPoints: 0
+    };
+  }
+
+  function loadProfile() {
+    try {
+      var p = JSON.parse(localStorage.getItem(KEY) || "null");
+      if (!p) return defaultProfile();
+      var d = defaultProfile();
+      return Object.assign(d, p, {
+        owned: Object.assign(d.owned, p.owned || {})
+      });
+    } catch (e) {
+      return defaultProfile();
+    }
+  }
+
+  function saveProfile(p) {
+    localStorage.setItem(KEY, JSON.stringify(p));
+  }
+
+  function gameEquity() {
+    try {
+      var g = JSON.parse(localStorage.getItem(GAME_KEY) || "null");
+      if (!g || typeof g.cash !== "number") return 100000;
+      var pos = 0;
+      // pozisyon değeri tarama olmadan ortalama maliyetle kabaca
+      if (Array.isArray(g.positions)) {
+        g.positions.forEach(function (x) {
+          pos += (Number(x.avg) || 0) * (Number(x.qty) || 0);
+        });
+      }
+      return g.cash + pos;
+    } catch (e) {
+      return 100000;
+    }
+  }
+
+  function leagueId() {
+    var retPct = ((gameEquity() - 100000) / 100000) * 100;
+    var cur = LEAGUES[0].id;
+    for (var i = 0; i < LEAGUES.length; i++) {
+      if (retPct >= LEAGUES[i].minPct) cur = LEAGUES[i].id;
+    }
+    return { id: cur, pct: retPct };
+  }
+
+  function leagueRankIndex(id) {
+    for (var i = 0; i < LEAGUES.length; i++) {
+      if (LEAGUES[i].id === id) return i;
+    }
+    return 0;
+  }
+
+  function hasUsta() {
+    try {
+      var pubs = JSON.parse(localStorage.getItem(ARTICLES_KEY) || "[]");
+      if (!Array.isArray(pubs)) return false;
+      var name = (loadProfile().name || "").toLowerCase();
+      return pubs.some(function (a) {
+        return (
+          a.rank === "usta" &&
+          String(a.author || "").toLowerCase() === name
+        );
+      });
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function computePoints(p) {
+    var pts = 40; // başlangıç
+    pts += Math.max(0, Math.floor((gameEquity() - 100000) / 500)); // lig getirisi
+    try {
+      var ac = JSON.parse(localStorage.getItem(ACADEMY_KEY) || "{}");
+      pts += (ac.done && ac.done.length ? ac.done.length : 0) * 35;
+      pts += Math.floor((ac.xp || 0) / 5);
+    } catch (e) {}
+    try {
+      var ar = JSON.parse(localStorage.getItem(ARENA_KEY) || "{}");
+      Object.keys(ar).forEach(function (k) {
+        if (ar[k] && ar[k].rewarded) pts += 60;
+      });
+    } catch (e) {}
+    pts += p.bonusPoints || 0;
+    pts -= p.spent || 0;
+    return Math.max(0, Math.floor(pts));
+  }
+
+  function canBuy(item, p, pts, league) {
+    if ((p.owned[item._type] || []).indexOf(item.id) !== -1) {
+      return { ok: false, reason: "owned" };
+    }
+    if (item.needLeague) {
+      if (leagueRankIndex(league.id) < leagueRankIndex(item.needLeague)) {
+        return { ok: false, reason: "Lig " + item.needLeague + " gerekir" };
+      }
+    }
+    if (item.needUsta && !hasUsta()) {
+      return { ok: false, reason: "Büyük Usta unvanı gerekir" };
+    }
+    if (pts < item.price) {
+      return { ok: false, reason: "Yetersiz puan" };
+    }
+    return { ok: true };
+  }
+
+  function renderShowcase(p) {
+    var av = CATALOG.avatar.find(function (x) {
+      return x.id === p.avatar;
+    }) || CATALOG.avatar[0];
+    var fr = CATALOG.frame.find(function (x) {
+      return x.id === p.frame;
+    }) || CATALOG.frame[0];
+    var st = CATALOG.style.find(function (x) {
+      return x.id === p.style;
+    }) || CATALOG.style[0];
+
+    document.getElementById("avatarFace").textContent = av.emoji;
+    var ring = document.getElementById("ring");
+    ring.className = "avatar-ring " + (fr.className || "frame-none");
+    var nameEl = document.getElementById("displayName");
+    nameEl.textContent = p.name || "Gezgin";
+    nameEl.className = "name-line " + (st.className || "style-default");
+
+    var L = leagueId();
+    document.getElementById("displaySub").textContent =
+      "Lig: " + L.id + " · Nexora koleksiyonu";
+
+    var badges = [];
+    badges.push('<span class="pill">Lig · ' + L.id + "</span>");
+    if (hasUsta()) badges.push('<span class="pill hot">👑 Büyük Usta</span>');
+    document.getElementById("displayBadges").innerHTML = badges.join("");
+  }
+
+  function renderShop(type, mountId, p, pts, league) {
+    var box = document.getElementById(mountId);
+    box.innerHTML = CATALOG[type]
+      .map(function (raw) {
+        var item = Object.assign({ _type: type }, raw);
+        var owned = (p.owned[type] || []).indexOf(item.id) !== -1;
+        var equipped =
+          (type === "avatar" && p.avatar === item.id) ||
+          (type === "frame" && p.frame === item.id) ||
+          (type === "style" && p.style === item.id);
+        var check = canBuy(item, p, pts, league);
+        var cls = "item" + (owned ? " owned" : "") + (equipped ? " equipped" : "");
+        var preview =
+          type === "avatar"
+            ? item.emoji
+            : type === "frame"
+            ? "◎"
+            : "Aa";
+        var btn;
+        if (equipped) {
+          btn = '<button type="button" class="btn btn-amber" disabled>Kuşanıldı</button>';
+        } else if (owned) {
+          btn =
+            '<button type="button" class="btn btn-primary" data-eq="' +
+            type +
+            '" data-id="' +
+            item.id +
+            '">Kuşan</button>';
+        } else if (!check.ok) {
+          btn =
+            '<button type="button" class="btn btn-soft" disabled>' +
+            (check.reason === "owned" ? "Sahip" : check.reason) +
+            "</button>";
+        } else {
+          btn =
+            '<button type="button" class="btn btn-primary" data-buy="' +
+            type +
+            '" data-id="' +
+            item.id +
+            '">Satın al</button>';
+        }
+        return (
+          '<div class="' +
+          cls +
+          '">' +
+          '<div class="preview">' +
+          preview +
+          "</div>" +
+          "<h3>" +
+          item.name +
+          "</h3>" +
+          "<p>" +
+          item.desc +
+          "</p>" +
+          '<div class="price">' +
+          (item.price === 0 ? "Ücretsiz" : item.price + " puan") +
+          "</div>" +
+          (item.needLeague || item.needUsta
+            ? '<div class="req">' +
+              (item.needLeague ? "Gerekli lig: " + item.needLeague + " " : "") +
+              (item.needUsta ? "· Büyük Usta" : "") +
+              "</div>"
+            : "") +
+          btn +
+          "</div>"
+        );
+      })
+      .join("");
+  }
+
+  function refresh() {
+    var p = loadProfile();
+    var pts = computePoints(p);
+    var L = leagueId();
+    document.getElementById("ptsVal").textContent = String(pts);
+    document.getElementById("pointsPill").textContent = pts + " puan";
+    document.getElementById("leagueVal").textContent = L.id;
+    var ownedN =
+      (p.owned.avatar || []).length +
+      (p.owned.frame || []).length +
+      (p.owned.style || []).length;
+    document.getElementById("ownedVal").textContent = String(ownedN);
+    document.getElementById("nameInput").value = p.name || "";
+    renderShowcase(p);
+    renderShop("avatar", "shopAvatar", p, pts, L);
+    renderShop("frame", "shopFrame", p, pts, L);
+    renderShop("style", "shopStyle", p, pts, L);
+  }
+
+  document.getElementById("btnSaveName").addEventListener("click", function () {
+    var n = document.getElementById("nameInput").value.trim();
+    if (n.length < 2) {
+      toast("Ad en az 2 karakter olmalı.", true);
+      return;
+    }
+    var p = loadProfile();
+    p.name = n.slice(0, 20);
+    saveProfile(p);
+    refresh();
+    toast("Profil adı güncellendi.");
+  });
+
+  document.getElementById("tabs").addEventListener("click", function (e) {
+    var t = e.target.closest("[data-tab]");
+    if (!t) return;
+    var id = t.getAttribute("data-tab");
+    document.querySelectorAll("#tabs .tab").forEach(function (x) {
+      x.classList.toggle("on", x === t);
+    });
+    ["edit", "shop", "how"].forEach(function (name) {
+      document.getElementById("tab-" + name).classList.toggle("hidden", name !== id);
+    });
+  });
+
+  document.body.addEventListener("click", function (e) {
+    var buy = e.target.closest("[data-buy]");
+    var eq = e.target.closest("[data-eq]");
+    var p = loadProfile();
+    var pts = computePoints(p);
+    var L = leagueId();
+
+    if (buy) {
+      var type = buy.getAttribute("data-buy");
+      var id = buy.getAttribute("data-id");
+      var item = CATALOG[type].find(function (x) {
+        return x.id === id;
+      });
+      if (!item) return;
+      item = Object.assign({ _type: type }, item);
+      var check = canBuy(item, p, pts, L);
+      if (!check.ok) {
+        toast(check.reason || "Satın alınamadı", true);
+        return;
+      }
+      p.owned[type] = p.owned[type] || [];
+      p.owned[type].push(id);
+      p.spent = (p.spent || 0) + item.price;
+      p[type === "avatar" ? "avatar" : type === "frame" ? "frame" : "style"] = id;
+      saveProfile(p);
+      toast(item.name + " envantere eklendi.");
+      refresh();
+      return;
+    }
+
+    if (eq) {
+      var t2 = eq.getAttribute("data-eq");
+      var id2 = eq.getAttribute("data-id");
+      if ((p.owned[t2] || []).indexOf(id2) === -1) return;
+      if (t2 === "avatar") p.avatar = id2;
+      if (t2 === "frame") p.frame = id2;
+      if (t2 === "style") p.style = id2;
+      saveProfile(p);
+      toast("Kuşanıldı.");
+      refresh();
+    }
+  });
+
+  refresh();
+})();
+  </script>
+</body>
+</html>
