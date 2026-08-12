@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tahmin Arenası · Nexora AI</title>
+  <meta name="description" content="Günün tahminini yap, akşam doğruysa sanal lig ödülü kazan — Nexora Tahmin Arenası." />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #060a12;
+      --panel: rgba(15, 23, 42, 0.92);
+      --border: rgba(148, 163, 184, 0.12);
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --dim: #64748b;
+      --accent: #10b981;
+      --cyan: #22d3ee;
+      --rose: #f87171;
+      --amber: #fbbf24;
+      --violet: #a78bfa;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Inter, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; color: inherit; border: none; background: none; cursor: pointer; }
+
+    .nav {
+      position: sticky; top: 0; z-index: 40;
+      height: 56px; display: flex; align-items: center; justify-content: space-between;
+      gap: 10px; padding: 0 16px;
+      background: rgba(6, 10, 18, 0.92);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+    .brand { font-weight: 800; letter-spacing: -0.03em; }
+    .brand em { font-style: normal; color: var(--accent); }
+    .nav-links { display: flex; flex-wrap: wrap; gap: 2px; }
+    .nav-links a {
+      font-size: 13px; font-weight: 600; color: var(--muted);
+      padding: 7px 10px; border-radius: 9px;
+    }
+    .nav-links a:hover, .nav-links a.on { color: var(--text); background: rgba(255,255,255,0.05); }
+    @media (max-width: 900px) { .nav-links { display: none; } }
+
+    .wrap { max-width: 720px; margin: 0 auto; padding: 24px 16px 56px; }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 12px; font-weight: 700; color: var(--violet);
+      background: rgba(167, 139, 250, 0.12);
+      border: 1px solid rgba(167, 139, 250, 0.3);
+      padding: 6px 12px; border-radius: 999px; margin-bottom: 12px;
+    }
+    h1 {
+      font-size: clamp(1.5rem, 3.2vw, 2rem);
+      font-weight: 800; letter-spacing: -0.03em; line-height: 1.15;
+      margin-bottom: 10px;
+    }
+    h1 span {
+      background: linear-gradient(90deg, var(--violet), var(--cyan));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .lead { color: var(--muted); font-size: 15px; max-width: 540px; line-height: 1.7; margin-bottom: 18px; }
+
+    .clock {
+      display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px;
+    }
+    .clock .box {
+      flex: 1; min-width: 140px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 14px;
+    }
+    .clock .lab {
+      font-size: 11px; font-weight: 700; color: var(--dim);
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .clock .val {
+      font-size: 1.15rem; font-weight: 800; margin-top: 4px;
+      font-variant-numeric: tabular-nums;
+    }
+    .clock .val.live { color: var(--cyan); }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px 16px;
+      margin-bottom: 14px;
+    }
+    .panel h2 {
+      font-size: 12px; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.04em;
+      margin-bottom: 10px;
+    }
+    .question {
+      font-size: 1.15rem; font-weight: 800; letter-spacing: -0.02em;
+      line-height: 1.35; margin-bottom: 8px;
+    }
+    .q-meta { font-size: 13px; color: var(--dim); margin-bottom: 16px; }
+
+    .options { display: flex; flex-direction: column; gap: 8px; }
+    .opt {
+      text-align: left;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: rgba(30, 41, 59, 0.85);
+      border: 1px solid var(--border);
+      font-size: 14px; font-weight: 700;
+      transition: 0.15s;
+    }
+    .opt:hover:not(:disabled) {
+      border-color: rgba(167, 139, 250, 0.45);
+      transform: translateY(-1px);
+    }
+    .opt.picked {
+      border-color: rgba(16, 185, 129, 0.5);
+      background: rgba(16, 185, 129, 0.12);
+      color: #6ee7b7;
+    }
+    .opt.win {
+      border-color: rgba(16, 185, 129, 0.6);
+      background: rgba(16, 185, 129, 0.16);
+      color: #6ee7b7;
+    }
+    .opt.lose {
+      opacity: 0.55;
+    }
+    .opt:disabled { cursor: default; }
+
+    .result {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 14px; font-weight: 650; line-height: 1.55;
+      display: none;
+    }
+    .result.show { display: block; }
+    .result.ok {
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #6ee7b7;
+    }
+    .result.bad {
+      background: rgba(248, 113, 113, 0.1);
+      border: 1px solid rgba(248, 113, 113, 0.28);
+      color: #fecaca;
+    }
+    .result.wait {
+      background: rgba(251, 191, 36, 0.1);
+      border: 1px solid rgba(251, 191, 36, 0.28);
+      color: #fde68a;
+    }
+
+    .rules {
+      font-size: 13.5px; color: var(--muted); line-height: 1.7;
+    }
+    .rules li { margin: 0 0 8px 18px; }
+    .rules strong { color: #e2e8f0; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 10px 14px; border-radius: 10px;
+      font-size: 13px; font-weight: 700;
+    }
+    .btn-soft {
+      background: rgba(30, 41, 59, 0.95);
+      color: var(--text);
+      box-shadow: inset 0 0 0 1px var(--border);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #059669);
+      color: #022c22;
+    }
+
+    .toast {
+      position: fixed; left: 50%; bottom: 22px; z-index: 80;
+      transform: translateX(-50%) translateY(12px);
+      background: #0f172a; border: 1px solid rgba(16,185,129,0.4);
+      color: #a7f3d0; padding: 12px 16px; border-radius: 12px;
+      font-size: 13.5px; font-weight: 700;
+      opacity: 0; pointer-events: none; transition: 0.25s;
+      max-width: min(400px, calc(100vw - 24px)); text-align: center;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.err { border-color: rgba(248,113,113,0.45); color: #fecaca; }
+
+    .legal {
+      margin-top: 16px; font-size: 12px; color: var(--dim); line-height: 1.55;
+    }
+    .legal a { color: var(--cyan); font-weight: 600; }
+
+    footer {
+      text-align: center; color: var(--dim); font-size: 12px;
+      padding: 8px 16px 36px;
+    }
+    footer a { color: var(--muted); margin: 0 5px; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="toast" id="toast"></div>
+
+  <nav class="nav">
+    <a class="brand" href="index.html">Nexora <em>AI</em></a>
+    <div class="nav-links">
+      <a href="index.html">Ana</a>
+      <a href="stock.html">Hisseler</a>
+      <a class="on" href="tahmin.html">Tahmin</a>
+      <a href="oyun.html">Lig</a>
+      <a href="egitim.html">Akademi</a>
+      <a href="about.html">Hakkımızda</a>
+    </div>
+    <a class="btn btn-soft" href="oyun.html">Sanal bakiye</a>
+  </nav>
+
+  <main class="wrap">
+    <div class="badge">🏛️ Günün sorusu · analiz ödüllendirilir</div>
+    <h1>Tahmin <span>Arenası</span></h1>
+    <p class="lead">
+      Sabah soruyu seç, akşam kapanışta sonuç açıklanır.
+      Doğru tahmin: <strong style="color:var(--text)">+500 ₺ sanal lig bakiyesi</strong>.
+      Şans oyunu değil — takip ve muhakeme.
+    </p>
+
+    <div class="clock">
+      <div class="box">
+        <div class="lab">Yerel saat</div>
+        <div class="val live" id="nowClock">—</div>
+      </div>
+      <div class="box">
+        <div class="lab">Tahmin penceresi</div>
+        <div class="val" id="phaseLabel">—</div>
+      </div>
+      <div class="box">
+        <div class="lab">Günün tarihi</div>
+        <div class="val" id="dayLabel">—</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Bugünün sorusu</h2>
+      <div class="question" id="qText">Yükleniyor…</div>
+      <div class="q-meta" id="qMeta">—</div>
+      <div class="options" id="options"></div>
+      <div class="result" id="result"></div>
+    </div>
+
+    <div class="panel">
+      <h2>Kurallar</h2>
+      <ul class="rules">
+        <li><strong>09:30’a kadar</strong> tahminini kilitleyebilirsin (yerel saat).</li>
+        <li><strong>09:30 – 18:15</strong> bekleme; seçim değiştirilemez.</li>
+        <li><strong>18:15 sonrası</strong> sonuç açıklanır; doğruysa +500 ₺ sanal ödül (günde bir kez).</li>
+        <li>Sonuç, tanımlı sembollerin günlük getirisine göre otomatik hesaplanır (veri alınabiliyorsa).</li>
+        <li>Veri yoksa o gün “sonuç bekleniyor” kalabilir — ödül uydurulmaz.</li>
+      </ul>
+    </div>
+
+    <p class="legal">
+      Eğlence / eğitim amaçlıdır; yatırım tavsiyesi değildir. Ödül gerçek para değildir.
+      · <a href="kvkk.html">KVKK</a> · <a href="gizlilik.html">Gizlilik</a>
+    </p>
+  </main>
+
+  <footer>
+    Nexora AI · Tahmin Arenası
+    <a href="oyun.html">Lig</a>
+    <a href="stock.html">Hisseler</a>
+    <a href="about.html">Hakkımızda</a>
+  </footer>
+
+  <script src="assets/js/secrets.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script>
+(function () {
+  "use strict";
+
+  var STORE = "nexora_arena_v1";
+  var GAME_KEY = "nexora_game_v2";
+  var REWARD = 500;
+  var OPEN_M = 9 * 60 + 30;   // 09:30 tahmin kilit
+  var CLOSE_M = 18 * 60 + 15; // 18:15 sonuç
+
+  /** Gün rotasyonu — soru bankası */
+  var BANK = [
+    {
+      id: "asels_thyao",
+      text: "Bugün hangisi daha çok yükselir?",
+      hint: "BIST · gün sonu getirisine göre",
+      options: [
+        { id: "ASELS", label: "ASELS (Aselsan)" },
+        { id: "THYAO", label: "THYAO (Türk Hava Yolları)" }
+      ],
+      mode: "symbol_vs",
+      market: "bist"
+    },
+    {
+      id: "garan_akbnk",
+      text: "Bankacılıkta günün göreli galibi kim?",
+      hint: "Günlük getiri karşılaştırması",
+      options: [
+        { id: "GARAN", label: "GARAN" },
+        { id: "AKBNK", label: "AKBNK" }
+      ],
+      mode: "symbol_vs",
+      market: "bist"
+    },
+    {
+      id: "sektor",
+      text: "Bugün BIST’te hangi tema daha güçlü kapanır?",
+      hint: "Temsilci hisselerin ortalaması",
+      options: [
+        { id: "savunma", label: "Savunma (ASELS)" },
+        { id: "havacilik", label: "Havacılık (THYAO)" },
+        { id: "perakende", label: "Perakende (BIMAS)" }
+      ],
+      mode: "sector_proxy",
+      market: "bist",
+      map: { savunma: "ASELS", havacilik: "THYAO", perakende: "BIMAS" }
+    },
+    {
+      id: "eregl_tuprs",
+      text: "Sanayi / enerji: günün yönü?",
+      hint: "İki sembol, tek kazanan",
+      options: [
+        { id: "EREGL", label: "EREGL" },
+        { id: "TUPRS", label: "TUPRS" }
+      ],
+      mode: "symbol_vs",
+      market: "bist"
+    }
+  ];
+
+  function toast(msg, err) {
+    var el = document.getElementById("toast");
+    el.textContent = msg;
+    el.className = "toast show" + (err ? " err" : "");
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function () {
+      el.classList.remove("show");
+    }, 3000);
+  }
+
+  function dayKey(d) {
+    d = d || new Date();
+    return (
+      d.getFullYear() +
+      "-" +
+      String(d.getMonth() + 1).padStart(2, "0") +
+      "-" +
+      String(d.getDate()).padStart(2, "0")
+    );
+  }
+
+  function minsNow() {
+    var d = new Date();
+    return d.getHours() * 60 + d.getMinutes();
+  }
+
+  function phase() {
+    var m = minsNow();
+    if (m < OPEN_M) return "open";      // tahmin yapılabilir
+    if (m < CLOSE_M) return "locked";   // bekle
+    return "settle";                    // sonuç
+  }
+
+  function phaseLabel(p) {
+    if (p === "open") return "Açık (09:30’a kadar)";
+    if (p === "locked") return "Kilitli — sonuç 18:15";
+    return "Sonuç zamanı";
+  }
+
+  function questionForDay(key) {
+    var idx = 0;
+    for (var i = 0; i < key.length; i++) idx = (idx + key.charCodeAt(i) * (i + 1)) % BANK.length;
+    return BANK[idx];
+  }
+
+  function loadState() {
+    try {
+      return JSON.parse(localStorage.getItem(STORE) || "{}");
+    } catch (e) {
+      return {};
+    }
+  }
+  function saveState(s) {
+    localStorage.setItem(STORE, JSON.stringify(s));
+  }
+
+  function dayState() {
+    var s = loadState();
+    var key = dayKey();
+    if (!s[key]) {
+      s[key] = {
+        pick: null,
+        settled: false,
+        winner: null,
+        rewarded: false,
+        scores: null
+      };
+      saveState(s);
+    }
+    return { all: s, day: s[key], key: key };
+  }
+
+  function ysym(sym, market) {
+    var x = String(sym).toUpperCase();
+    if (market === "bist" && x.indexOf(".") === -1) return x + ".IS";
+    return x;
+  }
+
+  async function pctOf(sym, market) {
+    if (!window.API || !API.getLiveQuote) return null;
+    try {
+      var q = await API.getLiveQuote(ysym(sym, market));
+      if (!q) return null;
+      var pct = Number(q.pct != null ? q.pct : q.changePercent);
+      return isFinite(pct) ? pct : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async function resolveWinner(Q) {
+    if (Q.mode === "symbol_vs") {
+      var scores = {};
+      var best = null;
+      var bestPct = -Infinity;
+      var any = false;
+      for (var i = 0; i < Q.options.length; i++) {
+        var id = Q.options[i].id;
+        var pct = await pctOf(id, Q.market);
+        scores[id] = pct;
+        if (pct != null) {
+          any = true;
+          if (pct > bestPct) {
+            bestPct = pct;
+            best = id;
+          }
+        }
+      }
+      if (!any) return { winner: null, scores: scores };
+      return { winner: best, scores: scores };
+    }
+    if (Q.mode === "sector_proxy") {
+      var scores2 = {};
+      var best2 = null;
+      var bestPct2 = -Infinity;
+      var any2 = false;
+      var keys = Object.keys(Q.map);
+      for (var j = 0; j < keys.length; j++) {
+        var optId = keys[j];
+        var sym = Q.map[optId];
+        var p = await pctOf(sym, Q.market);
+        scores2[optId] = p;
+        if (p != null) {
+          any2 = true;
+          if (p > bestPct2) {
+            bestPct2 = p;
+            best2 = optId;
+          }
+        }
+      }
+      if (!any2) return { winner: null, scores: scores2 };
+      return { winner: best2, scores: scores2 };
+    }
+    return { winner: null, scores: {} };
+  }
+
+  function creditReward() {
+    try {
+      var g = JSON.parse(localStorage.getItem(GAME_KEY) || "null");
+      if (!g || typeof g.cash !== "number") {
+        g = { cash: 100000, positions: [], lastDaily: "", lastHH: "", version: 2 };
+      }
+      g.cash = Math.round((g.cash + REWARD) * 100) / 100;
+      localStorage.setItem(GAME_KEY, JSON.stringify(g));
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function paintClock() {
+    var d = new Date();
+    document.getElementById("nowClock").textContent =
+      String(d.getHours()).padStart(2, "0") +
+      ":" +
+      String(d.getMinutes()).padStart(2, "0") +
+      ":" +
+      String(d.getSeconds()).padStart(2, "0");
+    document.getElementById("phaseLabel").textContent = phaseLabel(phase());
+    document.getElementById("dayLabel").textContent = dayKey();
+  }
+
+  function render() {
+    var st = dayState();
+    var Q = questionForDay(st.key);
+    var p = phase();
+
+    document.getElementById("qText").textContent = Q.text;
+    document.getElementById("qMeta").textContent =
+      Q.hint + " · soru kodu " + Q.id;
+
+    var box = document.getElementById("options");
+    box.innerHTML = Q.options
+      .map(function (o) {
+        var cls = "opt";
+        if (st.day.pick === o.id) cls += " picked";
+        if (st.day.settled && st.day.winner === o.id) cls += " win";
+        if (
+          st.day.settled &&
+          st.day.pick &&
+          st.day.pick !== st.day.winner &&
+          st.day.pick === o.id
+        )
+          cls += " lose";
+        var disabled = p !== "open" || st.day.pick;
+        if (st.day.settled) disabled = true;
+        return (
+          '<button type="button" class="' +
+          cls +
+          '" data-id="' +
+          o.id +
+          '"' +
+          (disabled ? " disabled" : "") +
+          ">" +
+          o.label +
+          (st.day.scores && st.day.scores[o.id] != null
+            ? ' <span style="font-weight:600;color:#94a3b8">· %' +
+              Number(st.day.scores[o.id]).toFixed(2) +
+              "</span>"
+            : "") +
+          "</button>"
+        );
+      })
+      .join("");
+
+    var res = document.getElementById("result");
+    res.className = "result";
+    if (st.day.pick && p === "open") {
+      res.className = "result show wait";
+      res.textContent =
+        "Tahminin kilitlendi: " +
+        st.day.pick +
+        ". 09:30’dan sonra değiştirilemez; sonuç 18:15’te.";
+    } else if (st.day.pick && p === "locked") {
+      res.className = "result show wait";
+      res.textContent =
+        "Seçimin: " +
+        st.day.pick +
+        ". Piyasa açık — akşam kapanışta otomatik sonuç.";
+    } else if (st.day.settled) {
+      if (st.day.winner == null) {
+        res.className = "result show wait";
+        res.textContent =
+          "Bugün fiyat verisi alınamadı; sonuç ve ödül netleşmedi. Daha sonra yeniden dene.";
+      } else if (st.day.pick === st.day.winner) {
+        res.className = "result show ok";
+        res.textContent = st.day.rewarded
+          ? "Doğru tahmin! +500 ₺ sanal ödül bakiyene işlendi. Lig ekranından kontrol edebilirsin."
+          : "Doğru tahmin! Ödül işleniyor…";
+      } else {
+        res.className = "result show bad";
+        res.textContent =
+          "Bu tur kaçtı. Kazanan: " +
+          st.day.winner +
+          (st.day.pick ? " · senin seçimin: " + st.day.pick : "") +
+          ". Yarın yeni soru.";
+      }
+    } else if (p === "open") {
+      res.className = "result show wait";
+      res.textContent = "Bir seçenek işaretle — 09:30’a kadar süren var.";
+    } else if (p === "locked" && !st.day.pick) {
+      res.className = "result show bad";
+      res.textContent = "Bugünkü tahmin penceresi kapandı; seçim yapmamışsın.";
+    } else {
+      res.className = "result";
+      res.textContent = "";
+    }
+  }
+
+  async function trySettle() {
+    if (phase() !== "settle") return;
+    var st = dayState();
+    if (st.day.settled && st.day.winner != null) return;
+
+    var Q = questionForDay(st.key);
+    var resolved = await resolveWinner(Q);
+    st.day.scores = resolved.scores;
+    st.day.winner = resolved.winner;
+    st.day.settled = true;
+
+    if (
+      resolved.winner != null &&
+      st.day.pick === resolved.winner &&
+      !st.day.rewarded
+    ) {
+      if (creditReward()) {
+        st.day.rewarded = true;
+        toast("+500 ₺ sanal ödül — doğru tahmin!");
+      }
+    }
+    st.all[st.key] = st.day;
+    saveState(st.all);
+    render();
+  }
+
+  document.getElementById("options").addEventListener("click", function (e) {
+    var btn = e.target.closest("[data-id]");
+    if (!btn || btn.disabled) return;
+    if (phase() !== "open") {
+      toast("Tahmin penceresi kapalı.", true);
+      return;
+    }
+    var st = dayState();
+    if (st.day.pick) {
+      toast("Bugün zaten seçim yaptın.", true);
+      return;
+    }
+    st.day.pick = btn.getAttribute("data-id");
+    st.all[st.key] = st.day;
+    saveState(st.all);
+    toast("Tahmin kilitlendi: " + st.day.pick);
+    render();
+  });
+
+  function tick() {
+    paintClock();
+    var p = phase();
+    if (p === "settle") trySettle();
+    else render();
+  }
+
+  tick();
+  setInterval(tick, 1000);
+})();
+  </script>
+</body>
+</html>
