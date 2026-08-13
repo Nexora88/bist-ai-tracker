@@ -1,4 +1,4 @@
-/* Nexora API — tarayıcı sadece Supabase Edge Function çağırır */
+/* Nexora API — sadece Supabase Edge Function */
 (function (global) {
   "use strict";
 
@@ -7,15 +7,16 @@
 
   function fnUrl(name) {
     var base = String(cfg.supabaseUrl || "").replace(/\/$/, "");
-    return base + "/functions/v1/" + name;
+    var fn = String(name || "").replace(/^\//, "");
+    return base + "/functions/v1/" + fn;
   }
 
   async function callFn(name, body) {
-    var url = fnUrl(name);
     if (!cfg.supabaseUrl || !cfg.supabaseAnonKey) {
-      console.warn("Nexora: supabaseUrl / supabaseAnonKey eksik (secrets.js)");
+      console.warn("[Nexora] secrets.js: supabaseUrl veya supabaseAnonKey eksik");
       return null;
     }
+    var url = fnUrl(name);
     try {
       var res = await fetch(url, {
         method: "POST",
@@ -26,32 +27,31 @@
         },
         body: JSON.stringify(body || {})
       });
-      if (!res.ok) {
-        console.error("🔒 [NEXORA AEGIS]: Sunucu yanıt vermedi, Durum kuralı:", res.status);
+      var text = await res.text();
+      var data = null;
+      try {
+        data = text ? JSON.parse(text) : null;
+      } catch (e) {
+        console.warn("[Nexora] JSON parse", url, text.slice(0, 120));
         return null;
       }
-      return await res.json();
+      if (!res.ok) {
+        console.warn("[Nexora] HTTP", res.status, url, data);
+        return null;
+      }
+      return data;
     } catch (e) {
-      console.error("🔒 [NEXORA AEGIS NETWORK ERR]: Bağlantı koptu:", e);
+      console.warn("[Nexora] fetch hata", url, e);
       return null;
     }
   }
 
-  /** Canlı / gecikmeli fiyat */
   API.getLiveQuote = async function (symbol) {
     if (!symbol) return null;
-    
-    // HATA ÇÖZÜMÜ: Doğrudan senin canlı fonksiyon adın olan super-worker çağrılıyor
-    var data = await callFn(cfg.functionQuote || "super-worker", {
-      symbol: String(symbol).toUpperCase().trim(),
-      history: false // Sadece anlık fiyat istiyoruz
+    var data = await callFn(cfg.functionQuote || "market-quote", {
+      symbol: String(symbol).toUpperCase().trim()
     });
-    
-    if (!data || data.error) {
-      console.warn("⚠️ [NEXORA]: Canlı fiyat verisi sunucudan boş döndü.");
-      return null;
-    }
-    
+    if (!data || data.error) return null;
     return {
       symbol: data.symbol || symbol,
       price: data.price != null ? Number(data.price) : null,
@@ -60,33 +60,22 @@
     };
   };
 
-  /** Basit geçmiş (Deno Edge Function tam uyumlu) */
   API.getHistory = async function (symbol, range) {
     if (!symbol) return null;
-    
-    // HATA ÇÖZÜMÜ: Senin koddaki body.history tetikleyicisini TRUE olarak tam POST gövdesine veriyoruz
-    var data = await callFn(cfg.functionQuote || "super-worker", {
+    var data = await callFn(cfg.functionQuote || "market-quote", {
       symbol: String(symbol).toUpperCase().trim(),
       history: true,
       range: range || "1mo"
     });
-    
-    if (!data || !Array.isArray(data.history)) {
-      console.warn("⚠️ [NEXORA]: Grafik geçmiş veri dizisi sunucudan alınamadı.");
-      return null;
-    }
-    
+    if (!data || !Array.isArray(data.history)) return null;
     return data.history;
   };
 
-  /** Haber akışı */
   API.getNews = async function (opts) {
     opts = opts || {};
-    // Eğer haberler için ayrı bir fonksiyon açmadıysan, şimdilik bunu da super-worker karşılayabilir
-    var data = await callFn(cfg.functionNews || "super-worker", {
+    var data = await callFn(cfg.functionNews || "market-news", {
       limit: opts.limit || 20,
-      q: opts.q || "",
-      newsRequest: true // Sunucu tarafında ileride filtrelemek istersen diye ekledim
+      q: opts.q || ""
     });
     if (!data) return [];
     if (Array.isArray(data.articles)) return data.articles;
