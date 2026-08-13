@@ -1,8 +1,12 @@
+/* Nexora — istemci ayarları (gizli API anahtarı YOK) */
+window.NEXORA_CONFIG = {
+  // Project Settings → API → Project URL
+  supabaseUrl: "https://ckxgbmvjehshgicafsjp.supabase.co",
 
-window.API_KEYS = {
-  finnhub: "d92gf21r01qraam0tf4gd92gf21r01qraam0tf50",
-  twelveData: "f021e2f611c34dd892d465af169f4ae2",
-  financialModelingPrep: "CWDeXaxEfJV1DvQkBDHfV8bFVucP8bJU",
-  marketaux: "vIiPs8xITBAdwaddFRfn3oVI0rlMl44l27Gi6v31",
-  newsApi: "687c3fb1e0dc4a828c49871cca489916"
+  // Project Settings → API → anon public (gizli service_role DEĞİL)
+  supabaseAnonKey: "sb_publishable_J370jM_6LUMXGfwGfbWK0Q_nR0I6NA2",
+
+  // Edge Function adın
+  functionQuote: "market-quote",
+  functionNews: "market-news"
 };
