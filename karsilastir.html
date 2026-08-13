@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Karşılaştır · Nexora AI</title>
+  <meta name="description" content="İki veya üç hisseyi yan yana karşılaştır — F/K, hacim, 52 hafta, piyasa değeri." />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #060a12; --panel: rgba(15,23,42,.94); --border: rgba(148,163,184,.12);
+      --text: #f1f5f9; --muted: #94a3b8; --dim: #64748b;
+      --accent: #10b981; --cyan: #22d3ee; --rose: #f87171; --amber: #fbbf24;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Inter, system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.5; }
+    a { color: inherit; text-decoration: none; }
+    button, input, select { font: inherit; color: inherit; border: none; background: none; cursor: pointer; }
+
+    .nav {
+      position: sticky; top: 0; z-index: 40; height: 56px;
+      display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0 14px;
+      background: rgba(6,10,18,.94); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border);
+    }
+    .brand { font-weight: 800; letter-spacing: -.03em; }
+    .brand em { font-style: normal; color: var(--accent); }
+    .nav-links { display: none; gap: 2px; }
+    @media (min-width: 900px) {
+      .nav-links { display: flex; }
+      .nav-links a { font-size: 13px; font-weight: 600; color: var(--muted); padding: 7px 10px; border-radius: 9px; }
+      .nav-links a:hover, .nav-links a.on { color: var(--text); background: rgba(255,255,255,.05); }
+    }
+
+    .wrap { max-width: 1000px; margin: 0 auto; padding: 20px 14px 48px; }
+    h1 { font-size: clamp(1.35rem, 3vw, 1.8rem); font-weight: 800; letter-spacing: -.03em; margin-bottom: 8px; }
+    h1 span {
+      background: linear-gradient(90deg, var(--accent), var(--cyan));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .lead { color: var(--muted); font-size: 14.5px; max-width: 520px; line-height: 1.65; margin-bottom: 16px; }
+
+    .pickers {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px;
+    }
+    @media (max-width: 700px) { .pickers { grid-template-columns: 1fr; } }
+    .pick {
+      background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 12px;
+    }
+    .pick label { display: block; font-size: 11px; font-weight: 700; color: var(--dim); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .04em; }
+    .pick input {
+      width: 100%; background: rgba(30,41,59,.95); box-shadow: inset 0 0 0 1px var(--border);
+      border-radius: 10px; padding: 10px 12px; outline: none; margin-bottom: 6px;
+    }
+    .pick select {
+      width: 100%; background: rgba(30,41,59,.95); box-shadow: inset 0 0 0 1px var(--border);
+      border-radius: 10px; padding: 10px;
+    }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 11px 16px; border-radius: 11px; font-size: 13px; font-weight: 700;
+    }
+    .btn-primary { background: linear-gradient(135deg, var(--accent), #059669); color: #022c22; }
+    .btn-soft { background: rgba(30,41,59,.95); color: var(--text); box-shadow: inset 0 0 0 1px var(--border); }
+
+    .status { font-size: 12.5px; color: var(--dim); margin: 10px 0; min-height: 1.2em; }
+
+    .table-wrap {
+      overflow-x: auto; border-radius: 16px; border: 1px solid var(--border);
+      background: var(--panel);
+    }
+    table { width: 100%; border-collapse: collapse; min-width: 520px; }
+    th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--border); font-size: 13.5px; }
+    th { font-size: 12px; color: var(--dim); font-weight: 700; text-transform: uppercase; letter-spacing: .03em; background: rgba(6,10,18,.45); }
+    td.sym { font-weight: 800; }
+    tr:last-child td { border-bottom: none; }
+    .up { color: #34d399; }
+    .down { color: var(--rose); }
+    .best { background: rgba(16,185,129,.08); }
+    .muted { color: var(--muted); }
+
+    .hint {
+      margin-top: 14px; font-size: 13px; color: var(--muted); line-height: 1.6;
+      padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border); background: var(--panel);
+    }
+    .legal { margin-top: 14px; font-size: 12px; color: var(--dim); line-height: 1.55; }
+    .legal a { color: var(--cyan); font-weight: 600; }
+    footer { text-align: center; color: var(--dim); font-size: 12px; padding: 8px 14px 32px; }
+    footer a { color: var(--muted); margin: 0 5px; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a class="brand" href="index.html">Nexora <em>AI</em></a>
+    <div class="nav-links">
+      <a href="index.html">Ana</a>
+      <a href="stock.html">Hisseler</a>
+      <a class="on" href="karsilastir.html">Karşılaştır</a>
+      <a href="ultra-grafik.html">Ultra Grafik</a>
+      <a href="alarm.html">Alarm</a>
+      <a href="ai-analiz.html">AI</a>
+    </div>
+    <a class="btn btn-soft" href="alarm.html">Alarm</a>
+  </nav>
+
+  <main class="wrap">
+    <h1>Hisse <span>karşılaştır</span></h1>
+    <p class="lead">
+      İki veya üç sembolü yan yana koy: açık, yüksek-düşük, F/K, piyasa değeri, hacim, 52 hafta bandı.
+      Rakamlar gecikmeli olabilir; karar senin.
+    </p>
+
+    <div class="pickers">
+      <div class="pick">
+        <label>1. Hisse</label>
+        <input id="s1" placeholder="THYAO" value="THYAO" />
+        <select id="m1"><option value="bist">BIST</option><option value="nasdaq">NASDAQ</option><option value="nyse">NYSE</option></select>
+      </div>
+      <div class="pick">
+        <label>2. Hisse</label>
+        <input id="s2" placeholder="ASELS" value="ASELS" />
+        <select id="m2"><option value="bist">BIST</option><option value="nasdaq">NASDAQ</option><option value="nyse">NYSE</option></select>
+      </div>
+      <div class="pick">
+        <label>3. Hisse (isteğe bağlı)</label>
+        <input id="s3" placeholder="Boş bırakılabilir" />
+        <select id="m3"><option value="bist">BIST</option><option value="nasdaq">NASDAQ</option><option value="nyse">NYSE</option></select>
+      </div>
+    </div>
+
+    <button type="button" class="btn btn-primary" id="btnGo">Karşılaştır</button>
+    <div class="status" id="status"></div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Gösterge</th>
+            <th id="h1">—</th>
+            <th id="h2">—</th>
+            <th id="h3">—</th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <tr><td colspan="4" class="muted" style="text-align:center;padding:28px">Sembol seçip Karşılaştır’a bas</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="hint">
+      <strong style="color:var(--text)">Nasıl okunur?</strong>
+      F/K tek başına ucuz/pahalı demek değildir; sektör ve büyüme ile birlikte bak.
+      52 hafta bandı volatiliteyi, hacim likiditeyi hatırlatır.
+    </div>
+    <p class="legal">Yatırım tavsiyesi değildir. · <a href="ultra-grafik.html">Ultra Grafik</a> · <a href="kvkk.html">KVKK</a></p>
+  </main>
+
+  <footer>
+    Nexora AI ·
+    <a href="stock.html">Hisseler</a>
+    <a href="portfolio.html">Portföy</a>
+    <a href="alarm.html">Alarm</a>
+  </footer>
+
+  <script src="assets/js/secrets.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script>
+(function () {
+  "use strict";
+
+  var ROWS = [
+    { key: "price", label: "Son fiyat" },
+    { key: "pct", label: "Günlük %" },
+    { key: "open", label: "Açılış" },
+    { key: "high", label: "Yüksek" },
+    { key: "low", label: "Düşük" },
+    { key: "marketCap", label: "Piyasa değeri" },
+    { key: "avgVolume", label: "Ort. hacim" },
+    { key: "volume", label: "İşlem hacmi" },
+    { key: "pe", label: "F/K oranı" },
+    { key: "week52High", label: "52 hf. en yüksek" },
+    { key: "week52Low", label: "52 hf. en düşük" },
+    { key: "eps", label: "HBK (EPS)" },
+    { key: "shares", label: "Tedavüldeki hisse" },
+    { key: "employees", label: "Çalışan sayısı" }
+  ];
+
+  function ysym(sym, m) {
+    var s = String(sym || "").toUpperCase().trim();
+    if (!s) return "";
+    if (m === "bist" && s.indexOf(".") === -1) return s + ".IS";
+    return s;
+  }
+
+  function fmtNum(n, dig) {
+    if (n == null || !isFinite(n)) return "—";
+    dig = dig == null ? 2 : dig;
+    if (Math.abs(n) >= 1e9) return (n / 1e9).toFixed(2) + " Mr";
+    if (Math.abs(n) >= 1e6) return (n / 1e6).toFixed(2) + " Mn";
+    if (Math.abs(n) >= 1e3 && dig === 0) return Math.round(n).toLocaleString("tr-TR");
+    return Number(n).toLocaleString("tr-TR", { maximumFractionDigits: dig });
+  }
+
+  function fmtCell(key, v) {
+    if (v == null || v === "" || (typeof v === "number" && !isFinite(v))) return "—";
+    if (key === "pct") {
+      var n = Number(v);
+      var cls = n > 0 ? "up" : n < 0 ? "down" : "";
+      return '<span class="' + cls + '">' + (n > 0 ? "+" : "") + n.toFixed(2) + "%</span>";
+    }
+    if (key === "pe" || key === "eps" || key === "price" || key === "open" || key === "high" || key === "low" || key === "week52High" || key === "week52Low") {
+      return fmtNum(Number(v), 2);
+    }
+    if (key === "marketCap" || key === "volume" || key === "avgVolume" || key === "shares" || key === "employees") {
+      return fmtNum(Number(v), Number(v) >= 1000 ? 2 : 0);
+    }
+    return String(v);
+  }
+
+  async function loadOne(sym, market) {
+    var symbol = ysym(sym, market);
+    if (!symbol) return null;
+
+    var row = {
+      symbol: String(sym).toUpperCase().trim(),
+      market: market,
+      price: null, pct: null, open: null, high: null, low: null,
+      marketCap: null, avgVolume: null, volume: null, pe: null,
+      week52High: null, week52Low: null, eps: null, shares: null, employees: null
+    };
+
+    // 1) Anlık
+    if (window.API && API.getLiveQuote) {
+      try {
+        var q = await API.getLiveQuote(symbol);
+        if (q) {
+          row.price = q.price;
+          row.pct = q.pct != null ? q.pct : q.changePercent;
+        }
+      } catch (e) {}
+    }
+
+    // 2) Profil / özet (super-worker profile:true)
+    if (window.API && typeof API.getProfile === "function") {
+      try {
+        var p = await API.getProfile(symbol);
+        if (p) Object.assign(row, p);
+      } catch (e) {}
+    } else if (window.NEXORA_CONFIG) {
+      // Doğrudan function (api.js'te getProfile yoksa)
+      try {
+        var cfg = NEXORA_CONFIG;
+        var res = await fetch(
+          String(cfg.supabaseUrl).replace(/\/$/, "") +
+            "/functions/v1/" +
+            (cfg.functionQuote || "super-worker"),
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + cfg.supabaseAnonKey,
+              apikey: cfg.supabaseAnonKey
+            },
+            body: JSON.stringify({ symbol: symbol, profile: true })
+          }
+        );
+        var data = await res.json();
+        if (data && !data.error) {
+          [
+            "open", "high", "low", "marketCap", "avgVolume", "volume", "pe",
+            "week52High", "week52Low", "eps", "shares", "employees", "price", "pct"
+          ].forEach(function (k) {
+            if (data[k] != null) row[k] = data[k];
+          });
+        }
+      } catch (e) {}
+    }
+
+    return row;
+  }
+
+  async function run() {
+    var slots = [
+      { s: document.getElementById("s1").value, m: document.getElementById("m1").value },
+      { s: document.getElementById("s2").value, m: document.getElementById("m2").value },
+      { s: document.getElementById("s3").value, m: document.getElementById("m3").value }
+    ].filter(function (x) { return String(x.s || "").trim(); });
+
+    if (slots.length < 2) {
+      document.getElementById("status").textContent = "En az 2 sembol gerekli.";
+      return;
+    }
+
+    document.getElementById("status").textContent = "Veriler alınıyor…";
+    var cols = [];
+    for (var i = 0; i < slots.length; i++) {
+      cols.push(await loadOne(slots[i].s, slots[i].m));
+    }
+    while (cols.length < 3) cols.push(null);
+
+    document.getElementById("h1").textContent = cols[0] ? cols[0].symbol : "—";
+    document.getElementById("h2").textContent = cols[1] ? cols[1].symbol : "—";
+    document.getElementById("h3").textContent = cols[2] ? cols[2].symbol : "—";
+
+    var html = ROWS.map(function (r) {
+      var cells = cols.map(function (c) {
+        if (!c) return "<td class='muted'>—</td>";
+        return "<td>" + fmtCell(r.key, c[r.key]) + "</td>";
+      }).join("");
+      return "<tr><td>" + r.label + "</td>" + cells + "</tr>";
+    }).join("");
+
+    document.getElementById("tbody").innerHTML = html;
+    document.getElementById("status").textContent =
+      "Güncellendi · eksik satırlar kaynakta yoksa — görünür";
+  }
+
+  document.getElementById("btnGo").addEventListener("click", run);
+
+  var params = new URLSearchParams(location.search);
+  if (params.get("a")) document.getElementById("s1").value = params.get("a");
+  if (params.get("b")) document.getElementById("s2").value = params.get("b");
+})();
+  </script>
+</body>
+</html>
