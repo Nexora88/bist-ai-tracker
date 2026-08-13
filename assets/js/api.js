@@ -26,9 +26,13 @@
         },
         body: JSON.stringify(body || {})
       });
-      if (!res.ok) return null;
+      if (!res.ok) {
+        console.error("🔒 [NEXORA AEGIS]: Sunucu yanıt vermedi, Durum kuralı:", res.status);
+        return null;
+      }
       return await res.json();
     } catch (e) {
+      console.error("🔒 [NEXORA AEGIS NETWORK ERR]: Bağlantı koptu:", e);
       return null;
     }
   }
@@ -36,10 +40,18 @@
   /** Canlı / gecikmeli fiyat */
   API.getLiveQuote = async function (symbol) {
     if (!symbol) return null;
-    var data = await callFn(cfg.functionQuote || "market-quote", {
-      symbol: String(symbol).toUpperCase()
+    
+    // HATA ÇÖZÜMÜ: Doğrudan senin canlı fonksiyon adın olan super-worker çağrılıyor
+    var data = await callFn(cfg.functionQuote || "super-worker", {
+      symbol: String(symbol).toUpperCase().trim(),
+      history: false // Sadece anlık fiyat istiyoruz
     });
-    if (!data || data.error) return null;
+    
+    if (!data || data.error) {
+      console.warn("⚠️ [NEXORA]: Canlı fiyat verisi sunucudan boş döndü.");
+      return null;
+    }
+    
     return {
       symbol: data.symbol || symbol,
       price: data.price != null ? Number(data.price) : null,
@@ -48,24 +60,33 @@
     };
   };
 
-  /** Basit geçmiş (function destekliyorsa) */
+  /** Basit geçmiş (Deno Edge Function tam uyumlu) */
   API.getHistory = async function (symbol, range) {
     if (!symbol) return null;
-    var data = await callFn(cfg.functionQuote || "market-quote", {
-      symbol: String(symbol).toUpperCase(),
+    
+    // HATA ÇÖZÜMÜ: Senin koddaki body.history tetikleyicisini TRUE olarak tam POST gövdesine veriyoruz
+    var data = await callFn(cfg.functionQuote || "super-worker", {
+      symbol: String(symbol).toUpperCase().trim(),
       history: true,
       range: range || "1mo"
     });
-    if (!data || !Array.isArray(data.history)) return null;
+    
+    if (!data || !Array.isArray(data.history)) {
+      console.warn("⚠️ [NEXORA]: Grafik geçmiş veri dizisi sunucudan alınamadı.");
+      return null;
+    }
+    
     return data.history;
   };
 
   /** Haber akışı */
   API.getNews = async function (opts) {
     opts = opts || {};
-    var data = await callFn(cfg.functionNews || "market-news", {
+    // Eğer haberler için ayrı bir fonksiyon açmadıysan, şimdilik bunu da super-worker karşılayabilir
+    var data = await callFn(cfg.functionNews || "super-worker", {
       limit: opts.limit || 20,
-      q: opts.q || ""
+      q: opts.q || "",
+      newsRequest: true // Sunucu tarafında ileride filtrelemek istersen diye ekledim
     });
     if (!data) return [];
     if (Array.isArray(data.articles)) return data.articles;
