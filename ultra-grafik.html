@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Ultra Grafik · Nexora AI</title>
+  <meta name="description" content="Profesyonel hisse grafiği — zaman aralığı, yakınlaştır, Nexora Ultra Grafik." />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
+  <style>
+    :root {
+      --bg: #060a12;
+      --panel: rgba(15, 23, 42, 0.94);
+      --border: rgba(148, 163, 184, 0.12);
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --dim: #64748b;
+      --accent: #10b981;
+      --cyan: #22d3ee;
+      --rose: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Inter, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input, select { font: inherit; color: inherit; border: none; background: none; cursor: pointer; }
+
+    .nav {
+      position: sticky; top: 0; z-index: 40;
+      height: 56px; display: flex; align-items: center; justify-content: space-between;
+      gap: 10px; padding: 0 14px;
+      background: rgba(6, 10, 18, 0.94);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+    .brand { font-weight: 800; letter-spacing: -0.03em; }
+    .brand em { font-style: normal; color: var(--accent); }
+    .nav-links { display: none; gap: 2px; }
+    @media (min-width: 900px) {
+      .nav-links { display: flex; }
+      .nav-links a {
+        font-size: 13px; font-weight: 600; color: var(--muted);
+        padding: 7px 10px; border-radius: 9px;
+      }
+      .nav-links a:hover, .nav-links a.on {
+        color: var(--text); background: rgba(255,255,255,0.05);
+      }
+    }
+
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 16px 14px 40px; }
+
+    .head { margin-bottom: 12px; }
+    .badge {
+      display: inline-flex; gap: 8px; align-items: center;
+      font-size: 12px; font-weight: 700; color: var(--cyan);
+      background: rgba(34, 211, 238, 0.1);
+      border: 1px solid rgba(34, 211, 238, 0.28);
+      padding: 5px 11px; border-radius: 999px; margin-bottom: 10px;
+    }
+    h1 {
+      font-size: clamp(1.35rem, 3vw, 1.75rem);
+      font-weight: 800; letter-spacing: -0.03em;
+    }
+    h1 span {
+      background: linear-gradient(90deg, var(--accent), var(--cyan));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .lead {
+      color: var(--muted); font-size: 14px; margin-top: 6px;
+      max-width: 520px; line-height: 1.6;
+    }
+
+    .toolbar {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      align-items: center; margin: 14px 0 10px;
+    }
+    .toolbar input {
+      flex: 1; min-width: 140px;
+      background: var(--panel);
+      box-shadow: inset 0 0 0 1px var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 15px;
+      outline: none;
+    }
+    .toolbar input:focus {
+      box-shadow: inset 0 0 0 1px rgba(16,185,129,0.45);
+    }
+    .toolbar select {
+      background: var(--panel);
+      box-shadow: inset 0 0 0 1px var(--border);
+      border-radius: 12px;
+      padding: 12px;
+    }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 11px 14px; border-radius: 11px;
+      font-size: 13px; font-weight: 700;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #059669);
+      color: #022c22;
+    }
+    .btn-soft {
+      background: rgba(30, 41, 59, 0.95);
+      color: var(--text);
+      box-shadow: inset 0 0 0 1px var(--border);
+    }
+
+    .suggest {
+      display: none;
+      background: #0b1220;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      max-height: 200px;
+      overflow: auto;
+      margin-bottom: 10px;
+    }
+    .suggest.show { display: block; }
+    .suggest button {
+      display: block; width: 100%; text-align: left;
+      padding: 10px 14px; font-size: 13.5px;
+    }
+    .suggest button:hover { background: rgba(16,185,129,0.1); }
+    .suggest .s { font-weight: 800; margin-right: 8px; }
+    .suggest .n { color: var(--muted); }
+
+    .ranges {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      margin-bottom: 10px;
+    }
+    .chip {
+      font-size: 12px; font-weight: 700;
+      padding: 7px 12px; border-radius: 999px;
+      color: var(--muted);
+      background: rgba(30, 41, 59, 0.9);
+      box-shadow: inset 0 0 0 1px var(--border);
+    }
+    .chip.on {
+      color: #022c22;
+      background: linear-gradient(135deg, var(--accent), #059669);
+      box-shadow: none;
+    }
+
+    .meta-bar {
+      display: flex; flex-wrap: wrap; gap: 10px 16px;
+      align-items: baseline;
+      margin-bottom: 8px;
+      min-height: 1.5em;
+    }
+    .meta-bar .sym {
+      font-size: 1.15rem; font-weight: 800; letter-spacing: -0.02em;
+    }
+    .meta-bar .price {
+      font-size: 1.1rem; font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+    .meta-bar .up { color: #34d399; }
+    .meta-bar .down { color: var(--rose); }
+    .meta-bar .sub { font-size: 13px; color: var(--muted); }
+
+    .chart-shell {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+    }
+    #chart {
+      width: 100%;
+      height: min(62vh, 520px);
+      min-height: 320px;
+    }
+    .chart-hint {
+      position: absolute; left: 12px; bottom: 10px; z-index: 2;
+      font-size: 11px; color: var(--dim);
+      pointer-events: none;
+      background: rgba(6,10,18,0.65);
+      padding: 4px 8px; border-radius: 6px;
+    }
+
+    .status {
+      font-size: 12.5px; color: var(--dim);
+      margin: 10px 0 6px;
+      min-height: 1.2em;
+    }
+
+    .actions {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      margin-top: 12px;
+    }
+
+    .legal {
+      margin-top: 16px;
+      font-size: 12px; color: var(--dim); line-height: 1.55;
+    }
+    .legal a { color: var(--cyan); font-weight: 600; }
+
+    footer {
+      text-align: center; color: var(--dim); font-size: 12px;
+      padding: 8px 14px 32px;
+    }
+    footer a { color: var(--muted); margin: 0 5px; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a class="brand" href="index.html">Nexora <em>AI</em></a>
+    <div class="nav-links">
+      <a href="index.html">Ana</a>
+      <a href="stock.html">Hisseler</a>
+      <a class="on" href="ultra-grafik.html">Ultra Grafik</a>
+      <a href="radar.html">Pusula</a>
+      <a href="ai-analiz.html">AI</a>
+      <a href="portfolio.html">Portföy</a>
+    </div>
+    <a class="btn btn-soft" href="stock.html">Kartlar</a>
+  </nav>
+
+  <main class="wrap">
+    <header class="head">
+      <div class="badge">Profesyonel grafik · kaydır &amp; yakınlaştır</div>
+      <h1>Ultra <span>Grafik</span></h1>
+      <p class="lead">
+        Sembol seç, aralığı değiştir. Parmağınla veya tekerlek ile yakınlaştır;
+        sürükleyerek zaman ekseninde gez.
+      </p>
+    </header>
+
+    <div class="toolbar">
+      <input id="q" type="search" placeholder="ASELS, THYAO, AAPL…" autocomplete="off" enterkeyhint="search" />
+      <select id="mkt">
+        <option value="bist">BIST</option>
+        <option value="nasdaq">NASDAQ</option>
+        <option value="nyse">NYSE</option>
+      </select>
+      <button type="button" class="btn btn-primary" id="btnLoad">Grafik</button>
+    </div>
+    <div class="suggest" id="suggest"></div>
+
+    <div class="ranges" id="ranges">
+      <button type="button" class="chip" data-r="5d">5G</button>
+      <button type="button" class="chip" data-r="1mo">1A</button>
+      <button type="button" class="chip on" data-r="3mo">3A</button>
+      <button type="button" class="chip" data-r="6mo">6A</button>
+      <button type="button" class="chip" data-r="1y">1Y</button>
+      <button type="button" class="chip" data-r="5y">5Y</button>
+    </div>
+
+    <div class="meta-bar">
+      <span class="sym" id="metaSym">—</span>
+      <span class="price" id="metaPrice">—</span>
+      <span class="sub" id="metaName"></span>
+    </div>
+
+    <div class="chart-shell">
+      <div id="chart"></div>
+      <div class="chart-hint">Kaydır · pinch / tekerlek ile zoom · çift tık sıfırla</div>
+    </div>
+
+    <div class="status" id="status">Bir sembol ara veya yazıp Grafik’e bas</div>
+
+    <div class="actions">
+      <a class="btn btn-soft" id="linkCard" href="stock.html">Hisse kartı</a>
+      <a class="btn btn-soft" id="linkAi" href="ai-analiz.html">AI Analiz</a>
+      <a class="btn btn-soft" id="linkRadar" href="radar.html">Pusula</a>
+      <button type="button" class="btn btn-soft" id="btnFit">Görünümü sığdır</button>
+    </div>
+
+    <p class="legal">
+      Grafik bilgilendirme amaçlıdır; yatırım tavsiyesi değildir. Veriler gecikmeli olabilir.
+      · <a href="kvkk.html">KVKK</a>
+    </p>
+  </main>
+
+  <footer>
+    Nexora AI · Ultra Grafik
+    <a href="heatmap.html">Isı</a>
+    <a href="portfolio.html">Portföy</a>
+    <a href="about.html">Hakkımızda</a>
+  </footer>
+
+  <script src="assets/js/secrets.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script>
+(function () {
+  "use strict";
+
+  var range = "3mo";
+  var current = null;
+  var catalog = {};
+  var chart = null;
+  var series = null;
+
+  function ysym(symbol, market) {
+    var s = String(symbol || "").toUpperCase().trim();
+    if (!s) return "";
+    if (market === "bist" && s.indexOf(".") === -1) return s + ".IS";
+    return s;
+  }
+
+  async function loadCatalog(m) {
+    if (catalog[m]) return catalog[m];
+    try {
+      var res = await fetch("data/" + m + ".json", { cache: "no-store" });
+      var data = await res.json();
+      catalog[m] = Array.isArray(data) ? data : data.stocks || [];
+    } catch (e) {
+      catalog[m] = [];
+    }
+    return catalog[m];
+  }
+
+  function findMeta(symbol, market) {
+    var u = symbol.toUpperCase();
+    var list = catalog[market] || [];
+    for (var i = 0; i < list.length; i++) {
+      if (String(list[i].symbol).toUpperCase() === u) return list[i];
+    }
+    return { symbol: u, name: u, market: market.toUpperCase() };
+  }
+
+  function suggest(q, market) {
+    var box = document.getElementById("suggest");
+    q = String(q || "").trim().toLowerCase();
+    if (!q) {
+      box.classList.remove("show");
+      return;
+    }
+    var hits = (catalog[market] || [])
+      .filter(function (s) {
+        return (
+          String(s.symbol).toLowerCase().indexOf(q) === 0 ||
+          String(s.name || "").toLowerCase().indexOf(q) !== -1
+        );
+      })
+      .slice(0, 10);
+    if (!hits.length) {
+      box.classList.remove("show");
+      return;
+    }
+    box.innerHTML = hits
+      .map(function (s) {
+        return (
+          '<button type="button" data-s="' +
+          s.symbol +
+          '"><span class="s">' +
+          s.symbol +
+          '</span><span class="n">' +
+          (s.name || "") +
+          "</span></button>"
+        );
+      })
+      .join("");
+    box.classList.add("show");
+  }
+
+  function initChart() {
+    var el = document.getElementById("chart");
+    if (chart) {
+      chart.remove();
+      chart = null;
+      series = null;
+    }
+    chart = LightweightCharts.createChart(el, {
+      layout: {
+        background: { color: "transparent" },
+        textColor: "#94a3b8"
+      },
+      grid: {
+        vertLines: { color: "rgba(148,163,184,0.08)" },
+        horzLines: { color: "rgba(148,163,184,0.08)" }
+      },
+      crosshair: {
+        mode: LightweightCharts.CrosshairMode.Normal
+      },
+      rightPriceScale: {
+        borderColor: "rgba(148,163,184,0.15)"
+      },
+      timeScale: {
+        borderColor: "rgba(148,163,184,0.15)",
+        timeVisible: true,
+        secondsVisible: false
+      },
+      handleScroll: {
+        mouseWheel: true,
+        pressedMouseMove: true,
+        horzTouchDrag: true,
+        vertTouchDrag: true
+      },
+      handleScale: {
+        axisPressedMouseMove: true,
+        mouseWheel: true,
+        pinch: true
+      }
+    });
+
+    series = chart.addAreaSeries({
+      lineColor: "#34d399",
+      topColor: "rgba(52, 211, 153, 0.28)",
+      bottomColor: "rgba(52, 211, 153, 0.02)",
+      lineWidth: 2,
+      priceLineVisible: true,
+      lastValueVisible: true
+    });
+
+    function resize() {
+      chart.applyOptions({
+        width: el.clientWidth,
+        height: el.clientHeight
+      });
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    el.addEventListener("dblclick", function () {
+      chart.timeScale().fitContent();
+    });
+  }
+
+  function demoHistory(days) {
+    var out = [];
+    var t = Math.floor(Date.now() / 1000) - days * 86400;
+    var p = 100;
+    for (var i = 0; i < days; i++) {
+      p = p * (1 + (Math.random() - 0.48) * 0.02);
+      out.push({ time: t + i * 86400, value: Math.round(p * 100) / 100 });
+    }
+    return out;
+  }
+
+  function rangeToDays(r) {
+    if (r === "5d") return 5;
+    if (r === "1mo") return 30;
+    if (r === "3mo") return 90;
+    if (r === "6mo") return 180;
+    if (r === "1y") return 365;
+    if (r === "5y") return 365 * 5;
+    return 90;
+  }
+
+  async function fetchBars(symbol, market, r) {
+    var sym = ysym(symbol, market);
+    var bars = null;
+
+    if (window.API && API.getHistory) {
+      try {
+        var hist = await API.getHistory(sym, r);
+        if (Array.isArray(hist) && hist.length > 2) {
+          bars = hist
+            .map(function (h) {
+              var close = Number(h.close != null ? h.close : h.value);
+              var time = h.time;
+              if (typeof time === "string") {
+                time = Math.floor(new Date(time).getTime() / 1000);
+              }
+              if (h.date && !time) {
+                time = Math.floor(new Date(h.date).getTime() / 1000);
+              }
+              if (!isFinite(close) || !isFinite(time)) return null;
+              return { time: time, value: close };
+            })
+            .filter(Boolean)
+            .sort(function (a, b) {
+              return a.time - b.time;
+            });
+        }
+      } catch (e) {}
+    }
+
+    if (!bars || bars.length < 3) {
+      bars = demoHistory(rangeToDays(r));
+      document.getElementById("status").textContent =
+        "Geçici örnek eğri — canlı geçmiş bağlanınca gerçek veri gelir";
+    } else {
+      document.getElementById("status").textContent =
+        bars.length + " nokta · " + r + " · yakınlaştırmak için pinch / tekerlek";
+    }
+    return bars;
+  }
+
+  async function loadSymbol(symbol) {
+    var market = document.getElementById("mkt").value;
+    symbol = String(symbol || document.getElementById("q").value)
+      .trim()
+      .toUpperCase();
+    if (!symbol) return;
+
+    await loadCatalog(market);
+    var meta = findMeta(symbol, market);
+    current = { symbol: meta.symbol, market: market, meta: meta };
+
+    document.getElementById("metaSym").textContent =
+      (meta.flag ? meta.flag + " " : "") + meta.symbol;
+    document.getElementById("metaName").textContent =
+      (meta.name || "") + " · " + (meta.market || market.toUpperCase());
+
+    document.getElementById("linkCard").href =
+      "stock.html?symbol=" +
+      encodeURIComponent(meta.symbol) +
+      "&market=" +
+      encodeURIComponent(market);
+    document.getElementById("linkAi").href =
+      "ai-analiz.html?symbol=" +
+      encodeURIComponent(meta.symbol) +
+      "&market=" +
+      encodeURIComponent(market);
+    document.getElementById("linkRadar").href =
+      "radar.html?sembol=" +
+      encodeURIComponent(meta.symbol) +
+      "&piyasa=" +
+      encodeURIComponent(market);
+
+    document.getElementById("status").textContent = "Grafik yükleniyor…";
+    document.getElementById("suggest").classList.remove("show");
+
+    if (!chart) initChart();
+
+    var bars = await fetchBars(meta.symbol, market, range);
+    series.setData(bars);
+    chart.timeScale().fitContent();
+
+    if (window.API && API.getLiveQuote) {
+      try {
+        var q = await API.getLiveQuote(ysym(meta.symbol, market));
+        if (q && q.price != null) {
+          var pct = Number(q.pct != null ? q.pct : q.changePercent);
+          var cls = pct > 0 ? "up" : pct < 0 ? "down" : "";
+          var sign = pct > 0 ? "+" : "";
+          document.getElementById("metaPrice").innerHTML =
+            '<span class="' +
+            cls +
+            '">' +
+            Number(q.price).toLocaleString("en-US", {
+              maximumFractionDigits: 2
+            }) +
+            (isFinite(pct)
+              ? " <span style=\"font-size:14px\">(" +
+                sign +
+                pct.toFixed(2) +
+                "%)</span>"
+              : "") +
+            "</span>";
+        }
+      } catch (e) {}
+    }
+
+    history.replaceState(
+      null,
+      "",
+      "ultra-grafik.html?symbol=" +
+        encodeURIComponent(meta.symbol) +
+        "&market=" +
+        encodeURIComponent(market) +
+        "&range=" +
+        encodeURIComponent(range)
+    );
+  }
+
+  document.getElementById("btnLoad").addEventListener("click", function () {
+    loadSymbol();
+  });
+  document.getElementById("q").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      loadSymbol();
+    }
+  });
+  document.getElementById("q").addEventListener("input", function () {
+    suggest(this.value, document.getElementById("mkt").value);
+  });
+  document.getElementById("mkt").addEventListener("change", async function () {
+    await loadCatalog(this.value);
+    suggest(document.getElementById("q").value, this.value);
+  });
+  document.getElementById("suggest").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-s]");
+    if (!b) return;
+    document.getElementById("q").value = b.getAttribute("data-s");
+    loadSymbol(b.getAttribute("data-s"));
+  });
+  document.getElementById("ranges").addEventListener("click", function (e) {
+    var c = e.target.closest("[data-r]");
+    if (!c) return;
+    range = c.getAttribute("data-r");
+    document.querySelectorAll("#ranges .chip").forEach(function (x) {
+      x.classList.toggle("on", x === c);
+    });
+    if (current) loadSymbol(current.symbol);
+  });
+  document.getElementById("btnFit").addEventListener("click", function () {
+    if (chart) chart.timeScale().fitContent();
+  });
+
+  initChart();
+
+  var params = new URLSearchParams(location.search);
+  var m = (params.get("market") || "bist").toLowerCase();
+  var sel = document.getElementById("mkt");
+  if ([].some.call(sel.options, function (o) { return o.value === m; })) {
+    sel.value = m;
+  }
+  if (params.get("range")) {
+    range = params.get("range");
+    document.querySelectorAll("#ranges .chip").forEach(function (x) {
+      x.classList.toggle("on", x.getAttribute("data-r") === range);
+    });
+  }
+  loadCatalog(sel.value).then(function () {
+    var sym = params.get("symbol") || params.get("sembol");
+    if (sym) {
+      document.getElementById("q").value = sym.toUpperCase();
+      loadSymbol(sym);
+    }
+  });
+})();
+  </script>
+</body>
+</html>
