@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fiyat Alarmı · Nexora AI</title>
+  <meta name="description" content="Hisse için fiyat eşiği kur, Nexora seni uyarsın. Takip listesi ve tarayıcı bildirimi." />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #060a12;
+      --panel: rgba(15, 23, 42, 0.94);
+      --border: rgba(148, 163, 184, 0.12);
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --dim: #64748b;
+      --accent: #10b981;
+      --cyan: #22d3ee;
+      --rose: #f87171;
+      --amber: #fbbf24;
+      --violet: #a78bfa;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Inter, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.55;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input, select { font: inherit; color: inherit; border: none; background: none; cursor: pointer; }
+
+    .nav {
+      position: sticky; top: 0; z-index: 40;
+      height: 56px; display: flex; align-items: center; justify-content: space-between;
+      gap: 10px; padding: 0 14px;
+      background: rgba(6, 10, 18, 0.94);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+    .brand { font-weight: 800; letter-spacing: -0.03em; }
+    .brand em { font-style: normal; color: var(--accent); }
+    .nav-links { display: none; gap: 2px; }
+    @media (min-width: 920px) {
+      .nav-links { display: flex; }
+      .nav-links a {
+        font-size: 13px; font-weight: 600; color: var(--muted);
+        padding: 7px 10px; border-radius: 9px;
+      }
+      .nav-links a:hover, .nav-links a.on {
+        color: var(--text); background: rgba(255,255,255,0.05);
+      }
+    }
+
+    .wrap { max-width: 720px; margin: 0 auto; padding: 22px 14px 56px; }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 12px; font-weight: 700; color: var(--amber);
+      background: rgba(251, 191, 36, 0.1);
+      border: 1px solid rgba(251, 191, 36, 0.28);
+      padding: 6px 12px; border-radius: 999px; margin-bottom: 12px;
+    }
+    h1 {
+      font-size: clamp(1.45rem, 3vw, 1.95rem);
+      font-weight: 800; letter-spacing: -0.03em;
+      margin-bottom: 10px;
+    }
+    h1 span {
+      background: linear-gradient(90deg, var(--amber), var(--accent));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .lead {
+      color: var(--muted); font-size: 15px; max-width: 540px;
+      line-height: 1.7; margin-bottom: 18px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .panel h2 {
+      font-size: 12px; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.04em;
+      margin-bottom: 12px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+
+    .field label {
+      display: block; font-size: 11px; font-weight: 700;
+      color: var(--dim); margin-bottom: 5px;
+      text-transform: uppercase; letter-spacing: 0.03em;
+    }
+    .field input, .field select {
+      width: 100%;
+      background: rgba(30, 41, 59, 0.95);
+      box-shadow: inset 0 0 0 1px var(--border);
+      border-radius: 11px;
+      padding: 11px 12px;
+      outline: none;
+      margin-bottom: 2px;
+    }
+    .field input:focus {
+      box-shadow: inset 0 0 0 1px rgba(16, 185, 129, 0.45);
+    }
+
+    .suggest {
+      display: none;
+      background: #0b1220;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      max-height: 160px;
+      overflow: auto;
+      margin-top: 6px;
+    }
+    .suggest.show { display: block; }
+    .suggest button {
+      display: block; width: 100%; text-align: left;
+      padding: 9px 12px; font-size: 13px;
+    }
+    .suggest button:hover { background: rgba(16,185,129,0.1); }
+    .suggest .s { font-weight: 800; margin-right: 6px; }
+    .suggest .n { color: var(--muted); }
+
+    .actions-row {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      margin-top: 12px;
+    }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 11px 14px; border-radius: 11px;
+      font-size: 13px; font-weight: 700;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #059669);
+      color: #022c22;
+    }
+    .btn-soft {
+      background: rgba(30, 41, 59, 0.95);
+      color: var(--text);
+      box-shadow: inset 0 0 0 1px var(--border);
+    }
+    .btn-danger {
+      background: rgba(248, 113, 113, 0.12);
+      color: var(--rose);
+      box-shadow: inset 0 0 0 1px rgba(248, 113, 113, 0.28);
+      padding: 7px 11px;
+      font-size: 12px;
+    }
+    .btn-amber {
+      background: rgba(251, 191, 36, 0.12);
+      color: var(--amber);
+      box-shadow: inset 0 0 0 1px rgba(251, 191, 36, 0.3);
+    }
+
+    .status {
+      font-size: 13px; color: var(--dim);
+      margin: 8px 0 12px;
+      min-height: 1.3em;
+    }
+    .status.ok { color: #6ee7b7; }
+    .status.err { color: #fecaca; }
+
+    .list { display: flex; flex-direction: column; gap: 8px; }
+    .item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 14px;
+      border-radius: 14px;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid var(--border);
+    }
+    .item.fired {
+      border-color: rgba(16, 185, 129, 0.4);
+      background: rgba(16, 185, 129, 0.08);
+    }
+    .item .sym { font-weight: 800; font-size: 15px; letter-spacing: -0.02em; }
+    .item .rule { font-size: 13px; color: var(--muted); margin-top: 3px; }
+    .item .last { font-size: 12px; color: var(--dim); margin-top: 4px; }
+    .item .badge-fired {
+      display: inline-block;
+      font-size: 11px; font-weight: 800;
+      color: #6ee7b7;
+      background: rgba(16, 185, 129, 0.15);
+      padding: 3px 8px; border-radius: 999px;
+      margin-top: 6px;
+    }
+    .item-actions { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
+
+    .empty {
+      text-align: center; color: var(--muted);
+      padding: 28px 12px;
+      border: 1px dashed var(--border);
+      border-radius: 14px;
+      font-size: 14px; line-height: 1.6;
+    }
+
+    .why {
+      font-size: 14px; color: var(--muted); line-height: 1.7;
+    }
+    .why p { margin-bottom: 10px; }
+    .why strong { color: #e2e8f0; }
+    .why ul { margin: 0 0 0 18px; }
+    .why li { margin-bottom: 6px; }
+
+    .perm {
+      display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(251, 191, 36, 0.08);
+      border: 1px solid rgba(251, 191, 36, 0.22);
+      font-size: 13px; color: var(--muted);
+      margin-bottom: 14px;
+    }
+    .perm strong { color: var(--amber); }
+
+    .toast {
+      position: fixed; left: 50%; bottom: 22px; z-index: 80;
+      transform: translateX(-50%) translateY(12px);
+      background: #0f172a; border: 1px solid rgba(16,185,129,0.4);
+      color: #a7f3d0; padding: 12px 16px; border-radius: 12px;
+      font-size: 13.5px; font-weight: 650;
+      opacity: 0; pointer-events: none; transition: 0.25s;
+      max-width: min(400px, calc(100vw - 24px)); text-align: center;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.err { border-color: rgba(248,113,113,0.45); color: #fecaca; }
+
+    .legal {
+      margin-top: 16px;
+      font-size: 12px; color: var(--dim); line-height: 1.55;
+    }
+    .legal a { color: var(--cyan); font-weight: 600; }
+
+    footer {
+      text-align: center; color: var(--dim); font-size: 12px;
+      padding: 8px 14px 36px;
+    }
+    footer a { color: var(--muted); margin: 0 5px; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="toast" id="toast"></div>
+
+  <nav class="nav">
+    <a class="brand" href="index.html">Nexora <em>AI</em></a>
+    <div class="nav-links">
+      <a href="index.html">Ana</a>
+      <a href="stock.html">Hisseler</a>
+      <a class="on" href="alarm.html">Alarm</a>
+      <a href="sinyaller.html">Sinyaller</a>
+      <a href="karsilastir.html">Karşılaştır</a>
+      <a href="portfolio.html">Portföy</a>
+    </div>
+    <a class="btn btn-soft" href="sinyaller.html">Sinyaller</a>
+  </nav>
+
+  <main class="wrap">
+    <div class="badge">Eşik · bildirim · sakin takip</div>
+    <h1>Fiyat <span>alarmı</span></h1>
+    <p class="lead">
+      Ekranı sürekli yenilemek zorunda değilsin. Bir seviye belirle;
+      fiyat o eşiği kırınca Nexora seni uyarır. Panik için değil —
+      disiplin için.
+    </p>
+
+    <div class="perm" id="permBox">
+      <div style="flex:1">
+        <strong>Bildirim izni:</strong>
+        <span id="permText">Kontrol ediliyor…</span>
+      </div>
+      <button type="button" class="btn btn-amber" id="btnPerm">İzin ver</button>
+    </div>
+
+    <div class="panel">
+      <h2>Yeni alarm</h2>
+      <div class="grid">
+        <div class="field" style="grid-column: 1 / -1">
+          <label>Sembol</label>
+          <input id="sym" type="text" placeholder="ASELS, THYAO, AAPL…" autocomplete="off" />
+          <div class="suggest" id="suggest"></div>
+        </div>
+        <div class="field">
+          <label>Piyasa</label>
+          <select id="mkt">
+            <option value="bist">BIST</option>
+            <option value="nasdaq">NASDAQ</option>
+            <option value="nyse">NYSE</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Koşul</label>
+          <select id="op">
+            <option value="above">Fiyat ≥ eşik (yukarı)</option>
+            <option value="below">Fiyat ≤ eşik (aşağı)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Eşik fiyat</label>
+          <input id="price" type="number" step="any" min="0" placeholder="Örn. 95.50" />
+        </div>
+        <div class="field">
+          <label>Not (isteğe bağlı)</label>
+          <input id="note" type="text" maxlength="60" placeholder="Destek / direnç notu" />
+        </div>
+      </div>
+      <div class="actions-row">
+        <button type="button" class="btn btn-primary" id="btnAdd">Alarmı kur</button>
+        <button type="button" class="btn btn-soft" id="btnCheck">Şimdi kontrol et</button>
+      </div>
+    </div>
+
+    <div class="status" id="status"></div>
+
+    <div class="panel">
+      <h2>Aktif alarmlar</h2>
+      <div class="list" id="list">
+        <div class="empty">Henüz alarm yok — yukarıdan ilk eşiğini kur</div>
+      </div>
+    </div>
+
+    <div class="panel why">
+      <h2>Neden Nexora Alarm?</h2>
+      <p>
+        <strong>Gözün ekranda kalmasın.</strong>
+        Belirlediğin seviye çalışır; sen işine veya analizine dönersin.
+        Alarm, “hemen al/sat” emri değildir — dikkatini doğru ana çeker.
+      </p>
+      <p>
+        <strong>Sinyal merkezi ile farkı:</strong>
+        Sinyaller takip listendeki olağanüstü hareketleri özetler.
+        Alarm ise senin yazdığın net fiyat kuralıdır. İkisi birlikte
+        sakin bir ritim kurar.
+      </p>
+      <ul>
+        <li>Eşik tarayıcında saklanır; hesabın bu cihazda hatırlar.</li>
+        <li>Kontrol aralığı yaklaşık bir dakikadır (sayfa açıkken).</li>
+        <li>Tetiklenen alarm bir kez bildirir; yeniden kurarak sıfırlarsın.</li>
+        <li>Fiyatlar gecikmeli olabilir — kritik seviyede resmi kaynağı doğrula.</li>
+      </ul>
+    </div>
+
+    <p class="legal">
+      Alarmlar bilgilendirme amaçlıdır; yatırım tavsiyesi değildir.
+      · <a href="sinyaller.html">Sinyal merkezi</a>
+      · <a href="karsilastir.html">Karşılaştır</a>
+      · <a href="kvkk.html">KVKK</a>
+    </p>
+  </main>
+
+  <footer>
+    Nexora AI · Alarm
+    <a href="stock.html">Hisseler</a>
+    <a href="portfolio.html">Portföy</a>
+    <a href="about.html">Hakkımızda</a>
+  </footer>
+
+  <script src="assets/js/secrets.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script>
+(function () {
+  "use strict";
+
+  var KEY = "nexora_alarms_v1";
+  var catalog = {};
+  var timer = null;
+
+  function toast(msg, err) {
+    var el = document.getElementById("toast");
+    el.textContent = msg;
+    el.className = "toast show" + (err ? " err" : "");
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function () {
+      el.classList.remove("show");
+    }, 2800);
+  }
+
+  function setStatus(msg, type) {
+    var el = document.getElementById("status");
+    el.textContent = msg || "";
+    el.className = "status" + (type ? " " + type : "");
+  }
+
+  function load() {
+    try {
+      var a = JSON.parse(localStorage.getItem(KEY) || "[]");
+      return Array.isArray(a) ? a : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function save(list) {
+    localStorage.setItem(KEY, JSON.stringify(list));
+  }
+
+  function ysym(symbol, market) {
+    var s = String(symbol || "").toUpperCase().trim();
+    if (!s) return "";
+    if (market === "bist" && s.indexOf(".") === -1) return s + ".IS";
+    return s;
+  }
+
+  function uid() {
+    return "a" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+  }
+
+  async function loadCatalog(m) {
+    if (catalog[m]) return catalog[m];
+    try {
+      var res = await fetch("data/" + m + ".json", { cache: "no-store" });
+      var data = await res.json();
+      catalog[m] = Array.isArray(data) ? data : data.stocks || [];
+    } catch (e) {
+      catalog[m] = [];
+    }
+    return catalog[m];
+  }
+
+  function suggest(q, market) {
+    var box = document.getElementById("suggest");
+    q = String(q || "").trim().toLowerCase();
+    if (!q) {
+      box.classList.remove("show");
+      return;
+    }
+    var hits = (catalog[market] || [])
+      .filter(function (s) {
+        return (
+          String(s.symbol).toLowerCase().indexOf(q) === 0 ||
+          String(s.name || "").toLowerCase().indexOf(q) !== -1
+        );
+      })
+      .slice(0, 8);
+    if (!hits.length) {
+      box.classList.remove("show");
+      return;
+    }
+    box.innerHTML = hits
+      .map(function (s) {
+        return (
+          '<button type="button" data-s="' +
+          s.symbol +
+          '"><span class="s">' +
+          s.symbol +
+          '</span><span class="n">' +
+          (s.name || "") +
+          "</span></button>"
+        );
+      })
+      .join("");
+    box.classList.add("show");
+  }
+
+  function permState() {
+    if (!("Notification" in window)) return "unsupported";
+    return Notification.permission;
+  }
+
+  function refreshPermUI() {
+    var p = permState();
+    var t = document.getElementById("permText");
+    if (p === "granted") t.textContent = "Açık — tetiklenince bildirim gelebilir.";
+    else if (p === "denied") t.textContent = "Kapalı — tarayıcı ayarlarından açman gerekir.";
+    else if (p === "unsupported") t.textContent = "Bu tarayıcı bildirim desteklemiyor.";
+    else t.textContent = "Henüz sorulmadı — daha iyi deneyim için izin ver.";
+  }
+
+  function notify(title, body) {
+    if (permState() === "granted") {
+      try {
+        new Notification(title, { body: body, silent: false });
+      } catch (e) {}
+    }
+    toast(title + " — " + body);
+  }
+
+  function render() {
+    var list = load();
+    var box = document.getElementById("list");
+    if (!list.length) {
+      box.innerHTML =
+        '<div class="empty">Henüz alarm yok — yukarıdan ilk eşiğini kur</div>';
+      return;
+    }
+    box.innerHTML = list
+      .map(function (a) {
+        var rule =
+          (a.op === "above" ? "Fiyat ≥ " : "Fiyat ≤ ") +
+          a.price +
+          (a.note ? " · " + a.note : "");
+        return (
+          '<div class="item' +
+          (a.fired ? " fired" : "") +
+          '">' +
+          "<div>" +
+          '<div class="sym">' +
+          a.symbol +
+          " · " +
+          String(a.market || "").toUpperCase() +
+          "</div>" +
+          '<div class="rule">' +
+          rule +
+          "</div>" +
+          '<div class="last">' +
+          (a.last != null
+            ? "Son görülen: " + Number(a.last).toLocaleString("en-US", { maximumFractionDigits: 2 })
+            : "Henüz fiyat okunmadı") +
+          (a.checkedAt
+            ? " · " + new Date(a.checkedAt).toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })
+            : "") +
+          "</div>" +
+          (a.fired ? '<div class="badge-fired">Tetiklendi</div>' : "") +
+          "</div>" +
+          '<div class="item-actions">' +
+          '<a class="btn btn-soft" href="stock.html?symbol=' +
+          encodeURIComponent(a.symbol) +
+          "&market=" +
+          encodeURIComponent(a.market) +
+          '">Kart</a>' +
+          '<button type="button" class="btn btn-soft" data-reset="' +
+          a.id +
+          '">Sıfırla</button>' +
+          '<button type="button" class="btn btn-danger" data-del="' +
+          a.id +
+          '">Sil</button>' +
+          "</div>" +
+          "</div>"
+        );
+      })
+      .join("");
+  }
+
+  function addAlarm() {
+    var symbol = document.getElementById("sym").value.trim().toUpperCase();
+    var market = document.getElementById("mkt").value;
+    var op = document.getElementById("op").value;
+    var price = Number(document.getElementById("price").value);
+    var note = document.getElementById("note").value.trim().slice(0, 60);
+
+    if (!symbol || symbol.length < 2) {
+      setStatus("Geçerli bir sembol yaz.", "err");
+      toast("Sembol gerekli", true);
+      return;
+    }
+    if (!isFinite(price) || price <= 0) {
+      setStatus("Geçerli bir eşik fiyatı gir.", "err");
+      toast("Eşik fiyatı gerekli", true);
+      return;
+    }
+
+    var list = load();
+    list.push({
+      id: uid(),
+      symbol: symbol,
+      market: market,
+      op: op,
+      price: price,
+      note: note,
+      last: null,
+      fired: false,
+      checkedAt: null,
+      createdAt: Date.now()
+    });
+    save(list);
+    render();
+    setStatus(symbol + " için alarm kuruldu.", "ok");
+    toast("Alarm aktif: " + symbol);
+    document.getElementById("sym").value = "";
+    document.getElementById("price").value = "";
+    document.getElementById("note").value = "";
+    document.getElementById("suggest").classList.remove("show");
+  }
+
+  async function checkAll(manual) {
+    var list = load();
+    if (!list.length) {
+      if (manual) setStatus("Kontrol edilecek alarm yok.", "err");
+      return;
+    }
+    if (!window.API || !API.getLiveQuote) {
+      setStatus("Fiyat bağlantısı yok — API hazır olunca alarm çalışır.", "err");
+      return;
+    }
+
+    if (manual) setStatus("Kontrol ediliyor…");
+    var hits = 0;
+
+    for (var i = 0; i < list.length; i++) {
+      var a = list[i];
+      try {
+        var q = await API.getLiveQuote(ysym(a.symbol, a.market));
+        if (!q || q.price == null || !isFinite(Number(q.price))) continue;
+        var px = Number(q.price);
+        a.last = px;
+        a.checkedAt = Date.now();
+
+        var hit =
+          (a.op === "above" && px >= a.price) ||
+          (a.op === "below" && px <= a.price);
+
+        if (hit && !a.fired) {
+          a.fired = true;
+          hits++;
+          notify(
+            "Nexora Alarm · " + a.symbol,
+            "Fiyat " +
+              px +
+              " (eşik " +
+              a.price +
+              ")" +
+              (a.note ? " — " + a.note : "")
+          );
+        }
+      } catch (e) {}
+      await new Promise(function (r) {
+        setTimeout(r, 120);
+      });
+    }
+
+    save(list);
+    render();
+    if (manual) {
+      setStatus(
+        hits
+          ? hits + " alarm tetiklendi."
+          : "Kontrol bitti — yeni tetikleme yok.",
+        hits ? "ok" : ""
+      );
+    } else if (hits) {
+      setStatus(hits + " alarm tetiklendi.", "ok");
+    }
+  }
+
+  document.getElementById("btnAdd").addEventListener("click", addAlarm);
+  document.getElementById("btnCheck").addEventListener("click", function () {
+    checkAll(true);
+  });
+  document.getElementById("btnPerm").addEventListener("click", function () {
+    if (!("Notification" in window)) {
+      toast("Bu tarayıcı bildirim desteklemiyor", true);
+      return;
+    }
+    Notification.requestPermission().then(function () {
+      refreshPermUI();
+      toast(
+        Notification.permission === "granted"
+          ? "Bildirimler açık"
+          : "İzin verilmedi",
+        Notification.permission !== "granted"
+      );
+    });
+  });
+
+  document.getElementById("sym").addEventListener("input", function () {
+    suggest(this.value, document.getElementById("mkt").value);
+  });
+  document.getElementById("mkt").addEventListener("change", async function () {
+    await loadCatalog(this.value);
+    suggest(document.getElementById("sym").value, this.value);
+  });
+  document.getElementById("suggest").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-s]");
+    if (!b) return;
+    document.getElementById("sym").value = b.getAttribute("data-s");
+    document.getElementById("suggest").classList.remove("show");
+  });
+
+  document.getElementById("list").addEventListener("click", function (e) {
+    var del = e.target.closest("[data-del]");
+    var reset = e.target.closest("[data-reset]");
+    var list = load();
+    if (del) {
+      var id = del.getAttribute("data-del");
+      list = list.filter(function (x) {
+        return x.id !== id;
+      });
+      save(list);
+      render();
+      toast("Alarm silindi");
+      return;
+    }
+    if (reset) {
+      var rid = reset.getAttribute("data-reset");
+      list.forEach(function (x) {
+        if (x.id === rid) x.fired = false;
+      });
+      save(list);
+      render();
+      toast("Alarm sıfırlandı — yeniden tetiklenebilir");
+    }
+  });
+
+  refreshPermUI();
+  render();
+  loadCatalog("bist");
+
+  // Sayfa açıkken periyodik kontrol (~60 sn)
+  timer = setInterval(function () {
+    checkAll(false);
+  }, 60000);
+  setTimeout(function () {
+    checkAll(false);
+  }, 2500);
+})();
+  </script>
+</body>
+</html>
