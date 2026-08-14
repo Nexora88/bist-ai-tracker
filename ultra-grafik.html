@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Ultra Grafik · Nexora AI</title>
-  <meta name="description" content="Profesyonel hisse grafiği — zaman aralığı, yakınlaştır, Nexora Ultra Grafik." />
+  <meta name="description" content="Profesyonel hisse grafiği — zaman aralığı, yakınlaştır, son kapanış fiyatı." />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
   <style>
@@ -163,6 +163,10 @@
     .meta-bar .up { color: #34d399; }
     .meta-bar .down { color: var(--rose); }
     .meta-bar .sub { font-size: 13px; color: var(--muted); }
+    .meta-bar .tag {
+      font-size: 12px; font-weight: 600; color: var(--dim);
+      margin-left: 4px;
+    }
 
     .chart-shell {
       background: var(--panel);
@@ -227,8 +231,8 @@
       <div class="badge">Profesyonel grafik · kaydır &amp; yakınlaştır</div>
       <h1>Ultra <span>Grafik</span></h1>
       <p class="lead">
-        Sembol seç, aralığı değiştir. Parmağınla veya tekerlek ile yakınlaştır;
-        sürükleyerek zaman ekseninde gez.
+        Sembol seç, aralığı değiştir. Her aralık sıfırdan yüklenir;
+        borsa kapalıyken son kapanış fiyatı gösterilir.
       </p>
     </header>
 
@@ -274,6 +278,7 @@
 
     <p class="legal">
       Grafik bilgilendirme amaçlıdır; yatırım tavsiyesi değildir. Veriler gecikmeli olabilir.
+      Borsa kapalıyken gösterilen fiyat son kapanıştır.
       · <a href="kvkk.html">KVKK</a>
     </p>
   </main>
@@ -296,6 +301,10 @@
   var catalog = {};
   var chart = null;
   var series = null;
+  var loadToken = 0;
+  var barCache = {};
+  var lastPriceCache = {};
+  var resizeHandler = null;
 
   function ysym(symbol, market) {
     var s = String(symbol || "").toUpperCase().trim();
@@ -304,12 +313,20 @@
     return s;
   }
 
+  function cacheKey(symbol, market, r) {
+    return String(symbol).toUpperCase() + "|" + market + "|" + r;
+  }
+
+  function priceKey(symbol, market) {
+    return String(symbol).toUpperCase() + "|" + market;
+  }
+
   async function loadCatalog(m) {
     if (catalog[m]) return catalog[m];
     try {
       var res = await fetch("data/" + m + ".json", { cache: "no-store" });
       var data = await res.json();
-      catalog[m] = Array.isArray(data) ? data : data.stocks || [];
+      catalog[m] = Array.isArray(data) ? data : (data.stocks || []);
     } catch (e) {
       catalog[m] = [];
     }
@@ -317,7 +334,7 @@
   }
 
   function findMeta(symbol, market) {
-    var u = symbol.toUpperCase();
+    var u = String(symbol).toUpperCase();
     var list = catalog[market] || [];
     for (var i = 0; i < list.length; i++) {
       if (String(list[i].symbol).toUpperCase() === u) return list[i];
@@ -360,13 +377,22 @@
     box.classList.add("show");
   }
 
-  function initChart() {
-    var el = document.getElementById("chart");
+  function destroyChart() {
+    if (resizeHandler) {
+      window.removeEventListener("resize", resizeHandler);
+      resizeHandler = null;
+    }
     if (chart) {
-      chart.remove();
+      try { chart.remove(); } catch (e) {}
       chart = null;
       series = null;
     }
+  }
+
+  function initChart() {
+    var el = document.getElementById("chart");
+    destroyChart();
+
     chart = LightweightCharts.createChart(el, {
       layout: {
         background: { color: "transparent" },
@@ -376,12 +402,8 @@
         vertLines: { color: "rgba(148,163,184,0.08)" },
         horzLines: { color: "rgba(148,163,184,0.08)" }
       },
-      crosshair: {
-        mode: LightweightCharts.CrosshairMode.Normal
-      },
-      rightPriceScale: {
-        borderColor: "rgba(148,163,184,0.15)"
-      },
+      crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
+      rightPriceScale: { borderColor: "rgba(148,163,184,0.15)" },
       timeScale: {
         borderColor: "rgba(148,163,184,0.15)",
         timeVisible: true,
@@ -409,79 +431,150 @@
       lastValueVisible: true
     });
 
-    function resize() {
+    resizeHandler = function () {
+      if (!chart) return;
       chart.applyOptions({
         width: el.clientWidth,
         height: el.clientHeight
       });
-    }
-    resize();
-    window.addEventListener("resize", resize);
+    };
+    resizeHandler();
+    window.addEventListener("resize", resizeHandler);
 
-    el.addEventListener("dblclick", function () {
-      chart.timeScale().fitContent();
-    });
+    el.ondblclick = function () {
+      if (chart) chart.timeScale().fitContent();
+    };
   }
 
-  function demoHistory(days) {
+  function normalizeBars(hist) {
+    if (!Array.isArray(hist)) return [];
     var out = [];
-    var t = Math.floor(Date.now() / 1000) - days * 86400;
-    var p = 100;
-    for (var i = 0; i < days; i++) {
-      p = p * (1 + (Math.random() - 0.48) * 0.02);
-      out.push({ time: t + i * 86400, value: Math.round(p * 100) / 100 });
+    for (var i = 0; i < hist.length; i++) {
+      var h = hist[i];
+      var close = Number(h.close != null ? h.close : h.value);
+      var time = h.time;
+      if (typeof time === "string") {
+        time = Math.floor(new Date(time).getTime() / 1000);
+      }
+      if (h.date && !time) {
+        time = Math.floor(new Date(h.date).getTime() / 1000);
+      }
+      if (!isFinite(close) || close <= 0) continue;
+      if (!isFinite(time) || time <= 0) continue;
+      out.push({ time: time, value: close });
     }
-    return out;
-  }
+    out.sort(function (a, b) { return a.time - b.time; });
 
-  function rangeToDays(r) {
-    if (r === "5d") return 5;
-    if (r === "1mo") return 30;
-    if (r === "3mo") return 90;
-    if (r === "6mo") return 180;
-    if (r === "1y") return 365;
-    if (r === "5y") return 365 * 5;
-    return 90;
+    // Aynı time tekrarını temizle
+    var seen = {};
+    var clean = [];
+    for (var j = 0; j < out.length; j++) {
+      var t = out[j].time;
+      if (seen[t] != null) {
+        clean[seen[t]] = out[j];
+      } else {
+        seen[t] = clean.length;
+        clean.push(out[j]);
+      }
+    }
+    return clean;
   }
 
   async function fetchBars(symbol, market, r) {
-    var sym = ysym(symbol, market);
-    var bars = null;
+    var key = cacheKey(symbol, market, r);
+    if (barCache[key] && barCache[key].length >= 3) {
+      return { bars: barCache[key], cached: true };
+    }
 
-    if (window.API && API.getHistory) {
+    var sym = ysym(symbol, market);
+    var bars = [];
+
+    if (window.API && typeof API.getHistory === "function") {
       try {
         var hist = await API.getHistory(sym, r);
-        if (Array.isArray(hist) && hist.length > 2) {
-          bars = hist
-            .map(function (h) {
-              var close = Number(h.close != null ? h.close : h.value);
-              var time = h.time;
-              if (typeof time === "string") {
-                time = Math.floor(new Date(time).getTime() / 1000);
-              }
-              if (h.date && !time) {
-                time = Math.floor(new Date(h.date).getTime() / 1000);
-              }
-              if (!isFinite(close) || !isFinite(time)) return null;
-              return { time: time, value: close };
-            })
-            .filter(Boolean)
-            .sort(function (a, b) {
-              return a.time - b.time;
-            });
-        }
-      } catch (e) {}
+        bars = normalizeBars(hist);
+      } catch (e) {
+        bars = [];
+      }
     }
 
-    if (!bars || bars.length < 3) {
-      bars = demoHistory(rangeToDays(r));
-      document.getElementById("status").textContent =
-        "Geçici örnek eğri — canlı geçmiş bağlanınca gerçek veri gelir";
-    } else {
-      document.getElementById("status").textContent =
-        bars.length + " nokta · " + r + " · yakınlaştırmak için pinch / tekerlek";
+    if (bars.length >= 3) {
+      barCache[key] = bars;
+      return { bars: bars, cached: false };
     }
-    return bars;
+    return { bars: [], cached: false };
+  }
+
+  function setPriceUI(price, pct, tag) {
+    var el = document.getElementById("metaPrice");
+    if (price == null || !isFinite(Number(price))) {
+      el.textContent = "—";
+      return;
+    }
+    var p = Number(price);
+    var cls = "";
+    var pctHtml = "";
+    if (pct != null && isFinite(Number(pct))) {
+      pct = Number(pct);
+      cls = pct > 0 ? "up" : pct < 0 ? "down" : "";
+      var sign = pct > 0 ? "+" : "";
+      pctHtml =
+        ' <span style="font-size:14px">(' +
+        sign +
+        pct.toFixed(2) +
+        "%)</span>";
+    }
+    var tagHtml = tag
+      ? ' <span class="tag">' + tag + "</span>"
+      : "";
+    el.innerHTML =
+      '<span class="' +
+      cls +
+      '">' +
+      p.toLocaleString("en-US", { maximumFractionDigits: 2 }) +
+      pctHtml +
+      tagHtml +
+      "</span>";
+  }
+
+  async function resolvePrice(symbol, market, bars) {
+    var pk = priceKey(symbol, market);
+    var live = null;
+
+    if (window.API && typeof API.getLiveQuote === "function") {
+      try {
+        live = await API.getLiveQuote(ysym(symbol, market));
+      } catch (e) {
+        live = null;
+      }
+    }
+
+    // 1) Canlı fiyat
+    if (live && live.price != null && isFinite(Number(live.price)) && Number(live.price) > 0) {
+      var pctLive = live.pct != null ? Number(live.pct) : (live.changePercent != null ? Number(live.changePercent) : null);
+      lastPriceCache[pk] = { price: Number(live.price), pct: pctLive };
+      setPriceUI(live.price, pctLive, null);
+      return;
+    }
+
+    // 2) Son bar kapanışı (borsa kapalı)
+    if (bars && bars.length) {
+      var last = bars[bars.length - 1].value;
+      var prev = bars.length > 1 ? bars[bars.length - 2].value : null;
+      var pctBar = null;
+      if (prev && prev > 0) pctBar = ((last - prev) / prev) * 100;
+      lastPriceCache[pk] = { price: last, pct: pctBar };
+      setPriceUI(last, pctBar, "Son kapanış");
+      return;
+    }
+
+    // 3) Önceki oturum önbelleği
+    if (lastPriceCache[pk]) {
+      setPriceUI(lastPriceCache[pk].price, lastPriceCache[pk].pct, "Son bilinen");
+      return;
+    }
+
+    setPriceUI(null, null, null);
   }
 
   async function loadSymbol(symbol) {
@@ -491,7 +584,11 @@
       .toUpperCase();
     if (!symbol) return;
 
+    var token = ++loadToken;
+
     await loadCatalog(market);
+    if (token !== loadToken) return;
+
     var meta = findMeta(symbol, market);
     current = { symbol: meta.symbol, market: market, meta: meta };
 
@@ -501,102 +598,108 @@
       (meta.name || "") + " · " + (meta.market || market.toUpperCase());
 
     document.getElementById("linkCard").href =
-      "stock.html?symbol=" +
-      encodeURIComponent(meta.symbol) +
-      "&market=" +
-      encodeURIComponent(market);
+      "stock.html?symbol=" + encodeURIComponent(meta.symbol) +
+      "&market=" + encodeURIComponent(market);
     document.getElementById("linkAi").href =
-      "ai-analiz.html?symbol=" +
-      encodeURIComponent(meta.symbol) +
-      "&market=" +
-      encodeURIComponent(market);
+      "ai-analiz.html?symbol=" + encodeURIComponent(meta.symbol) +
+      "&market=" + encodeURIComponent(market);
     document.getElementById("linkRadar").href =
-      "radar.html?sembol=" +
-      encodeURIComponent(meta.symbol) +
-      "&piyasa=" +
-      encodeURIComponent(market);
+      "radar.html?sembol=" + encodeURIComponent(meta.symbol) +
+      "&piyasa=" + encodeURIComponent(market);
 
     document.getElementById("status").textContent = "Grafik yükleniyor…";
     document.getElementById("suggest").classList.remove("show");
+    document.getElementById("metaPrice").textContent = "—";
 
-    if (!chart) initChart();
+    // Her yüklemede grafik sıfırdan (eski veri karışmasın)
+    initChart();
+    if (series) series.setData([]);
 
-    var bars = await fetchBars(meta.symbol, market, range);
-    series.setData(bars);
-    chart.timeScale().fitContent();
+    var result = await fetchBars(meta.symbol, market, range);
+    if (token !== loadToken) return;
 
-    if (window.API && API.getLiveQuote) {
-      try {
-        var q = await API.getLiveQuote(ysym(meta.symbol, market));
-        if (q && q.price != null) {
-          var pct = Number(q.pct != null ? q.pct : q.changePercent);
-          var cls = pct > 0 ? "up" : pct < 0 ? "down" : "";
-          var sign = pct > 0 ? "+" : "";
-          document.getElementById("metaPrice").innerHTML =
-            '<span class="' +
-            cls +
-            '">' +
-            Number(q.price).toLocaleString("en-US", {
-              maximumFractionDigits: 2
-            }) +
-            (isFinite(pct)
-              ? " <span style=\"font-size:14px\">(" +
-                sign +
-                pct.toFixed(2) +
-                "%)</span>"
-              : "") +
-            "</span>";
-        }
-      } catch (e) {}
+    var bars = result.bars || [];
+
+    if (bars.length < 3) {
+      document.getElementById("status").textContent =
+        "Bu aralık için veri alınamadı. Farklı aralık dene veya biraz sonra tekrar aç.";
+      if (series) series.setData([]);
+    } else {
+      series.setData(bars);
+      chart.timeScale().fitContent();
+      document.getElementById("status").textContent =
+        bars.length +
+        " nokta · " +
+        range +
+        (result.cached ? " · önbellek" : "") +
+        " · pinch / tekerlek ile yakınlaştır";
     }
 
-    history.replaceState(
-      null,
-      "",
-      "ultra-grafik.html?symbol=" +
-        encodeURIComponent(meta.symbol) +
-        "&market=" +
-        encodeURIComponent(market) +
-        "&range=" +
-        encodeURIComponent(range)
-    );
+    await resolvePrice(meta.symbol, market, bars);
+    if (token !== loadToken) return;
+
+    try {
+      history.replaceState(
+        null,
+        "",
+        "ultra-grafik.html?symbol=" +
+          encodeURIComponent(meta.symbol) +
+          "&market=" +
+          encodeURIComponent(market) +
+          "&range=" +
+          encodeURIComponent(range)
+      );
+    } catch (e) {}
   }
 
   document.getElementById("btnLoad").addEventListener("click", function () {
     loadSymbol();
   });
+
   document.getElementById("q").addEventListener("keydown", function (e) {
     if (e.key === "Enter") {
       e.preventDefault();
       loadSymbol();
     }
   });
+
   document.getElementById("q").addEventListener("input", function () {
     suggest(this.value, document.getElementById("mkt").value);
   });
+
   document.getElementById("mkt").addEventListener("change", async function () {
     await loadCatalog(this.value);
     suggest(document.getElementById("q").value, this.value);
   });
+
   document.getElementById("suggest").addEventListener("click", function (e) {
     var b = e.target.closest("[data-s]");
     if (!b) return;
     document.getElementById("q").value = b.getAttribute("data-s");
     loadSymbol(b.getAttribute("data-s"));
   });
+
+  // Aralık değişince: eski seriyi yok et, sıfırdan yükle
   document.getElementById("ranges").addEventListener("click", function (e) {
     var c = e.target.closest("[data-r]");
     if (!c) return;
-    range = c.getAttribute("data-r");
+    var next = c.getAttribute("data-r");
+    if (next === range && current) {
+      // Aynı aralık — yine de taze çekmek istersen barCache temizlenebilir
+      delete barCache[cacheKey(current.symbol, current.market, range)];
+    }
+    range = next;
     document.querySelectorAll("#ranges .chip").forEach(function (x) {
       x.classList.toggle("on", x === c);
     });
     if (current) loadSymbol(current.symbol);
   });
+
   document.getElementById("btnFit").addEventListener("click", function () {
     if (chart) chart.timeScale().fitContent();
   });
 
+  // İlk boş grafik iskeleti
   initChart();
 
   var params = new URLSearchParams(location.search);
@@ -611,10 +714,11 @@
       x.classList.toggle("on", x.getAttribute("data-r") === range);
     });
   }
+
   loadCatalog(sel.value).then(function () {
     var sym = params.get("symbol") || params.get("sembol");
     if (sym) {
-      document.getElementById("q").value = sym.toUpperCase();
+      document.getElementById("q").value = String(sym).toUpperCase();
       loadSymbol(sym);
     }
   });
