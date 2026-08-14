@@ -2,14 +2,14 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Portföy · Nexora AI</title>
-  <meta name="description" content="Alış fiyatı ve adetle portföy takibi — kâr/zarar özeti, Nexora AI." />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Portföy & Takip · Nexora AI</title>
+  <meta name="description" content="Portföyünü ve takip listeni tek ekranda yönet. Alış fiyatı, kâr/zarar, anlık değişim." />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
       --bg: #060a12;
-      --panel: rgba(15, 23, 42, 0.92);
+      --panel: rgba(15, 23, 42, 0.94);
       --border: rgba(148, 163, 184, 0.12);
       --text: #f1f5f9;
       --muted: #94a3b8;
@@ -29,127 +29,110 @@
     }
     a { color: inherit; text-decoration: none; }
     button, input, select { font: inherit; color: inherit; border: none; background: none; cursor: pointer; }
+    input, select { outline: none; }
 
     .nav {
       position: sticky; top: 0; z-index: 40;
       height: 56px; display: flex; align-items: center; justify-content: space-between;
-      gap: 10px; padding: 0 16px;
-      background: rgba(6, 10, 18, 0.92);
+      gap: 10px; padding: 0 14px;
+      background: rgba(6, 10, 18, 0.94);
       backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border);
     }
     .brand { font-weight: 800; letter-spacing: -0.03em; }
     .brand em { font-style: normal; color: var(--accent); }
-    .nav-links { display: flex; flex-wrap: wrap; gap: 2px; }
-    .nav-links a {
-      font-size: 13px; font-weight: 600; color: var(--muted);
-      padding: 7px 10px; border-radius: 9px;
+    .nav-links { display: none; gap: 2px; }
+    @media (min-width: 900px) {
+      .nav-links { display: flex; }
+      .nav-links a {
+        font-size: 13px; font-weight: 600; color: var(--muted);
+        padding: 7px 10px; border-radius: 9px;
+      }
+      .nav-links a:hover, .nav-links a.on {
+        color: var(--text); background: rgba(255,255,255,0.05);
+      }
     }
-    .nav-links a:hover, .nav-links a.on { color: var(--text); background: rgba(255,255,255,0.05); }
-    @media (max-width: 900px) { .nav-links { display: none; } }
 
-    .wrap { max-width: 900px; margin: 0 auto; padding: 22px 16px 48px; }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 16px 14px 48px; }
 
+    .head { margin-bottom: 16px; }
     .badge {
-      display: inline-flex; gap: 8px; align-items: center;
-      font-size: 12px; font-weight: 700; color: var(--cyan);
+      display: inline-flex; font-size: 12px; font-weight: 700; color: var(--cyan);
       background: rgba(34, 211, 238, 0.1);
-      border: 1px solid rgba(34, 211, 238, 0.25);
-      padding: 6px 12px; border-radius: 999px; margin-bottom: 12px;
+      border: 1px solid rgba(34, 211, 238, 0.28);
+      padding: 5px 11px; border-radius: 999px; margin-bottom: 10px;
     }
     h1 {
-      font-size: clamp(1.4rem, 3vw, 1.85rem);
+      font-size: clamp(1.4rem, 3vw, 1.8rem);
       font-weight: 800; letter-spacing: -0.03em;
-      margin-bottom: 8px;
     }
     h1 span {
       background: linear-gradient(90deg, var(--accent), var(--cyan));
       -webkit-background-clip: text; background-clip: text; color: transparent;
     }
-    .lead {
-      color: var(--muted); font-size: 14.5px; max-width: 520px;
-      line-height: 1.65; margin-bottom: 18px;
-    }
+    .lead { color: var(--muted); font-size: 14px; margin-top: 6px; max-width: 520px; }
 
     .summary {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 10px;
-      margin-bottom: 14px;
+      margin: 16px 0 20px;
     }
-    @media (max-width: 600px) { .summary { grid-template-columns: 1fr; } }
-    .box {
+    @media (min-width: 640px) {
+      .summary { grid-template-columns: repeat(4, 1fr); }
+    }
+    .sum-card {
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 14px;
-      padding: 14px;
+      padding: 14px 16px;
     }
-    .box .lab {
-      font-size: 11px; font-weight: 700; color: var(--dim);
-      text-transform: uppercase; letter-spacing: 0.04em;
-    }
-    .box .val {
-      font-size: 1.2rem; font-weight: 800; margin-top: 4px;
-      font-variant-numeric: tabular-nums;
-    }
-    .up { color: #34d399; }
-    .down { color: var(--rose); }
+    .sum-card .lbl { font-size: 11px; font-weight: 600; color: var(--dim); text-transform: uppercase; letter-spacing: 0.04em; }
+    .sum-card .val { font-size: 1.15rem; font-weight: 800; margin-top: 4px; font-variant-numeric: tabular-nums; }
+    .sum-card .val.up { color: #34d399; }
+    .sum-card .val.down { color: var(--rose); }
 
-    .panel {
+    .section {
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 16px;
       padding: 16px;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
-    .panel h2 {
-      font-size: 12px; font-weight: 700; color: var(--muted);
-      text-transform: uppercase; letter-spacing: 0.04em;
+    .section-h {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 10px; margin-bottom: 14px; flex-wrap: wrap;
+    }
+    .section-h h2 {
+      font-size: 1.05rem; font-weight: 800; letter-spacing: -0.02em;
+    }
+    .section-h .hint { font-size: 12px; color: var(--dim); }
+
+    .form-row {
+      display: flex; flex-wrap: wrap; gap: 8px;
       margin-bottom: 12px;
+      position: relative;
     }
-
-    .form {
-      display: grid;
-      grid-template-columns: 1.3fr 0.9fr 0.8fr 0.8fr auto;
-      gap: 8px;
-      align-items: end;
-    }
-    @media (max-width: 720px) {
-      .form { grid-template-columns: 1fr 1fr; }
-      .form .go { grid-column: 1 / -1; }
-    }
-    .field label {
-      display: block; font-size: 11px; font-weight: 650;
-      color: var(--dim); margin-bottom: 4px;
-    }
-    .field input, .field select {
-      width: 100%;
-      background: rgba(30, 41, 59, 0.9);
+    .form-row input, .form-row select {
+      background: rgba(6, 10, 18, 0.6);
       box-shadow: inset 0 0 0 1px var(--border);
-      border-radius: 10px;
+      border-radius: 11px;
       padding: 11px 12px;
-      outline: none;
+      font-size: 14px;
     }
-    .field input:focus { box-shadow: inset 0 0 0 1px rgba(16,185,129,0.45); }
-
-    .suggest {
-      display: none; margin-top: 6px;
-      background: #0b1220; border: 1px solid var(--border);
-      border-radius: 10px; max-height: 160px; overflow: auto;
+    .form-row input:focus, .form-row select:focus {
+      box-shadow: inset 0 0 0 1px rgba(16,185,129,0.45);
     }
-    .suggest.show { display: block; }
-    .suggest button {
-      display: block; width: 100%; text-align: left;
-      padding: 8px 12px; font-size: 13px;
-    }
-    .suggest button:hover { background: rgba(16,185,129,0.1); }
-    .suggest .s { font-weight: 800; margin-right: 6px; }
-    .suggest .n { color: var(--muted); }
+    .form-row input.sym { flex: 1; min-width: 120px; }
+    .form-row input.num { width: 110px; }
+    .form-row input.date { width: 140px; }
+    .form-row select { width: 110px; }
 
     .btn {
       display: inline-flex; align-items: center; justify-content: center;
-      padding: 11px 14px; border-radius: 10px;
+      padding: 11px 14px; border-radius: 11px;
       font-size: 13px; font-weight: 700;
+      white-space: nowrap;
     }
     .btn-primary {
       background: linear-gradient(135deg, var(--accent), #059669);
@@ -162,454 +145,783 @@
     }
     .btn-danger {
       background: rgba(248, 113, 113, 0.12);
-      color: var(--rose);
+      color: #fca5a5;
       box-shadow: inset 0 0 0 1px rgba(248, 113, 113, 0.25);
-      padding: 7px 10px;
+      padding: 8px 10px;
       font-size: 12px;
     }
+    .btn-ghost {
+      color: var(--muted);
+      font-size: 12px;
+      padding: 6px 8px;
+    }
+    .btn-ghost:hover { color: var(--accent); }
 
-    .list { display: flex; flex-direction: column; gap: 8px; }
-    .row {
-      display: grid;
-      grid-template-columns: 1.2fr 0.7fr 0.8fr 0.9fr auto;
-      gap: 8px; align-items: center;
-      background: rgba(15, 23, 42, 0.65);
+    .suggest {
+      display: none;
+      position: absolute;
+      left: 0; right: 0; top: 100%;
+      z-index: 20;
+      background: #0b1220;
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 12px 14px;
+      max-height: 200px;
+      overflow: auto;
+      margin-top: 4px;
+    }
+    .suggest.show { display: block; }
+    .suggest button {
+      display: block; width: 100%; text-align: left;
+      padding: 10px 14px; font-size: 13px;
+    }
+    .suggest button:hover { background: rgba(16,185,129,0.1); }
+    .suggest .s { font-weight: 800; margin-right: 8px; }
+    .suggest .n { color: var(--muted); }
+
+    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
       font-size: 13.5px;
     }
-    @media (max-width: 700px) {
-      .row {
-        grid-template-columns: 1fr 1fr;
-      }
-      .row .act { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; }
+    th {
+      text-align: left;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--dim);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
     }
-    .row .sym { font-weight: 800; }
-    .row .name { color: var(--muted); font-size: 12px; }
-    .row .muted { color: var(--dim); font-size: 12px; }
-
+    td {
+      padding: 12px 10px;
+      border-bottom: 1px solid rgba(148,163,184,0.06);
+      vertical-align: middle;
+      font-variant-numeric: tabular-nums;
+    }
+    tr:last-child td { border-bottom: none; }
+    .sym-cell { font-weight: 800; letter-spacing: -0.02em; }
+    .sym-cell a:hover { color: var(--accent); }
+    .name-cell { color: var(--muted); font-size: 12px; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .up { color: #34d399; }
+    .down { color: var(--rose); }
+    .muted { color: var(--muted); }
     .empty {
-      text-align: center; color: var(--muted);
-      padding: 32px 12px;
-      border: 1px dashed var(--border);
-      border-radius: 12px;
+      text-align: center;
+      padding: 28px 16px;
+      color: var(--dim);
       font-size: 14px;
     }
+    .empty strong { color: var(--muted); display: block; margin-bottom: 4px; }
 
-    .hint {
-      font-size: 12.5px; color: var(--dim); line-height: 1.55;
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: #0f172a;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-size: 13px; font-weight: 600;
+      z-index: 100;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s;
+      max-width: 90vw;
+    }
+    .toast.show { opacity: 1; }
+
+    .status-line {
+      font-size: 12px; color: var(--dim);
       margin-top: 10px;
     }
 
-    .toast {
-      position: fixed; left: 50%; bottom: 22px; z-index: 80;
-      transform: translateX(-50%) translateY(12px);
-      background: #0f172a; border: 1px solid rgba(16,185,129,0.35);
-      color: #a7f3d0; padding: 12px 16px; border-radius: 12px;
-      font-size: 13.5px; font-weight: 650;
-      opacity: 0; pointer-events: none; transition: 0.25s;
-      max-width: min(400px, calc(100vw - 24px)); text-align: center;
-    }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-    .toast.err { border-color: rgba(248,113,113,0.45); color: #fecaca; }
-
     .legal {
-      margin-top: 16px;
+      margin-top: 20px;
       font-size: 12px; color: var(--dim); line-height: 1.55;
     }
-    .legal a { color: var(--cyan); font-weight: 600; }
-
     footer {
       text-align: center; color: var(--dim); font-size: 12px;
-      padding: 8px 16px 36px;
+      padding: 8px 14px 32px;
     }
     footer a { color: var(--muted); margin: 0 5px; font-weight: 600; }
   </style>
 </head>
 <body>
-  <div class="toast" id="toast"></div>
-
   <nav class="nav">
     <a class="brand" href="index.html">Nexora <em>AI</em></a>
     <div class="nav-links">
       <a href="index.html">Ana</a>
       <a href="stock.html">Hisseler</a>
       <a class="on" href="portfolio.html">Portföy</a>
-      <a href="oyun.html">Lig</a>
+      <a href="ultra-grafik.html">Grafik</a>
+      <a href="alarm.html">Alarm</a>
       <a href="ai-analiz.html">AI</a>
-      <a href="premium.html">Premium</a>
     </div>
-    <a class="btn btn-soft" href="oyun.html">Sanal lig</a>
+    <a class="btn btn-soft" href="stock.html">Hisse ekle</a>
   </nav>
 
   <main class="wrap">
-    <div class="badge">Gerçek portföy takibi · tarayıcında saklanır</div>
-    <h1>Portföy <span>özeti</span></h1>
-    <p class="lead">
-      Alış fiyatı ve adet gir; güncel değer ve kâr/zarar otomatik hesaplanır.
-      Bu ekran sanal ligden ayrıdır — kendi gerçek (veya not ettiğin) pozisyonların için.
-    </p>
+    <header class="head">
+      <div class="badge">Portföy + takip · tarayıcıda saklanır</div>
+      <h1>Portföy &amp; <span>Takip</span></h1>
+      <p class="lead">
+        Alış fiyatı ve adet gir; güncel fiyat otomatik gelir. Takip listende yalnızca izlediğin hisseler durur.
+      </p>
+    </header>
 
     <div class="summary">
-      <div class="box">
-        <div class="lab">Maliyet</div>
-        <div class="val" id="sumCost">—</div>
-      </div>
-      <div class="box">
-        <div class="lab">Güncel değer</div>
+      <div class="sum-card">
+        <div class="lbl">Toplam değer</div>
         <div class="val" id="sumValue">—</div>
       </div>
-      <div class="box">
-        <div class="lab">Kâr / zarar</div>
-        <div class="val" id="sumPl">—</div>
+      <div class="sum-card">
+        <div class="lbl">Maliyet</div>
+        <div class="val" id="sumCost">—</div>
+      </div>
+      <div class="sum-card">
+        <div class="lbl">Kâr / zarar</div>
+        <div class="val" id="sumPnL">—</div>
+      </div>
+      <div class="sum-card">
+        <div class="lbl">Takipte</div>
+        <div class="val" id="sumWatch">0</div>
       </div>
     </div>
 
-    <div class="panel">
-      <h2>Pozisyon ekle</h2>
-      <div class="form">
-        <div class="field">
-          <label>Sembol</label>
-          <input id="sym" type="text" placeholder="ASELS, THYAO…" autocomplete="off" />
-          <div class="suggest" id="suggest"></div>
+    <!-- PORTFÖY -->
+    <section class="section" id="secPortfolio">
+      <div class="section-h">
+        <div>
+          <h2>Portföyüm</h2>
+          <div class="hint">Alış tarihi ve fiyatı ile gerçek kâr/zarar</div>
         </div>
-        <div class="field">
-          <label>Piyasa</label>
-          <select id="mkt">
-            <option value="bist">BIST</option>
-            <option value="nasdaq">NASDAQ</option>
-            <option value="nyse">NYSE</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Adet</label>
-          <input id="qty" type="number" min="0" step="any" placeholder="100" />
-        </div>
-        <div class="field">
-          <label>Alış fiyatı</label>
-          <input id="avg" type="number" min="0" step="any" placeholder="0.00" />
-        </div>
-        <div class="field go">
-          <label>&nbsp;</label>
-          <button type="button" class="btn btn-primary" id="btnAdd" style="width:100%">Ekle</button>
-        </div>
+        <button type="button" class="btn btn-soft" id="btnRefresh" title="Fiyatları yenile">Yenile</button>
       </div>
-      <p class="hint">
-        Aynı sembol tekrar eklenirse ortalama maliyet güncellenir.
-        Silmek için satırdaki kaldır düğmesini kullan.
-      </p>
-    </div>
 
-    <div class="panel">
-      <h2>Pozisyonlar</h2>
-      <div class="list" id="list">
-        <div class="empty">Henüz pozisyon yok — yukarıdan ekle</div>
+      <div class="form-row" id="pfFormWrap">
+        <input class="sym" id="pfSym" type="text" placeholder="Sembol (ASELS, AAPL…)" autocomplete="off" />
+        <select id="pfMkt">
+          <option value="bist">BIST</option>
+          <option value="nasdaq">NASDAQ</option>
+          <option value="nyse">NYSE</option>
+        </select>
+        <input class="num" id="pfQty" type="number" min="0" step="any" placeholder="Adet" />
+        <input class="num" id="pfBuy" type="number" min="0" step="any" placeholder="Alış fiyatı" />
+        <input class="date" id="pfDate" type="date" />
+        <button type="button" class="btn btn-primary" id="btnAddPf">Ekle</button>
+        <div class="suggest" id="pfSuggest"></div>
       </div>
-    </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Hisse</th>
+              <th>Adet</th>
+              <th>Alış</th>
+              <th>Güncel</th>
+              <th>K/Z</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="pfBody">
+            <tr><td colspan="6" class="empty"><strong>Portföy boş</strong>Yukarıdan hisse ekle</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="status-line" id="pfStatus"></div>
+    </section>
+
+    <!-- TAKİP LİSTESİ -->
+    <section class="section" id="secWatch">
+      <div class="section-h">
+        <div>
+          <h2>Takip listem</h2>
+          <div class="hint">İzlediğin hisseler — fiyat ve günlük değişim</div>
+        </div>
+      </div>
+
+      <div class="form-row" id="wlFormWrap">
+        <input class="sym" id="wlSym" type="text" placeholder="Takibe ekle (THYAO, NVDA…)" autocomplete="off" />
+        <select id="wlMkt">
+          <option value="bist">BIST</option>
+          <option value="nasdaq">NASDAQ</option>
+          <option value="nyse">NYSE</option>
+        </select>
+        <button type="button" class="btn btn-primary" id="btnAddWl">Takibe al</button>
+        <div class="suggest" id="wlSuggest"></div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Hisse</th>
+              <th>Fiyat</th>
+              <th>Değişim</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="wlBody">
+            <tr><td colspan="4" class="empty"><strong>Takip listesi boş</strong>Hisse kartlarından veya buradan ekle</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="status-line" id="wlStatus"></div>
+    </section>
 
     <p class="legal">
-      Portföy özeti bilgilendirme içindir; yatırım tavsiyesi değildir. Fiyatlar gecikmeli olabilir.
-      · <a href="stock.html">Hisseler</a> · <a href="sinyaller.html">Sinyaller</a>
-      · <a href="kvkk.html">KVKK</a>
+      Buradaki bilgiler bilgilendirme amaçlıdır; yatırım tavsiyesi değildir.
+      Veriler gecikmeli olabilir. Portföy ve takip listesi yalnızca bu tarayıcıda saklanır.
     </p>
   </main>
 
   <footer>
-    Nexora AI ·
-    <a href="oyun.html">Lig (sanal)</a>
-    <a href="ai-analiz.html">AI</a>
-    <a href="radar.html">Pusula</a>
+    Nexora AI
+    <a href="stock.html">Hisseler</a>
+    <a href="ultra-grafik.html">Grafik</a>
+    <a href="alarm.html">Alarm</a>
+    <a href="about.html">Hakkımızda</a>
   </footer>
+
+  <div class="toast" id="toast"></div>
 
   <script src="assets/js/secrets.js"></script>
   <script src="assets/js/api.js"></script>
+  <script src="assets/js/store.js"></script>
   <script>
 (function () {
   "use strict";
 
-  var KEY = "nexora_portfolio_v1";
   var catalog = {};
-  var positions = [];
-
-  function toast(msg, err) {
-    var el = document.getElementById("toast");
-    el.textContent = msg;
-    el.className = "toast show" + (err ? " err" : "");
-    clearTimeout(toast._t);
-    toast._t = setTimeout(function () {
-      el.classList.remove("show");
-    }, 2800);
-  }
-
-  function money(n, cur) {
-    if (n == null || !isFinite(n)) return "—";
-    var s = n.toLocaleString("tr-TR", { maximumFractionDigits: 2 });
-    return cur === "USD" ? "$" + n.toLocaleString("en-US", { maximumFractionDigits: 2 }) : s + " ₺";
-  }
-
-  function load() {
-    try {
-      var a = JSON.parse(localStorage.getItem(KEY) || "[]");
-      positions = Array.isArray(a) ? a : [];
-    } catch (e) {
-      positions = [];
-    }
-  }
-  function save() {
-    localStorage.setItem(KEY, JSON.stringify(positions));
-  }
+  var quoteCache = {}; // key: SYMBOL|market
 
   function ysym(symbol, market) {
-    var s = String(symbol || "").trim().toUpperCase();
+    var s = String(symbol || "").toUpperCase().trim();
     if (!s) return "";
-    if (market === "bist" && s.indexOf(".") === -1) return s + ".IS";
+    if (String(market).toLowerCase() === "bist" && s.indexOf(".") === -1) return s + ".IS";
     return s;
   }
 
+  function qKey(symbol, market) {
+    return String(symbol).toUpperCase() + "|" + String(market).toLowerCase();
+  }
+
+  function toast(msg) {
+    var el = document.getElementById("toast");
+    el.textContent = msg;
+    el.classList.add("show");
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function () { el.classList.remove("show"); }, 2200);
+  }
+
+  function fmt(n, dig) {
+    if (n == null || !isFinite(Number(n))) return "—";
+    return Number(n).toLocaleString("tr-TR", {
+      minimumFractionDigits: dig != null ? dig : 2,
+      maximumFractionDigits: dig != null ? dig : 2
+    });
+  }
+
+  function fmtPct(n) {
+    if (n == null || !isFinite(Number(n))) return "—";
+    var v = Number(n);
+    var sign = v > 0 ? "+" : "";
+    return sign + v.toFixed(2) + "%";
+  }
+
+  function todayStr() {
+    var d = new Date();
+    var m = String(d.getMonth() + 1).padStart(2, "0");
+    var day = String(d.getDate()).padStart(2, "0");
+    return d.getFullYear() + "-" + m + "-" + day;
+  }
+
   async function loadCatalog(m) {
+    m = String(m || "bist").toLowerCase();
     if (catalog[m]) return catalog[m];
     try {
       var res = await fetch("data/" + m + ".json", { cache: "no-store" });
       var data = await res.json();
-      catalog[m] = Array.isArray(data) ? data : data.stocks || [];
+      catalog[m] = Array.isArray(data) ? data : (data.stocks || []);
     } catch (e) {
       catalog[m] = [];
     }
     return catalog[m];
   }
 
-  function findName(symbol, market) {
+  function findMeta(symbol, market) {
+    var u = String(symbol).toUpperCase();
     var list = catalog[market] || [];
-    var u = symbol.toUpperCase();
     for (var i = 0; i < list.length; i++) {
-      if (String(list[i].symbol).toUpperCase() === u) return list[i].name || u;
+      if (String(list[i].symbol).toUpperCase() === u) return list[i];
     }
-    return u;
+    return { symbol: u, name: u, market: String(market).toUpperCase() };
   }
 
-  async function quote(symbol, market) {
-    if (!window.API || !API.getLiveQuote) return null;
+  function bindSuggest(inputId, mktId, boxId, onPick) {
+    var input = document.getElementById(inputId);
+    var box = document.getElementById(boxId);
+
+    input.addEventListener("input", async function () {
+      var market = document.getElementById(mktId).value;
+      await loadCatalog(market);
+      var q = String(input.value || "").trim().toLowerCase();
+      if (!q) {
+        box.classList.remove("show");
+        return;
+      }
+      var hits = (catalog[market] || [])
+        .filter(function (s) {
+          return (
+            String(s.symbol).toLowerCase().indexOf(q) === 0 ||
+            String(s.name || "").toLowerCase().indexOf(q) !== -1
+          );
+        })
+        .slice(0, 8);
+      if (!hits.length) {
+        box.classList.remove("show");
+        return;
+      }
+      box.innerHTML = hits
+        .map(function (s) {
+          return (
+            '<button type="button" data-s="' +
+            s.symbol +
+            '"><span class="s">' +
+            s.symbol +
+            '</span><span class="n">' +
+            (s.name || "") +
+            "</span></button>"
+          );
+        })
+        .join("");
+      box.classList.add("show");
+    });
+
+    box.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-s]");
+      if (!b) return;
+      input.value = b.getAttribute("data-s");
+      box.classList.remove("show");
+      if (onPick) onPick(b.getAttribute("data-s"));
+    });
+
+    document.addEventListener("click", function (e) {
+      if (!box.contains(e.target) && e.target !== input) {
+        box.classList.remove("show");
+      }
+    });
+  }
+
+  async function getQuote(symbol, market) {
+    var key = qKey(symbol, market);
+    if (quoteCache[key] && Date.now() - quoteCache[key].ts < 45000) {
+      return quoteCache[key].data;
+    }
+    var data = null;
+    if (window.API && typeof API.getLiveQuote === "function") {
+      try {
+        var q = await API.getLiveQuote(ysym(symbol, market));
+        if (q && q.price != null && isFinite(Number(q.price)) && Number(q.price) > 0) {
+          data = {
+            price: Number(q.price),
+            pct: q.pct != null ? Number(q.pct) : (q.changePercent != null ? Number(q.changePercent) : null),
+            source: "live"
+          };
+        }
+      } catch (e) {}
+    }
+    // Yedek: kısa geçmişten son kapanış
+    if (!data && window.API && typeof API.getHistory === "function") {
+      try {
+        var hist = await API.getHistory(ysym(symbol, market), "5d");
+        if (Array.isArray(hist) && hist.length) {
+          var last = hist[hist.length - 1];
+          var close = Number(last.close != null ? last.close : last.value);
+          var prev = hist.length > 1 ? Number(hist[hist.length - 2].close != null ? hist[hist.length - 2].close : hist[hist.length - 2].value) : null;
+          if (isFinite(close) && close > 0) {
+            var pct = prev && prev > 0 ? ((close - prev) / prev) * 100 : null;
+            data = { price: close, pct: pct, source: "close" };
+          }
+        }
+      } catch (e) {}
+    }
+    if (data) {
+      quoteCache[key] = { data: data, ts: Date.now() };
+    }
+    return data;
+  }
+
+  /* —— Portföy —— */
+  function getPositions() {
+    if (window.Store && Store.getPortfolio) {
+      return Store.getPortfolio().positions || [];
+    }
     try {
-      return await API.getLiveQuote(ysym(symbol, market));
+      var raw = localStorage.getItem("nexora_portfolio_v1");
+      var d = raw ? JSON.parse(raw) : null;
+      return d && Array.isArray(d.positions) ? d.positions : [];
     } catch (e) {
-      return null;
+      return [];
     }
   }
 
-  function suggest(q, market) {
-    var box = document.getElementById("suggest");
-    q = String(q || "").trim().toLowerCase();
-    if (!q) {
-      box.classList.remove("show");
+  function savePositions(list) {
+    if (window.Store && Store.setPortfolio) {
+      Store.setPortfolio({ positions: list });
       return;
     }
-    var hits = (catalog[market] || [])
-      .filter(function (s) {
-        return (
-          String(s.symbol).toLowerCase().indexOf(q) === 0 ||
-          String(s.name || "").toLowerCase().indexOf(q) !== -1
-        );
-      })
-      .slice(0, 8);
-    if (!hits.length) {
-      box.classList.remove("show");
+    try {
+      localStorage.setItem(
+        "nexora_portfolio_v1",
+        JSON.stringify({ positions: list, updatedAt: Date.now() })
+      );
+    } catch (e) {}
+  }
+
+  async function renderPortfolio() {
+    var body = document.getElementById("pfBody");
+    var list = getPositions();
+    document.getElementById("pfStatus").textContent = "";
+
+    if (!list.length) {
+      body.innerHTML =
+        '<tr><td colspan="6" class="empty"><strong>Portföy boş</strong>Yukarıdan hisse, adet ve alış fiyatı ekle</td></tr>';
+      updateSummary([], []);
       return;
     }
-    box.innerHTML = hits
-      .map(function (s) {
+
+    body.innerHTML = list
+      .map(function (p, idx) {
         return (
-          '<button type="button" data-s="' +
-          s.symbol +
-          '"><span class="s">' +
-          s.symbol +
-          '</span><span class="n">' +
-          (s.name || "") +
-          "</span></button>"
+          '<tr data-i="' +
+          idx +
+          '">' +
+          '<td><div class="sym-cell"><a href="ultra-grafik.html?symbol=' +
+          encodeURIComponent(p.symbol) +
+          "&market=" +
+          encodeURIComponent(p.market || "bist") +
+          '">' +
+          p.symbol +
+          "</a></div>" +
+          '<div class="name-cell">' +
+          (p.name || "") +
+          "</div></td>" +
+          "<td>" +
+          fmt(p.qty, 0) +
+          "</td>" +
+          "<td>" +
+          fmt(p.buy) +
+          (p.date ? '<div class="name-cell">' + p.date + "</div>" : "") +
+          "</td>" +
+          '<td class="cur">…</td>' +
+          '<td class="pnl">…</td>' +
+          '<td><button type="button" class="btn btn-danger" data-del-pf="' +
+          idx +
+          '">Sil</button></td>' +
+          "</tr>"
         );
       })
       .join("");
-    box.classList.add("show");
-  }
 
-  async function render() {
-    var box = document.getElementById("list");
-    if (!positions.length) {
-      box.innerHTML = '<div class="empty">Henüz pozisyon yok — yukarıdan ekle</div>';
-      document.getElementById("sumCost").textContent = "—";
-      document.getElementById("sumValue").textContent = "—";
-      document.getElementById("sumPl").textContent = "—";
-      document.getElementById("sumPl").className = "val";
-      return;
-    }
-
-    var totalCost = 0;
     var totalValue = 0;
-    var html = [];
+    var totalCost = 0;
+    var enriched = [];
 
-    for (var i = 0; i < positions.length; i++) {
-      var p = positions[i];
-      var cost = p.avg * p.qty;
-      totalCost += cost;
-      var q = await quote(p.symbol, p.market);
-      var price = q && q.price != null ? Number(q.price) : null;
-      var val = price != null ? price * p.qty : null;
-      if (val != null) totalValue += val;
-      var pl = val != null ? val - cost : null;
-      var cls = pl == null ? "" : pl >= 0 ? "up" : "down";
-      var sign = pl != null && pl > 0 ? "+" : "";
-      var cur = p.market === "bist" ? "TRY" : "USD";
+    for (var i = 0; i < list.length; i++) {
+      var p = list[i];
+      var q = await getQuote(p.symbol, p.market || "bist");
+      var row = body.querySelector('tr[data-i="' + i + '"]');
+      if (!row) continue;
 
-      html.push(
-        '<div class="row">' +
-          "<div>" +
-          '<div class="sym">' +
-          p.symbol +
-          "</div>" +
-          '<div class="name">' +
-          (p.name || "") +
-          " · " +
-          String(p.market || "").toUpperCase() +
-          "</div>" +
-          "</div>" +
-          "<div>" +
-          "<div>" +
-          p.qty +
-          " adet</div>" +
-          '<div class="muted">Ort. ' +
-          money(p.avg, cur) +
-          "</div>" +
-          "</div>" +
-          "<div>" +
-          "<div>" +
-          (price != null ? money(price, cur) : "—") +
-          "</div>" +
-          '<div class="muted">Güncel</div>' +
-          "</div>" +
-          '<div class="' +
+      var price = q ? q.price : null;
+      var cost = Number(p.qty) * Number(p.buy);
+      totalCost += isFinite(cost) ? cost : 0;
+
+      if (price != null) {
+        var value = Number(p.qty) * price;
+        totalValue += value;
+        var pnl = value - cost;
+        var pnlPct = cost > 0 ? (pnl / cost) * 100 : null;
+        var cls = pnl > 0 ? "up" : pnl < 0 ? "down" : "";
+        row.querySelector(".cur").innerHTML =
+          fmt(price) +
+          (q.source === "close"
+            ? '<div class="name-cell">Son kapanış</div>'
+            : "");
+        row.querySelector(".pnl").innerHTML =
+          '<span class="' +
           cls +
           '">' +
-          (pl != null ? sign + money(pl, cur) : "—") +
-          "</div>" +
-          '<div class="act">' +
-          '<a class="btn btn-soft" href="stock.html?symbol=' +
-          encodeURIComponent(p.symbol) +
-          "&market=" +
-          encodeURIComponent(p.market) +
-          '">Kart</a>' +
-          '<a class="btn btn-soft" href="ai-analiz.html?symbol=' +
-          encodeURIComponent(p.symbol) +
-          "&market=" +
-          encodeURIComponent(p.market) +
-          '">AI</a>' +
-          '<button type="button" class="btn btn-danger" data-del="' +
-          i +
-          '">Kaldır</button>' +
-          "</div>" +
-          "</div>"
-      );
-
-      await new Promise(function (r) {
-        setTimeout(r, 60);
-      });
+          fmt(pnl) +
+          (pnlPct != null ? " (" + fmtPct(pnlPct) + ")" : "") +
+          "</span>";
+        enriched.push({ price: price, value: value, cost: cost, pnl: pnl });
+      } else {
+        row.querySelector(".cur").textContent = "—";
+        row.querySelector(".pnl").textContent = "—";
+        enriched.push({ price: null, value: 0, cost: cost, pnl: null });
+      }
     }
 
-    box.innerHTML = html.join("");
+    updateSummary(list, enriched);
+  }
 
-    var plAll = totalValue - totalCost;
-    document.getElementById("sumCost").textContent = money(totalCost);
-    document.getElementById("sumValue").textContent = totalValue
-      ? money(totalValue)
-      : "—";
-    var el = document.getElementById("sumPl");
-    if (!totalValue) {
-      el.textContent = "—";
-      el.className = "val";
+  function updateSummary(list, enriched) {
+    var totalValue = 0;
+    var totalCost = 0;
+    var totalPnL = 0;
+    var hasPnL = false;
+    for (var i = 0; i < enriched.length; i++) {
+      totalCost += enriched[i].cost || 0;
+      totalValue += enriched[i].value || 0;
+      if (enriched[i].pnl != null) {
+        totalPnL += enriched[i].pnl;
+        hasPnL = true;
+      }
+    }
+    document.getElementById("sumValue").textContent =
+      list.length ? fmt(totalValue) : "—";
+    document.getElementById("sumCost").textContent =
+      list.length ? fmt(totalCost) : "—";
+    var pnlEl = document.getElementById("sumPnL");
+    if (!list.length || !hasPnL) {
+      pnlEl.textContent = "—";
+      pnlEl.className = "val";
     } else {
-      el.textContent =
-        (plAll >= 0 ? "+" : "") +
-        money(plAll) +
-        " (" +
-        (plAll >= 0 ? "+" : "") +
-        ((plAll / totalCost) * 100).toFixed(2) +
-        "%)";
-      el.className = "val " + (plAll >= 0 ? "up" : "down");
+      pnlEl.textContent = fmt(totalPnL) + " (" + fmtPct(totalCost > 0 ? (totalPnL / totalCost) * 100 : 0) + ")";
+      pnlEl.className = "val " + (totalPnL > 0 ? "up" : totalPnL < 0 ? "down" : "");
     }
   }
 
-  function addPos() {
-    var symbol = document.getElementById("sym").value.trim().toUpperCase();
-    var market = document.getElementById("mkt").value;
-    var qty = Number(document.getElementById("qty").value);
-    var avg = Number(document.getElementById("avg").value);
+  async function addPosition() {
+    var symbol = String(document.getElementById("pfSym").value || "")
+      .trim()
+      .toUpperCase();
+    var market = document.getElementById("pfMkt").value;
+    var qty = Number(document.getElementById("pfQty").value);
+    var buy = Number(document.getElementById("pfBuy").value);
+    var date = document.getElementById("pfDate").value || todayStr();
 
-    if (!symbol || symbol.length < 2) {
-      toast("Sembol yaz.", true);
+    if (!symbol) {
+      toast("Sembol yaz");
       return;
     }
     if (!isFinite(qty) || qty <= 0) {
-      toast("Geçerli adet gir.", true);
+      toast("Geçerli adet gir");
       return;
     }
-    if (!isFinite(avg) || avg <= 0) {
-      toast("Geçerli alış fiyatı gir.", true);
+    if (!isFinite(buy) || buy <= 0) {
+      toast("Geçerli alış fiyatı gir");
       return;
     }
 
-    var existing = positions.find(function (p) {
-      return p.symbol === symbol && p.market === market;
+    await loadCatalog(market);
+    var meta = findMeta(symbol, market);
+    var list = getPositions();
+    list.push({
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+      symbol: meta.symbol,
+      name: meta.name || meta.symbol,
+      market: market,
+      qty: qty,
+      buy: buy,
+      date: date,
+      addedAt: Date.now()
     });
-    if (existing) {
-      var newQty = existing.qty + qty;
-      existing.avg = (existing.avg * existing.qty + avg * qty) / newQty;
-      existing.qty = newQty;
-      toast(symbol + " güncellendi (ortalama maliyet).");
-    } else {
-      positions.push({
-        symbol: symbol,
-        market: market,
-        name: findName(symbol, market),
-        qty: qty,
-        avg: avg,
-        addedAt: Date.now()
-      });
-      toast(symbol + " portföye eklendi.");
-    }
-    save();
-    document.getElementById("sym").value = "";
-    document.getElementById("qty").value = "";
-    document.getElementById("avg").value = "";
-    document.getElementById("suggest").classList.remove("show");
-    render();
+    savePositions(list);
+
+    document.getElementById("pfSym").value = "";
+    document.getElementById("pfQty").value = "";
+    document.getElementById("pfBuy").value = "";
+    toast(meta.symbol + " portföye eklendi");
+    await renderPortfolio();
   }
 
-  document.getElementById("btnAdd").addEventListener("click", addPos);
-  document.getElementById("sym").addEventListener("input", function () {
-    suggest(this.value, document.getElementById("mkt").value);
-  });
-  document.getElementById("mkt").addEventListener("change", async function () {
-    await loadCatalog(this.value);
-    suggest(document.getElementById("sym").value, this.value);
-  });
-  document.getElementById("suggest").addEventListener("click", function (e) {
-    var b = e.target.closest("[data-s]");
-    if (!b) return;
-    document.getElementById("sym").value = b.getAttribute("data-s");
-    document.getElementById("suggest").classList.remove("show");
-  });
-  document.getElementById("list").addEventListener("click", function (e) {
-    var b = e.target.closest("[data-del]");
-    if (!b) return;
-    var i = Number(b.getAttribute("data-del"));
-    if (!confirm("Bu pozisyon kaldırılsın mı?")) return;
-    positions.splice(i, 1);
-    save();
-    toast("Pozisyon kaldırıldı.");
-    render();
+  function removePosition(idx) {
+    var list = getPositions();
+    if (idx < 0 || idx >= list.length) return;
+    var gone = list.splice(idx, 1)[0];
+    savePositions(list);
+    toast((gone && gone.symbol ? gone.symbol : "Hisse") + " silindi");
+    renderPortfolio();
+  }
+
+  /* —— Takip listesi —— */
+  function getWatch() {
+    if (window.Store && Store.getWatchlist) return Store.getWatchlist();
+    try {
+      var raw = localStorage.getItem("nexora_watchlist_v1");
+      var d = raw ? JSON.parse(raw) : [];
+      return Array.isArray(d) ? d : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveWatch(list) {
+    if (window.Store && Store.setWatchlist) {
+      Store.setWatchlist(list);
+      return;
+    }
+    try {
+      localStorage.setItem("nexora_watchlist_v1", JSON.stringify(list));
+    } catch (e) {}
+  }
+
+  async function renderWatch() {
+    var body = document.getElementById("wlBody");
+    var list = getWatch();
+    document.getElementById("sumWatch").textContent = String(list.length);
+
+    if (!list.length) {
+      body.innerHTML =
+        '<tr><td colspan="4" class="empty"><strong>Takip listesi boş</strong>Hisse kartından veya buradan ekle</td></tr>';
+      return;
+    }
+
+    body.innerHTML = list
+      .map(function (w, idx) {
+        return (
+          '<tr data-wi="' +
+          idx +
+          '">' +
+          '<td><div class="sym-cell"><a href="ultra-grafik.html?symbol=' +
+          encodeURIComponent(w.symbol) +
+          "&market=" +
+          encodeURIComponent(w.market || "bist") +
+          '">' +
+          w.symbol +
+          "</a></div>" +
+          '<div class="name-cell">' +
+          (w.name || w.market || "") +
+          "</div></td>" +
+          '<td class="wprice">…</td>' +
+          '<td class="wpct">…</td>' +
+          '<td><button type="button" class="btn btn-danger" data-del-wl="' +
+          idx +
+          '">Çıkar</button></td>' +
+          "</tr>"
+        );
+      })
+      .join("");
+
+    for (var i = 0; i < list.length; i++) {
+      var w = list[i];
+      var q = await getQuote(w.symbol, w.market || "bist");
+      var row = body.querySelector('tr[data-wi="' + i + '"]');
+      if (!row) continue;
+      if (q && q.price != null) {
+        var cls = q.pct > 0 ? "up" : q.pct < 0 ? "down" : "";
+        row.querySelector(".wprice").innerHTML =
+          fmt(q.price) +
+          (q.source === "close"
+            ? '<div class="name-cell">Son kapanış</div>'
+            : "");
+        row.querySelector(".wpct").innerHTML =
+          '<span class="' + cls + '">' + fmtPct(q.pct) + "</span>";
+      } else {
+        row.querySelector(".wprice").textContent = "—";
+        row.querySelector(".wpct").textContent = "—";
+      }
+    }
+  }
+
+  async function addWatch() {
+    var symbol = String(document.getElementById("wlSym").value || "")
+      .trim()
+      .toUpperCase();
+    var market = document.getElementById("wlMkt").value;
+    if (!symbol) {
+      toast("Sembol yaz");
+      return;
+    }
+    await loadCatalog(market);
+    var meta = findMeta(symbol, market);
+    var list = getWatch();
+    var exists = list.some(function (x) {
+      return (
+        x.symbol === meta.symbol &&
+        String(x.market || "").toLowerCase() === market
+      );
+    });
+    if (exists) {
+      toast(meta.symbol + " zaten takipte");
+      return;
+    }
+    list.push({
+      symbol: meta.symbol,
+      name: meta.name || meta.symbol,
+      market: market,
+      addedAt: Date.now()
+    });
+    saveWatch(list);
+    document.getElementById("wlSym").value = "";
+    toast(meta.symbol + " takibe alındı");
+    await renderWatch();
+  }
+
+  function removeWatch(idx) {
+    var list = getWatch();
+    if (idx < 0 || idx >= list.length) return;
+    var gone = list.splice(idx, 1)[0];
+    saveWatch(list);
+    toast((gone && gone.symbol ? gone.symbol : "Hisse") + " listeden çıkarıldı");
+    renderWatch();
+  }
+
+  /* —— Olaylar —— */
+  document.getElementById("btnAddPf").addEventListener("click", addPosition);
+  document.getElementById("btnAddWl").addEventListener("click", addWatch);
+  document.getElementById("btnRefresh").addEventListener("click", function () {
+    quoteCache = {};
+    toast("Fiyatlar yenileniyor…");
+    renderPortfolio();
+    renderWatch();
   });
 
-  load();
-  loadCatalog("bist").then(render);
+  document.getElementById("pfBody").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-del-pf]");
+    if (!b) return;
+    removePosition(Number(b.getAttribute("data-del-pf")));
+  });
+
+  document.getElementById("wlBody").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-del-wl]");
+    if (!b) return;
+    removeWatch(Number(b.getAttribute("data-del-wl")));
+  });
+
+  document.getElementById("pfDate").value = todayStr();
+
+  bindSuggest("pfSym", "pfMkt", "pfSuggest");
+  bindSuggest("wlSym", "wlMkt", "wlSuggest");
+
+  document.getElementById("pfMkt").addEventListener("change", function () {
+    loadCatalog(this.value);
+  });
+  document.getElementById("wlMkt").addEventListener("change", function () {
+    loadCatalog(this.value);
+  });
+
+  // İlk yükleme
+  loadCatalog("bist").then(function () {
+    renderPortfolio();
+    renderWatch();
+  });
+
+  // stock.html?watch=1&symbol=ASELS gibi derin link
+  var params = new URLSearchParams(location.search);
+  if (params.get("symbol") && params.get("watch") === "1") {
+    document.getElementById("wlSym").value = String(params.get("symbol")).toUpperCase();
+    if (params.get("market")) {
+      var m = params.get("market").toLowerCase();
+      var sel = document.getElementById("wlMkt");
+      if ([].some.call(sel.options, function (o) { return o.value === m; })) sel.value = m;
+    }
+  }
 })();
   </script>
 </body>
