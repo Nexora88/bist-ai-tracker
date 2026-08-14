@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Hisseler · Nexora AI</title>
-  <meta name="description" content="BIST ve global hisse kartları — skor, risk, fiyat ve kısayollar." />
+  <meta name="description" content="BIST, NASDAQ ve NYSE hisseleri — son fiyat, AI skoru, takip listesi." />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
@@ -18,7 +18,6 @@
       --cyan: #22d3ee;
       --rose: #f87171;
       --amber: #fbbf24;
-      --nav-h: 56px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -27,24 +26,23 @@
       color: var(--text);
       min-height: 100vh;
       line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
     }
     a { color: inherit; text-decoration: none; }
-    button, input { font: inherit; color: inherit; border: none; background: none; cursor: pointer; }
+    button, input, select { font: inherit; color: inherit; border: none; background: none; cursor: pointer; }
+    input { outline: none; }
 
     .nav {
-      position: sticky; top: 0; z-index: 50;
-      height: var(--nav-h);
-      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 40;
+      height: 56px; display: flex; align-items: center; justify-content: space-between;
       gap: 10px; padding: 0 14px;
       background: rgba(6, 10, 18, 0.94);
       backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border);
     }
-    .brand { font-weight: 800; letter-spacing: -0.03em; font-size: 15px; }
+    .brand { font-weight: 800; letter-spacing: -0.03em; }
     .brand em { font-style: normal; color: var(--accent); }
     .nav-links { display: none; gap: 2px; }
-    @media (min-width: 920px) {
+    @media (min-width: 900px) {
       .nav-links { display: flex; }
       .nav-links a {
         font-size: 13px; font-weight: 600; color: var(--muted);
@@ -54,58 +52,49 @@
         color: var(--text); background: rgba(255,255,255,0.05);
       }
     }
-    .btn {
-      display: inline-flex; align-items: center; justify-content: center;
-      padding: 8px 12px; border-radius: 10px;
-      font-size: 12.5px; font-weight: 700;
-    }
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent), #059669);
-      color: #022c22;
-    }
-    .btn-soft {
-      background: rgba(30, 41, 59, 0.95);
-      color: var(--text);
-      box-shadow: inset 0 0 0 1px var(--border);
-    }
 
     .wrap { max-width: 1100px; margin: 0 auto; padding: 16px 14px 48px; }
 
-    .head { margin-bottom: 12px; }
-    .head h1 {
-      font-size: 1.3rem; font-weight: 800; letter-spacing: -0.03em;
+    .head { margin-bottom: 14px; }
+    .badge {
+      display: inline-flex; font-size: 12px; font-weight: 700; color: var(--cyan);
+      background: rgba(34, 211, 238, 0.1);
+      border: 1px solid rgba(34, 211, 238, 0.28);
+      padding: 5px 11px; border-radius: 999px; margin-bottom: 10px;
     }
-    .head p {
-      color: var(--muted); font-size: 13.5px; margin-top: 6px;
-      max-width: 520px; line-height: 1.55;
+    h1 {
+      font-size: clamp(1.4rem, 3vw, 1.85rem);
+      font-weight: 800; letter-spacing: -0.03em;
     }
+    h1 span {
+      background: linear-gradient(90deg, var(--accent), var(--cyan));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .lead { color: var(--muted); font-size: 14px; margin-top: 6px; max-width: 540px; }
 
     .toolbar {
       display: flex; flex-wrap: wrap; gap: 8px;
-      margin-bottom: 10px; align-items: center;
+      align-items: center; margin: 14px 0 12px;
     }
     .toolbar input {
-      flex: 1 1 100%;
-      min-width: 0;
+      flex: 1; min-width: 160px;
       background: var(--panel);
       box-shadow: inset 0 0 0 1px var(--border);
       border-radius: 12px;
       padding: 12px 14px;
-      outline: none;
       font-size: 15px;
-    }
-    @media (min-width: 640px) {
-      .toolbar input { flex: 1 1 180px; }
     }
     .toolbar input:focus {
       box-shadow: inset 0 0 0 1px rgba(16,185,129,0.45);
     }
-    .chips-row {
-      display: flex; flex-wrap: wrap; gap: 6px; width: 100%;
+
+    .markets {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      margin-bottom: 14px;
     }
     .chip {
-      font-size: 12.5px; font-weight: 700;
-      padding: 8px 12px; border-radius: 999px;
+      font-size: 12px; font-weight: 700;
+      padding: 8px 14px; border-radius: 999px;
       color: var(--muted);
       background: rgba(30, 41, 59, 0.9);
       box-shadow: inset 0 0 0 1px var(--border);
@@ -115,189 +104,194 @@
       background: linear-gradient(135deg, var(--accent), #059669);
       box-shadow: none;
     }
+    .chip .plan {
+      font-size: 10px; opacity: 0.85; margin-left: 4px;
+    }
 
-    .status {
+    .meta-line {
+      display: flex; flex-wrap: wrap; gap: 8px 14px;
+      align-items: center;
       font-size: 12.5px; color: var(--dim);
-      margin-bottom: 12px; min-height: 1.2em;
+      margin-bottom: 12px;
     }
-    .lock-note {
-      font-size: 12.5px; color: var(--amber);
-      background: rgba(251, 191, 36, 0.08);
-      border: 1px solid rgba(251, 191, 36, 0.22);
-      border-radius: 10px;
-      padding: 10px 12px;
-    }
-    .lock-note a { color: var(--cyan); font-weight: 700; }
+    .meta-line strong { color: var(--muted); font-weight: 700; }
 
-    /* Mobil: detay üstte, kartlar altta — sticky YOK */
-    .layout {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 10px 14px; border-radius: 11px;
+      font-size: 13px; font-weight: 700;
     }
-    .detail-wrap { order: -1; }
-    .detail-wrap.is-empty { display: none; }
-    @media (min-width: 960px) {
-      .layout {
-        display: grid;
-        grid-template-columns: 1fr 340px;
-        align-items: start;
-      }
-      .detail-wrap {
-        order: 0;
-        position: sticky;
-        top: calc(var(--nav-h) + 12px);
-      }
-      .detail-wrap.is-empty { display: block; }
-    }
-
-    .detail {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 16px;
-    }
-    .detail.placeholder {
-      display: grid; place-items: center;
-      min-height: 200px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 14px;
-      padding: 24px;
-    }
-    .d-top {
-      display: flex; justify-content: space-between;
-      align-items: flex-start; gap: 10px;
-    }
-    .d-sym {
-      font-size: 1.25rem; font-weight: 800; letter-spacing: -0.02em;
-    }
-    .d-name {
-      color: var(--muted); font-size: 13px; margin-top: 3px;
-    }
-    .d-close {
-      flex-shrink: 0;
-      width: 36px; height: 36px;
-      border-radius: 10px;
+    .btn-soft {
       background: rgba(30, 41, 59, 0.95);
-      box-shadow: inset 0 0 0 1px var(--border);
-      font-size: 18px; color: var(--muted);
-    }
-    @media (min-width: 960px) {
-      .d-close { display: none; }
-    }
-
-    .price {
-      font-size: 1.55rem; font-weight: 800;
-      font-variant-numeric: tabular-nums;
-      margin: 12px 0 8px;
-    }
-    .price .up { color: #34d399; }
-    .price .down { color: var(--rose); }
-    .price small { font-size: 14px; font-weight: 700; }
-
-    .pills {
-      display: flex; flex-wrap: wrap; gap: 6px;
-      margin-bottom: 10px;
-    }
-    .pill {
-      font-size: 11.5px; font-weight: 700;
-      padding: 5px 10px; border-radius: 999px;
-      background: rgba(30, 41, 59, 0.95);
-      color: var(--muted);
+      color: var(--text);
       box-shadow: inset 0 0 0 1px var(--border);
     }
-    .risk-low { color: #34d399 !important; }
-    .risk-mid { color: var(--amber) !important; }
-    .risk-high { color: var(--rose) !important; }
-
-    .chart-box {
-      width: 100%;
-      height: 150px;
-      border-radius: 12px;
-      background: rgba(6, 10, 18, 0.55);
-      border: 1px solid var(--border);
-      margin: 8px 0 12px;
-      overflow: hidden;
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #059669);
+      color: #022c22;
     }
-    .chart-box canvas { width: 100% !important; height: 100% !important; display: block; }
-
-    .actions {
-      display: flex; flex-wrap: wrap; gap: 8px;
+    .btn-sm {
+      padding: 7px 11px;
+      font-size: 12px;
+      border-radius: 9px;
     }
-    .actions .btn { flex: 1 1 auto; min-width: calc(50% - 8px); }
-    @media (min-width: 400px) {
-      .actions .btn { flex: 0 1 auto; min-width: 0; }
+    .btn-watch {
+      background: rgba(34, 211, 238, 0.1);
+      color: var(--cyan);
+      box-shadow: inset 0 0 0 1px rgba(34, 211, 238, 0.28);
+    }
+    .btn-watch.on {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      box-shadow: inset 0 0 0 1px rgba(16, 185, 129, 0.35);
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 8px;
+      grid-template-columns: 1fr;
+      gap: 12px;
     }
-    @media (min-width: 640px) {
-      .grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+    @media (min-width: 560px) {
+      .grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (min-width: 900px) {
+      .grid { grid-template-columns: repeat(3, 1fr); }
     }
 
     .card {
       background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 12px;
-      cursor: pointer;
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
       transition: border-color 0.15s, transform 0.15s;
-      text-align: left;
-      width: 100%;
     }
-    .card:hover, .card.active {
-      border-color: rgba(16, 185, 129, 0.45);
-      transform: translateY(-2px);
+    .card:hover {
+      border-color: rgba(16, 185, 129, 0.35);
     }
-    .card .top {
-      display: flex; justify-content: space-between; gap: 6px;
-      margin-bottom: 3px;
+    .card-top {
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;
     }
-    .card .sym { font-weight: 800; font-size: 14px; letter-spacing: -0.02em; }
-    .card .mkt { font-size: 10px; font-weight: 700; color: var(--dim); }
-    .card .name {
-      font-size: 12px; color: var(--muted);
-      margin-bottom: 8px;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    .card-sym {
+      font-size: 1.15rem; font-weight: 800; letter-spacing: -0.02em;
     }
-    .bar {
-      height: 5px; border-radius: 99px;
-      background: #1e293b; overflow: hidden; margin-bottom: 6px;
+    .card-sym .flag { margin-right: 4px; }
+    .card-mkt {
+      font-size: 11px; font-weight: 700; color: var(--dim);
+      text-transform: uppercase; letter-spacing: 0.04em;
     }
-    .bar > i {
-      display: block; height: 100%;
-      background: linear-gradient(90deg, var(--accent), var(--cyan));
+    .card-name {
+      font-size: 13px; color: var(--muted);
+      margin-top: 2px;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .card-price {
+      font-size: 1.25rem; font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+    .card-price .tag {
+      font-size: 11px; font-weight: 600; color: var(--dim);
+      margin-left: 6px;
+    }
+    .up { color: #34d399; }
+    .down { color: var(--rose); }
+    .card-pct {
+      font-size: 13px; font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+    .card-meta {
+      display: flex; flex-wrap: wrap; gap: 6px 10px;
+      font-size: 12px; color: var(--dim);
+    }
+    .card-meta span { white-space: nowrap; }
+
+    .score-row {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 12px;
+    }
+    .score-bar {
+      flex: 1; height: 6px;
+      background: rgba(148, 163, 184, 0.15);
       border-radius: 99px;
+      overflow: hidden;
     }
-    .meta {
-      display: flex; justify-content: space-between;
-      font-size: 11.5px; color: var(--dim);
+    .score-fill {
+      height: 100%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, var(--accent), var(--cyan));
+    }
+    .score-num { font-weight: 800; min-width: 2.5em; text-align: right; }
+
+    .risk {
+      display: inline-flex;
+      font-size: 11px; font-weight: 700;
+      padding: 3px 8px; border-radius: 999px;
+    }
+    .risk-low { background: rgba(16,185,129,0.15); color: #34d399; }
+    .risk-medium { background: rgba(251,191,36,0.12); color: var(--amber); }
+    .risk-high { background: rgba(248,113,113,0.12); color: #fca5a5; }
+
+    .card-actions {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      margin-top: auto;
+      padding-top: 4px;
     }
 
-    .empty-grid {
+    .empty, .loading {
       grid-column: 1 / -1;
-      text-align: center; color: var(--muted);
-      padding: 36px 12px;
-      border: 1px dashed var(--border);
-      border-radius: 14px;
+      text-align: center;
+      padding: 40px 16px;
+      color: var(--dim);
       font-size: 14px;
     }
+    .empty strong, .loading strong {
+      display: block; color: var(--muted); margin-bottom: 6px; font-size: 15px;
+    }
+
+    .skel {
+      background: linear-gradient(90deg, rgba(30,41,59,0.8) 25%, rgba(51,65,85,0.9) 50%, rgba(30,41,59,0.8) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.2s infinite;
+      border-radius: 8px;
+      height: 1em;
+    }
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .pager {
+      display: flex; justify-content: center; align-items: center; gap: 10px;
+      margin-top: 18px;
+    }
+    .pager span { font-size: 13px; color: var(--muted); font-weight: 600; }
 
     .legal {
-      margin-top: 18px;
+      margin-top: 24px;
       font-size: 12px; color: var(--dim); line-height: 1.55;
     }
-    .legal a { color: var(--cyan); font-weight: 600; }
-
     footer {
       text-align: center; color: var(--dim); font-size: 12px;
-      padding: 8px 14px 28px;
+      padding: 8px 14px 32px;
     }
     footer a { color: var(--muted); margin: 0 5px; font-weight: 600; }
+
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: #0f172a;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-size: 13px; font-weight: 600;
+      z-index: 100;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s;
+      max-width: 90vw;
+    }
+    .toast.show { opacity: 1; }
   </style>
 </head>
 <body>
@@ -306,395 +300,528 @@
     <div class="nav-links">
       <a href="index.html">Ana</a>
       <a class="on" href="stock.html">Hisseler</a>
-      <a href="ai-analiz.html">AI</a>
-      <a href="radar.html">Pusula</a>
       <a href="portfolio.html">Portföy</a>
-      <a href="oyun.html">Lig</a>
-      <a href="premium.html">Premium</a>
+      <a href="ultra-grafik.html">Grafik</a>
+      <a href="radar.html">Pusula</a>
+      <a href="ai-analiz.html">AI</a>
     </div>
-    <a class="btn btn-soft" href="ara.html">Ara</a>
+    <a class="btn btn-soft" href="portfolio.html">Portföy</a>
   </nav>
 
   <main class="wrap">
     <header class="head">
-      <h1>Hisse kartları</h1>
-      <p>
-        Kartı seç; fiyat, skor ve kısayollar açılsın.
-        AI, pusula, sohbet ve takip bir dokunuş uzağında.
+      <div class="badge">Canlı kartlar · son kapanış güvende</div>
+      <h1>Hisse <span>Kartları</span></h1>
+      <p class="lead">
+        BIST, NASDAQ ve NYSE. Borsa kapalıyken bile son kapanış fiyatı kalır;
+        takibe al, grafiğe veya analize geç.
       </p>
     </header>
 
     <div class="toolbar">
-      <input type="search" id="q" placeholder="ASELS, THYAO, Apple…" autocomplete="off" enterkeyhint="search" />
-      <div class="chips-row" id="markets">
-        <button type="button" class="chip on" data-m="bist">BIST</button>
-        <button type="button" class="chip" data-m="nasdaq">NASDAQ</button>
-        <button type="button" class="chip" data-m="nyse">NYSE</button>
-        <button type="button" class="chip" data-m="lse" data-plan="premium">LSE</button>
-        <button type="button" class="chip" data-m="otcqb" data-plan="elite">OTC</button>
-      </div>
+      <input id="q" type="search" placeholder="ASELS, Aselsan, AAPL…" autocomplete="off" enterkeyhint="search" />
+      <button type="button" class="btn btn-soft" id="btnRefresh">Fiyatları yenile</button>
     </div>
-    <div class="status" id="status"></div>
 
-    <div class="layout">
-      <!-- Mobilde order:-1 ile üstte; sticky sadece masaüstünde -->
-      <div class="detail-wrap is-empty" id="detailWrap">
-        <aside class="detail placeholder" id="detail">
-          Bir kart seç — detay burada açılır.
-        </aside>
-      </div>
+    <div class="markets" id="markets">
+      <button type="button" class="chip on" data-m="bist">🇹🇷 BIST <span class="plan">ücretsiz</span></button>
+      <button type="button" class="chip" data-m="nasdaq">🇺🇸 NASDAQ <span class="plan">ücretsiz</span></button>
+      <button type="button" class="chip" data-m="nyse">🇺🇸 NYSE <span class="plan">ücretsiz</span></button>
+    </div>
 
-      <div class="grid" id="grid">
-        <div class="empty-grid">Liste hazırlanıyor…</div>
-      </div>
+    <div class="meta-line">
+      <span><strong id="countLabel">0</strong> hisse</span>
+      <span id="priceNote">Fiyatlar gecikmeli olabilir · kapalı piyasada son kapanış</span>
+    </div>
+
+    <div class="grid" id="grid">
+      <div class="loading"><strong>Yükleniyor…</strong>Hisse listesi hazırlanıyor</div>
+    </div>
+
+    <div class="pager" id="pager" hidden>
+      <button type="button" class="btn btn-soft btn-sm" id="btnPrev">← Önceki</button>
+      <span id="pageInfo">1</span>
+      <button type="button" class="btn btn-soft btn-sm" id="btnNext">Sonraki →</button>
     </div>
 
     <p class="legal">
-      Yatırım tavsiyesi değildir. Fiyatlar gecikmeli olabilir.
-      · <a href="kvkk.html">KVKK</a> · <a href="gizlilik.html">Gizlilik</a>
+      Buradaki skorlar ve fiyatlar bilgilendirme amaçlıdır; yatırım tavsiyesi değildir.
+      Veriler en az birkaç dakika gecikmeli olabilir.
     </p>
   </main>
 
   <footer>
-    Nexora AI ·
-    <a href="radar.html">Pusula</a>
-    <a href="sinyaller.html">Sinyaller</a>
-    <a href="balinalar.html">Balinalar</a>
-    <a href="sohbet.html">Sohbet</a>
+    Nexora AI
+    <a href="portfolio.html">Portföy</a>
+    <a href="ultra-grafik.html">Grafik</a>
+    <a href="alarm.html">Alarm</a>
+    <a href="about.html">Hakkımızda</a>
   </footer>
+
+  <div class="toast" id="toast"></div>
 
   <script src="assets/js/secrets.js"></script>
   <script src="assets/js/api.js"></script>
+  <script src="assets/js/store.js"></script>
   <script>
 (function () {
   "use strict";
 
   var market = "bist";
   var stocks = [];
-  var selected = null;
-  var cache = {};
+  var filtered = [];
+  var page = 0;
+  var PAGE_SIZE = 24;
+  var quoteCache = {};
+  var loadToken = 0;
 
-  var PLAN_RANK = { free: 0, premium: 1, pro: 1, elite: 2 };
-  function userPlan() {
-    try {
-      return (localStorage.getItem("nexora_plan") || "free").toLowerCase();
-    } catch (e) {
-      return "free";
-    }
-  }
-  function canAccess(need) {
-    if (!need || need === "free") return true;
-    return (PLAN_RANK[userPlan()] || 0) >= (PLAN_RANK[need] || 0);
+  function ysym(symbol, m) {
+    var s = String(symbol || "").toUpperCase().trim();
+    if (!s) return "";
+    if (m === "bist" && s.indexOf(".") === -1) return s + ".IS";
+    return s;
   }
 
-  function ysym(s) {
-    var x = String(s.symbol || "").toUpperCase();
-    if (!x) return "";
-    if (s.suffix && x.indexOf(".") === -1) return x + s.suffix;
-    if (market === "bist" && x.indexOf(".") === -1) return x + ".IS";
-    return x;
+  function qKey(symbol, m) {
+    return String(symbol).toUpperCase() + "|" + m;
+  }
+
+  function toast(msg) {
+    var el = document.getElementById("toast");
+    el.textContent = msg;
+    el.classList.add("show");
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function () { el.classList.remove("show"); }, 2000);
+  }
+
+  function fmt(n) {
+    if (n == null || !isFinite(Number(n))) return "—";
+    return Number(n).toLocaleString("tr-TR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
+  function fmtPct(n) {
+    if (n == null || !isFinite(Number(n))) return "";
+    var v = Number(n);
+    return (v > 0 ? "+" : "") + v.toFixed(2) + "%";
   }
 
   function riskClass(r) {
-    r = String(r || "").toLowerCase();
+    r = String(r || "Medium").toLowerCase();
     if (r === "low" || r === "düşük") return "risk-low";
     if (r === "high" || r === "yüksek") return "risk-high";
-    return "risk-mid";
+    return "risk-medium";
   }
+
   function riskLabel(r) {
-    r = String(r || "");
+    r = String(r || "Medium");
     if (/low|düşük/i.test(r)) return "Düşük";
     if (/high|yüksek/i.test(r)) return "Yüksek";
     return "Orta";
   }
 
-  async function loadMarket(m) {
-    if (cache[m]) return cache[m];
+  function getWatch() {
+    if (window.Store && Store.getWatchlist) return Store.getWatchlist();
     try {
-      var res = await fetch("data/" + m + ".json", { cache: "no-store" });
-      if (!res.ok) throw new Error("yok");
-      var data = await res.json();
-      var list = Array.isArray(data) ? data : data.stocks || [];
-      var suffix = data.suffix || (m === "bist" ? ".IS" : "");
-      list.forEach(function (s) {
-        if (!s.suffix && suffix) s.suffix = suffix;
-        if (!s.market) s.market = (data.market || m).toUpperCase();
-      });
-      cache[m] = list;
-      return list;
+      var raw = localStorage.getItem("nexora_watchlist_v1");
+      var d = raw ? JSON.parse(raw) : [];
+      return Array.isArray(d) ? d : [];
     } catch (e) {
-      cache[m] = [];
       return [];
     }
   }
 
-  function filtered() {
-    var q = (document.getElementById("q").value || "").trim().toLowerCase();
-    if (!q) return stocks.slice(0, 100);
-    return stocks
-      .filter(function (s) {
+  function isWatched(symbol, m) {
+    symbol = String(symbol).toUpperCase();
+    m = String(m).toLowerCase();
+    return getWatch().some(function (w) {
+      return w.symbol === symbol && String(w.market || "").toLowerCase() === m;
+    });
+  }
+
+  function toggleWatch(symbol, m, name) {
+    symbol = String(symbol).toUpperCase();
+    m = String(m).toLowerCase();
+    if (window.Store && Store.toggleWatch) {
+      Store.toggleWatch(symbol, m);
+    } else {
+      var list = getWatch();
+      var i = list.findIndex(function (x) {
+        return x.symbol === symbol && String(x.market || "").toLowerCase() === m;
+      });
+      if (i >= 0) list.splice(i, 1);
+      else list.push({ symbol: symbol, name: name || symbol, market: m, addedAt: Date.now() });
+      try {
+        localStorage.setItem("nexora_watchlist_v1", JSON.stringify(list));
+      } catch (e) {}
+    }
+    var on = isWatched(symbol, m);
+    toast(on ? symbol + " takibe alındı" : symbol + " listeden çıktı");
+    return on;
+  }
+
+  async function loadMarket(m) {
+    try {
+      var res = await fetch("data/" + m + ".json", { cache: "no-store" });
+      var data = await res.json();
+      var list = Array.isArray(data) ? data : (data.stocks || []);
+      return list.map(function (s) {
+        return {
+          symbol: String(s.symbol || "").toUpperCase(),
+          name: s.name || s.symbol,
+          market: s.market || m.toUpperCase(),
+          country: s.country || (m === "bist" ? "TR" : "USA"),
+          flag: s.flag || (m === "bist" ? "🇹🇷" : "🇺🇸"),
+          sector: s.sector || "—",
+          plan: s.plan || "free",
+          aiScore: s.aiScore != null ? Number(s.aiScore) : 50,
+          risk: s.risk || "Medium"
+        };
+      });
+    } catch (e) {
+      return [];
+    }
+  }
+
+  /**
+   * Fiyat: canlı → Yahoo previousClose → kısa geçmiş son bar
+   * Asla "fiyat yok" yazılmaz; en kötü "—" + sessiz kalır
+   */
+  async function fetchQuote(symbol, m) {
+    var key = qKey(symbol, m);
+    if (quoteCache[key] && Date.now() - quoteCache[key].ts < 60000) {
+      return quoteCache[key].data;
+    }
+
+    var data = null;
+    var sym = ysym(symbol, m);
+
+    // 1) Merkezi API (worker + yahoo)
+    if (window.API && typeof API.getLiveQuote === "function") {
+      try {
+        var q = await API.getLiveQuote(sym);
+        if (q && q.price != null && isFinite(Number(q.price)) && Number(q.price) > 0) {
+          data = {
+            price: Number(q.price),
+            pct: q.pct != null ? Number(q.pct) : (q.changePercent != null ? Number(q.changePercent) : null),
+            tag: null
+          };
+        }
+      } catch (e) {}
+    }
+
+    // 2) Doğrudan Yahoo chart (ücretsiz, CORS proxy)
+    if (!data) {
+      try {
+        var yUrl =
+          "https://query1.finance.yahoo.com/v8/finance/chart/" +
+          encodeURIComponent(sym) +
+          "?range=5d&interval=1d";
+        var proxies = [
+          "https://api.allorigins.win/raw?url=",
+          "https://corsproxy.io/?"
+        ];
+        for (var p = 0; p < proxies.length && !data; p++) {
+          try {
+            var res = await fetch(proxies[p] + encodeURIComponent(yUrl));
+            if (!res.ok) continue;
+            var json = await res.json();
+            var r = json && json.chart && json.chart.result && json.chart.result[0];
+            if (!r || !r.meta) continue;
+            var meta = r.meta;
+            var price =
+              meta.regularMarketPrice != null
+                ? meta.regularMarketPrice
+                : meta.previousClose;
+            var prev =
+              meta.chartPreviousClose != null
+                ? meta.chartPreviousClose
+                : meta.previousClose;
+            if (price == null || !isFinite(Number(price)) || Number(price) <= 0) continue;
+            var pct = null;
+            if (prev != null && Number(prev) !== 0) {
+              pct = ((Number(price) - Number(prev)) / Number(prev)) * 100;
+            }
+            var isClose =
+              meta.regularMarketPrice == null ||
+              meta.marketState === "CLOSED" ||
+              meta.marketState === "PRE" ||
+              meta.marketState === "POST";
+            data = {
+              price: Number(price),
+              pct: pct,
+              tag: isClose ? "Son kapanış" : null
+            };
+          } catch (e) {}
+        }
+      } catch (e) {}
+    }
+
+    // 3) Geçmiş son bar (API.getHistory)
+    if (!data && window.API && typeof API.getHistory === "function") {
+      try {
+        var hist = await API.getHistory(sym, "5d");
+        if (Array.isArray(hist) && hist.length) {
+          var last = hist[hist.length - 1];
+          var close = Number(last.close != null ? last.close : last.value);
+          var prevH =
+            hist.length > 1
+              ? Number(
+                  hist[hist.length - 2].close != null
+                    ? hist[hist.length - 2].close
+                    : hist[hist.length - 2].value
+                )
+              : null;
+          if (isFinite(close) && close > 0) {
+            data = {
+              price: close,
+              pct: prevH && prevH > 0 ? ((close - prevH) / prevH) * 100 : null,
+              tag: "Son kapanış"
+            };
+          }
+        }
+      } catch (e) {}
+    }
+
+    if (data) {
+      quoteCache[key] = { data: data, ts: Date.now() };
+    }
+    return data;
+  }
+
+  function filterList() {
+    var q = String(document.getElementById("q").value || "")
+      .trim()
+      .toLowerCase();
+    if (!q) {
+      filtered = stocks.slice();
+    } else {
+      filtered = stocks.filter(function (s) {
         return (
-          String(s.symbol).toLowerCase().indexOf(q) !== -1 ||
+          s.symbol.toLowerCase().indexOf(q) !== -1 ||
           String(s.name || "").toLowerCase().indexOf(q) !== -1 ||
           String(s.sector || "").toLowerCase().indexOf(q) !== -1
         );
-      })
-      .slice(0, 100);
+      });
+    }
+    page = 0;
+    document.getElementById("countLabel").textContent = String(filtered.length);
+    renderPage();
   }
 
-  function renderGrid() {
-    var list = filtered();
-    var box = document.getElementById("grid");
-    if (!list.length) {
-      box.innerHTML =
-        '<div class="empty-grid">Sonuç yok — sembolü veya piyasayı değiştir.</div>';
+  function pageSlice() {
+    var start = page * PAGE_SIZE;
+    return filtered.slice(start, start + PAGE_SIZE);
+  }
+
+  function renderPage() {
+    var grid = document.getElementById("grid");
+    var slice = pageSlice();
+    var totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+
+    document.getElementById("pager").hidden = filtered.length <= PAGE_SIZE;
+    document.getElementById("pageInfo").textContent =
+      page + 1 + " / " + totalPages;
+    document.getElementById("btnPrev").disabled = page <= 0;
+    document.getElementById("btnNext").disabled = page >= totalPages - 1;
+
+    if (!filtered.length) {
+      grid.innerHTML =
+        '<div class="empty"><strong>Sonuç yok</strong>Farklı bir arama veya piyasa dene</div>';
       return;
     }
-    box.innerHTML = list
+
+    grid.innerHTML = slice
       .map(function (s) {
-        var score = Number(s.aiScore);
-        if (!isFinite(score)) score = 50;
-        var active =
-          selected && selected.symbol === s.symbol ? " active" : "";
+        var score = Math.max(0, Math.min(100, s.aiScore || 50));
+        var watched = isWatched(s.symbol, market);
         return (
-          '<button type="button" class="card' +
-          active +
-          '" data-sym="' +
+          '<article class="card" data-sym="' +
           s.symbol +
           '">' +
-          '<div class="top">' +
-          '<span class="sym">' +
-          (s.flag ? s.flag + " " : "") +
+          '<div class="card-top">' +
+          "<div>" +
+          '<div class="card-sym"><span class="flag">' +
+          (s.flag || "") +
+          "</span>" +
           s.symbol +
-          "</span>" +
-          '<span class="mkt">' +
-          (s.market || market.toUpperCase()) +
-          "</span>" +
           "</div>" +
-          '<div class="name">' +
+          '<div class="card-name">' +
           (s.name || "") +
           "</div>" +
-          '<div class="bar"><i style="width:' +
-          Math.max(4, Math.min(100, score)) +
-          '%"></i></div>' +
-          '<div class="meta"><span>AI ' +
-          score +
-          '</span><span class="' +
+          "</div>" +
+          '<div class="card-mkt">' +
+          (s.market || market.toUpperCase()) +
+          "</div>" +
+          "</div>" +
+          '<div class="card-price" data-price>—</div>' +
+          '<div class="card-pct" data-pct></div>' +
+          '<div class="card-meta">' +
+          "<span>Sektör: " +
+          (s.sector || "—") +
+          "</span>" +
+          '<span class="risk ' +
           riskClass(s.risk) +
-          '">' +
+          '">Risk: ' +
           riskLabel(s.risk) +
-          "</span></div></button>"
+          "</span>" +
+          "</div>" +
+          '<div class="score-row">' +
+          "<span>AI</span>" +
+          '<div class="score-bar"><div class="score-fill" style="width:' +
+          score +
+          '%"></div></div>' +
+          '<span class="score-num">' +
+          score +
+          "</span>" +
+          "</div>" +
+          '<div class="card-actions">' +
+          '<a class="btn btn-soft btn-sm" href="ultra-grafik.html?symbol=' +
+          encodeURIComponent(s.symbol) +
+          "&market=" +
+          encodeURIComponent(market) +
+          '">Grafik</a>' +
+          '<a class="btn btn-soft btn-sm" href="ai-analiz.html?symbol=' +
+          encodeURIComponent(s.symbol) +
+          "&market=" +
+          encodeURIComponent(market) +
+          '">AI</a>' +
+          '<button type="button" class="btn btn-sm btn-watch' +
+          (watched ? " on" : "") +
+          '" data-watch="' +
+          s.symbol +
+          '">' +
+          (watched ? "Takiptesin" : "Takibe al") +
+          "</button>" +
+          "</div>" +
+          "</article>"
         );
       })
       .join("");
+
+    // Fiyatları sırayla doldur (görünen sayfa)
+    fillPrices(slice);
   }
 
-  function paintChart(values) {
-    var box = document.querySelector(".chart-box");
-    var c = document.getElementById("chart");
-    if (!c || !box || !values || values.length < 2) return;
-    var ctx = c.getContext("2d");
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    var W = box.clientWidth || 300;
-    var H = box.clientHeight || 150;
-    c.width = W * dpr;
-    c.height = H * dpr;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    var min = Math.min.apply(null, values);
-    var max = Math.max.apply(null, values);
-    var pad = 8;
-    ctx.clearRect(0, 0, W, H);
-    ctx.beginPath();
-    for (var i = 0; i < values.length; i++) {
-      var x = pad + (i / (values.length - 1)) * (W - pad * 2);
-      var y = pad + (1 - (values[i] - min) / (max - min || 1)) * (H - pad * 2);
-      if (i === 0) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
-    }
-    ctx.strokeStyle = "#34d399";
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    ctx.lineTo(W - pad, H - pad);
-    ctx.lineTo(pad, H - pad);
-    ctx.closePath();
-    ctx.fillStyle = "rgba(52,211,153,0.08)";
-    ctx.fill();
-  }
+  async function fillPrices(list) {
+    var token = loadToken;
+    for (var i = 0; i < list.length; i++) {
+      if (token !== loadToken) return;
+      var s = list[i];
+      var card = document.querySelector('.card[data-sym="' + s.symbol + '"]');
+      if (!card) continue;
 
-  function demoSeries() {
-    var a = [], v = 50;
-    for (var i = 0; i < 28; i++) {
-      v += (Math.random() - 0.48) * 2;
-      a.push(v);
-    }
-    return a;
-  }
+      var priceEl = card.querySelector("[data-price]");
+      var pctEl = card.querySelector("[data-pct]");
+      if (!priceEl) continue;
 
-  function closeDetail() {
-    selected = null;
-    var wrap = document.getElementById("detailWrap");
-    wrap.classList.add("is-empty");
-    document.getElementById("detail").className = "detail placeholder";
-    document.getElementById("detail").textContent =
-      "Bir kart seç — detay burada açılır.";
-    renderGrid();
-  }
-
-  async function openDetail(s) {
-    selected = s;
-    renderGrid();
-
-    var wrap = document.getElementById("detailWrap");
-    wrap.classList.remove("is-empty");
-    var el = document.getElementById("detail");
-    el.className = "detail";
-    el.innerHTML =
-      '<div class="d-top">' +
-      "<div>" +
-      '<div class="d-sym">' +
-      (s.flag ? s.flag + " " : "") +
-      s.symbol +
-      "</div>" +
-      '<div class="d-name">' +
-      (s.name || "") +
-      (s.sector ? " · " + s.sector : "") +
-      "</div>" +
-      "</div>" +
-      '<button type="button" class="d-close" id="btnCloseDetail" aria-label="Kapat">×</button>' +
-      "</div>" +
-      '<div class="price" id="dPrice">—</div>' +
-      '<div class="pills">' +
-      '<span class="pill">AI ' +
-      (s.aiScore != null ? s.aiScore : "—") +
-      "</span>" +
-      '<span class="pill ' +
-      riskClass(s.risk) +
-      '">Risk ' +
-      riskLabel(s.risk) +
-      "</span>" +
-      "</div>" +
-      '<div class="chart-box"><canvas id="chart"></canvas></div>' +
-      '<div class="actions">' +
-      '<a class="btn btn-primary" href="ai-analiz.html?symbol=' +
-      encodeURIComponent(s.symbol) +
-      "&market=" +
-      encodeURIComponent(market) +
-      '">AI Analiz</a>' +
-      '<a class="btn btn-soft" href="radar.html?sembol=' +
-      encodeURIComponent(s.symbol) +
-      "&piyasa=" +
-      encodeURIComponent(market) +
-      '">Pusula</a>' +
-      '<a class="btn btn-soft" href="sohbet.html?oda=' +
-      encodeURIComponent(s.symbol) +
-      '">Sohbet</a>' +
-      '<a class="btn btn-soft" href="sinyaller.html?add=' +
-      encodeURIComponent(s.symbol) +
-      "&market=" +
-      encodeURIComponent(market) +
-      '">Takibe ekle</a>' +
-      "</div>";
-
-    document.getElementById("btnCloseDetail").onclick = closeDetail;
-
-    // Mobilde detayı görünür alana getir (sticky yok — sayfa kaydırır)
-    if (window.matchMedia("(max-width: 959px)").matches) {
-      wrap.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-
-    var priceEl = document.getElementById("dPrice");
-    if (window.API && API.getLiveQuote) {
-      try {
-        var q = await API.getLiveQuote(ysym(s));
-        if (q && q.price != null) {
-          var pct = Number(q.pct != null ? q.pct : q.changePercent);
-          var cls = pct > 0 ? "up" : pct < 0 ? "down" : "";
-          var sign = pct > 0 ? "+" : "";
-          priceEl.innerHTML =
-            '<span class="' +
-            cls +
-            '">' +
-            Number(q.price).toLocaleString("en-US", {
-              maximumFractionDigits: 2
-            }) +
-            (isFinite(pct)
-              ? " <small>(" + sign + pct.toFixed(2) + "%)</small>"
-              : "") +
-            "</span>";
-        } else priceEl.textContent = "Fiyat şu an yok";
-      } catch (e) {
-        priceEl.textContent = "Fiyat şu an yok";
+      // Yükleniyor iskeleti
+      if (priceEl.textContent === "—") {
+        priceEl.innerHTML = '<div class="skel" style="width:72px;height:1.1em"></div>';
       }
-    } else priceEl.textContent = "Fiyat şu an yok";
 
-    if (window.API && API.getHistory) {
-      try {
-        var hist = await API.getHistory(ysym(s), "1mo");
-        var vals = (hist || [])
-          .map(function (h) {
-            return Number(h.close != null ? h.close : h.value);
-          })
-          .filter(function (n) {
-            return isFinite(n);
-          });
-        paintChart(vals.length > 2 ? vals : demoSeries());
-      } catch (e) {
-        paintChart(demoSeries());
+      var q = await fetchQuote(s.symbol, market);
+      if (token !== loadToken) return;
+
+      if (q && q.price != null) {
+        var cls = q.pct > 0 ? "up" : q.pct < 0 ? "down" : "";
+        priceEl.innerHTML =
+          '<span class="' +
+          cls +
+          '">' +
+          fmt(q.price) +
+          "</span>" +
+          (q.tag ? '<span class="tag">' + q.tag + "</span>" : "");
+        pctEl.innerHTML = q.pct != null
+          ? '<span class="' + cls + '">' + fmtPct(q.pct) + "</span>"
+          : "";
+      } else {
+        // Hata mesajı yok — sessiz tire
+        priceEl.textContent = "—";
+        pctEl.textContent = "";
       }
-    } else paintChart(demoSeries());
+    }
   }
 
-  async function switchMarket(m, needPlan) {
-    if (needPlan && !canAccess(needPlan)) {
-      document.getElementById("status").innerHTML =
-        '<div class="lock-note">Bu piyasa ' +
-        needPlan.toUpperCase() +
-        ' planında. <a href="premium.html">Planları incele</a></div>';
-      return;
-    }
+  async function switchMarket(m) {
     market = m;
-    document.querySelectorAll("#markets .chip[data-m]").forEach(function (c) {
+    loadToken++;
+    page = 0;
+    quoteCache = {};
+
+    document.querySelectorAll("#markets .chip").forEach(function (c) {
       c.classList.toggle("on", c.getAttribute("data-m") === m);
     });
-    document.getElementById("status").textContent = "Liste hazırlanıyor…";
+
+    document.getElementById("grid").innerHTML =
+      '<div class="loading"><strong>Yükleniyor…</strong>' +
+      m.toUpperCase() +
+      " listesi</div>";
+
     stocks = await loadMarket(m);
-    closeDetail();
-    document.getElementById("status").textContent =
-      stocks.length + " sembol · " + m.toUpperCase();
-    renderGrid();
+    filterList();
   }
 
   document.getElementById("markets").addEventListener("click", function (e) {
     var c = e.target.closest("[data-m]");
     if (!c) return;
-    switchMarket(c.getAttribute("data-m"), c.getAttribute("data-plan"));
-  });
-  document.getElementById("q").addEventListener("input", renderGrid);
-  document.getElementById("grid").addEventListener("click", function (e) {
-    var card = e.target.closest("[data-sym]");
-    if (!card) return;
-    var s = stocks.find(function (x) {
-      return x.symbol === card.getAttribute("data-sym");
-    });
-    if (s) openDetail(s);
+    switchMarket(c.getAttribute("data-m"));
   });
 
-  var params = new URLSearchParams(location.search);
-  var m0 = (params.get("market") || params.get("piyasa") || "bist").toLowerCase();
-  var sym0 = params.get("symbol") || params.get("sembol");
+  document.getElementById("q").addEventListener("input", function () {
+    filterList();
+  });
 
-  switchMarket(m0).then(function () {
-    if (sym0) {
-      var s = stocks.find(function (x) {
-        return String(x.symbol).toUpperCase() === sym0.toUpperCase();
-      });
-      if (s) openDetail(s);
-      else {
-        document.getElementById("q").value = sym0;
-        renderGrid();
-      }
+  document.getElementById("btnRefresh").addEventListener("click", function () {
+    quoteCache = {};
+    loadToken++;
+    toast("Fiyatlar yenileniyor…");
+    renderPage();
+  });
+
+  document.getElementById("btnPrev").addEventListener("click", function () {
+    if (page > 0) {
+      page--;
+      loadToken++;
+      renderPage();
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   });
+
+  document.getElementById("btnNext").addEventListener("click", function () {
+    var totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+    if (page < totalPages - 1) {
+      page++;
+      loadToken++;
+      renderPage();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  });
+
+  document.getElementById("grid").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-watch]");
+    if (!b) return;
+    var sym = b.getAttribute("data-watch");
+    var card = b.closest(".card");
+    var name = card ? (card.querySelector(".card-name") || {}).textContent : sym;
+    var on = toggleWatch(sym, market, name);
+    b.classList.toggle("on", on);
+    b.textContent = on ? "Takiptesin" : "Takibe al";
+  });
+
+  // URL: ?market=nasdaq&q=AAPL
+  var params = new URLSearchParams(location.search);
+  var m0 = (params.get("market") || "bist").toLowerCase();
+  if (["bist", "nasdaq", "nyse"].indexOf(m0) === -1) m0 = "bist";
+  if (params.get("q") || params.get("symbol")) {
+    document.getElementById("q").value = String(
+      params.get("q") || params.get("symbol") || ""
+    ).toUpperCase();
+  }
+
+  switchMarket(m0);
 })();
   </script>
 </body>
