@@ -2,22 +2,20 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Ara · Nexora AI</title>
-  <meta name="description" content="Hisse, sektör ve piyasa ara — Nexora AI hızlı arama." />
+  <meta name="description" content="BIST, NASDAQ ve NYSE hisselerinde hızlı arama. Tek sonuç, mükerrer yok." />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
       --bg: #060a12;
-      --panel: rgba(15, 23, 42, 0.92);
+      --panel: rgba(15, 23, 42, 0.94);
       --border: rgba(148, 163, 184, 0.12);
       --text: #f1f5f9;
       --muted: #94a3b8;
       --dim: #64748b;
       --accent: #10b981;
       --cyan: #22d3ee;
-      --violet: #a78bfa;
-      --amber: #fbbf24;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -29,83 +27,80 @@
     }
     a { color: inherit; text-decoration: none; }
     button, input, select { font: inherit; color: inherit; border: none; background: none; cursor: pointer; }
+    input { outline: none; }
 
     .nav {
       position: sticky; top: 0; z-index: 40;
       height: 56px; display: flex; align-items: center; justify-content: space-between;
-      gap: 10px; padding: 0 16px;
-      background: rgba(6, 10, 18, 0.92);
+      gap: 10px; padding: 0 14px;
+      background: rgba(6, 10, 18, 0.94);
       backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border);
     }
     .brand { font-weight: 800; letter-spacing: -0.03em; }
     .brand em { font-style: normal; color: var(--accent); }
-    .nav-links { display: flex; flex-wrap: wrap; gap: 2px; }
-    .nav-links a {
-      font-size: 13px; font-weight: 600; color: var(--muted);
-      padding: 7px 10px; border-radius: 9px;
+    .nav-links { display: none; gap: 2px; }
+    @media (min-width: 900px) {
+      .nav-links { display: flex; }
+      .nav-links a {
+        font-size: 13px; font-weight: 600; color: var(--muted);
+        padding: 7px 10px; border-radius: 9px;
+      }
+      .nav-links a:hover, .nav-links a.on {
+        color: var(--text); background: rgba(255,255,255,0.05);
+      }
     }
-    .nav-links a:hover, .nav-links a.on { color: var(--text); background: rgba(255,255,255,0.05); }
-    @media (max-width: 900px) { .nav-links { display: none; } }
 
-    .wrap { max-width: 760px; margin: 0 auto; padding: 28px 16px 56px; }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 16px 14px 48px; }
 
-    .hero { text-align: center; margin-bottom: 22px; }
+    .head { margin-bottom: 16px; }
     .badge {
-      display: inline-flex; gap: 8px; align-items: center;
-      font-size: 12px; font-weight: 700; color: var(--cyan);
+      display: inline-flex; font-size: 12px; font-weight: 700; color: var(--cyan);
       background: rgba(34, 211, 238, 0.1);
       border: 1px solid rgba(34, 211, 238, 0.28);
-      padding: 6px 12px; border-radius: 999px; margin-bottom: 14px;
+      padding: 5px 11px; border-radius: 999px; margin-bottom: 10px;
     }
     h1 {
-      font-size: clamp(1.55rem, 3.5vw, 2.1rem);
-      font-weight: 800; letter-spacing: -0.04em; line-height: 1.15;
-      margin-bottom: 10px;
+      font-size: clamp(1.4rem, 3vw, 1.75rem);
+      font-weight: 800; letter-spacing: -0.03em;
     }
     h1 span {
       background: linear-gradient(90deg, var(--accent), var(--cyan));
       -webkit-background-clip: text; background-clip: text; color: transparent;
     }
-    .lead {
-      color: var(--muted); font-size: 15px; max-width: 440px;
-      margin: 0 auto; line-height: 1.65;
-    }
+    .lead { color: var(--muted); font-size: 14px; margin-top: 6px; }
 
     .search-shell {
       background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 16px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-      margin-bottom: 18px;
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 14px;
     }
     .search-row {
-      display: flex; gap: 8px; flex-wrap: wrap;
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
     }
     .search-row input {
       flex: 1; min-width: 160px;
-      background: rgba(30, 41, 59, 0.95);
+      background: rgba(6, 10, 18, 0.65);
       box-shadow: inset 0 0 0 1px var(--border);
-      border-radius: 14px;
-      padding: 14px 16px;
+      border-radius: 12px;
+      padding: 13px 14px;
       font-size: 16px;
-      outline: none;
     }
     .search-row input:focus {
-      box-shadow: inset 0 0 0 1px rgba(16,185,129,0.5);
+      box-shadow: inset 0 0 0 1px rgba(16,185,129,0.45);
     }
     .search-row select {
-      background: rgba(30, 41, 59, 0.95);
+      background: rgba(6, 10, 18, 0.65);
       box-shadow: inset 0 0 0 1px var(--border);
-      border-radius: 14px;
-      padding: 14px 12px;
-      font-size: 14px;
+      border-radius: 12px;
+      padding: 13px 12px;
     }
     .btn {
       display: inline-flex; align-items: center; justify-content: center;
-      padding: 14px 18px; border-radius: 14px;
-      font-size: 14px; font-weight: 700;
+      padding: 12px 16px; border-radius: 11px;
+      font-size: 13px; font-weight: 700;
     }
     .btn-primary {
       background: linear-gradient(135deg, var(--accent), #059669);
@@ -116,35 +111,26 @@
       color: var(--text);
       box-shadow: inset 0 0 0 1px var(--border);
       padding: 8px 12px;
-      font-size: 12.5px;
-      border-radius: 10px;
-    }
-
-    .hint {
-      font-size: 12.5px; color: var(--dim);
-      margin-top: 10px; text-align: center;
+      font-size: 12px;
+      border-radius: 9px;
     }
 
     .quick {
-      display: flex; flex-wrap: wrap; gap: 8px;
-      justify-content: center;
-      margin-bottom: 20px;
+      display: flex; flex-wrap: wrap; gap: 6px;
+      margin-top: 12px;
     }
-    .quick button, .quick a {
-      font-size: 12.5px; font-weight: 700;
-      padding: 8px 12px; border-radius: 999px;
+    .quick button {
+      font-size: 12px; font-weight: 700;
+      padding: 7px 12px; border-radius: 999px;
       color: var(--muted);
       background: rgba(30, 41, 59, 0.9);
       box-shadow: inset 0 0 0 1px var(--border);
     }
-    .quick button:hover, .quick a:hover {
-      color: var(--text);
-      border-color: rgba(16,185,129,0.35);
-    }
+    .quick button:hover { color: var(--text); border-color: var(--accent); }
 
     .status {
       font-size: 13px; color: var(--dim);
-      margin-bottom: 10px;
+      margin: 8px 2px 12px;
       min-height: 1.2em;
     }
 
@@ -153,90 +139,55 @@
     .item {
       background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 16px;
+      border-radius: 14px;
       padding: 14px 16px;
-      transition: border-color 0.15s, transform 0.15s;
     }
-    .item:hover {
-      border-color: rgba(16, 185, 129, 0.35);
-      transform: translateY(-1px);
-    }
+    .item:hover { border-color: rgba(16,185,129,0.35); }
     .item-top {
-      display: flex; flex-wrap: wrap;
-      justify-content: space-between; gap: 8px;
-      align-items: flex-start;
-      margin-bottom: 6px;
+      display: flex; justify-content: space-between; align-items: baseline; gap: 8px;
     }
-    .item .sym {
-      font-size: 1.05rem; font-weight: 800; letter-spacing: -0.02em;
-    }
-    .item .mkt {
+    .sym { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.02em; }
+    .mkt {
       font-size: 11px; font-weight: 700; color: var(--dim);
+      text-transform: uppercase; letter-spacing: 0.04em;
     }
-    .item .name {
-      font-size: 13.5px; color: var(--muted);
-      margin-bottom: 10px;
-    }
+    .name { font-size: 13px; color: var(--muted); margin-top: 2px; }
     .meta {
       display: flex; flex-wrap: wrap; gap: 6px;
-      margin-bottom: 12px;
+      margin-top: 8px;
     }
     .pill {
-      font-size: 11.5px; font-weight: 700;
-      padding: 4px 10px; border-radius: 999px;
-      background: rgba(30, 41, 59, 0.95);
-      color: var(--muted);
-      box-shadow: inset 0 0 0 1px var(--border);
+      font-size: 11px; font-weight: 600; color: var(--dim);
+      background: rgba(148,163,184,0.1);
+      padding: 3px 8px; border-radius: 999px;
     }
     .actions {
       display: flex; flex-wrap: wrap; gap: 6px;
+      margin-top: 12px;
     }
 
     .empty {
       text-align: center;
       padding: 36px 16px;
-      border: 1px dashed var(--border);
-      border-radius: 16px;
-      color: var(--muted);
+      color: var(--dim);
       font-size: 14px;
-      line-height: 1.6;
-    }
-    .empty strong { color: var(--text); }
-
-    .destinations {
-      margin-top: 28px;
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-    }
-    @media (min-width: 560px) {
-      .destinations { grid-template-columns: repeat(4, 1fr); }
-    }
-    .dest {
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 14px;
-      padding: 14px 12px;
-      text-align: center;
-      transition: 0.15s;
     }
-    .dest:hover {
-      border-color: rgba(16, 185, 129, 0.35);
-      transform: translateY(-2px);
+    .empty strong {
+      display: block; color: var(--muted); margin-bottom: 6px; font-size: 15px;
     }
-    .dest .ico { font-size: 1.25rem; margin-bottom: 6px; }
-    .dest .t { font-size: 13px; font-weight: 800; }
-    .dest .d { font-size: 11.5px; color: var(--dim); margin-top: 3px; }
 
     .legal {
-      margin-top: 22px;
-      font-size: 12px; color: var(--dim); text-align: center; line-height: 1.55;
+      margin-top: 20px;
+      font-size: 12px; color: var(--dim); line-height: 1.55;
     }
     .legal a { color: var(--cyan); font-weight: 600; }
 
     footer {
       text-align: center; color: var(--dim); font-size: 12px;
-      padding: 8px 16px 36px;
+      padding: 8px 14px 32px;
     }
     footer a { color: var(--muted); margin: 0 5px; font-weight: 600; }
   </style>
@@ -248,20 +199,19 @@
       <a href="index.html">Ana</a>
       <a href="stock.html">Hisseler</a>
       <a class="on" href="ara.html">Ara</a>
+      <a href="portfolio.html">Portföy</a>
+      <a href="ultra-grafik.html">Grafik</a>
       <a href="ai-analiz.html">AI</a>
-      <a href="radar.html">Pusula</a>
-      <a href="premium.html">Premium</a>
     </div>
     <a class="btn btn-soft" href="stock.html">Kartlar</a>
   </nav>
 
   <main class="wrap">
-    <header class="hero">
-      <div class="badge">Hızlı bul · tek adımda devam et</div>
-      <h1>Ne arıyorsun?</h1>
+    <header class="head">
+      <div class="badge">Hızlı arama · tek sonuç</div>
+      <h1>Hisse <span>ara</span></h1>
       <p class="lead">
-        Sembol, şirket adı veya sektör yaz.
-        Sonuçtan karta, AI özetine, pusulaya veya sohbete geç.
+        Sembol veya şirket adı yaz. Aynı hisse birden fazla listelenmez.
       </p>
     </header>
 
@@ -270,74 +220,48 @@
         <input
           id="q"
           type="search"
-          placeholder="Örn: ASELS, THYAO, banka, Apple…"
+          placeholder="ASELS, Aselsan, AAPL…"
           autocomplete="off"
-          autofocus
           enterkeyhint="search"
         />
         <select id="mkt">
+          <option value="all">Tüm piyasalar</option>
           <option value="bist">BIST</option>
           <option value="nasdaq">NASDAQ</option>
           <option value="nyse">NYSE</option>
-          <option value="all">Tümü</option>
         </select>
         <button type="button" class="btn btn-primary" id="btnGo">Ara</button>
       </div>
-      <p class="hint">Yazarken sonuçlar güncellenir · en az 1 karakter</p>
-    </div>
-
-    <div class="quick" id="quick">
-      <button type="button" data-q="ASELS">ASELS</button>
-      <button type="button" data-q="THYAO">THYAO</button>
-      <button type="button" data-q="GARAN">GARAN</button>
-      <button type="button" data-q="AAPL">AAPL</button>
-      <button type="button" data-q="savunma">Savunma</button>
-      <button type="button" data-q="banka">Banka</button>
-      <a href="heatmap.html">Isı haritası</a>
-      <a href="balinalar.html">Balinalar</a>
+      <div class="quick" id="quick">
+        <button type="button" data-q="ASELS">ASELS</button>
+        <button type="button" data-q="THYAO">THYAO</button>
+        <button type="button" data-q="EREGL">EREGL</button>
+        <button type="button" data-q="AAPL">AAPL</button>
+        <button type="button" data-q="NVDA">NVDA</button>
+        <button type="button" data-q="TSLA">TSLA</button>
+      </div>
     </div>
 
     <div class="status" id="status"></div>
     <div class="results" id="results">
       <div class="empty">
-        <strong>Aramaya hazır.</strong><br />
+        <strong>Aramaya hazır</strong>
         Popüler sembollerden birini seç veya kutuya yazmaya başla.
       </div>
     </div>
 
-    <div class="destinations">
-      <a class="dest" href="stock.html">
-        <div class="ico">📈</div>
-        <div class="t">Hisseler</div>
-        <div class="d">Kart listesi</div>
-      </a>
-      <a class="dest" href="ai-analiz.html">
-        <div class="ico">🤖</div>
-        <div class="t">AI Analiz</div>
-        <div class="d">Skor &amp; özet</div>
-      </a>
-      <a class="dest" href="radar.html">
-        <div class="ico">🧭</div>
-        <div class="t">Pusula</div>
-        <div class="d">Basit yön</div>
-      </a>
-      <a class="dest" href="portfolio.html">
-        <div class="ico">💼</div>
-        <div class="t">Portföy</div>
-        <div class="d">Pozisyonların</div>
-      </a>
-    </div>
-
     <p class="legal">
-      Arama sonuçları bilgilendirme amaçlıdır.
-      · <a href="kvkk.html">KVKK</a> · <a href="gizlilik.html">Gizlilik</a>
+      Arama sonuçları bilgilendirme amaçlıdır; yatırım tavsiyesi değildir.
+      · <a href="kvkk.html">KVKK</a>
+      · <a href="gizlilik.html">Gizlilik</a>
     </p>
   </main>
 
   <footer>
-    Nexora AI ·
+    Nexora AI
     <a href="index.html">Ana</a>
-    <a href="sinyaller.html">Sinyaller</a>
+    <a href="stock.html">Hisseler</a>
+    <a href="portfolio.html">Portföy</a>
     <a href="about.html">Hakkımızda</a>
   </footer>
 
@@ -347,6 +271,22 @@
 
   var cache = {};
   var timer = null;
+
+  function dedupe(list) {
+    var seen = {};
+    var out = [];
+    for (var i = 0; i < list.length; i++) {
+      var s = list[i];
+      var k =
+        String(s.symbol || "").toUpperCase() +
+        "|" +
+        String(s.market || s._m || "").toUpperCase();
+      if (!s.symbol || seen[k]) continue;
+      seen[k] = true;
+      out.push(s);
+    }
+    return out;
+  }
 
   async function loadMarket(m) {
     if (cache[m]) return cache[m];
@@ -358,6 +298,7 @@
         if (!s.market) s.market = m.toUpperCase();
         s._m = m;
       });
+      list = dedupe(list);
       cache[m] = list;
       return list;
     } catch (e) {
@@ -371,7 +312,7 @@
       var a = await loadMarket("bist");
       var b = await loadMarket("nasdaq");
       var c = await loadMarket("nyse");
-      return a.concat(b, c);
+      return dedupe(a.concat(b, c));
     }
     return loadMarket(mkt);
   }
@@ -425,22 +366,19 @@
       "&market=" +
       encodeURIComponent(m) +
       '">Kart</a>' +
+      '<a class="btn btn-soft" href="ultra-grafik.html?symbol=' +
+      encodeURIComponent(s.symbol) +
+      "&market=" +
+      encodeURIComponent(m) +
+      '">Grafik</a>' +
       '<a class="btn btn-soft" href="ai-analiz.html?symbol=' +
       encodeURIComponent(s.symbol) +
       "&market=" +
       encodeURIComponent(m) +
-      '">AI Analiz</a>' +
-      '<a class="btn btn-soft" href="radar.html?sembol=' +
+      '">AI</a>' +
+      '<a class="btn btn-soft" href="portfolio.html?symbol=' +
       encodeURIComponent(s.symbol) +
-      "&piyasa=" +
-      encodeURIComponent(m) +
-      '">Pusula</a>' +
-      '<a class="btn btn-soft" href="sohbet.html?oda=' +
-      encodeURIComponent(s.symbol) +
-      '">Sohbet</a>' +
-      '<a class="btn btn-soft" href="sinyaller.html?add=' +
-      encodeURIComponent(s.symbol) +
-      "&market=" +
+      "&watch=1&market=" +
       encodeURIComponent(m) +
       '">Takip</a>' +
       "</div>" +
@@ -457,12 +395,13 @@
     if (!q) {
       st.textContent = "";
       box.innerHTML =
-        '<div class="empty"><strong>Aramaya hazır.</strong><br />Popüler sembollerden birini seç veya kutuya yazmaya başla.</div>';
+        '<div class="empty"><strong>Aramaya hazır</strong>Popüler sembollerden birini seç veya kutuya yazmaya başla.</div>';
       return;
     }
 
     st.textContent = "Aranıyor…";
     var list = await universe(mkt);
+
     var hits = list
       .filter(function (s) {
         return match(s, q);
@@ -473,15 +412,17 @@
       .sort(function (a, b) {
         return b.sc - a.sc;
       })
-      .slice(0, 24)
       .map(function (x) {
         return x.s;
       });
 
+    // Çift kayıtları bir kez daha ele (sembol + piyasa)
+    hits = dedupe(hits).slice(0, 24);
+
     if (!hits.length) {
       st.textContent = "Sonuç yok";
       box.innerHTML =
-        '<div class="empty"><strong>Eşleşme bulunamadı.</strong><br />Yazımı kontrol et veya piyasayı değiştir.</div>';
+        '<div class="empty"><strong>Eşleşme bulunamadı</strong>Yazımı kontrol et veya piyasayı değiştir.</div>';
       return;
     }
 
