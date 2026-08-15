@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Hisseler · Nexora AI</title>
-  <meta name="description" content="BIST, NASDAQ ve NYSE hisseleri — son fiyat, AI skoru, takip listesi." />
+  <meta name="description" content="BIST, NASDAQ ve NYSE hisseleri — son fiyat, AI skoru, takip listesi. Her hisse bir kez." />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
@@ -104,9 +104,7 @@
       background: linear-gradient(135deg, var(--accent), #059669);
       box-shadow: none;
     }
-    .chip .plan {
-      font-size: 10px; opacity: 0.85; margin-left: 4px;
-    }
+    .chip .plan { font-size: 10px; opacity: 0.85; margin-left: 4px; }
 
     .meta-line {
       display: flex; flex-wrap: wrap; gap: 8px 14px;
@@ -126,15 +124,7 @@
       color: var(--text);
       box-shadow: inset 0 0 0 1px var(--border);
     }
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent), #059669);
-      color: #022c22;
-    }
-    .btn-sm {
-      padding: 7px 11px;
-      font-size: 12px;
-      border-radius: 9px;
-    }
+    .btn-sm { padding: 7px 11px; font-size: 12px; border-radius: 9px; }
     .btn-watch {
       background: rgba(34, 211, 238, 0.1);
       color: var(--cyan);
@@ -166,17 +156,12 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
-      transition: border-color 0.15s, transform 0.15s;
     }
-    .card:hover {
-      border-color: rgba(16, 185, 129, 0.35);
-    }
+    .card:hover { border-color: rgba(16, 185, 129, 0.35); }
     .card-top {
       display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;
     }
-    .card-sym {
-      font-size: 1.15rem; font-weight: 800; letter-spacing: -0.02em;
-    }
+    .card-sym { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.02em; }
     .card-sym .flag { margin-right: 4px; }
     .card-mkt {
       font-size: 11px; font-weight: 700; color: var(--dim);
@@ -197,15 +182,11 @@
     }
     .up { color: #34d399; }
     .down { color: var(--rose); }
-    .card-pct {
-      font-size: 13px; font-weight: 700;
-      font-variant-numeric: tabular-nums;
-    }
+    .card-pct { font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
     .card-meta {
       display: flex; flex-wrap: wrap; gap: 6px 10px;
       font-size: 12px; color: var(--dim);
     }
-    .card-meta span { white-space: nowrap; }
 
     .score-row {
       display: flex; align-items: center; gap: 8px;
@@ -310,16 +291,15 @@
 
   <main class="wrap">
     <header class="head">
-      <div class="badge">Canlı kartlar · son kapanış güvende</div>
+      <div class="badge">Canlı kartlar · her hisse bir kez</div>
       <h1>Hisse <span>Kartları</span></h1>
       <p class="lead">
-        BIST, NASDAQ ve NYSE. Borsa kapalıyken bile son kapanış fiyatı kalır;
-        takibe al, grafiğe veya analize geç.
+        BIST, NASDAQ ve NYSE. Aynı sembol listede kaç kez olursa olsun kartlarda yalnızca bir kez görünür.
       </p>
     </header>
 
     <div class="toolbar">
-      <input id="q" type="search" placeholder="ASELS, Aselsan, AAPL…" autocomplete="off" enterkeyhint="search" />
+      <input id="q" type="search" placeholder="ASELS, Aselsan, MCD…" autocomplete="off" enterkeyhint="search" />
       <button type="button" class="btn btn-soft" id="btnRefresh">Fiyatları yenile</button>
     </div>
 
@@ -331,7 +311,7 @@
 
     <div class="meta-line">
       <span><strong id="countLabel">0</strong> hisse</span>
-      <span id="priceNote">Fiyatlar gecikmeli olabilir · kapalı piyasada son kapanış</span>
+      <span>Fiyatlar gecikmeli olabilir · kapalı piyasada son kapanış</span>
     </div>
 
     <div class="grid" id="grid">
@@ -422,6 +402,21 @@
     return "Orta";
   }
 
+  /** Sembole göre tekilleştir — kaç kez yazılırsa yazılsın 1 kez */
+  function uniqueBySymbol(list) {
+    var seen = {};
+    var out = [];
+    for (var i = 0; i < list.length; i++) {
+      var s = list[i];
+      var sym = String(s.symbol || "").toUpperCase().trim();
+      if (!sym || seen[sym]) continue;
+      seen[sym] = true;
+      s.symbol = sym;
+      out.push(s);
+    }
+    return out;
+  }
+
   function getWatch() {
     if (window.Store && Store.getWatchlist) return Store.getWatchlist();
     try {
@@ -467,9 +462,10 @@
       var res = await fetch("data/" + m + ".json", { cache: "no-store" });
       var data = await res.json();
       var list = Array.isArray(data) ? data : (data.stocks || []);
-      return list.map(function (s) {
+
+      var mapped = list.map(function (s) {
         return {
-          symbol: String(s.symbol || "").toUpperCase(),
+          symbol: String(s.symbol || "").toUpperCase().trim(),
           name: s.name || s.symbol,
           market: s.market || m.toUpperCase(),
           country: s.country || (m === "bist" ? "TR" : "USA"),
@@ -480,15 +476,13 @@
           risk: s.risk || "Medium"
         };
       });
+
+      return uniqueBySymbol(mapped);
     } catch (e) {
       return [];
     }
   }
 
-  /**
-   * Fiyat: canlı → Yahoo previousClose → kısa geçmiş son bar
-   * Asla "fiyat yok" yazılmaz; en kötü "—" + sessiz kalır
-   */
   async function fetchQuote(symbol, m) {
     var key = qKey(symbol, m);
     if (quoteCache[key] && Date.now() - quoteCache[key].ts < 60000) {
@@ -498,7 +492,6 @@
     var data = null;
     var sym = ysym(symbol, m);
 
-    // 1) Merkezi API (worker + yahoo)
     if (window.API && typeof API.getLiveQuote === "function") {
       try {
         var q = await API.getLiveQuote(sym);
@@ -512,7 +505,6 @@
       } catch (e) {}
     }
 
-    // 2) Doğrudan Yahoo chart (ücretsiz, CORS proxy)
     if (!data) {
       try {
         var yUrl =
@@ -559,7 +551,6 @@
       } catch (e) {}
     }
 
-    // 3) Geçmiş son bar (API.getHistory)
     if (!data && window.API && typeof API.getHistory === "function") {
       try {
         var hist = await API.getHistory(sym, "5d");
@@ -606,6 +597,8 @@
         );
       });
     }
+    // Filtre sonrası da garanti tekilleştir
+    filtered = uniqueBySymbol(filtered);
     page = 0;
     document.getElementById("countLabel").textContent = String(filtered.length);
     renderPage();
@@ -701,7 +694,6 @@
       })
       .join("");
 
-    // Fiyatları sırayla doldur (görünen sayfa)
     fillPrices(slice);
   }
 
@@ -717,7 +709,6 @@
       var pctEl = card.querySelector("[data-pct]");
       if (!priceEl) continue;
 
-      // Yükleniyor iskeleti
       if (priceEl.textContent === "—") {
         priceEl.innerHTML = '<div class="skel" style="width:72px;height:1.1em"></div>';
       }
@@ -738,7 +729,6 @@
           ? '<span class="' + cls + '">' + fmtPct(q.pct) + "</span>"
           : "";
       } else {
-        // Hata mesajı yok — sessiz tire
         priceEl.textContent = "—";
         pctEl.textContent = "";
       }
@@ -811,7 +801,6 @@
     b.textContent = on ? "Takiptesin" : "Takibe al";
   });
 
-  // URL: ?market=nasdaq&q=AAPL
   var params = new URLSearchParams(location.search);
   var m0 = (params.get("market") || "bist").toLowerCase();
   if (["bist", "nasdaq", "nyse"].indexOf(m0) === -1) m0 = "bist";
