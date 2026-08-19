@@ -3,24 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Nexora AI · Piyasayı net gör, karar senin</title>
-  <meta name="description" content="BIST ve küresel hisseler: kartlar, grafik, AI özeti, portföy, alarm ve sanal lig. Yatırım tavsiyesi değildir; veriler gecikmeli olabilir." />
-  <meta name="theme-color" content="#060a12" />
+  <title>Nexora AI · Piyasa, disiplin ve sade araçlar</title>
+  <meta name="description" content="BIST, NASDAQ ve NYSE — hisse kartları, grafik, AI özeti, portföy, alarm ve sanal lig. Yatırım tavsiyesi değildir." />
+  <meta name="theme-color" content="#05080f" />
   <meta property="og:title" content="Nexora AI" />
-  <meta property="og:description" content="Netlik, abartısız AI, öğren & yarış. Piyasayı daha sade takip et." />
-  <meta property="og:type" content="website" />
+  <meta property="og:description" content="Piyasayı net gör. Karar senin." />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #060a12;
-      --panel: rgba(15, 23, 42, 0.88);
-      --border: rgba(148, 163, 184, 0.12);
+      --bg: #05080f;
+      --panel: rgba(12, 18, 32, 0.78);
+      --panel-solid: #0c1220;
+      --border: rgba(148, 163, 184, 0.11);
       --text: #f1f5f9;
       --muted: #94a3b8;
       --dim: #64748b;
       --accent: #10b981;
+      --accent2: #34d399;
       --cyan: #22d3ee;
       --violet: #a78bfa;
+      --rose: #f87171;
       --amber: #fbbf24;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -32,579 +34,1022 @@
       min-height: 100vh;
       line-height: 1.55;
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
     a { color: inherit; text-decoration: none; }
     button { font: inherit; border: none; background: none; cursor: pointer; color: inherit; }
 
-    .glow {
-      position: fixed; z-index: 0; pointer-events: none;
-      width: 380px; height: 380px; border-radius: 50%;
-      filter: blur(100px); opacity: 0.12;
+    /* —— Canvas network —— */
+    #fx {
+      position: fixed; inset: 0; z-index: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      opacity: 0.55;
     }
-    .glow.a { top: -120px; left: -60px; background: #059669; }
-    .glow.b { bottom: 15%; right: -80px; background: #0284c7; opacity: 0.09; }
+    .orb {
+      position: fixed; z-index: 0; pointer-events: none;
+      border-radius: 50%;
+      filter: blur(90px);
+      animation: drift 18s ease-in-out infinite alternate;
+    }
+    .orb.a {
+      width: 420px; height: 420px;
+      top: -120px; left: -80px;
+      background: rgba(16, 185, 129, 0.22);
+    }
+    .orb.b {
+      width: 360px; height: 360px;
+      bottom: 8%; right: -100px;
+      background: rgba(34, 211, 238, 0.14);
+      animation-delay: -6s;
+      animation-duration: 22s;
+    }
+    .orb.c {
+      width: 280px; height: 280px;
+      top: 42%; left: 40%;
+      background: rgba(167, 139, 250, 0.08);
+      animation-delay: -11s;
+      animation-duration: 26s;
+    }
+    @keyframes drift {
+      from { transform: translate(0, 0) scale(1); }
+      to { transform: translate(40px, 30px) scale(1.08); }
+    }
 
     .shell { position: relative; z-index: 1; }
 
+    /* —— NAV —— */
     .nav {
-      position: sticky; top: 0; z-index: 50;
-      height: 56px; display: flex; align-items: center; justify-content: space-between;
-      gap: 10px; padding: 0 14px;
-      background: rgba(6, 10, 18, 0.92);
-      backdrop-filter: blur(14px);
+      position: sticky; top: 0; z-index: 60;
+      height: 58px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; padding: 0 16px;
+      background: rgba(5, 8, 15, 0.82);
+      backdrop-filter: blur(18px) saturate(1.2);
       border-bottom: 1px solid var(--border);
+      transition: box-shadow 0.3s;
+    }
+    .nav.scrolled {
+      box-shadow: 0 8px 32px rgba(0,0,0,0.35);
     }
     .brand {
+      display: flex; align-items: center; gap: 10px;
       font-weight: 800; letter-spacing: -0.03em; font-size: 15px;
-      display: flex; align-items: center; gap: 8px;
+      flex-shrink: 0;
     }
     .mark {
-      width: 28px; height: 28px; border-radius: 8px;
+      width: 32px; height: 32px; border-radius: 10px;
       background: linear-gradient(135deg, var(--accent), var(--cyan));
       display: grid; place-items: center;
-      color: #022c22; font-size: 11px; font-weight: 900;
+      color: #022c22; font-size: 13px; font-weight: 900;
+      box-shadow: 0 0 24px rgba(16, 185, 129, 0.4);
+      animation: pulse-mark 3.5s ease-in-out infinite;
+    }
+    @keyframes pulse-mark {
+      0%, 100% { box-shadow: 0 0 18px rgba(16, 185, 129, 0.35); }
+      50% { box-shadow: 0 0 28px rgba(16, 185, 129, 0.55); }
     }
     .brand em { font-style: normal; color: var(--accent); }
 
-    .nav-links { display: none; gap: 2px; }
-    @media (min-width: 900px) {
-      .nav-links { display: flex; }
-      .nav-links a {
+    .nav-desk { display: none; gap: 2px; flex: 1; justify-content: center; }
+    @media (min-width: 960px) {
+      .nav-desk { display: flex; }
+      .nav-desk a {
         font-size: 13px; font-weight: 600; color: var(--muted);
-        padding: 7px 10px; border-radius: 9px;
+        padding: 7px 11px; border-radius: 9px;
+        transition: color 0.15s, background 0.15s;
       }
-      .nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+      .nav-desk a:hover {
+        color: var(--text); background: rgba(255,255,255,0.05);
+      }
     }
 
+    .nav-right { display: flex; align-items: center; gap: 8px; }
     .lang {
-      display: flex; gap: 4px; margin-right: 6px;
+      display: flex; gap: 3px;
+      padding: 3px;
+      border-radius: 10px;
+      background: rgba(15, 23, 42, 0.6);
+      box-shadow: inset 0 0 0 1px var(--border);
     }
     .lang button {
       font-size: 11px; font-weight: 800;
-      padding: 5px 8px; border-radius: 8px;
+      padding: 5px 9px; border-radius: 7px;
       color: var(--dim);
-      box-shadow: inset 0 0 0 1px var(--border);
+      transition: all 0.2s;
     }
     .lang button.on {
       color: #022c22;
       background: linear-gradient(135deg, var(--accent), #059669);
-      box-shadow: none;
     }
 
     .btn {
-      display: inline-flex; align-items: center; justify-content: center;
-      padding: 11px 16px; border-radius: 11px;
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 10px 16px; border-radius: 11px;
       font-size: 13px; font-weight: 700;
-      white-space: nowrap;
+      transition: transform 0.15s, box-shadow 0.2s, background 0.2s;
     }
+    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
     .btn-primary {
       background: linear-gradient(135deg, var(--accent), #059669);
       color: #022c22;
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.25);
     }
-    .btn-soft {
-      background: rgba(30, 41, 59, 0.95);
+    .btn-primary:hover {
+      box-shadow: 0 6px 28px rgba(16, 185, 129, 0.4);
+    }
+    .btn-ghost {
       color: var(--text);
       box-shadow: inset 0 0 0 1px var(--border);
+      background: rgba(15, 23, 42, 0.5);
     }
-    .btn-lg { padding: 13px 20px; font-size: 14px; border-radius: 12px; }
+    .btn-ghost:hover {
+      background: rgba(30, 41, 59, 0.8);
+      box-shadow: inset 0 0 0 1px rgba(148,163,184,0.25);
+    }
+    .btn-lg { padding: 13px 22px; font-size: 14px; border-radius: 13px; }
 
     .wrap {
-      max-width: 1040px;
+      max-width: 1100px;
       margin: 0 auto;
-      padding: 0 16px 56px;
+      padding: 0 16px 64px;
     }
+
+    /* —— REVEAL —— */
+    .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal.d1 { transition-delay: 0.08s; }
+    .reveal.d2 { transition-delay: 0.16s; }
+    .reveal.d3 { transition-delay: 0.24s; }
+    .reveal.d4 { transition-delay: 0.32s; }
 
     /* —— HERO —— */
     .hero {
-      padding: 36px 0 28px;
-      text-align: left;
+      padding: 48px 0 40px;
+      display: grid;
+      gap: 32px;
+      align-items: center;
     }
-    .badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-size: 12px; font-weight: 700; color: var(--cyan);
-      background: rgba(34, 211, 238, 0.1);
-      border: 1px solid rgba(34, 211, 238, 0.28);
-      padding: 5px 12px; border-radius: 999px;
-      margin-bottom: 14px;
+    @media (min-width: 900px) {
+      .hero {
+        grid-template-columns: 1.15fr 0.85fr;
+        padding: 64px 0 48px;
+        gap: 40px;
+      }
+    }
+    .pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 12px; font-weight: 700;
+      color: var(--cyan);
+      background: rgba(34, 211, 238, 0.08);
+      border: 1px solid rgba(34, 211, 238, 0.22);
+      padding: 6px 14px; border-radius: 999px;
+      margin-bottom: 16px;
+    }
+    .pill i {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--accent2);
+      box-shadow: 0 0 10px var(--accent2);
+      animation: blink 2s ease-in-out infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
     }
     .hero h1 {
-      font-size: clamp(1.75rem, 4.5vw, 2.45rem);
+      font-size: clamp(2rem, 5vw, 3rem);
       font-weight: 800;
-      letter-spacing: -0.035em;
-      line-height: 1.15;
-      max-width: 18ch;
+      letter-spacing: -0.04em;
+      line-height: 1.12;
     }
-    .hero h1 span {
-      background: linear-gradient(90deg, var(--accent), var(--cyan));
-      -webkit-background-clip: text; background-clip: text; color: transparent;
+    .hero h1 .grad {
+      background: linear-gradient(105deg, var(--accent) 0%, var(--cyan) 50%, var(--violet) 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text; background-clip: text;
+      color: transparent;
+      animation: shimmer-text 6s ease infinite;
+    }
+    @keyframes shimmer-text {
+      0%, 100% { background-position: 0% center; }
+      50% { background-position: 100% center; }
     }
     .hero .lead {
-      margin-top: 12px;
-      font-size: 15px;
+      margin-top: 14px;
+      font-size: 16px;
       color: var(--muted);
-      max-width: 42ch;
-      line-height: 1.65;
+      max-width: 38ch;
+      line-height: 1.7;
     }
-    .hero-cta {
+    .hero-actions {
       display: flex; flex-wrap: wrap; gap: 10px;
-      margin-top: 22px;
+      margin-top: 26px;
     }
-    .delay-note {
-      margin-top: 16px;
-      font-size: 12.5px;
-      color: var(--dim);
-      max-width: 48ch;
+    .hero-meta {
+      margin-top: 20px;
+      display: flex; flex-wrap: wrap; gap: 14px 20px;
+      font-size: 12.5px; color: var(--dim);
     }
+    .hero-meta span {
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .hero-meta b { color: var(--muted); font-weight: 700; }
 
-    /* —— SECTION —— */
-    section { margin-top: 36px; }
-    .sec-h {
+    /* Live strip card */
+    .live-card {
+      background: var(--panel);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 18px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+      position: relative;
+      overflow: hidden;
+    }
+    .live-card::before {
+      content: "";
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), var(--cyan), transparent);
+      animation: scan 3.5s ease-in-out infinite;
+    }
+    @keyframes scan {
+      0% { opacity: 0.3; transform: translateX(-30%); }
+      50% { opacity: 1; }
+      100% { opacity: 0.3; transform: translateX(30%); }
+    }
+    .live-card h3 {
+      font-size: 12px; font-weight: 700; color: var(--dim);
+      text-transform: uppercase; letter-spacing: 0.06em;
       margin-bottom: 14px;
     }
-    .sec-h h2 {
-      font-size: 1.2rem;
-      font-weight: 800;
-      letter-spacing: -0.02em;
+    .tick {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 10px; padding: 10px 0;
+      border-bottom: 1px solid rgba(148,163,184,0.07);
     }
-    .sec-h p {
-      font-size: 13.5px;
-      color: var(--muted);
-      margin-top: 4px;
-      max-width: 52ch;
+    .tick:last-child { border-bottom: none; }
+    .tick .sym { font-weight: 800; letter-spacing: -0.02em; font-size: 14px; }
+    .tick .name { font-size: 11px; color: var(--dim); }
+    .tick .px {
+      font-weight: 800; font-variant-numeric: tabular-nums;
+      text-align: right; font-size: 14px;
+    }
+    .tick .ch {
+      font-size: 12px; font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+    .up { color: #34d399; }
+    .down { color: var(--rose); }
+    .live-foot {
+      margin-top: 12px;
+      font-size: 11px; color: var(--dim);
+      text-align: center;
     }
 
-    /* —— ÜÇ İLKE —— */
-    .principles {
+    /* —— STATS BAR —— */
+    .stats {
       display: grid;
+      grid-template-columns: repeat(2, 1fr);
       gap: 10px;
+      margin: 8px 0 40px;
     }
     @media (min-width: 700px) {
+      .stats { grid-template-columns: repeat(4, 1fr); }
+    }
+    .stat {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+    }
+    .stat .n {
+      font-size: 1.35rem; font-weight: 800;
+      letter-spacing: -0.03em;
+      background: linear-gradient(90deg, var(--text), var(--muted));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .stat .l { font-size: 12px; color: var(--dim); margin-top: 4px; font-weight: 600; }
+
+    /* —— SECTION —— */
+    section { margin-bottom: 48px; }
+    .sec-head {
+      margin-bottom: 18px;
+    }
+    .sec-head h2 {
+      font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+    .sec-head p {
+      color: var(--muted); font-size: 14px; margin-top: 6px; max-width: 48ch;
+    }
+
+    /* —— PRINCIPLES —— */
+    .principles {
+      display: grid; gap: 12px;
+    }
+    @media (min-width: 720px) {
       .principles { grid-template-columns: repeat(3, 1fr); }
     }
     .principle {
       background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 18px 16px;
+      border-radius: 18px;
+      padding: 22px 18px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.25s, transform 0.25s;
     }
-    .principle .ico {
-      font-size: 1.25rem;
-      margin-bottom: 8px;
+    .principle:hover {
+      border-color: rgba(16, 185, 129, 0.35);
+      transform: translateY(-3px);
+    }
+    .principle .num {
+      font-size: 11px; font-weight: 800; color: var(--accent);
+      letter-spacing: 0.08em; margin-bottom: 10px;
     }
     .principle h3 {
-      font-size: 15px;
-      font-weight: 800;
-      letter-spacing: -0.02em;
+      font-size: 16px; font-weight: 800; letter-spacing: -0.02em;
     }
     .principle p {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 6px;
-      line-height: 1.6;
+      font-size: 13.5px; color: var(--muted); margin-top: 8px; line-height: 1.65;
     }
 
-    /* —— KEŞFET KATEGORİ —— */
-    .cat {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 16px;
-      margin-bottom: 12px;
-    }
-    .cat-h {
-      display: flex; align-items: center; gap: 10px;
-      margin-bottom: 12px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid var(--border);
-    }
-    .cat-h .tag {
-      font-size: 18px;
-    }
-    .cat-h h3 {
-      font-size: 15px;
-      font-weight: 800;
-    }
-    .cat-h span {
-      font-size: 12px;
-      color: var(--dim);
-      margin-left: auto;
-    }
-
-    .tiles {
+    /* —— FEATURE GRID —— */
+    .feat-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 8px;
-    }
-    @media (min-width: 560px) {
-      .tiles { grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (min-width: 900px) {
-      .tiles.three { grid-template-columns: repeat(3, 1fr); }
-    }
-
-    .tile {
-      display: block;
-      padding: 14px 14px;
-      border-radius: 12px;
-      background: rgba(6, 10, 18, 0.45);
-      border: 1px solid transparent;
-      transition: border-color 0.15s, background 0.15s;
-    }
-    .tile:hover {
-      border-color: rgba(16, 185, 129, 0.35);
-      background: rgba(16, 185, 129, 0.06);
-    }
-    .tile strong {
-      display: block;
-      font-size: 14px;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-    }
-    .tile p {
-      font-size: 12.5px;
-      color: var(--muted);
-      margin-top: 4px;
-      line-height: 1.5;
-    }
-
-    /* —— PLANLAR —— */
-    .plans {
-      display: grid;
       gap: 10px;
     }
-    @media (min-width: 700px) {
+    @media (min-width: 560px) {
+      .feat-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (min-width: 900px) {
+      .feat-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    .feat {
+      display: flex; flex-direction: column;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px 16px;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      min-height: 132px;
+    }
+    .feat:hover {
+      border-color: rgba(16, 185, 129, 0.4);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+    }
+    .feat .ico {
+      width: 36px; height: 36px; border-radius: 10px;
+      display: grid; place-items: center;
+      font-size: 16px;
+      background: rgba(16, 185, 129, 0.1);
+      margin-bottom: 12px;
+    }
+    .feat.violet .ico { background: rgba(167, 139, 250, 0.12); }
+    .feat.cyan .ico { background: rgba(34, 211, 238, 0.12); }
+    .feat.amber .ico { background: rgba(251, 191, 36, 0.12); }
+    .feat strong {
+      font-size: 14.5px; font-weight: 800; letter-spacing: -0.02em;
+    }
+    .feat p {
+      font-size: 12.5px; color: var(--muted); margin-top: 6px;
+      line-height: 1.5; flex: 1;
+    }
+    .feat .go {
+      margin-top: 12px;
+      font-size: 12px; font-weight: 700; color: var(--accent);
+      opacity: 0.85;
+    }
+    .feat:hover .go { opacity: 1; }
+
+    /* —— CTA BAND —— */
+    .cta-band {
+      background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(34,211,238,0.08));
+      border: 1px solid rgba(16, 185, 129, 0.28);
+      border-radius: 20px;
+      padding: 28px 22px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-band::after {
+      content: "";
+      position: absolute; inset: -50%;
+      background: radial-gradient(circle at 30% 50%, rgba(16,185,129,0.08), transparent 45%);
+      animation: drift 12s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+    .cta-band h2 {
+      font-size: 1.35rem; font-weight: 800; letter-spacing: -0.03em;
+      position: relative;
+    }
+    .cta-band p {
+      color: var(--muted); font-size: 14px; margin: 8px auto 18px;
+      max-width: 40ch; position: relative;
+    }
+    .cta-band .row {
+      display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+      position: relative;
+    }
+
+    /* —— PLANS —— */
+    .plans {
+      display: grid; gap: 12px;
+    }
+    @media (min-width: 720px) {
       .plans { grid-template-columns: repeat(3, 1fr); }
     }
     .plan {
       background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 18px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+      border-radius: 18px;
+      padding: 22px 18px;
+      display: flex; flex-direction: column; gap: 12px;
+      transition: transform 0.2s, border-color 0.2s;
     }
-    .plan.featured {
-      border-color: rgba(16, 185, 129, 0.45);
-      box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.12);
+    .plan:hover { transform: translateY(-3px); }
+    .plan.hot {
+      border-color: rgba(16, 185, 129, 0.5);
+      box-shadow: 0 0 0 1px rgba(16,185,129,0.12), 0 16px 40px rgba(16,185,129,0.08);
     }
-    .plan .name {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--dim);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
+    .plan .tag {
+      font-size: 11px; font-weight: 800; color: var(--dim);
+      text-transform: uppercase; letter-spacing: 0.06em;
     }
+    .plan.hot .tag { color: var(--accent); }
     .plan .price {
-      font-size: 1.5rem;
-      font-weight: 800;
-      letter-spacing: -0.03em;
+      font-size: 1.75rem; font-weight: 800; letter-spacing: -0.03em;
     }
     .plan .price small {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--muted);
+      font-size: 13px; font-weight: 600; color: var(--muted);
     }
     .plan ul {
-      list-style: none;
-      font-size: 13px;
-      color: var(--muted);
-      flex: 1;
+      list-style: none; font-size: 13px; color: var(--muted); flex: 1;
     }
     .plan ul li {
-      padding: 5px 0;
-      padding-left: 1.1em;
+      padding: 6px 0 6px 1.2em;
       position: relative;
+      border-bottom: 1px solid rgba(148,163,184,0.05);
     }
+    .plan ul li:last-child { border-bottom: none; }
     .plan ul li::before {
       content: "✓";
-      position: absolute;
-      left: 0;
-      color: var(--accent);
-      font-weight: 800;
-      font-size: 12px;
+      position: absolute; left: 0;
+      color: var(--accent); font-weight: 800; font-size: 12px;
     }
 
-    /* —— YASAL —— */
-    .legal-box {
-      margin-top: 36px;
-      padding: 16px;
+    /* —— LEGAL —— */
+    .legal {
+      margin-top: 20px;
+      padding: 18px;
       border-radius: 14px;
-      background: rgba(15, 23, 42, 0.6);
+      background: rgba(12, 18, 32, 0.7);
       border: 1px solid var(--border);
       font-size: 12.5px;
       color: var(--dim);
-      line-height: 1.65;
+      line-height: 1.7;
     }
-    .legal-box strong { color: var(--muted); }
-    .legal-box a { color: var(--cyan); font-weight: 600; }
+    .legal strong { color: var(--muted); }
+    .legal a { color: var(--cyan); font-weight: 600; }
 
     footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 16px 48px;
       text-align: center;
-      padding: 20px 16px 40px;
-      font-size: 12px;
-      color: var(--dim);
     }
-    footer a {
+    .foot-links {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 14px;
+      margin-bottom: 14px;
+    }
+    .foot-links a {
+      font-size: 12.5px; font-weight: 600; color: var(--muted);
+      transition: color 0.15s;
+    }
+    .foot-links a:hover { color: var(--accent); }
+    .foot-copy { font-size: 12px; color: var(--dim); }
+
+    /* Mobile menu */
+    .burger {
+      display: flex; flex-direction: column; gap: 5px;
+      padding: 8px; border-radius: 8px;
+    }
+    @media (min-width: 960px) { .burger { display: none; } }
+    .burger span {
+      display: block; width: 18px; height: 2px;
+      background: var(--muted); border-radius: 2px;
+    }
+    .drawer {
+      display: none;
+      position: fixed; inset: 58px 0 0 0; z-index: 55;
+      background: rgba(5, 8, 15, 0.96);
+      backdrop-filter: blur(12px);
+      padding: 16px;
+      flex-direction: column; gap: 4px;
+      overflow-y: auto;
+    }
+    .drawer.open { display: flex; }
+    .drawer a {
+      padding: 14px 12px;
+      font-weight: 600; font-size: 15px;
       color: var(--muted);
-      margin: 0 6px;
-      font-weight: 600;
+      border-radius: 10px;
+      border-bottom: 1px solid rgba(148,163,184,0.06);
     }
+    .drawer a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
   </style>
 </head>
 <body>
-  <div class="glow a" aria-hidden="true"></div>
-  <div class="glow b" aria-hidden="true"></div>
+  <canvas id="fx" aria-hidden="true"></canvas>
+  <div class="orb a" aria-hidden="true"></div>
+  <div class="orb b" aria-hidden="true"></div>
+  <div class="orb c" aria-hidden="true"></div>
 
   <div class="shell">
-    <nav class="nav">
+    <nav class="nav" id="nav">
       <a class="brand" href="index.html">
         <span class="mark">N</span>
         Nexora <em>AI</em>
       </a>
-      <div class="nav-links">
-        <a href="stock.html" data-i18n="nav.stocks">Hisseler</a>
-        <a href="ara.html" data-i18n="nav.search">Ara</a>
-        <a href="portfolio.html" data-i18n="nav.portfolio">Portföy</a>
-        <a href="ultra-grafik.html" data-i18n="nav.chart">Grafik</a>
-        <a href="oyun.html" data-i18n="nav.league">Lig</a>
-        <a href="premium.html" data-i18n="nav.premium">Premium</a>
+      <div class="nav-desk">
+        <a href="stock.html">Hisseler</a>
+        <a href="ara.html">Ara</a>
+        <a href="portfolio.html">Portföy</a>
+        <a href="ultra-grafik.html">Grafik</a>
+        <a href="ai-analiz.html">AI</a>
+        <a href="oyun.html">Lig</a>
+        <a href="premium.html">Premium</a>
       </div>
-      <div style="display:flex;align-items:center;gap:6px">
+      <div class="nav-right">
         <div class="lang">
           <button type="button" data-set-lang="tr" class="on">TR</button>
           <button type="button" data-set-lang="en">EN</button>
         </div>
-        <a class="btn btn-soft" href="stock.html" data-i18n="nav.stocks">Hisseler</a>
+        <a class="btn btn-primary" href="stock.html">Keşfet</a>
+        <button type="button" class="burger" id="burger" aria-label="Menü">
+          <span></span><span></span><span></span>
+        </button>
       </div>
     </nav>
 
+    <div class="drawer" id="drawer">
+      <a href="stock.html">Hisse kartları</a>
+      <a href="ara.html">Ara</a>
+      <a href="ultra-grafik.html">Ultra grafik</a>
+      <a href="ai-analiz.html">AI analiz</a>
+      <a href="radar.html">Pusula</a>
+      <a href="heatmap.html">Isı haritası</a>
+      <a href="karsilastir.html">Karşılaştır</a>
+      <a href="portfolio.html">Portföy &amp; takip</a>
+      <a href="alarm.html">Fiyat alarmı</a>
+      <a href="sinyaller.html">Sinyaller</a>
+      <a href="oyun.html">Nexora Lig</a>
+      <a href="tahmin.html">Tahmin arenası</a>
+      <a href="egitim.html">Akademi</a>
+      <a href="sohbet.html">Sohbet</a>
+      <a href="makale.html">Makaleler</a>
+      <a href="profil.html">Profil</a>
+      <a href="news.html">Gündem</a>
+      <a href="premium.html">Premium</a>
+      <a href="about.html">Hakkımızda</a>
+    </div>
+
     <main class="wrap">
-      <!-- 1. HERO -->
+      <!-- HERO -->
       <header class="hero">
-        <div class="badge">BIST · NASDAQ · NYSE</div>
-        <h1>Piyasayı <span>net</span> gör. Karar senin.</h1>
-        <p class="lead">
-          Hisse kartları, grafik, sade AI özeti ve sanal lig — abartısız araçlar,
-          tarayıcıda. Broker değiliz; bilgilendirme ve disiplin için varız.
-        </p>
-        <div class="hero-cta">
-          <a class="btn btn-primary btn-lg" href="stock.html">Hisselere git</a>
-          <a class="btn btn-soft btn-lg" href="portfolio.html">Portföy &amp; takip</a>
-          <a class="btn btn-soft btn-lg" href="oyun.html">Sanal lig</a>
+        <div>
+          <div class="pill reveal"><i></i> BIST · NASDAQ · NYSE</div>
+          <h1 class="reveal d1">
+            Piyasayı <span class="grad">net</span> gör.<br />Karar senin.
+          </h1>
+          <p class="lead reveal d2">
+            Abartısız araçlar: kartlar, grafik, sade AI özeti, portföy ve sanal lig.
+            Broker değiliz — bilgilendirme ve disiplin için buradayız.
+          </p>
+          <div class="hero-actions reveal d3">
+            <a class="btn btn-primary btn-lg" href="stock.html">Hisselere git</a>
+            <a class="btn btn-ghost btn-lg" href="portfolio.html">Portföyüm</a>
+            <a class="btn btn-ghost btn-lg" href="oyun.html">Sanal lig</a>
+          </div>
+          <div class="hero-meta reveal d4">
+            <span><b>15 dk</b> gecikme mümkün</span>
+            <span><b>Ücretsiz</b> başlangıç</span>
+            <span><b>Yatırım tavsiyesi</b> değildir</span>
+          </div>
         </div>
-        <p class="delay-note">
-          Veriler BIST ve kaynak kuralları gereği en az 15 dakika gecikmeli olabilir.
-          Yatırım tavsiyesi değildir.
-        </p>
+
+        <div class="live-card reveal d2">
+          <h3>Örnek şerit · bilgilendirme</h3>
+          <div class="tick">
+            <div>
+              <div class="sym">🇹🇷 THYAO</div>
+              <div class="name">Türk Hava Yolları</div>
+            </div>
+            <div>
+              <div class="px" id="demo1">—</div>
+              <div class="ch up" id="demo1c"></div>
+            </div>
+          </div>
+          <div class="tick">
+            <div>
+              <div class="sym">🇹🇷 ASELS</div>
+              <div class="name">Aselsan</div>
+            </div>
+            <div>
+              <div class="px" id="demo2">—</div>
+              <div class="ch" id="demo2c"></div>
+            </div>
+          </div>
+          <div class="tick">
+            <div>
+              <div class="sym">🇺🇸 AAPL</div>
+              <div class="name">Apple</div>
+            </div>
+            <div>
+              <div class="px" id="demo3">—</div>
+              <div class="ch" id="demo3c"></div>
+            </div>
+          </div>
+          <div class="live-foot">Canlı bağlanamazsa örnek / son kapanış gösterilir</div>
+        </div>
       </header>
 
-      <!-- 2. ÜÇ İLKE -->
-      <section aria-labelledby="ilkeler">
-        <div class="sec-h">
-          <h2 id="ilkeler">Üç ilke</h2>
-          <p>Neden Nexora? Kısa ve net.</p>
+      <div class="stats reveal">
+        <div class="stat"><div class="n">3</div><div class="l">Piyasa</div></div>
+        <div class="stat"><div class="n">1000+</div><div class="l">Hisse kartı</div></div>
+        <div class="stat"><div class="n">7</div><div class="l">Lig basamağı</div></div>
+        <div class="stat"><div class="n">$0</div><div class="l">Başlangıç</div></div>
+      </div>
+
+      <!-- İLKELER -->
+      <section>
+        <div class="sec-head reveal">
+          <h2>Üç ilke</h2>
+          <p>Nexora’yı kalabalıktan ayıran şey.</p>
         </div>
         <div class="principles">
-          <article class="principle">
-            <div class="ico">◇</div>
+          <article class="principle reveal d1">
+            <div class="num">01</div>
             <h3>Netlik</h3>
-            <p>
-              Karmaşık ekran yığını yok. Kart, fiyat (veya son kapanış), takip ve grafik —
-              ihtiyacın olan kadar.
-            </p>
+            <p>Gereksiz gürültü yok. Kart, fiyat veya son kapanış, takip ve grafik — ihtiyacın kadar.</p>
           </article>
-          <article class="principle">
-            <div class="ico">◎</div>
+          <article class="principle reveal d2">
+            <div class="num">02</div>
             <h3>AI abartısız</h3>
-            <p>
-              Skor ve kısa özet yardımcı olur; “kesin kazanırsın” vaadi yok.
-              Son söz her zaman sende.
-            </p>
+            <p>Skor ve kısa özet yardımcı olur. “Kesin kazanırsın” yok; son söz sende.</p>
           </article>
-          <article class="principle">
-            <div class="ico">✦</div>
+          <article class="principle reveal d3">
+            <div class="num">03</div>
             <h3>Öğren &amp; yarış</h3>
-            <p>
-              Akademi ve sanal lig ile pratik yap. Gerçek para yok; disiplin ve merak var.
-            </p>
+            <p>Akademi ve sanal lig. Gerçek para yok; merak ve disiplin var.</p>
           </article>
         </div>
       </section>
 
-      <!-- 3. KEŞFET — KATEGORİLER -->
-      <section aria-labelledby="kesfet">
-        <div class="sec-h">
-          <h2 id="kesfet">Keşfet</h2>
-          <p>Özellikler gruplandı — ne aradığını hızlı seç.</p>
+      <!-- TÜM ARAÇLAR -->
+      <section>
+        <div class="sec-head reveal">
+          <h2>Tüm araçlar</h2>
+          <p>Tek tıkla ilgili ekrana geç.</p>
         </div>
-
-        <!-- Analiz -->
-        <div class="cat">
-          <div class="cat-h">
-            <span class="tag">📊</span>
-            <h3>Analiz araçları</h3>
-            <span>Fiyat &amp; görsel</span>
-          </div>
-          <div class="tiles three">
-            <a class="tile" href="stock.html">
-              <strong>Hisse kartları</strong>
-              <p>BIST, NASDAQ, NYSE — sektör, AI skoru, takip.</p>
-            </a>
-            <a class="tile" href="ultra-grafik.html">
-              <strong>Ultra grafik</strong>
-              <p>Zaman aralığı, yakınlaştır; son kapanış güvende.</p>
-            </a>
-            <a class="tile" href="ai-analiz.html">
-              <strong>AI analiz</strong>
-              <p>Kısa, sade özet — abartısız skor ve bağlam.</p>
-            </a>
-            <a class="tile" href="radar.html">
-              <strong>Pusula</strong>
-              <p>Grafik sevmeyenlere sade yön göstergesi.</p>
-            </a>
-            <a class="tile" href="heatmap.html">
-              <strong>Isı haritası</strong>
-              <p>Günün yükselen / düşen alanına bak.</p>
-            </a>
-            <a class="tile" href="karsilastir.html">
-              <strong>Karşılaştır</strong>
-              <p>İki hisseyi yan yana; temel alanlar.</p>
-            </a>
-          </div>
+        <div class="feat-grid">
+          <a class="feat reveal d1" href="stock.html">
+            <div class="ico">▣</div>
+            <strong>Hisse kartları</strong>
+            <p>BIST, NASDAQ, NYSE — sektör, AI skoru, takip.</p>
+            <span class="go">Aç →</span>
+          </a>
+          <a class="feat cyan reveal d2" href="ultra-grafik.html">
+            <div class="ico">↗</div>
+            <strong>Ultra grafik</strong>
+            <p>Aralık seç, yakınlaştır; kapalı piyasada son kapanış.</p>
+            <span class="go">Aç →</span>
+          </a>
+          <a class="feat violet reveal d3" href="ai-analiz.html">
+            <div class="ico">◈</div>
+            <strong>AI analiz</strong>
+            <p>Sade özet ve skor — abartısız bağlam.</p>
+            <span class="go">Aç →</span>
+          </a>
+          <a class="feat reveal d1" href="portfolio.html">
+            <div class="ico">◐</div>
+            <strong>Portföy &amp; takip</strong>
+            <p>Maliyet ve adetle anlık kâr/zarar; izlediklerin ayrı.</p>
+            <span class="go">Aç →</span>
+          </a>
+          <a class="feat amber reveal d2" href="alarm.html">
+            <div class="ico">◉</div>
+            <strong>Fiyat alarmı</strong>
+            <p>Eşik koy; tarayıcı bildirimiyle hatırlat.</p>
+            <span class="go">Aç →</span>
+          </a>
+          <a class="feat cyan reveal d3" href="ara.html">
+            <div class="ico">⌕</div>
+            <strong>Hızlı ara</strong>
+            <p>Sembol veya isim — mükerrer sonuç yok.</p>
+            <span class="go">Aç →</span>
+          </a>
+          <a class="feat reveal d1" href="radar.html">
+            <div class="ico">◎</div>
+            <strong>Pusula</strong>
+            <p>Grafik sevmeyenlere sade yön göstergesi.</p>
+            <span class="go">Aç →</span>
+          </a>
+          <a class="feat violet reveal d2" href="heatmap.html">
+            <div class="ico">▦</div>
+            <strong>Isı haritası</strong>
+            <p>Günün sıcak / soğuk alanına bak.</p>
+            <span class="go">Aç →</span>
+          </a>
+          <a class="feat reveal d3" href="karsilastir.html">
+            <div class="ico">⇄</div>
+            <strong>Karşılaştır</strong>
+            <p>İki hisseyi yan yana temel alanlarla.</p>
+            <span class="go">Aç →</span>
+          </a>
+          <a class="feat amber reveal d1" href="oyun.html">
+            <div class="ico">♛</div>
+            <strong>Nexora Lig</strong>
+            <p>20 kişilik gruplar, puan eşiği, ay turnuvası.</p>
+            <span class="go">Aç →</span>
+          </a>
+          <a class="feat reveal d2" href="tahmin.html">
+            <div class="ico">✦</div>
+            <strong>Tahmin arenası</strong>
+            <p>Günün sorusu — analizle puan.</p>
+            <span class="go">Aç →</span>
+          </a>
+          <a class="feat cyan reveal d3" href="egitim.html">
+            <div class="ico">🎓</div>
+            <strong>Akademi</strong>
+            <p>Kısa sorular; öğrenirken sanal bakiye.</p>
+            <span class="go">Aç →</span>
+          </a>
+          <a class="feat reveal d1" href="sinyaller.html">
+            <div class="ico">⚡</div>
+            <strong>Sinyaller</strong>
+            <p>Takip listene bağlı sade uyarı alanı.</p>
+            <span class="go">Aç →</span>
+          </a>
+          <a class="feat violet reveal d2" href="sohbet.html">
+            <div class="ico">💬</div>
+            <strong>Sohbet</strong>
+            <p>Genel ve hisse odaklı konuşma.</p>
+            <span class="go">Aç →</span>
+          </a>
+          <a class="feat reveal d3" href="makale.html">
+            <div class="ico">✎</div>
+            <strong>Makaleler</strong>
+            <p>Onaylı yazarlar; kalite kontrollü içerik.</p>
+            <span class="go">Aç →</span>
+          </a>
+          <a class="feat amber reveal d1" href="news.html">
+            <div class="ico">☰</div>
+            <strong>Gündem</strong>
+            <p>Piyasa haberleri ve başlıklar.</p>
+            <span class="go">Aç →</span>
+          </a>
+          <a class="feat reveal d2" href="balinalar.html">
+            <div class="ico">🐋</div>
+            <strong>Balina izi</strong>
+            <p>Büyük hareketlere sade bakış.</p>
+            <span class="go">Aç →</span>
+          </a>
+          <a class="feat cyan reveal d3" href="profil.html">
+            <div class="ico">☺</div>
+            <strong>Profil &amp; mağaza</strong>
+            <p>Takma ad, rozet, koleksiyon.</p>
+            <span class="go">Aç →</span>
+          </a>
         </div>
+      </section>
 
-        <!-- Takip -->
-        <div class="cat">
-          <div class="cat-h">
-            <span class="tag">🔔</span>
-            <h3>Takip &amp; bildirim</h3>
-            <span>Portföy &amp; uyarı</span>
-          </div>
-          <div class="tiles three">
-            <a class="tile" href="portfolio.html">
-              <strong>Portföy &amp; takip listesi</strong>
-              <p>Maliyet ve adet bilgisiyle anlık kâr/zarar; izlediklerin ayrı.</p>
-            </a>
-            <a class="tile" href="alarm.html">
-              <strong>Fiyat alarmı</strong>
-              <p>Eşik belirle; tarayıcı bildirimiyle hatırlatma.</p>
-            </a>
-            <a class="tile" href="sinyaller.html">
-              <strong>Sinyal merkezi</strong>
-              <p>Takip listene bağlı sade uyarı alanı.</p>
-            </a>
-            <a class="tile" href="ara.html">
-              <strong>Hızlı ara</strong>
-              <p>Sembol veya şirket adı — mükerrer sonuç yok.</p>
-            </a>
-          </div>
-        </div>
-
-        <!-- Oyun & topluluk -->
-        <div class="cat">
-          <div class="cat-h">
-            <span class="tag">🏆</span>
-            <h3>Oyunlaştırma &amp; topluluk</h3>
-            <span>Lig &amp; öğrenme</span>
-          </div>
-          <div class="tiles three">
-            <a class="tile" href="oyun.html">
-              <strong>Nexora Lig</strong>
-              <p>20 kişilik gruplar, yükselen puan eşiği, ay turnuvası.</p>
-            </a>
-            <a class="tile" href="tahmin.html">
-              <strong>Tahmin arenası</strong>
-              <p>Günün sorusu — analizle puan kazan.</p>
-            </a>
-            <a class="tile" href="egitim.html">
-              <strong>Akademi</strong>
-              <p>Kısa sorular; öğrenirken sanal bakiye.</p>
-            </a>
-            <a class="tile" href="sohbet.html">
-              <strong>Sohbet</strong>
-              <p>Genel ve hisse odaklı konuşma alanı.</p>
-            </a>
-            <a class="tile" href="makale.html">
-              <strong>Makaleler</strong>
-              <p>Onaylı yazarlar; kalite kontrollü içerik.</p>
-            </a>
-            <a class="tile" href="profil.html">
-              <strong>Profil &amp; mağaza</strong>
-              <p>Takma ad, rozet ve koleksiyon.</p>
-            </a>
+      <!-- CTA -->
+      <section class="reveal">
+        <div class="cta-band">
+          <h2>Hemen dene — kayıt zorunlu değil</h2>
+          <p>Kartlara bak, takibe al, sanal ligde yarış. Beğenirsen Premium’a geçersin.</p>
+          <div class="row">
+            <a class="btn btn-primary btn-lg" href="stock.html">Hisse kartları</a>
+            <a class="btn btn-ghost btn-lg" href="register.html">Hesap oluştur</a>
+            <a class="btn btn-ghost btn-lg" href="login.html">Giriş</a>
           </div>
         </div>
       </section>
 
-      <!-- 4. PLANLAR -->
-      <section aria-labelledby="planlar">
-        <div class="sec-h">
-          <h2 id="planlar">Planlar</h2>
-          <p>Ücretsiz ile başla. İhtiyacın büyürse yükselt.</p>
+      <!-- PLANLAR -->
+      <section>
+        <div class="sec-head reveal">
+          <h2>Planlar</h2>
+          <p>Ücretsiz ile başla. İhtiyacın artarsa yükselt.</p>
         </div>
         <div class="plans">
-          <article class="plan featured">
-            <div class="name">Free</div>
+          <article class="plan hot reveal d1">
+            <div class="tag">Free</div>
             <div class="price">$0 <small>/ ay</small></div>
             <ul>
               <li>BIST, NASDAQ, NYSE kartları</li>
               <li>Grafik, arama, portföy &amp; takip</li>
-              <li>Sanal lig ve temel AI özeti</li>
+              <li>Sanal lig ve temel AI</li>
             </ul>
-            <a class="btn btn-primary" href="stock.html">Hemen dene</a>
+            <a class="btn btn-primary" href="stock.html">Başla</a>
           </article>
-          <article class="plan">
-            <div class="name">Pro</div>
+          <article class="plan reveal d2">
+            <div class="tag">Pro</div>
             <div class="price">$5 <small>/ ay</small></div>
             <ul>
               <li>Free’deki her şey</li>
               <li>Daha derin analiz alanları</li>
-              <li>Öncelikli özellik güncellemeleri</li>
+              <li>Öncelikli güncellemeler</li>
             </ul>
-            <a class="btn btn-soft" href="premium.html">Pro’yu incele</a>
+            <a class="btn btn-ghost" href="premium.html">Pro’yu incele</a>
           </article>
-          <article class="plan">
-            <div class="name">Elite</div>
+          <article class="plan reveal d3">
+            <div class="tag">Elite</div>
             <div class="price">$15 <small>/ ay</small></div>
             <ul>
               <li>Pro’daki her şey</li>
               <li>Geniş piyasa erişimi</li>
-              <li>Üst dilim araçlar ve öncelik</li>
+              <li>Üst dilim araçlar</li>
             </ul>
-            <a class="btn btn-soft" href="premium.html">Elite’i incele</a>
+            <a class="btn btn-ghost" href="premium.html">Elite’i incele</a>
           </article>
         </div>
       </section>
 
-      <!-- 5. YASAL -->
-      <aside class="legal-box">
-        <strong>Yasal uyarı (SPK)</strong><br />
+      <aside class="legal reveal">
+        <strong>SPK yasal uyarı</strong> —
         Bu sitede yer alan yatırım bilgi, yorum ve tavsiyeleri yatırım danışmanlığı kapsamında değildir.
-        Aracı kurumların, yatırım danışmanlığı kuruluşlarının veya benzeri kurumların sunumu değildir.
-        Yatırım kararlarınızı kendi araştırmanıza ve risk tercihinize göre verin.
+        Aracı kurum veya yatırım danışmanlığı sunumu değildir. Kararlarınızı kendi araştırmanıza ve risk tercihinize göre verin.
         <br /><br />
-        <strong>Veri</strong> — Borsa ve üçüncü taraf kaynaklardan gelen fiyatlar gecikmeli olabilir
-        (çoğu durumda en az 15 dakika). Anlık / lisanslı gerçek zamanlı veri taahhüdü yoktur.
+        <strong>Veri</strong> —
+        Fiyatlar BIST ve üçüncü taraf kaynak kuralları gereği gecikmeli olabilir (çoğu durumda en az 15 dakika).
+        Anlık lisanslı veri taahhüdü yoktur.
         <br /><br />
-        <a href="kvkk.html">KVKK Aydınlatma</a>
-        ·
-        <a href="gizlilik.html">Gizlilik</a>
-        ·
+        <a href="kvkk.html">KVKK</a> ·
+        <a href="gizlilik.html">Gizlilik</a> ·
         <a href="about.html">Hakkımızda</a>
       </aside>
     </main>
 
     <footer>
-      Nexora AI
-      <a href="stock.html">Hisseler</a>
-      <a href="portfolio.html">Portföy</a>
-      <a href="oyun.html">Lig</a>
-      <a href="about.html">Hakkımızda</a>
+      <div class="foot-links">
+        <a href="stock.html">Hisseler</a>
+        <a href="portfolio.html">Portföy</a>
+        <a href="ultra-grafik.html">Grafik</a>
+        <a href="oyun.html">Lig</a>
+        <a href="egitim.html">Akademi</a>
+        <a href="news.html">Gündem</a>
+        <a href="premium.html">Premium</a>
+        <a href="about.html">Hakkımızda</a>
+      </div>
+      <div class="foot-copy">Nexora AI · Bilgilendirme amaçlıdır</div>
     </footer>
   </div>
 
+  <script src="assets/js/secrets.js"></script>
+  <script src="assets/js/api.js"></script>
   <script src="assets/js/store.js"></script>
   <script src="assets/js/i18n.js"></script>
+  <script>
+(function () {
+  "use strict";
+
+  /* Nav shadow */
+  var nav = document.getElementById("nav");
+  window.addEventListener("scroll", function () {
+    nav.classList.toggle("scrolled", window.scrollY > 12);
+  }, { passive: true });
+
+  /* Mobile drawer */
+  var burger = document.getElementById("burger");
+  var drawer = document.getElementById("drawer");
+  burger.addEventListener("click", function () {
+    drawer.classList.toggle("open");
+  });
+  drawer.addEventListener("click", function (e) {
+    if (e.target.tagName === "A") drawer.classList.remove("open");
+  });
+
+  /* Scroll reveal */
+  var els = document.querySelectorAll(".reveal");
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) {
+          en.target.classList.add("in");
+          io.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -24px 0px" });
+    els.forEach(function (el) { io.observe(el); });
+  } else {
+    els.forEach(function (el) { el.classList.add("in"); });
+  }
+
+  /* Network canvas */
+  var canvas = document.getElementById("fx");
+  var ctx = canvas.getContext("2d");
+  var nodes = [];
+  var W, H, raf;
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  function initNodes() {
+    var n = Math.min(48, Math.floor((W * H) / 28000));
+    nodes = [];
+    for (var i = 0; i < n; i++) {
+      nodes.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.35,
+        vy: (Math.random() - 0.5) * 0.35,
+        r: 1.2 + Math.random() * 1.4
+      });
+    }
+  }
+  function frame() {
+    ctx.clearRect(0, 0, W, H);
+    for (var i = 0; i < nodes.length; i++) {
+      var a = nodes[i];
+      a.x += a.vx; a.y += a.vy;
+      if (a.x < 0 || a.x > W) a.vx *= -1;
+      if (a.y < 0 || a.y > H) a.vy *= -1;
+      ctx.beginPath();
+      ctx.arc(a.x, a.y, a.r, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(16,185,129,0.45)";
+      ctx.fill();
+      for (var j = i + 1; j < nodes.length; j++) {
+        var b = nodes[j];
+        var dx = a.x - b.x, dy = a.y - b.y;
+        var d = Math.sqrt(dx * dx + dy * dy);
+        if (d < 140) {
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.strokeStyle = "rgba(34,211,238," + (0.12 * (1 - d / 140)) + ")";
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      }
+    }
+    raf = requestAnimationFrame(frame);
+  }
+  resize();
+  initNodes();
+  frame();
+  window.addEventListener("resize", function () {
+    resize();
+    initNodes();
+  }, { passive: true });
+
+  /* Demo quotes */
+  function setTick(id, idc, q) {
+    var el = document.getElementById(id);
+    var c = document.getElementById(idc);
+    if (!el) return;
+    if (q && q.price != null) {
+      el.textContent = Number(q.price).toLocaleString("tr-TR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+      var pct = q.pct != null ? q.pct : q.changePercent;
+      if (pct != null && c) {
+        c.textContent = (pct > 0 ? "+" : "") + Number(pct).toFixed(2) + "%";
+        c.className = "ch " + (pct > 0 ? "up" : pct < 0 ? "down" : "");
+      }
+    }
+  }
+
+  async function loadDemo() {
+    if (!window.API || !API.getLiveQuote) return;
+    try {
+      var a = await API.getLiveQuote("THYAO.IS");
+      setTick("demo1", "demo1c", a);
+    } catch (e) {}
+    try {
+      var b = await API.getLiveQuote("ASELS.IS");
+      setTick("demo2", "demo2c", b);
+    } catch (e) {}
+    try {
+      var c = await API.getLiveQuote("AAPL");
+      setTick("demo3", "demo3c", c);
+    } catch (e) {}
+  }
+  loadDemo();
+})();
+  </script>
 </body>
 </html>
