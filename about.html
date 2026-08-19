@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Hakkımızda · Nexora AI</title>
-  <meta name="description" content="Nexora AI — Ahmet Eymen Bakraç tarafından geliştirilen sade finans takip ve öğrenme platformu. Demo sürüm; duyurular X’te." />
+  <meta name="description" content="Nexora AI — Ahmet Eymen Bakraç. Demo sürüm; duyurular X’te, OTC ve psikoloji yazıları Substack’te." />
   <meta name="theme-color" content="#060a12" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
@@ -75,7 +75,7 @@
       .nav-links a.on { color: var(--text); }
     }
     .btn {
-      display: inline-flex; align-items: center; justify-content: center;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
       padding: 10px 16px; border-radius: 11px;
       font-size: 13px; font-weight: 700;
       transition: transform 0.15s, box-shadow 0.2s;
@@ -91,13 +91,20 @@
       background: rgba(15, 23, 42, 0.7);
       box-shadow: inset 0 0 0 1px var(--border);
     }
+    .btn-x {
+      background: #000;
+      color: #fff;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12);
+    }
+    .btn-sub {
+      background: linear-gradient(135deg, #ff6719, #ee6337);
+      color: #fff;
+    }
     .btn-lg { padding: 13px 20px; font-size: 14px; border-radius: 12px; }
 
     .wrap { max-width: 800px; margin: 0 auto; padding: 0 16px 56px; }
 
-    .hero {
-      padding: 40px 0 28px;
-    }
+    .hero { padding: 40px 0 24px; }
     .pill {
       display: inline-flex; align-items: center; gap: 6px;
       font-size: 12px; font-weight: 700; color: var(--cyan);
@@ -123,9 +130,8 @@
       line-height: 1.75;
     }
 
-    /* Demo notu */
     .note {
-      margin: 8px 0 36px;
+      margin: 8px 0 28px;
       padding: 16px 18px;
       border-radius: 14px;
       background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(15, 23, 42, 0.85));
@@ -144,10 +150,50 @@
       color: var(--muted);
       line-height: 1.65;
     }
-    .note a {
-      color: var(--cyan);
-      font-weight: 700;
+    .note a { color: var(--cyan); font-weight: 700; }
+
+    /* Takip kartları */
+    .follow {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 36px;
     }
+    @media (min-width: 560px) {
+      .follow { grid-template-columns: 1fr 1fr; }
+    }
+    .follow-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .follow-card:hover {
+      border-color: rgba(16, 185, 129, 0.35);
+      transform: translateY(-2px);
+    }
+    .follow-card .tag {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--dim);
+    }
+    .follow-card h3 {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .follow-card p {
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.6;
+      flex: 1;
+    }
+    .follow-card .btn { align-self: flex-start; margin-top: 4px; }
 
     section { margin-bottom: 40px; }
     section h2 {
@@ -164,7 +210,6 @@
     }
     section p:last-child { margin-bottom: 0; }
 
-    /* Kurucu kartı */
     .founder {
       display: grid;
       gap: 18px;
@@ -193,9 +238,7 @@
       box-shadow: 0 12px 32px rgba(16, 185, 129, 0.25);
       margin: 0 auto;
     }
-    @media (min-width: 560px) {
-      .avatar { margin: 0; }
-    }
+    @media (min-width: 560px) { .avatar { margin: 0; } }
     .founder h3 {
       font-size: 1.2rem;
       font-weight: 800;
@@ -283,6 +326,50 @@
       margin-bottom: 0;
     }
 
+    /* Plan özeti */
+    .plans-mini {
+      display: grid;
+      gap: 10px;
+    }
+    @media (min-width: 560px) {
+      .plans-mini { grid-template-columns: repeat(3, 1fr); }
+    }
+    .plan-mini {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+    }
+    .plan-mini.hot {
+      border-color: rgba(16, 185, 129, 0.45);
+    }
+    .plan-mini .nm {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .plan-mini .px {
+      margin-top: 6px;
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+    .plan-mini .px small {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--dim);
+    }
+    .plan-mini p {
+      margin-top: 8px;
+      font-size: 12.5px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 0;
+    }
+
     .cta-band {
       text-align: center;
       padding: 26px 18px;
@@ -300,7 +387,7 @@
     .cta-band p {
       font-size: 14px;
       color: var(--muted);
-      max-width: 42ch;
+      max-width: 44ch;
       margin: 0 auto 16px;
     }
     .cta-band .row {
@@ -331,6 +418,7 @@
       margin: 0 6px;
       font-weight: 600;
     }
+    footer a:hover { color: var(--accent); }
   </style>
 </head>
 <body>
@@ -359,25 +447,56 @@
           <span>herkese açık</span> bir piyasa köşesi.
         </h1>
         <p class="lead">
-          Nexora; kalabalık terminallerin, abartılı vaatlerin ve “kesin kazanırsın”
-          dilinin karşısına sade bir alternatif koymak için doğdu. Broker değiliz.
-          Danışman değiliz. Amacımız net: piyasayı biraz daha anlaşılır kılmak,
-          takip etmeyi kolaylaştırmak ve öğrenirken eğlenmene alan açmak.
+          Nexora; kalabalık terminallerin ve “kesin kazanırsın” dilinin karşısına
+          sade bir alternatif koymak için doğdu. Broker değiliz, danışman değiliz.
+          Amacımız net: piyasayı biraz daha anlaşılır kılmak, takip etmeyi
+          kolaylaştırmak ve öğrenirken alan açmak.
         </p>
       </header>
 
-      <!-- DEMO NOTU -->
+      <!-- DEMO -->
       <aside class="note" role="note">
         <div class="label">Önemli not · Demo sürüm</div>
         <p>
           Şu an gördüğün Nexora, <strong style="color:var(--text)">canlı demo / erken erişim</strong>
-          aşamasındadır. Özellikler, veriler ve arayüz hızla gelişiyor; bazı alanlar
-          henüz tam oturmamış veya deneysel olabilir. Resmi duyurular, güncellemeler
-          ve “tam sürüm” haberleri
-          <strong style="color:var(--text)">X (Twitter)</strong> hesabından paylaşılacak.
-          Takipte kalman yeterli — sürprizleri orada duyuracaksın.
+          aşamasındadır. Özellikler ve arayüz hızla gelişiyor; bazı alanlar deneysel
+          olabilir. Resmi duyurular, sürüm notları ve “tam sürüm” haberleri
+          <a href="https://x.com/nexora88team" target="_blank" rel="noopener noreferrer">X · @nexora88team</a>
+          hesabından paylaşılacak. Takipte kalman yeterli.
         </p>
       </aside>
+
+      <!-- X + Substack -->
+      <div class="follow">
+        <article class="follow-card">
+          <div class="tag">Şirket &amp; duyuru</div>
+          <h3>X · Nexora Team</h3>
+          <p>
+            Genel hesap: ürün güncellemeleri, site haberleri, kısa duyurular.
+            Demo’dan tam sürüme giden yol burada anlatılacak.
+          </p>
+          <a
+            class="btn btn-x"
+            href="https://x.com/nexora88team"
+            target="_blank"
+            rel="noopener noreferrer"
+          >@nexora88team →</a>
+        </article>
+        <article class="follow-card">
+          <div class="tag">Yazı &amp; psikoloji</div>
+          <h3>Substack · PennyDipHunter</h3>
+          <p>
+            OTC tarafı ve yatırım psikolojisi üzerine uzun form yazılar.
+            Nexora içinde özet araçlar; derin okuma bu kanalda.
+          </p>
+          <a
+            class="btn btn-sub"
+            href="https://substack.com/@pennydiphunter"
+            target="_blank"
+            rel="noopener noreferrer"
+          >Substack’te oku →</a>
+        </article>
+      </div>
 
       <!-- Kurucu -->
       <section>
@@ -388,16 +507,16 @@
             <h3>Ahmet Eymen Bakraç</h3>
             <div class="role">Kurucu · Geliştirici · Nexora’nın tek mimarı</div>
             <p class="bio">
-              Büyük bir ofis yok. Şık bir “ekip fotoğrafı” da yok. Nexora’nın satır satır
-              kodu, gece geç saatlerde açılan editör pencereleri ve “bunu daha sade
-              yapamaz mıyım?” diye soran bir kafa ile büyüdü. Ahmet Eymen, finansı
-              korkutucu değil <em>anlaşılır</em> hale getirmek istedi — ve bunu tek başına,
-              inatla, kullanıcıyı kandırmadan yapmayı seçti.
+              Büyük ofis yok, kalabalık ekip yok. Nexora satır satır kod, gece
+              geç saatler ve “bunu daha sade yapamaz mıyım?” diye soran bir kafa
+              ile büyüdü. Ahmet Eymen, finansı korkutucu değil
+              <em>anlaşılır</em> hale getirmek istedi — ve bunu tek başına, inatla,
+              kullanıcıyı kandırmadan yapmayı seçti.
             </p>
             <p class="bio">
-              Bu site bir kurumsal sunum değil; bir insanın “keşke böyle bir yer olsa”
-              dediği boşluğu doldurma çabası. Hatalar olabilir, demoda kenarlar keskin
-              olabilir — ama niyet net: dürüst, kullanışlı, abartısız bir araç.
+              Bu site bir kurumsal sunum değil; bir insanın “keşke böyle bir yer
+              olsa” boşluğunu doldurma çabası. Demoda kenarlar keskin olabilir —
+              niyet net: dürüst, kullanışlı, abartısız bir araç.
             </p>
           </div>
         </div>
@@ -407,12 +526,12 @@
         <h2>Neden Nexora?</h2>
         <p>
           Çünkü çoğu ekran ya çok karmaşık ya da çok satıcı. Birinde boğuluyorsun,
-          diğerinde “hemen yükselt” sesi hiç susmuyor. Nexora ikisinin ortasında
-          durmaya çalışıyor: yeterince güçlü, yeterince sakin.
+          diğerinde “hemen yükselt” hiç susmuyor. Nexora ikisinin ortasında durmaya
+          çalışıyor: yeterince güçlü, yeterince sakin.
         </p>
         <p>
-          Skorlar ve kısa AI özetleri var — ama bunlar “emir” değil, <strong style="color:var(--text)">ipucu</strong>.
-          Son karar her zaman sende. Biz sadece masayı düzenliyoruz; oyunu sen oynuyorsun.
+          Skorlar ve kısa AI özetleri var — bunlar emir değil, <strong style="color:var(--text)">ipucu</strong>.
+          Son karar her zaman sende. Biz masayı düzenliyoruz; oyunu sen oynuyorsun.
         </p>
       </section>
 
@@ -422,66 +541,89 @@
           <div class="principle">
             <div class="n">01</div>
             <h3>Netlik</h3>
-            <p>Gereksiz menü yığını yok. Kart, fiyat veya son kapanış, takip, grafik — ihtiyacın kadar.</p>
+            <p>Kart, fiyat veya son kapanış, takip, grafik — ihtiyacın kadar.</p>
           </div>
           <div class="principle">
             <div class="n">02</div>
             <h3>AI abartısız</h3>
-            <p>“Kesin uçar” vaadi yok. Kısa skor ve bağlam; abartısız, okunabilir.</p>
+            <p>“Kesin uçar” yok. Kısa skor ve bağlam; okunabilir.</p>
           </div>
           <div class="principle">
             <div class="n">03</div>
             <h3>Öğren &amp; yarış</h3>
-            <p>Akademi ve sanal lig. Gerçek para yok; merak, disiplin ve sıralama var.</p>
+            <p>Akademi ve sanal lig. Gerçek para yok; merak var.</p>
           </div>
         </div>
       </section>
 
       <section>
         <h2>Neler var?</h2>
-        <p style="margin-bottom:14px">
-          Demo olsa da iskelet dolu. Aşağıdakilerin çoğu bugün tıklanabilir:
-        </p>
+        <p style="margin-bottom:14px">Demo olsa da iskelet dolu — çoğu bugün tıklanabilir:</p>
         <div class="features">
           <div class="feat">
             <strong>Hisse kartları</strong>
-            <p>BIST, NASDAQ, NYSE — her sembol bir kez; sektör, AI skoru, takip.</p>
+            <p>BIST, NASDAQ, NYSE — her sembol bir kez; sektör, skor, takip.</p>
             <a href="stock.html">Aç →</a>
           </div>
           <div class="feat">
             <strong>Ultra grafik</strong>
-            <p>Zaman aralığı, yakınlaştırma; borsa kapalıyken son kapanış güvende.</p>
+            <p>Aralık ve yakınlaştırma; kapalı piyasada son kapanış.</p>
             <a href="ultra-grafik.html">Aç →</a>
           </div>
           <div class="feat">
             <strong>Portföy &amp; takip</strong>
-            <p>Maliyet ve adetle kâr/zarar; izlediklerin ayrı listede.</p>
+            <p>Maliyet ve adetle kâr/zarar; izlediklerin ayrı.</p>
             <a href="portfolio.html">Aç →</a>
           </div>
           <div class="feat">
             <strong>AI analiz</strong>
-            <p>Sade özet ve skor — abartısız bağlam, karar sende.</p>
+            <p>Sade özet ve skor — abartısız bağlam.</p>
             <a href="ai-analiz.html">Aç →</a>
           </div>
           <div class="feat">
             <strong>Fiyat alarmı</strong>
-            <p>Eşik koy; tarayıcı bildirimiyle hatırlatma.</p>
+            <p>Eşik koy; tarayıcı bildirimiyle hatırlat.</p>
             <a href="alarm.html">Aç →</a>
           </div>
           <div class="feat">
             <strong>Nexora Lig</strong>
-            <p>Sanal bakiye, gruplar, puan eşiği, ay turnuvası.</p>
+            <p>Sanal bakiye, gruplar, ay turnuvası.</p>
             <a href="oyun.html">Aç →</a>
           </div>
           <div class="feat">
             <strong>Akademi &amp; tahmin</strong>
-            <p>Kısa sorular ve günün tahmini — öğrenirken puan.</p>
+            <p>Kısa sorular ve günün tahmini.</p>
             <a href="egitim.html">Aç →</a>
           </div>
           <div class="feat">
-            <strong>Pusula, ısı, karşılaştır</strong>
-            <p>Grafik sevmeyenlere sade araçlar; iki hisseyi yan yana.</p>
-            <a href="radar.html">Aç →</a>
+            <strong>Makale &amp; Substack</strong>
+            <p>Site içi yazılar + OTC &amp; psikoloji için dış kanal.</p>
+            <a href="https://substack.com/@pennydiphunter" target="_blank" rel="noopener noreferrer">Substack →</a>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Planlar (kısa)</h2>
+        <p style="margin-bottom:14px">
+          Ücretsiz ile başla. Detaylı karşılaştırma
+          <a href="premium.html" style="color:var(--cyan);font-weight:700">Premium</a> sayfasında.
+        </p>
+        <div class="plans-mini">
+          <div class="plan-mini hot">
+            <div class="nm">Free</div>
+            <div class="px">$0 <small>/ ay</small></div>
+            <p>Kartlar, grafik, portföy, lig, temel AI</p>
+          </div>
+          <div class="plan-mini">
+            <div class="nm">Pro</div>
+            <div class="px">$5 <small>/ ay</small></div>
+            <p>Daha derin analiz, öncelikli güncellemeler</p>
+          </div>
+          <div class="plan-mini">
+            <div class="nm">Elite</div>
+            <div class="px">$15 <small>/ ay</small></div>
+            <p>Geniş piyasa, üst dilim araçlar, destek</p>
           </div>
         </div>
       </section>
@@ -489,9 +631,10 @@
       <section>
         <h2>Samimi bir cümle</h2>
         <p>
-          Nexora bir “dev fintech” iddiası değil. Ahmet Eymen’in, kendi ihtiyacından
+          Nexora bir “dev fintech” iddiası değil. Ahmet Eymen’in kendi ihtiyacından
           yola çıkıp başkalarının da işine yarasın diye büyüttüğü bir proje.
-          Beğenirsen kalır, eleştirirsen dinleriz, X’te yazarsan okuruz.
+          Beğenirsen kalır, eleştirirsen dinleriz —
+          <a href="https://x.com/nexora88team" target="_blank" rel="noopener noreferrer" style="color:var(--cyan);font-weight:700">X’te yazarsan okuruz</a>.
         </p>
         <p>
           Demo olduğu için sabır ve geri bildirim altın değerinde. Birlikte
@@ -503,13 +646,14 @@
       <div class="cta-band">
         <h2>Şimdi dene, sonra X’te buluşalım</h2>
         <p>
-          Kartlara bak, grafiği aç, portföyünü kur. Duyurular ve sürüm notları
-          X hesabından gelecek.
+          Kartlara bak, grafiği aç. Duyurular
+          <a href="https://x.com/nexora88team" target="_blank" rel="noopener noreferrer" style="color:var(--cyan);font-weight:700">@nexora88team</a>
+          üzerinden; derin yazılar Substack’te.
         </p>
         <div class="row">
           <a class="btn btn-primary btn-lg" href="stock.html">Hisse kartları</a>
-          <a class="btn btn-ghost btn-lg" href="register.html">Hesap oluştur</a>
-          <a class="btn btn-ghost btn-lg" href="premium.html">Planlar</a>
+          <a class="btn btn-x btn-lg" href="https://x.com/nexora88team" target="_blank" rel="noopener noreferrer">X’te takip</a>
+          <a class="btn btn-sub btn-lg" href="https://substack.com/@pennydiphunter" target="_blank" rel="noopener noreferrer">Substack</a>
         </div>
       </div>
 
@@ -521,8 +665,10 @@
         <br /><br />
         <a href="kvkk.html">KVKK</a> ·
         <a href="gizlilik.html">Gizlilik</a> ·
+        <a href="premium.html">Planlar</a> ·
         <a href="login.html">Giriş</a> ·
-        <a href="register.html">Kayıt</a>
+        <a href="https://x.com/nexora88team" target="_blank" rel="noopener noreferrer">X</a> ·
+        <a href="https://substack.com/@pennydiphunter" target="_blank" rel="noopener noreferrer">Substack</a>
       </aside>
     </main>
 
@@ -530,7 +676,8 @@
       Nexora AI · Ahmet Eymen Bakraç
       <a href="index.html">Ana</a>
       <a href="stock.html">Hisseler</a>
-      <a href="premium.html">Premium</a>
+      <a href="https://x.com/nexora88team" target="_blank" rel="noopener noreferrer">X</a>
+      <a href="https://substack.com/@pennydiphunter" target="_blank" rel="noopener noreferrer">Substack</a>
     </footer>
   </div>
 
