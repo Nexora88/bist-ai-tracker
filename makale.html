@@ -2,749 +2,607 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Makaleler · Nexora Büyük Usta Editörlük</title>
-  <meta name="description" content="Nexora onaylı analiz yazıları. Çaylak Analist’ten Büyük Usta’ya — kalite kurucu onayıyla." />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Makaleler · Nexora AI</title>
+  <meta name="description" content="Yatırım psikolojisi, risk ve sabır üzerine seçilmiş yazılar. Nexora AI." />
+  <meta name="theme-color" content="#060a12" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
   <style>
     :root {
       --bg: #060a12;
       --panel: rgba(15, 23, 42, 0.92);
-      --border: rgba(148, 163, 184, 0.12);
-      --text: #f1f5f9;
-      --muted: #94a3b8;
-      --dim: #64748b;
+      --border: rgba(148, 163, 184, 0.14);
+      --text: #f8fafc;
+      --muted: #cbd5e1;
+      --dim: #94a3b8;
       --accent: #10b981;
+      --accent2: #34d399;
       --cyan: #22d3ee;
       --violet: #a78bfa;
       --amber: #fbbf24;
       --rose: #f87171;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
     body {
       font-family: Inter, system-ui, sans-serif;
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      line-height: 1.55;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
     }
     a { color: inherit; text-decoration: none; }
-    button, input, textarea, select { font: inherit; color: inherit; border: none; background: none; }
-    button { cursor: pointer; }
+    button { font: inherit; border: none; background: none; cursor: pointer; color: inherit; }
+
+    .atmosphere {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 70% 45% at 30% -10%, rgba(16,185,129,0.14), transparent 55%),
+        radial-gradient(ellipse 50% 40% at 100% 70%, rgba(167,139,250,0.08), transparent 50%),
+        var(--bg);
+    }
+    .shell { position: relative; z-index: 1; }
 
     .nav {
       position: sticky; top: 0; z-index: 40;
-      height: 56px; display: flex; align-items: center; justify-content: space-between;
-      gap: 10px; padding: 0 16px;
-      background: rgba(6, 10, 18, 0.92);
+      height: 56px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 10px; padding: 0 14px;
+      background: rgba(6, 10, 18, 0.9);
       backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border);
     }
-    .brand { font-weight: 800; letter-spacing: -0.03em; }
+    .brand {
+      display: flex; align-items: center; gap: 9px;
+      font-weight: 800; letter-spacing: -0.03em; font-size: 15px;
+    }
+    .mark {
+      width: 30px; height: 30px; border-radius: 9px;
+      background: linear-gradient(135deg, var(--accent), var(--cyan));
+      display: grid; place-items: center;
+      color: #022c22; font-size: 12px; font-weight: 900;
+      box-shadow: 0 0 18px rgba(16, 185, 129, 0.4);
+    }
     .brand em { font-style: normal; color: var(--accent); }
-    .nav-links { display: flex; flex-wrap: wrap; gap: 2px; }
-    .nav-links a {
-      font-size: 13px; font-weight: 600; color: var(--muted);
-      padding: 7px 10px; border-radius: 9px;
+    .nav-links { display: none; gap: 2px; }
+    @media (min-width: 800px) {
+      .nav-links { display: flex; }
+      .nav-links a {
+        font-size: 13px; font-weight: 600; color: var(--dim);
+        padding: 7px 10px; border-radius: 9px;
+      }
+      .nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+      .nav-links a.on { color: var(--text); }
     }
-    .nav-links a:hover, .nav-links a.on { color: var(--text); background: rgba(255,255,255,0.05); }
-    @media (max-width: 900px) { .nav-links { display: none; } }
-
-    .wrap { max-width: 900px; margin: 0 auto; padding: 24px 16px 56px; }
-
-    .hero { margin-bottom: 22px; }
-    .badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      font-size: 12px; font-weight: 700; color: var(--violet);
-      background: rgba(167, 139, 250, 0.12);
-      border: 1px solid rgba(167, 139, 250, 0.3);
-      padding: 6px 12px; border-radius: 999px; margin-bottom: 12px;
-    }
-    h1 {
-      font-size: clamp(1.45rem, 3vw, 1.9rem);
-      font-weight: 800; letter-spacing: -0.03em; line-height: 1.2;
-      margin-bottom: 10px;
-    }
-    h1 span {
-      background: linear-gradient(90deg, var(--accent), var(--violet));
-      -webkit-background-clip: text; background-clip: text; color: transparent;
-    }
-    .lead { color: var(--muted); font-size: 15px; max-width: 620px; line-height: 1.7; }
-
-    .tabs {
-      display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 16px;
-    }
-    .tab {
-      font-size: 13px; font-weight: 700;
-      padding: 8px 14px; border-radius: 999px;
-      color: var(--muted);
-      background: rgba(30, 41, 59, 0.9);
-      box-shadow: inset 0 0 0 1px var(--border);
-    }
-    .tab.on {
-      color: #022c22;
-      background: linear-gradient(135deg, var(--accent), #059669);
-      box-shadow: none;
-    }
-
-    .panel {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 14px;
-    }
-    .panel h2 {
-      font-size: 12px; font-weight: 700; color: var(--muted);
-      text-transform: uppercase; letter-spacing: 0.04em;
-      margin-bottom: 12px;
-    }
-
-    /* ranks */
-    .ranks {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-    }
-    @media (max-width: 700px) { .ranks { grid-template-columns: 1fr; } }
-    .rank {
-      border-radius: 14px; padding: 14px;
-      background: rgba(15, 23, 42, 0.7);
-      border: 1px solid var(--border);
-    }
-    .rank .t { font-size: 11px; font-weight: 800; color: var(--dim); letter-spacing: 0.04em; text-transform: uppercase; }
-    .rank h3 { font-size: 15px; font-weight: 800; margin: 6px 0; }
-    .rank p { font-size: 12.5px; color: var(--muted); margin: 0; line-height: 1.55; }
-    .rank.master {
-      border-color: rgba(167, 139, 250, 0.4);
-      background: linear-gradient(165deg, rgba(167,139,250,0.12), rgba(15,23,42,0.9));
-    }
-
-    /* article cards */
-    .list { display: flex; flex-direction: column; gap: 12px; }
-    .article {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 16px;
-      transition: border-color 0.15s;
-    }
-    .article:hover { border-color: rgba(16, 185, 129, 0.35); }
-    .article.featured {
-      border-color: rgba(167, 139, 250, 0.45);
-      box-shadow: 0 0 0 1px rgba(167, 139, 250, 0.12);
-    }
-    .article .meta {
-      display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
-      margin-bottom: 8px; font-size: 12px; color: var(--dim);
-    }
-    .pill {
-      font-size: 11px; font-weight: 800;
-      padding: 4px 9px; border-radius: 999px;
-    }
-    .pill-edit {
-      background: rgba(167, 139, 250, 0.18); color: #c4b5fd;
-    }
-    .pill-ok {
-      background: rgba(16, 185, 129, 0.14); color: #34d399;
-    }
-    .pill-rank {
-      background: rgba(30, 41, 59, 0.95); color: var(--muted);
-      box-shadow: inset 0 0 0 1px var(--border);
-    }
-    .article h3 {
-      font-size: 1.05rem; font-weight: 800; letter-spacing: -0.02em;
-      margin-bottom: 6px;
-    }
-    .article .excerpt {
-      font-size: 13.5px; color: var(--muted); line-height: 1.65;
-      margin-bottom: 10px;
-    }
-    .article .by {
-      font-size: 12.5px; color: var(--dim);
-    }
-    .article .by strong { color: var(--text); font-weight: 700; }
-
-    .empty {
-      text-align: center; color: var(--muted);
-      padding: 36px 12px;
-      border: 1px dashed var(--border); border-radius: 14px;
-    }
-
-    /* form */
-    .field { margin-bottom: 12px; }
-    .field label {
-      display: block; font-size: 12px; font-weight: 650;
-      color: var(--dim); margin-bottom: 5px;
-    }
-    .field input, .field textarea, .field select {
-      width: 100%;
-      background: rgba(30, 41, 59, 0.9);
-      box-shadow: inset 0 0 0 1px var(--border);
-      border-radius: 11px;
-      padding: 11px 12px;
-      outline: none;
-    }
-    .field textarea { min-height: 160px; resize: vertical; line-height: 1.6; }
-    .field input:focus, .field textarea:focus {
-      box-shadow: inset 0 0 0 1px rgba(16, 185, 129, 0.45);
-    }
-
     .btn {
-      display: inline-flex; align-items: center; justify-content: center;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
       padding: 10px 16px; border-radius: 11px;
       font-size: 13px; font-weight: 700;
+      transition: transform 0.15s, box-shadow 0.2s;
     }
+    .btn:hover { transform: translateY(-1px); }
     .btn-primary {
       background: linear-gradient(135deg, var(--accent), #059669);
       color: #022c22;
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
     }
-    .btn-soft {
-      background: rgba(30, 41, 59, 0.95);
+    .btn-ghost {
       color: var(--text);
+      background: rgba(15, 23, 42, 0.7);
       box-shadow: inset 0 0 0 1px var(--border);
     }
-    .btn-violet {
-      background: linear-gradient(135deg, var(--violet), #6d28d9);
+    .btn-sub {
+      background: linear-gradient(135deg, #ff6719, #ee6337);
       color: #fff;
     }
 
-    .rules {
-      font-size: 13.5px; color: var(--muted); line-height: 1.7;
-    }
-    .rules li { margin: 0 0 8px 18px; }
-    .rules strong { color: #e2e8f0; }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 0 16px 56px; }
 
-    .toast {
-      position: fixed; left: 50%; bottom: 22px;
-      transform: translateX(-50%) translateY(16px);
-      background: #0f172a; border: 1px solid rgba(16,185,129,0.35);
-      color: #e2e8f0; padding: 12px 16px; border-radius: 12px;
-      font-size: 13.5px; font-weight: 600; z-index: 100;
-      opacity: 0; pointer-events: none; transition: 0.25s;
-      max-width: min(420px, calc(100vw - 24px)); text-align: center;
-    }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-    .toast.err { border-color: rgba(248,113,113,0.45); }
+    /* Liste görünümü */
+    #listView:not([hidden]) { display: block; }
+    #articleView:not([hidden]) { display: block; }
 
-    .legal {
-      margin-top: 18px; font-size: 12px; color: var(--dim); line-height: 1.55;
-    }
-    .legal a { color: var(--cyan); font-weight: 600; }
-
-    footer {
-      text-align: center; color: var(--dim); font-size: 12px;
-      padding: 8px 16px 36px;
-    }
-    footer a { color: var(--muted); margin: 0 5px; font-weight: 600; }
-
-    .hidden { display: none !important; }
-
-    .admin-bar {
-      display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    .hero { padding: 36px 0 20px; }
+    .pill {
+      display: inline-flex;
+      font-size: 12px; font-weight: 700; color: var(--violet);
+      background: rgba(167, 139, 250, 0.12);
+      border: 1px solid rgba(167, 139, 250, 0.28);
+      padding: 5px 12px; border-radius: 999px;
       margin-bottom: 12px;
     }
-    .admin-bar input {
-      flex: 1; min-width: 140px;
-      background: rgba(30,41,59,0.9);
-      box-shadow: inset 0 0 0 1px var(--border);
-      border-radius: 10px; padding: 9px 12px; outline: none;
+    .hero h1 {
+      font-size: clamp(1.6rem, 4vw, 2.1rem);
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      line-height: 1.2;
+    }
+    .hero h1 span {
+      background: linear-gradient(100deg, var(--accent), var(--cyan));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .hero .lead {
+      margin-top: 12px;
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 48ch;
+    }
+
+    .substack-banner {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+      gap: 12px;
+      margin: 8px 0 28px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(255,103,25,0.12), rgba(15,23,42,0.9));
+      border: 1px solid rgba(255, 103, 25, 0.28);
+    }
+    .substack-banner p {
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.55;
+      flex: 1;
+      min-width: 200px;
+    }
+    .substack-banner strong { color: var(--text); }
+
+    .cards { display: grid; gap: 14px; }
+
+    .card {
+      display: grid;
+      gap: 0;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+      text-align: left;
+      width: 100%;
+    }
+    .card:hover {
+      border-color: rgba(16, 185, 129, 0.4);
+      transform: translateY(-3px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+    }
+    .card-visual {
+      height: 140px;
+      position: relative;
+      overflow: hidden;
+    }
+    .card-visual svg {
+      width: 100%; height: 100%;
+      display: block;
+    }
+    .card-body { padding: 18px 18px 20px; }
+    .card-meta {
+      display: flex; flex-wrap: wrap; gap: 8px 12px;
+      font-size: 12px; font-weight: 600; color: var(--dim);
+      margin-bottom: 8px;
+    }
+    .card-meta .tag {
+      color: var(--accent2);
+    }
+    .card h2 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1.3;
+    }
+    .card .excerpt {
+      margin-top: 8px;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .card .read {
+      margin-top: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    /* Makale okuma */
+    .back {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; font-weight: 700; color: var(--dim);
+      margin: 24px 0 16px;
+      padding: 8px 0;
+    }
+    .back:hover { color: var(--accent); }
+
+    .article-header { margin-bottom: 24px; }
+    .article-header .meta {
+      font-size: 12.5px; font-weight: 600; color: var(--dim);
+      margin-bottom: 10px;
+    }
+    .article-header .meta span { color: var(--accent2); }
+    .article-header h1 {
+      font-family: "Instrument Serif", Georgia, serif;
+      font-size: clamp(1.75rem, 4.5vw, 2.35rem);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+    .article-header .dek {
+      margin-top: 12px;
+      font-size: 16px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .figure {
+      margin: 24px 0;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: rgba(6, 10, 18, 0.6);
+    }
+    .figure svg { width: 100%; height: auto; display: block; }
+    .figure figcaption {
+      padding: 10px 14px;
+      font-size: 12.5px;
+      color: var(--dim);
+      border-top: 1px solid var(--border);
+      line-height: 1.45;
+    }
+
+    .prose {
+      font-size: 16px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+    .prose p { margin-bottom: 1.15em; }
+    .prose h3 {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      margin: 1.6em 0 0.6em;
+    }
+    .prose strong { color: var(--text); font-weight: 700; }
+    .prose em { font-style: italic; color: #e2e8f0; }
+    .prose blockquote {
+      margin: 1.4em 0;
+      padding: 14px 18px;
+      border-left: 3px solid var(--accent);
+      background: rgba(16, 185, 129, 0.08);
+      border-radius: 0 12px 12px 0;
+      color: #e2e8f0;
+      font-family: "Instrument Serif", Georgia, serif;
+      font-size: 1.15rem;
+      line-height: 1.55;
+    }
+    .prose ul {
+      margin: 0.8em 0 1.2em 1.2em;
+    }
+    .prose li { margin-bottom: 0.4em; }
+
+    .disclaimer {
+      margin-top: 28px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid var(--border);
+      font-size: 12.5px;
+      color: var(--dim);
+      line-height: 1.6;
+    }
+
+    .end-cta {
+      margin-top: 28px;
+      padding: 20px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(34,211,238,0.06));
+      border: 1px solid rgba(16, 185, 129, 0.28);
+      text-align: center;
+    }
+    .end-cta p {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    .end-cta .row {
+      display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px 16px 40px;
+      font-size: 12px;
+      color: var(--dim);
+      border-top: 1px solid var(--border);
+    }
+    footer a {
+      color: var(--muted);
+      margin: 0 6px;
+      font-weight: 600;
     }
   </style>
 </head>
 <body>
-  <div class="toast" id="toast"></div>
+  <div class="atmosphere" aria-hidden="true"></div>
 
-  <nav class="nav">
-    <a class="brand" href="index.html">Nexora <em>AI</em></a>
-    <div class="nav-links">
+  <div class="shell">
+    <nav class="nav">
+      <a class="brand" href="index.html">
+        <span class="mark">N</span>
+        Nexora <em>AI</em>
+      </a>
+      <div class="nav-links">
+        <a href="index.html">Ana</a>
+        <a href="stock.html">Hisseler</a>
+        <a href="egitim.html">Akademi</a>
+        <a class="on" href="makale.html">Makaleler</a>
+        <a href="about.html">Hakkımızda</a>
+      </div>
+      <a class="btn btn-ghost" href="egitim.html">Akademi</a>
+    </nav>
+
+    <main class="wrap">
+      <!-- LİSTE -->
+      <div id="listView">
+        <header class="hero">
+          <div class="pill">Yazılar</div>
+          <h1>Okumaya değer <span>birkaç sayfa</span></h1>
+          <p class="lead">
+            Getiri vaadi yok; çerçeve var. Psikoloji, risk ve sabır üzerine
+            seçilmiş kısa yazılar — tıkla, oku, düşün.
+          </p>
+        </header>
+
+        <div class="substack-banner">
+          <p>
+            <strong>Daha uzun form:</strong> OTC ve yatırım psikolojisi
+            Substack kanalında.
+          </p>
+          <a
+            class="btn btn-sub"
+            href="https://substack.com/@pennydiphunter"
+            target="_blank"
+            rel="noopener noreferrer"
+          >PennyDipHunter →</a>
+        </div>
+
+        <div class="cards" id="cards"></div>
+      </div>
+
+      <!-- MAKALE -->
+      <div id="articleView" hidden>
+        <button type="button" class="back" id="btnBack">← Tüm yazılar</button>
+        <article id="articleRoot"></article>
+      </div>
+    </main>
+
+    <footer>
+      Nexora AI
       <a href="index.html">Ana</a>
       <a href="stock.html">Hisseler</a>
-      <a href="ai-analiz.html">AI</a>
-      <a class="on" href="makale.html">Makaleler</a>
-      <a href="oyun.html">Lig</a>
-      <a href="premium.html">Premium</a>
-      <a href="about.html">Hakkımızda</a>
-    </div>
-    <a class="btn btn-soft" href="about.html">Editörlük</a>
-  </nav>
-
-  <main class="wrap">
-    <header class="hero">
-      <div class="badge">Ahmet Eymen onaylı · Büyük Usta sistemi</div>
-      <h1>Kaliteli analiz.<br /><span>Manipülasyon yok.</span></h1>
-      <p class="lead">
-        Nexora’da her yazı vitrine çıkmaz. Metinler incelenir; dil, teknik derinlik ve dürüstlük
-        ölçülür. Hak eden yazarlar rozet kazanır — <strong style="color:#e2e8f0">Nexora Büyük Usta</strong>
-        unvanı yalnızca kurucu onayından sonra verilir.
-      </p>
-    </header>
-
-    <div class="tabs" id="tabs">
-      <button type="button" class="tab on" data-view="feed">Yayındakiler</button>
-      <button type="button" class="tab" data-view="write">Yazı gönder</button>
-      <button type="button" class="tab" data-view="rules">Kurallar &amp; rozetler</button>
-      <button type="button" class="tab" data-view="admin">Editör paneli</button>
-    </div>
-
-    <!-- FEED -->
-    <section id="view-feed">
-      <div class="panel">
-        <h2>Editörün seçimi</h2>
-        <div class="list" id="featuredList">
-          <div class="empty">Henüz öne çıkan yazı yok</div>
-        </div>
-      </div>
-      <div class="panel">
-        <h2>Onaylı yazılar</h2>
-        <div class="list" id="pubList">
-          <div class="empty">Yükleniyor…</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- WRITE -->
-    <section id="view-write" class="hidden">
-      <div class="panel">
-        <h2>Yazı gönder</h2>
-        <p style="font-size:13.5px;color:var(--muted);margin-bottom:14px;line-height:1.6">
-          Gönderdiğin metin <strong style="color:var(--text)">inceleme kuyruğuna</strong> düşer.
-          Yayın ve rozet kararını Ahmet Eymen verir. Spam, abartılı vaat veya yönlendirme içeren
-          metinler reddedilir.
-        </p>
-        <div class="field">
-          <label>Başlık</label>
-          <input id="wTitle" type="text" maxlength="120" placeholder="Örn: Savunma sektöründe temkinli iyimserlik" />
-        </div>
-        <div class="field">
-          <label>Yazar adı (görünen)</label>
-          <input id="wAuthor" type="text" maxlength="40" placeholder="Adın veya rumuzun" />
-        </div>
-        <div class="field">
-          <label>İlgili sembol (isteğe bağlı)</label>
-          <input id="wSymbol" type="text" maxlength="12" placeholder="ASELS, THYAO…" />
-        </div>
-        <div class="field">
-          <label>Yazı</label>
-          <textarea id="wBody" maxlength="8000" placeholder="En az 400 karakter. Veriye dayalı, sakin ve okunaklı yaz."></textarea>
-        </div>
-        <label style="display:flex;gap:8px;align-items:flex-start;font-size:12.5px;color:var(--muted);margin-bottom:14px">
-          <input id="wAgree" type="checkbox" style="margin-top:3px;width:auto" />
-          <span>Kuralları okudum. Metin yatırım tavsiyesi değildir; kişisel görüşümdür. Manipülatif dil kullanmadım.</span>
-        </label>
-        <button type="button" class="btn btn-primary" id="btnSubmit">İncelemeye gönder</button>
-      </div>
-    </section>
-
-    <!-- RULES -->
-    <section id="view-rules" class="hidden">
-      <div class="panel">
-        <h2>Rozet kademeleri</h2>
-        <div class="ranks">
-          <div class="rank">
-            <div class="t">1. Kademe</div>
-            <h3>Çaylak Analist</h3>
-            <p>İlk onaylı yazı. Temel dil ve düzen beklenir. Vitrinde “onaylı” olarak görünür.</p>
-          </div>
-          <div class="rank">
-            <div class="t">2. Kademe</div>
-            <h3>Gelişmekte Olan Yazar</h3>
-            <p>Birden fazla tutarlı, veriye yaslanan yazı. Topluluk içinde güven kazanmaya başlar.</p>
-          </div>
-          <div class="rank master">
-            <div class="t">3. Kademe</div>
-            <h3>Nexora Büyük Usta</h3>
-            <p>Kurucunun elinden unvan. Yazılar “Editörün Seçimi” olarak öne çıkar; kalite çıtasının temsilcisidir.</p>
-          </div>
-        </div>
-      </div>
-      <div class="panel">
-        <h2>Yayın kuralları</h2>
-        <ul class="rules">
-          <li><strong>Onaysız yayın yok.</strong> Her metin incelemeden geçer.</li>
-          <li><strong>Yatırım tavsiyesi dili yasak.</strong> “Garanti”, “kesin patlar”, “mutlaka al” ifadeleri reddedilir.</li>
-          <li><strong>Veri ve gerekçe.</strong> Mümkünse rakam, dönem ve mantık zinciri yazın; boş slogan istemiyoruz.</li>
-          <li><strong>Saygı.</strong> Hakaret, hedef gösterme, dedikodu ve asılsız iddia kabul edilmez.</li>
-          <li><strong>Özgünlük.</strong> Kopyala-yapıştır ve AI çöplüğü barizse elenir.</li>
-          <li><strong>Uzunluk.</strong> En az ~400 karakter; üst sınır okunabilirlik için sınırlıdır.</li>
-          <li><strong>Sembol.</strong> Belirli hisse konuşuluyorsa ilgili alanı doldurun; genel makalede boş bırakılabilir.</li>
-          <li><strong>Sorumluluk.</strong> Yazar kendi metninden sorumludur; Nexora aracı platform ve editörlük katmanıdır.</li>
-        </ul>
-      </div>
-      <div class="panel">
-        <h2>Editör neye bakar?</h2>
-        <p class="rules" style="margin:0">
-          Dil sakin mi, abartı var mı, okuyucuyu yanıltır mı, teknik derinlik var mı,
-          Nexora’nın güven çizgisini zedeler mi? Büyük Usta unvanı nadirdir;
-          amaç herkese rozet dağıtmak değil, <strong>gerçekten iyi yazıyı ödüllendirmektir.</strong>
-        </p>
-      </div>
-    </section>
-
-    <!-- ADMIN -->
-    <section id="view-admin" class="hidden">
-      <div class="panel">
-        <h2>Editör paneli</h2>
-        <p style="font-size:13px;color:var(--muted);margin-bottom:12px">
-          Yalnızca kurucu / yetkili içindir. Onaylanan yazılar vitrine düşer;
-          rozet seçimi yazarın görünür unvanını belirler.
-        </p>
-        <div class="admin-bar">
-          <input id="adminKey" type="password" placeholder="Editör erişim anahtarı" autocomplete="off" />
-          <button type="button" class="btn btn-violet" id="btnAdmin">Panele gir</button>
-          <button type="button" class="btn btn-soft hidden" id="btnAdminOut">Çık</button>
-        </div>
-        <div id="adminBody" class="hidden">
-          <h2 style="margin-top:8px">Bekleyenler</h2>
-          <div class="list" id="pendingList">
-            <div class="empty">Kuyruk boş</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <p class="legal">
-      Yazılar kişisel görüş niteliğindedir; yatırım tavsiyesi değildir.
-      · <a href="kvkk.html">KVKK</a> · <a href="gizlilik.html">Gizlilik</a> · <a href="about.html">Hakkımızda</a>
-    </p>
-  </main>
-
-  <footer>
-    Nexora AI · Büyük Usta Editörlük
-    <a href="index.html">Ana</a>
-    <a href="about.html">Hakkımızda</a>
-  </footer>
+      <a href="egitim.html">Akademi</a>
+      <a href="https://substack.com/@pennydiphunter" target="_blank" rel="noopener noreferrer">Substack</a>
+      <a href="https://x.com/nexora88team" target="_blank" rel="noopener noreferrer">X</a>
+    </footer>
+  </div>
 
   <script>
 (function () {
   "use strict";
 
-  /** Editör paneli için basit erişim — canlıda mutlaka sunucu tarafına taşıyın */
-  var EDITOR_KEY = "nexora-editor-aeb";
-  var K_PUB = "nexora_articles_pub_v1";
-  var K_PEND = "nexora_articles_pend_v1";
-
-  var RANKS = {
-    caylak: "Çaylak Analist",
-    gelisen: "Gelişmekte Olan Yazar",
-    usta: "Nexora Büyük Usta"
-  };
-
-  function toast(msg, err) {
-    var el = document.getElementById("toast");
-    el.textContent = msg;
-    el.className = "toast show" + (err ? " err" : "");
-    clearTimeout(toast._t);
-    toast._t = setTimeout(function () {
-      el.classList.remove("show");
-    }, 3000);
-  }
-
-  function load(key) {
-    try {
-      var a = JSON.parse(localStorage.getItem(key) || "[]");
-      return Array.isArray(a) ? a : [];
-    } catch (e) {
-      return [];
+  /* —— Makale verisi —— */
+  var ARTICLES = [
+    {
+      id: "sabir-grafigi",
+      tag: "Psikoloji",
+      date: "Ağustos 2026",
+      read: "6 dk",
+      title: "Sabır bir strateji midir, yoksa bahane mi?",
+      excerpt:
+        "Grafik yeşile dönünce herkes sabırlıdır. Asıl sınav, hiçbir şey olmuyormuş gibi görünen haftalarda başlar.",
+      dek: "Piyasada en pahalı hissedilen şey zaman. Ama çoğu zaman en ucuz hatalar aceleyle yapılır.",
+      visual: "wave",
+      body: [
+        { type: "p", text: "Çoğu insan “uzun vadeli yatırımcıyım” der — ta ki hesap üç hafta yatay kalana kadar. Sonra parmaklar sat butonuna uzanır. Sabır, slogan olduğunda kolay; hesap özeti sıkıcı olduğunda zordur." },
+        { type: "p", text: "Sabır bir erdem listesi maddesi değil. Bir <strong>süreç tasarımı</strong>dır: neye bakacağını, neye bakmayacağını önceden seçmek. Haber akışını kapatmak, pozisyon boyutunu küçültmek, “bu yüzden buradayım” cümlesini yazıp saklamak — bunlar romantik değil, pratiktir." },
+        { type: "h3", text: "İki tür bekleme" },
+        { type: "p", text: "Birincisi <em>umutsuz bekleme</em>: Plan yok, sadece “belki döner” umudu. İkincisi <em>planlı bekleme</em>: Neden girdiğin net, çıkış kuralın net, ekleme kuralın net. İlki bahane gibi hissettirir; ikincisi strateji gibi." },
+        { type: "quote", text: "Piyasa senin sıkılmana göre tempoyu ayarlamaz. Sen kendi tempoyu ayarlarsın." },
+        { type: "p", text: "Grafikte düz çizgi “hiçbir şey olmuyor” demek değildir. Bazen fiyat, bilgiyi sindiriyordur. Bazen sen, kendi sabrını ölçüyorsundur. İkisini ayırt etmek; yatırımcılığı kumarhaneden ayıran ince çizgidir." },
+        { type: "h3", text: "Küçük bir pratik" },
+        { type: "ul", items: [
+          "Pozisyon açmadan önce bir cümle yaz: “Bunu neden tutuyorum?”",
+          "Kontrol sıklığını sınırla (günde bir, haftada iki…).",
+          "Satış kuralını duygudan önce tanımla — sonra uymaya çalış."
+        ]},
+        { type: "p", text: "Sabır, pasiflik değildir. Aktif olarak acele etmemeyi seçmektir. Bu da bir stratejidir — yeter ki bahaneye dönüşmesin." }
+      ]
+    },
+    {
+      id: "zarar-kesmek",
+      tag: "Risk",
+      date: "Ağustos 2026",
+      read: "7 dk",
+      title: "Zarar kesmek neden bu kadar zor hissettirir?",
+      excerpt:
+        "Hesap kırmızıdayken “biraz daha bekleyeyim” cümlesi, çoğu zaman analiz değil; kimlik savunmasıdır.",
+      dek: "Kayıp, sadece paradan değil; “haklıydım” hissinden de feragat etmektir. O yüzden ağırdır.",
+      visual: "drawdown",
+      body: [
+        { type: "p", text: "Zararı kesmek, teoride basittir: Kural vardır, kural çalışır, çıkarsın. Pratikte ise beynin muhasebe defteri tutar: “Bu kadar uğraştım, şimdi mi çıkacağım?” İşte o an, risk yönetimi değil; ego yönetimi konuşuyordur." },
+        { type: "p", text: "Davranışsal finansın sık hatırlattığı bir nokta var: İnsanlar kazancı erken kilitlemeye, kaybı ise uzun süre taşımaya eğilimlidir. Kazananı satmak ödül gibi gelir; kaybedeni satmak yenilgi gibi. Oysa portföy, gurur tablosu değildir." },
+        { type: "h3", text: "Kayıp ≠ başarısızlık" },
+        { type: "p", text: "İyi bir süreç, ara sıra kayıp üretir. Kötü bir süreç bazen şanslı kazanç da üretir. Ayırt etmek için sonuca değil, <strong>karar anına</strong> bakmak gerekir: O gün elindeki bilgiyle kuralına uyduysan, sonuç kırmızı olsa bile süreç bozulmamıştır." },
+        { type: "quote", text: "Zarar kesmek, “yenildim” demek değil; “bu el bitti” demektir. Masada kalırsın." },
+        { type: "p", text: "Küçük bir çerçeve: Zarar limiti, duygusal bir ceza değil; sermayeyi sonraki fırsata taşıma aracıdır. Limit yoksa her düşüş “geçici” ilan edilir — ta ki geçici olmaktan çıkana kadar." },
+        { type: "h3", text: "Ne işe yarar?" },
+        { type: "ul", items: [
+          "Önceden yazılmış bir zarar kuralı (yüzde veya senaryo).",
+          "Pozisyon boyutunu küçültmek — karar yükünü azaltır.",
+          "“Neden hâlâ tutuyorum?” sorusunu sesli cevaplamak."
+        ]},
+        { type: "p", text: "Zor hissettirmesinin sebebi net: Kesmek, belirsizliği bitirir ve sonucu görünür kılar. Beklemek ise sonucu erteleyip hayali canlı tutar. Hayal bazen pahalıdır." }
+      ]
+    },
+    {
+      id: "cesitlendirme",
+      tag: "Portföy",
+      date: "Ağustos 2026",
+      read: "5 dk",
+      title: "Çeşitlendirme: Sıkıcı ama işe yarayan kalkan",
+      excerpt:
+        "Tek hisseye aşık olmak heyecanlıdır. Portföyün göreviyse heyecan değil; ayakta kalmaktır.",
+      dek: "Her yumurtayı aynı sepete koymamak, zeka gösterisi değil; basit bir hayatta kalma refleksidir.",
+      visual: "pie",
+      body: [
+        { type: "p", text: "Çeşitlendirme, partilerde anlatılan hikâyelerin düşmanıdır. “Tek hisseyle servet” anlatıları kulağa hoş gelir; “on hisseyle sakin bir yıl” ise nadiren viral olur. Yine de uzun vadede ayakta kalanların çoğunda sıkıcı bir ortaklık vardır: Yük tek noktaya binmez." },
+        { type: "p", text: "Çeşitlendirmek, “hiçbir şey bilmiyorum” demek değildir. “Her şeyi bilemem” demektir. Sektör, coğrafya, şirket riski — bunlar birbirinin yerine geçmez. BIST’te beş banka hissesi, çeşitlilik hissi verse de aynı makro rüzgâra açık olabilir." },
+        { type: "h3", text: "Ne kadar yeterli?" },
+        { type: "p", text: "Sihirli bir sayı yok. Ama pratik bir gözlem var: Çok az isim, tek haberle portföyü sarsar; çok fazla isim, takip edilemez hale getirir. Ortada bir yer — senin zamanına ve disiplinine göre — vardır." },
+        { type: "quote", text: "Çeşitlendirme getiri vaadi değildir. Felaket senaryosunda nefes alma alanıdır." },
+        { type: "p", text: "Nexora’da portföy ve takip listesini ayırmanın bir anlamı da budur: Bir yanda ölçtüğün maliyet ve kâr/zarar; diğer yanda izlediğin isimler. Karıştırmamak, zihinsel muhasebeyi temiz tutar." },
+        { type: "h3", text: "Küçük kontrol listesi" },
+        { type: "ul", items: [
+          "Tek isim portföyün yüzde kaçını oluşturuyor?",
+          "Aynı sektöre aşırı yığılma var mı?",
+          "Bu pozisyon olmasa da geceleri uyuyabilir miyim?"
+        ]},
+        { type: "p", text: "Sıkıcı görünmesi normal. Kalkanlar parlamaz; arkanda durur. Portföyün işi alkış toplamak değil, seni oyunda tutmaktır." }
+      ]
     }
-  }
+  ];
 
-  function save(key, arr) {
-    localStorage.setItem(key, JSON.stringify(arr));
-  }
-
-  function uid() {
-    return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
-  }
-
-  function seedIfEmpty() {
-    var pub = load(K_PUB);
-    if (pub.length) return;
-    pub = [
-      {
-        id: "seed1",
-        title: "Sakin kalmak: volatil günde kontrol listesi",
-        author: "Nexora Editör",
-        symbol: "",
-        body:
-          "Volatil seanslarda panik satışı yerine pozisyon büyüklüğü, nakit tamponu ve haber akışını ayırmak çoğu zaman daha sağlıklıdır. " +
-          "Bu yazı genel bir çerçeve sunar; tek bir hisseye al-sat çağrısı değildir. Kendi risk limitinizi yazın, " +
-          "tek bir habere tüm portföyü bağlamayın ve gecikmeli verilerle ani karar vermeyin.",
-        rank: "usta",
-        featured: true,
-        approvedAt: Date.now()
-      },
-      {
-        id: "seed2",
-        title: "Temettü sezonuna hazırlık notları",
-        author: "Örnek Yazar",
-        symbol: "",
-        body:
-          "Temettü verimini tek başına yeterli sinyal saymamak gerekir. Sürdürülebilirlik, borçluluk ve nakit yaratma gücü " +
-          "birlikte okunmalıdır. Tarihler değişebilir; resmi duyuruları esas alın. Bu metin eğitim amaçlıdır.",
-        rank: "gelisen",
-        featured: false,
-        approvedAt: Date.now() - 86400000
-      }
-    ];
-    save(K_PUB, pub);
-  }
-
-  function rankPill(rank) {
-    var label = RANKS[rank] || RANKS.caylak;
-    var extra = rank === "usta" ? " 👑" : "";
-    return '<span class="pill pill-rank">' + label + extra + "</span>";
-  }
-
-  function card(a, showAdmin) {
-    var excerpt = String(a.body || "").slice(0, 220);
-    if ((a.body || "").length > 220) excerpt += "…";
-    var feat = a.featured
-      ? '<span class="pill pill-edit">Editörün Seçimi</span>'
-      : '<span class="pill pill-ok">Onaylı</span>';
-    var sym = a.symbol
-      ? '<span class="pill pill-rank">' + String(a.symbol).toUpperCase() + "</span>"
-      : "";
-    var admin = "";
-    if (showAdmin) {
-      admin =
-        '<div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px">' +
-        '<button type="button" class="btn btn-primary" data-approve="' + a.id + '">Onayla</button>' +
-        '<button type="button" class="btn btn-soft" data-rank="' + a.id + '" data-r="caylak">Çaylak</button>' +
-        '<button type="button" class="btn btn-soft" data-rank="' + a.id + '" data-r="gelisen">Gelişen</button>' +
-        '<button type="button" class="btn btn-violet" data-rank="' + a.id + '" data-r="usta">Büyük Usta + vitrin</button>' +
-        '<button type="button" class="btn btn-soft" data-reject="' + a.id + '">Reddet</button>' +
-        "</div>";
+  /* —— SVG görseller —— */
+  function visualSvg(kind, tall) {
+    var h = tall ? 200 : 140;
+    if (kind === "wave") {
+      return (
+        '<svg viewBox="0 0 400 ' + h + '" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">' +
+        '<defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">' +
+        '<stop offset="0%" stop-color="#34d399" stop-opacity="0.35"/>' +
+        '<stop offset="100%" stop-color="#34d399" stop-opacity="0"/>' +
+        '</linearGradient></defs>' +
+        '<rect width="400" height="' + h + '" fill="#0a1220"/>' +
+        '<path d="M0,100 C60,80 80,120 140,90 C200,60 220,110 280,70 C340,30 360,90 400,50 L400,' + h + ' L0,' + h + ' Z" fill="url(#g1)"/>' +
+        '<path d="M0,100 C60,80 80,120 140,90 C200,60 220,110 280,70 C340,30 360,90 400,50" fill="none" stroke="#34d399" stroke-width="2.5"/>' +
+        '<circle cx="280" cy="70" r="4" fill="#22d3ee"/>' +
+        "</svg>"
+      );
     }
+    if (kind === "drawdown") {
+      return (
+        '<svg viewBox="0 0 400 ' + h + '" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">' +
+        '<rect width="400" height="' + h + '" fill="#0a1220"/>' +
+        '<path d="M0,40 L80,35 L140,50 L200,45 L240,90 L300,100 L360,85 L400,95" fill="none" stroke="#f87171" stroke-width="2.5"/>' +
+        '<path d="M240,90 L300,100 L360,85 L400,95 L400,' + h + ' L240,' + h + ' Z" fill="rgba(248,113,113,0.12)"/>' +
+        '<line x1="0" y1="40" x2="400" y2="40" stroke="rgba(148,163,184,0.2)" stroke-dasharray="4 4"/>' +
+        '<text x="16" y="28" fill="#94a3b8" font-size="11" font-family="Inter,sans-serif">Tepe</text>' +
+        '<text x="250" y="118" fill="#fca5a5" font-size="11" font-family="Inter,sans-serif">Geri çekilme</text>' +
+        "</svg>"
+      );
+    }
+    /* pie / diversification */
     return (
-      '<article class="article' +
-      (a.featured ? " featured" : "") +
-      '">' +
-      '<div class="meta">' +
-      feat +
-      rankPill(a.rank) +
-      sym +
-      "</div>" +
-      "<h3>" +
-      escapeHtml(a.title) +
-      "</h3>" +
-      '<div class="excerpt">' +
-      escapeHtml(excerpt) +
-      "</div>" +
-      '<div class="by">Yazar: <strong>' +
-      escapeHtml(a.author) +
-      "</strong></div>" +
-      admin +
-      "</article>"
+      '<svg viewBox="0 0 400 ' + h + '" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">' +
+      '<rect width="400" height="' + h + '" fill="#0a1220"/>' +
+      '<circle cx="200" cy="' + (h / 2) + '" r="52" fill="none" stroke="#1e293b" stroke-width="28"/>' +
+      '<circle cx="200" cy="' + (h / 2) + '" r="52" fill="none" stroke="#10b981" stroke-width="28" stroke-dasharray="80 247" stroke-linecap="butt" transform="rotate(-90 200 ' + (h / 2) + ')"/>' +
+      '<circle cx="200" cy="' + (h / 2) + '" r="52" fill="none" stroke="#22d3ee" stroke-width="28" stroke-dasharray="55 247" stroke-dashoffset="-80" stroke-linecap="butt" transform="rotate(-90 200 ' + (h / 2) + ')"/>' +
+      '<circle cx="200" cy="' + (h / 2) + '" r="52" fill="none" stroke="#a78bfa" stroke-width="28" stroke-dasharray="45 247" stroke-dashoffset="-135" stroke-linecap="butt" transform="rotate(-90 200 ' + (h / 2) + ')"/>' +
+      '<circle cx="200" cy="' + (h / 2) + '" r="52" fill="none" stroke="#fbbf24" stroke-width="28" stroke-dasharray="67 247" stroke-dashoffset="-180" stroke-linecap="butt" transform="rotate(-90 200 ' + (h / 2) + ')"/>' +
+      '<text x="200" y="' + (h / 2 + 4) + '" text-anchor="middle" fill="#e2e8f0" font-size="12" font-weight="700" font-family="Inter,sans-serif">Dağılım</text>' +
+      "</svg>"
     );
   }
 
-  function escapeHtml(s) {
-    return String(s || "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
+  function renderBody(blocks) {
+    return blocks
+      .map(function (b) {
+        if (b.type === "p") return "<p>" + b.text + "</p>";
+        if (b.type === "h3") return "<h3>" + b.text + "</h3>";
+        if (b.type === "quote") return "<blockquote>" + b.text + "</blockquote>";
+        if (b.type === "ul") {
+          return (
+            "<ul>" +
+            b.items.map(function (i) { return "<li>" + i + "</li>"; }).join("") +
+            "</ul>"
+          );
+        }
+        return "";
+      })
+      .join("");
   }
 
-  function renderFeed() {
-    var pub = load(K_PUB).slice().sort(function (a, b) {
-      return (b.approvedAt || 0) - (a.approvedAt || 0);
-    });
-    var featured = pub.filter(function (a) {
-      return a.featured;
-    });
-    var rest = pub.filter(function (a) {
-      return !a.featured;
-    });
-
-    document.getElementById("featuredList").innerHTML = featured.length
-      ? featured.map(function (a) {
-          return card(a, false);
-        }).join("")
-      : '<div class="empty">Henüz Editörün Seçimi yok</div>';
-
-    document.getElementById("pubList").innerHTML = rest.length
-      ? rest.map(function (a) {
-          return card(a, false);
-        }).join("")
-      : pub.length
-      ? '<div class="empty">Tüm onaylı yazılar yukarıda öne çıkmış olabilir</div>'
-      : '<div class="empty">Henüz onaylı yazı yok</div>';
+  function renderCards() {
+    var root = document.getElementById("cards");
+    root.innerHTML = ARTICLES.map(function (a) {
+      return (
+        '<button type="button" class="card" data-id="' + a.id + '">' +
+        '<div class="card-visual">' + visualSvg(a.visual, false) + "</div>" +
+        '<div class="card-body">' +
+        '<div class="card-meta"><span class="tag">' + a.tag + "</span><span>" + a.date + "</span><span>" + a.read + " okuma</span></div>" +
+        "<h2>" + a.title + "</h2>" +
+        '<p class="excerpt">' + a.excerpt + "</p>" +
+        '<div class="read">Oku →</div>' +
+        "</div></button>"
+      );
+    }).join("");
   }
 
-  function renderPending() {
-    var pend = load(K_PEND);
-    document.getElementById("pendingList").innerHTML = pend.length
-      ? pend
-          .map(function (a) {
-            return card(a, true);
-          })
-          .join("")
-      : '<div class="empty">Kuyruk boş</div>';
+  function openArticle(id) {
+    var a = ARTICLES.filter(function (x) { return x.id === id; })[0];
+    if (!a) return;
+
+    var root = document.getElementById("articleRoot");
+    root.innerHTML =
+      '<header class="article-header">' +
+      '<div class="meta"><span>' + a.tag + "</span> · " + a.date + " · " + a.read + " okuma</div>" +
+      "<h1>" + a.title + "</h1>" +
+      '<p class="dek">' + a.dek + "</p>" +
+      "</header>" +
+      '<figure class="figure">' +
+      visualSvg(a.visual, true) +
+      "<figcaption>Görsel temsilidir; yatırım tavsiyesi veya gerçek zamanlı veri değildir.</figcaption>" +
+      "</figure>" +
+      '<div class="prose">' + renderBody(a.body) + "</div>" +
+      '<div class="disclaimer">Bu yazı bilgilendirme ve genel eğitim amaçlıdır; yatırım tavsiyesi değildir. Kararlar size aittir.</div>' +
+      '<div class="end-cta">' +
+      "<p>Daha uzun OTC ve psikoloji yazıları Substack’te. Site duyuruları X’te.</p>" +
+      '<div class="row">' +
+      '<a class="btn btn-sub" href="https://substack.com/@pennydiphunter" target="_blank" rel="noopener noreferrer">Substack</a>' +
+      '<a class="btn btn-ghost" href="https://x.com/nexora88team" target="_blank" rel="noopener noreferrer">X · @nexora88team</a>' +
+      '<a class="btn btn-primary" href="egitim.html">Akademi</a>' +
+      "</div></div>";
+
+    document.getElementById("listView").hidden = true;
+    document.getElementById("articleView").hidden = false;
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    try {
+      history.replaceState(null, "", "makale.html#" + id);
+    } catch (e) {}
   }
 
-  /* tabs */
-  document.getElementById("tabs").addEventListener("click", function (e) {
-    var t = e.target.closest("[data-view]");
-    if (!t) return;
-    var v = t.getAttribute("data-view");
-    document.querySelectorAll("#tabs .tab").forEach(function (x) {
-      x.classList.toggle("on", x === t);
-    });
-    ["feed", "write", "rules", "admin"].forEach(function (name) {
-      document.getElementById("view-" + name).classList.toggle("hidden", name !== v);
-    });
-    if (v === "feed") renderFeed();
-    if (v === "admin" && sessionStorage.getItem("nexora_editor") === "1") {
-      renderPending();
-    }
+  function showList() {
+    document.getElementById("listView").hidden = false;
+    document.getElementById("articleView").hidden = true;
+    try {
+      history.replaceState(null, "", "makale.html");
+    } catch (e) {}
+  }
+
+  document.getElementById("cards").addEventListener("click", function (e) {
+    var card = e.target.closest("[data-id]");
+    if (!card) return;
+    openArticle(card.getAttribute("data-id"));
   });
 
-  /* submit */
-  document.getElementById("btnSubmit").addEventListener("click", function () {
-    var title = document.getElementById("wTitle").value.trim();
-    var author = document.getElementById("wAuthor").value.trim();
-    var symbol = document.getElementById("wSymbol").value.trim().toUpperCase();
-    var body = document.getElementById("wBody").value.trim();
-    var agree = document.getElementById("wAgree").checked;
+  document.getElementById("btnBack").addEventListener("click", showList);
 
-    if (!title || title.length < 8) {
-      toast("Başlık en az 8 karakter olmalı.", true);
-      return;
-    }
-    if (!author || author.length < 2) {
-      toast("Yazar adı gerekli.", true);
-      return;
-    }
-    if (body.length < 400) {
-      toast("Yazı çok kısa. En az 400 karakter yaz.", true);
-      return;
-    }
-    if (!agree) {
-      toast("Kuralları kabul etmelisin.", true);
-      return;
-    }
+  renderCards();
 
-    var pend = load(K_PEND);
-    pend.unshift({
-      id: uid(),
-      title: title,
-      author: author,
-      symbol: symbol,
-      body: body,
-      rank: "caylak",
-      featured: false,
-      submittedAt: Date.now()
-    });
-    save(K_PEND, pend);
-
-    document.getElementById("wTitle").value = "";
-    document.getElementById("wBody").value = "";
-    document.getElementById("wSymbol").value = "";
-    document.getElementById("wAgree").checked = false;
-    toast("Yazın incelemeye alındı. Onay sonrası vitrinde görünür.");
-  });
-
-  /* admin */
-  document.getElementById("btnAdmin").addEventListener("click", function () {
-    var k = document.getElementById("adminKey").value;
-    if (k !== EDITOR_KEY) {
-      toast("Erişim reddedildi.", true);
-      return;
-    }
-    sessionStorage.setItem("nexora_editor", "1");
-    document.getElementById("adminBody").classList.remove("hidden");
-    document.getElementById("btnAdminOut").classList.remove("hidden");
-    document.getElementById("adminKey").value = "";
-    renderPending();
-    toast("Editör paneli açık.");
-  });
-
-  document.getElementById("btnAdminOut").addEventListener("click", function () {
-    sessionStorage.removeItem("nexora_editor");
-    document.getElementById("adminBody").classList.add("hidden");
-    this.classList.add("hidden");
-    toast("Panel kapatıldı.");
-  });
-
-  document.getElementById("pendingList").addEventListener("click", function (e) {
-    var id;
-    var pend = load(K_PEND);
-    var pub = load(K_PUB);
-
-    var rej = e.target.closest("[data-reject]");
-    if (rej) {
-      id = rej.getAttribute("data-reject");
-      save(
-        K_PEND,
-        pend.filter(function (x) {
-          return x.id !== id;
-        })
-      );
-      renderPending();
-      toast("Yazı reddedildi / kuyruktan silindi.");
-      return;
-    }
-
-    var rankBtn = e.target.closest("[data-rank]");
-    if (rankBtn) {
-      id = rankBtn.getAttribute("data-rank");
-      var r = rankBtn.getAttribute("data-r");
-      var item = pend.find(function (x) {
-        return x.id === id;
-      });
-      if (!item) return;
-      item.rank = r;
-      item.featured = r === "usta";
-      item.approvedAt = Date.now();
-      pub.unshift(item);
-      save(K_PUB, pub);
-      save(
-        K_PEND,
-        pend.filter(function (x) {
-          return x.id !== id;
-        })
-      );
-      renderPending();
-      renderFeed();
-      toast(
-        r === "usta"
-          ? "Büyük Usta + Editörün Seçimi olarak yayınlandı."
-          : "Onaylandı: " + (RANKS[r] || "")
-      );
-      return;
-    }
-
-    var ap = e.target.closest("[data-approve]");
-    if (ap) {
-      id = ap.getAttribute("data-approve");
-      var it = pend.find(function (x) {
-        return x.id === id;
-      });
-      if (!it) return;
-      it.rank = it.rank || "caylak";
-      it.featured = false;
-      it.approvedAt = Date.now();
-      pub.unshift(it);
-      save(K_PUB, pub);
-      save(
-        K_PEND,
-        pend.filter(function (x) {
-          return x.id !== id;
-        })
-      );
-      renderPending();
-      renderFeed();
-      toast("Yazı onaylandı.");
-    }
-  });
-
-  seedIfEmpty();
-  renderFeed();
-  if (sessionStorage.getItem("nexora_editor") === "1") {
-    document.getElementById("adminBody").classList.remove("hidden");
-    document.getElementById("btnAdminOut").classList.remove("hidden");
+  var hash = (location.hash || "").replace(/^#/, "");
+  if (hash && ARTICLES.some(function (a) { return a.id === hash; })) {
+    openArticle(hash);
   }
 })();
   </script>
