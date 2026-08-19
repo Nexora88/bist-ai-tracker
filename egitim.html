@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Akademi · Nexora AI</title>
-  <meta name="description" content="Nexora Akademi — kısa dersler ve mini testler. Öğren, pekiştir; sanal lig bakiyene katkı." />
+  <meta name="description" content="Nexora Akademi — seviyeli dersler, mini testler ve sanal ödül. Finansı sade ve öğretici öğren." />
   <meta name="theme-color" content="#060a12" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
@@ -39,7 +39,7 @@
       position: fixed; inset: 0; z-index: 0; pointer-events: none;
       background:
         radial-gradient(ellipse 70% 45% at 15% -10%, rgba(16,185,129,0.16), transparent 55%),
-        radial-gradient(ellipse 50% 40% at 95% 80%, rgba(34,211,238,0.1), transparent 50%),
+        radial-gradient(ellipse 50% 40% at 100% 70%, rgba(34,211,238,0.1), transparent 50%),
         var(--bg);
     }
     .shell { position: relative; z-index: 1; }
@@ -97,151 +97,275 @@
       background: linear-gradient(135deg, #ff6719, #ee6337);
       color: #fff;
     }
-    .btn-block { width: 100%; }
     .btn-lg { padding: 13px 18px; font-size: 14px; border-radius: 12px; }
 
     .wrap { max-width: 720px; margin: 0 auto; padding: 0 16px 56px; }
 
-    .hero { padding: 36px 0 20px; }
+    /* Hero */
+    .hero { padding: 32px 0 8px; }
     .pill {
-      display: inline-flex; align-items: center; gap: 6px;
+      display: inline-flex; align-items: center; gap: 8px;
       font-size: 12px; font-weight: 700; color: var(--cyan);
       background: rgba(34, 211, 238, 0.1);
       border: 1px solid rgba(34, 211, 238, 0.28);
-      padding: 5px 12px; border-radius: 999px;
+      padding: 6px 13px; border-radius: 999px;
       margin-bottom: 14px;
     }
     .hero h1 {
-      font-size: clamp(1.7rem, 4vw, 2.2rem);
+      font-size: clamp(1.75rem, 4.5vw, 2.35rem);
       font-weight: 800;
-      letter-spacing: -0.035em;
-      line-height: 1.15;
+      letter-spacing: -0.04em;
+      line-height: 1.12;
     }
     .hero h1 span {
       background: linear-gradient(100deg, var(--accent), var(--cyan));
       -webkit-background-clip: text; background-clip: text; color: transparent;
     }
     .hero .lead {
-      margin-top: 12px;
-      font-size: 15px;
+      margin-top: 14px;
+      font-size: 15.5px;
       color: var(--muted);
-      line-height: 1.7;
-      max-width: 48ch;
+      line-height: 1.75;
+      max-width: 52ch;
     }
 
-    .progress-bar {
-      margin: 20px 0 8px;
-      height: 8px;
+    /* Stats */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 24px 0 28px;
+    }
+    .stat {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 10px;
+      text-align: center;
+    }
+    .stat .n {
+      font-size: 1.45rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #ecfdf5;
+    }
+    .stat .n.amber { color: var(--amber); }
+    .stat .n.cyan { color: var(--cyan); }
+    .stat .l {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--dim);
+      margin-top: 4px;
+    }
+
+    .progress-wrap {
+      margin-bottom: 28px;
+    }
+    .progress-wrap .labels {
+      display: flex; justify-content: space-between;
+      font-size: 12.5px; font-weight: 600; color: var(--dim);
+      margin-bottom: 8px;
+    }
+    .progress-wrap .labels strong { color: var(--accent2); }
+    .bar {
+      height: 10px;
       border-radius: 99px;
       background: rgba(148, 163, 184, 0.12);
       overflow: hidden;
     }
-    .progress-bar i {
-      display: block;
-      height: 100%;
+    .bar i {
+      display: block; height: 100%;
       border-radius: 99px;
       background: linear-gradient(90deg, var(--accent), var(--cyan));
       width: 0%;
-      transition: width 0.4s ease;
+      transition: width 0.45s ease;
     }
-    .progress-meta {
-      display: flex; justify-content: space-between;
-      font-size: 12.5px; font-weight: 600; color: var(--dim);
-      margin-bottom: 24px;
-    }
-    .progress-meta strong { color: var(--accent2); }
 
-    .modules { display: grid; gap: 12px; }
-
-    .mod {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 18px 16px;
-      transition: border-color 0.2s, transform 0.2s;
+    section { margin-bottom: 32px; }
+    .sec-h {
+      margin-bottom: 14px;
     }
-    .mod:hover {
-      border-color: rgba(16, 185, 129, 0.35);
-    }
-    .mod.done {
-      border-color: rgba(16, 185, 129, 0.4);
-      background: linear-gradient(160deg, rgba(16,185,129,0.08), rgba(15,23,42,0.92));
-    }
-    .mod-top {
-      display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
-    }
-    .mod .lvl {
-      font-size: 11px; font-weight: 800;
-      color: var(--accent);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      margin-bottom: 4px;
-    }
-    .mod h2 {
-      font-size: 1.05rem;
+    .sec-h h2 {
+      font-size: 1.15rem;
       font-weight: 800;
       letter-spacing: -0.02em;
     }
-    .mod .desc {
-      margin-top: 6px;
-      font-size: 13.5px;
+    .sec-h p {
+      font-size: 14px;
       color: var(--muted);
-      line-height: 1.55;
+      margin-top: 6px;
+      line-height: 1.6;
+    }
+
+    /* Modül kartları */
+    .mod {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 0;
+      margin-bottom: 12px;
+      overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .mod:hover {
+      border-color: rgba(16, 185, 129, 0.35);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+    }
+    .mod.done {
+      border-color: rgba(16, 185, 129, 0.4);
+    }
+    .mod-head {
+      padding: 18px 16px 14px;
+      border-left: 3px solid var(--accent);
+    }
+    .mod.done .mod-head { border-left-color: var(--accent2); }
+    .mod-head .row {
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;
+    }
+    .mod .lvl {
+      font-size: 11px; font-weight: 800;
+      color: var(--cyan);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .mod h3 {
+      font-size: 1.08rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-top: 4px;
     }
     .mod .reward {
-      flex-shrink: 0;
-      font-size: 12px;
-      font-weight: 800;
+      font-size: 12px; font-weight: 800;
       color: var(--amber);
       background: rgba(251, 191, 36, 0.1);
-      border: 1px solid rgba(251, 191, 36, 0.25);
+      border: 1px solid rgba(251, 191, 36, 0.28);
       padding: 6px 10px;
       border-radius: 999px;
       white-space: nowrap;
     }
-    .mod .actions {
-      margin-top: 14px;
-      display: flex; flex-wrap: wrap; gap: 8px;
-    }
-    .mod .status {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--accent2);
+    .mod .body-text {
       margin-top: 10px;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+    .mod .topics {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      margin-top: 12px;
+    }
+    .mod .topics span {
+      font-size: 11.5px; font-weight: 700;
+      color: var(--dim);
+      background: rgba(6, 10, 18, 0.55);
+      box-shadow: inset 0 0 0 1px var(--border);
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+    .mod-foot {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+      padding: 12px 16px 16px;
+      border-top: 1px solid rgba(148,163,184,0.08);
+    }
+    .mod-foot .meta {
+      font-size: 12.5px;
+      color: var(--dim);
+      font-weight: 600;
+      flex: 1;
+    }
+    .mod-foot .meta .ok { color: var(--accent2); }
+
+    /* Nasıl çalışır */
+    .how {
+      display: grid;
+      gap: 10px;
+    }
+    @media (min-width: 560px) {
+      .how { grid-template-columns: 1fr 1fr; }
+    }
+    .how-item {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .how-item .n {
+      font-size: 11px; font-weight: 800;
+      color: var(--accent);
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+    .how-item h4 {
+      font-size: 14.5px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .how-item p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
     }
 
-    /* Quiz overlay */
-    .quiz-wrap {
-      display: none;
-      margin-top: 8px;
+    /* Quiz */
+    #homeView:not([hidden]) { display: block; }
+    #quizView:not([hidden]) { display: block; }
+
+    .back {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; font-weight: 700; color: var(--dim);
+      margin: 20px 0 14px;
+      padding: 6px 0;
     }
-    .quiz-wrap.open { display: block; }
+    .back:hover { color: var(--accent); }
+
+    .lesson {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px 16px;
+      margin-bottom: 16px;
+    }
+    .lesson h3 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      letter-spacing: -0.02em;
+    }
+    .lesson p {
+      font-size: 14.5px;
+      color: var(--muted);
+      line-height: 1.75;
+      margin-bottom: 10px;
+    }
+    .lesson p:last-child { margin-bottom: 0; }
+    .lesson ul {
+      margin: 8px 0 0 1.15em;
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .lesson li { margin-bottom: 6px; line-height: 1.55; }
 
     .quiz {
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 18px;
-      padding: 22px 18px;
-      margin-bottom: 20px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      padding: 20px 16px;
+      margin-bottom: 16px;
     }
     .quiz .q-meta {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--dim);
+      font-size: 12px; font-weight: 700; color: var(--dim);
       margin-bottom: 10px;
     }
     .quiz h3 {
-      font-size: 1.1rem;
+      font-size: 1.08rem;
       font-weight: 800;
-      letter-spacing: -0.02em;
-      line-height: 1.35;
+      line-height: 1.4;
       margin-bottom: 16px;
+      letter-spacing: -0.02em;
     }
     .opts { display: grid; gap: 8px; }
     .opt {
       text-align: left;
-      padding: 14px 14px;
+      padding: 14px;
       border-radius: 12px;
       background: rgba(6, 10, 18, 0.55);
       box-shadow: inset 0 0 0 1px var(--border);
@@ -271,7 +395,7 @@
       border-radius: 12px;
       font-size: 13.5px;
       font-weight: 600;
-      line-height: 1.5;
+      line-height: 1.55;
       display: none;
     }
     .feedback.show { display: block; }
@@ -283,10 +407,7 @@
       background: rgba(248, 113, 113, 0.1);
       color: #fecaca;
     }
-    .quiz-nav {
-      margin-top: 16px;
-      display: flex; gap: 8px; flex-wrap: wrap;
-    }
+    .quiz-nav { margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap; }
 
     .result-card {
       text-align: center;
@@ -294,7 +415,6 @@
       border-radius: 18px;
       background: linear-gradient(160deg, rgba(16,185,129,0.14), rgba(15,23,42,0.95));
       border: 1px solid rgba(16, 185, 129, 0.35);
-      margin-bottom: 20px;
     }
     .result-card h3 {
       font-size: 1.25rem;
@@ -302,9 +422,9 @@
       margin-bottom: 8px;
     }
     .result-card p {
-      font-size: 14px;
+      font-size: 14.5px;
       color: var(--muted);
-      line-height: 1.6;
+      line-height: 1.65;
     }
     .result-card .coins {
       margin: 14px 0;
@@ -314,7 +434,7 @@
     }
 
     .deep {
-      margin-top: 28px;
+      margin-top: 8px;
       padding: 18px 16px;
       border-radius: 16px;
       background: var(--panel);
@@ -336,10 +456,10 @@
     }
 
     .legal {
-      margin-top: 28px;
-      font-size: 12px;
+      margin-top: 24px;
+      font-size: 12.5px;
       color: var(--dim);
-      line-height: 1.6;
+      line-height: 1.65;
     }
 
     footer {
@@ -354,9 +474,6 @@
       margin: 0 6px;
       font-weight: 600;
     }
-
-    #homeView:not([hidden]) { display: block; }
-    #quizView:not([hidden]) { display: block; }
   </style>
 </head>
 <body>
@@ -375,52 +492,103 @@
         <a href="makale.html">Makaleler</a>
         <a href="oyun.html">Lig</a>
       </div>
-      <a class="btn btn-ghost" href="oyun.html">Lig</a>
+      <a class="btn btn-ghost" href="stock.html">Hisseler</a>
     </nav>
 
     <main class="wrap">
-      <!-- ANA -->
       <div id="homeView">
         <header class="hero">
-          <div class="pill">Nexora Akademi</div>
-          <h1>Kısa dersler.<br /><span>Kalıcı alışkanlık.</span></h1>
+          <div class="pill">📚 Öğren · pekiştir · uygula</div>
+          <h1>Nexora <span>Akademi</span></h1>
           <p class="lead">
-            Duolingo tempo, finans dili. Mini testleri bitir; doğru cevaplar
-            sanal lig bakiyene küçük bir katkı bırakır. Getiri vaadi yok —
-            netlik vaadi var.
+            Borsa jargonu korkutmasın diye tasarlandı. Her modülde önce kısa bir
+            anlatım, ardından mini test var. Doğru cevaplar sanal lig bakiyene
+            küçük bir katkı bırakır — gerçek para değil; öğrenme alışkanlığı için.
           </p>
         </header>
 
-        <div class="progress-bar" aria-hidden="true"><i id="progFill"></i></div>
-        <div class="progress-meta">
-          <span>İlerleme: <strong id="progText">0 / 3 modül</strong></span>
-          <span id="coinText">+0 ₺ sanal</span>
+        <div class="stats">
+          <div class="stat">
+            <div class="n" id="statMods">3</div>
+            <div class="l">Modül</div>
+          </div>
+          <div class="stat">
+            <div class="n cyan" id="statQ">9</div>
+            <div class="l">Soru</div>
+          </div>
+          <div class="stat">
+            <div class="n amber" id="statCoin">+0 ₺</div>
+            <div class="l">Sanal ödül</div>
+          </div>
         </div>
 
-        <div class="modules" id="modules"></div>
+        <div class="progress-wrap">
+          <div class="labels">
+            <span>İlerleme: <strong id="progText">0 / 3 tamamlandı</strong></span>
+            <span id="progPct">0%</span>
+          </div>
+          <div class="bar"><i id="progFill"></i></div>
+        </div>
+
+        <section>
+          <div class="sec-h">
+            <h2>Nasıl çalışır?</h2>
+            <p>Akademi “oku-geç” değil; anlat → sor → pekiştir döngüsüdür.</p>
+          </div>
+          <div class="how">
+            <div class="how-item">
+              <div class="n">01</div>
+              <h4>Kısa ders</h4>
+              <p>Modülü açınca önce sade bir anlatım görürsün. Jargon varsa hemen altında günlük dille açılır.</p>
+            </div>
+            <div class="how-item">
+              <div class="n">02</div>
+              <h4>Mini test</h4>
+              <p>3 soruluk kontrol. Yanlışta utanma yok: doğru şık ve kısa açıklama hemen çıkar.</p>
+            </div>
+            <div class="how-item">
+              <div class="n">03</div>
+              <h4>Sanal ödül</h4>
+              <p>Modülü ilk kez başarıyla bitirirsen +500 ₺ sanal bakiye (lig / oyun). Gerçek para değildir.</p>
+            </div>
+            <div class="how-item">
+              <div class="n">04</div>
+              <h4>Sonra ne?</h4>
+              <p>Makalelerde derinleş, grafikte dene, ligde pratik yap. Akademi kapı; yol sende.</p>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <div class="sec-h">
+            <h2>Modüller</h2>
+            <p>Sırayla gitmen şart değil; ama temelden başlaman önerilir.</p>
+          </div>
+          <div id="modules"></div>
+        </section>
 
         <aside class="deep">
-          <h3>Daha derin okuma</h3>
+          <h3>Daha uzun okuma</h3>
           <p>
-            Akademi kısa tutar. OTC ve yatırım psikolojisi için uzun form yazılar
-            Substack’te; site duyuruları X’te.
+            Akademi bilerek kısa tutar. OTC, psikoloji ve uzun form için Substack;
+            site duyuruları için X; seçilmiş yazılar için Makaleler sayfası.
           </p>
           <div class="row">
             <a class="btn btn-sub" href="https://substack.com/@pennydiphunter" target="_blank" rel="noopener noreferrer">Substack</a>
             <a class="btn btn-ghost" href="makale.html">Makaleler</a>
             <a class="btn btn-ghost" href="https://x.com/nexora88team" target="_blank" rel="noopener noreferrer">X</a>
+            <a class="btn btn-ghost" href="oyun.html">Sanal lig</a>
           </div>
         </aside>
 
         <p class="legal">
-          Eğitim içerikleri genel bilgilendirmedir; yatırım tavsiyesi değildir.
-          Sanal ödüller yalnızca oyun / lig bakiyesi içindir, gerçek para değildir.
+          İçerikler genel eğitim ve bilgilendirme amaçlıdır; yatırım tavsiyesi değildir.
+          Sanal ödüller yalnızca oyun / lig bakiyesi içindir. Kararlar size aittir.
         </p>
       </div>
 
-      <!-- QUIZ -->
       <div id="quizView" hidden>
-        <button type="button" class="btn btn-ghost" id="btnBack" style="margin:20px 0 12px">← Modüllere dön</button>
+        <button type="button" class="back" id="btnBack">← Akademiye dön</button>
         <div id="quizRoot"></div>
       </div>
     </main>
@@ -443,128 +611,176 @@
 
   var MODULES = [
     {
-      id: "temel-1",
-      level: "Seviye 1",
-      title: "F/K oranı nedir?",
-      desc: "Fiyatın kazanca oranını sade dille öğren. Bir hisseyi “ucuz / pahalı” diye etiketlemeden önce bu çerçeveye bak.",
+      id: "fk-orani",
+      level: "Seviye 1 · Temel",
+      title: "F/K oranı: ucuz mu, pahalı mı?",
+      summary:
+        "Fiyat/kazanç oranını abartmadan okumayı öğren. Tek başına al-sat sinyali değildir; sektöre ve büyüme hikâyesine göre anlam kazanır.",
+      topics: ["F/K", "EPS", "Karşılaştırma", "Bağlam"],
+      questionsCount: 3,
       reward: 500,
+      lesson: {
+        title: "Ders notu",
+        paragraphs: [
+          "F/K (fiyat / kazanç), yatırımcıların şirketin bir birim kârı için fiyatta kabaca ne kadar ödediğini gösteren bir orandır. Payda genelde pay başına kazanç (EPS) veya dönem net kârı yer alır.",
+          "Yüksek F/K “kötü”, düşük F/K “iyi” diye ezberlenmez. Büyüme beklenen şirketlerde oran yüksek görülebilir; olgun ve yavaş büyüyen işlerde daha düşük ortalamalar yaygındır. Asıl iş, aynı sektördeki benzer şirketlerle ve şirketin kendi geçmişiyle karşılaştırmaktır.",
+          "F/K tek başına yatırım kararı değildir. Borç, nakit akışı, yönetim kalitesi ve iş modeli olmadan sadece orana bakmak eksik kalır."
+        ],
+        bullets: [
+          "F/K = Fiyat ÷ kazanç (çoğu zaman pay başına)",
+          "Sektör ortalaması ve büyüme temposuyla birlikte oku",
+          "“Ucuz” görünen oran bazen düşen kârı yansıtıyor olabilir"
+        ]
+      },
       questions: [
         {
-          q: "F/K (fiyat / kazanç) oranı kabaca neyi gösterir?",
+          q: "F/K oranı kabaca neyi anlatır?",
           options: [
-            "Şirketin borç tutarını",
-            "Yatırımcıların, bir birim kazanç için fiyatta ne kadar ödediğini",
-            "Günlük işlem hacmini",
-            "Temettü verimini"
+            "Şirketin toplam borcunu",
+            "Bir birim kazanç için fiyatta yaklaşık ne kadar ödendiğini",
+            "Gün içi en yüksek işlem hacmini",
+            "Yıllık temettü tutarını"
           ],
           answer: 1,
-          explain: "F/K, fiyatın pay başına kâra bölünmesidir. Yüksek veya düşük tek başına “al / sat” demez; sektöre ve büyümeye göre okunur."
+          explain: "F/K, fiyatın kazanca oranıdır. Borç, hacim veya temettü ayrı göstergelerdir."
         },
         {
-          q: "Çok yüksek F/K her zaman “kötü hisse” midir?",
+          q: "Çok yüksek F/K her zaman “pahalı ve kötü” müdür?",
           options: [
-            "Evet, her zaman pahalıdır",
-            "Hayır; büyüme beklentisi veya sektör ortalaması bağlamı gerekir",
-            "Sadece bankalarda geçerlidir",
-            "Sadece BIST’te kullanılır"
+            "Evet; yüksek F/K her zaman sat sinyali demektir",
+            "Hayır; büyüme beklentisi ve sektör bağlamı olmadan yargılanmaz",
+            "Sadece banka hisselerinde geçerlidir",
+            "Sadece ABD borsasında kullanılır"
           ],
           answer: 1,
-          explain: "Büyüme şirketlerinde yüksek F/K görülebilir. Bağlam olmadan etiketlemek yanıltıcıdır."
+          explain: "Yüksek F/K büyüme beklentisini de yansıtır. Bağlam olmadan etiketlemek yanıltıcıdır."
         },
         {
-          q: "F/K hesaplanırken paydada genelde ne kullanılır?",
+          q: "F/K’yı daha sağlıklı okumak için ne işe yarar?",
           options: [
-            "Toplam ciro",
-            "Pay başına kazanç (EPS) veya dönem kârı",
-            "Nakit bakiyesi",
-            "Çalışan sayısı"
+            "Sadece bir günlük grafik rengine bakmak",
+            "Aynı sektördeki benzer şirketler ve şirketin kendi geçmişi ile karşılaştırmak",
+            "Sadece sosyal medya yorumlarını okumak",
+            "Kaldıraç oranını artırmak"
           ],
           answer: 1,
-          explain: "Klasik F/K’da payda kazançtır (çoğu zaman pay başına kazanç)."
+          explain: "Karşılaştırma (sektör + tarih) F/K’ya anlam katar. Tek başına sayı yetmez."
         }
       ]
     },
     {
-      id: "temel-2",
-      level: "Seviye 2",
-      title: "Risk ve pozisyon boyutu",
-      desc: "Tek işlemde ne kadar riske gireceğini bilmek, hangi hisseyi seçtiğinden sıkça daha önemlidir.",
+      id: "risk-boyut",
+      level: "Seviye 2 · Risk",
+      title: "Risk, zarar kes ve pozisyon boyutu",
+      summary:
+        "Hangi hisseyi seçtiğinden önce, tek işlemde ne kadar kaybetmeyi göze aldığın gelir. Bu modül sermayeyi ayakta tutma dilini öğretir.",
+      topics: ["Pozisyon", "Zarar kes", "Sermaye", "Disiplin"],
+      questionsCount: 3,
       reward: 500,
+      lesson: {
+        title: "Ders notu",
+        paragraphs: [
+          "Pozisyon boyutu büyüdükçe hem potansiyel kâr hem potansiyel zarar büyür. “Çok eminım” hissi çoğu zaman boyutu şişirir; oysa emin olmak, risk limitini iptal etmez.",
+          "Zarar kes kuralı bir ceza değil, sermayeyi sonraki fırsata taşıma aracıdır. Kural yoksa her düşüş “geçici” ilan edilir — ta ki geçici olmaktan çıkana kadar.",
+          "İyi bir süreç ara sıra kayıp üretir. Kötü bir süreç bazen şanslı kazanç da üretebilir. Ayırt etmek için sonuca değil, karar anındaki kurala bakılır."
+        ],
+        bullets: [
+          "Önce risk limiti, sonra işlem büyüklüğü",
+          "Zarar kes: planlı çıkış, ego değil",
+          "Küçük boyut, daha sakin karar demektir"
+        ]
+      },
       questions: [
         {
-          q: "Pozisyon boyutu büyüdükçe ne artar?",
+          q: "Pozisyon boyutu artınca ne olur?",
           options: [
-            "Sadece potansiyel kâr",
-            "Hem potansiyel kâr hem potansiyel zarar",
-            "Sadece temettü",
-            "Hiçbir şey; risk sabit kalır"
+            "Sadece kâr potansiyeli artar, zarar değişmez",
+            "Hem kâr hem zarar potansiyeli büyür",
+            "Risk otomatik olarak sıfırlanır",
+            "Sadece temettü artar"
           ],
           answer: 1,
-          explain: "Büyük pozisyon, iki yönü de büyütür. Risk yönetimi bu yüzden boyutla başlar."
+          explain: "Boyut iki yönü de büyütür. Risk yönetimi bu yüzden boyutla başlar."
         },
         {
-          q: "“Zarar kes” kuralı ne işe yarar?",
+          q: "Zarar kes kuralının asıl faydası nedir?",
           options: [
-            "Getiriyi garanti eder",
-            "Sermayeyi sonraki fırsatlara taşımak için kaybı sınırlar",
-            "Vergiyi sıfırlar",
-            "Hacmi artırır"
+            "Getiriyi garanti etmek",
+            "Kayıbı sınırlayıp sermayeyi sonraki fırsatlara taşımak",
+            "Vergiyi tamamen kaldırmak",
+            "Hisse senedi sayısını artırmak"
           ],
           answer: 1,
           explain: "Zarar kesmek yenilgi ilanı değil; planlı çıkış ve sermaye korumasıdır."
         },
         {
-          q: "Çeşitlendirme asıl olarak neyi hedefler?",
+          q: "“Bu kadar uğraştım, şimdi mi satayım?” düşüncesi çoğunlukla neyi yansıtır?",
           options: [
-            "Tek hisseyle maksimum getiri",
-            "Tek bir risk kaynağına aşırı bağımlılığı azaltmak",
-            "Her gün işlem yapmak",
-            "Kaldıraç kullanmak"
+            "Saf teknik analizi",
+            "Ego / kimlik savunmasını; risk planından sapmayı",
+            "Resmi bilanço dipnotunu",
+            "Zorunlu temettü kuralını"
           ],
           answer: 1,
-          explain: "Çeşitlendirme felaket senaryosunda nefes alma alanıdır; getiri vaadi değildir."
+          explain: "Batık maliyet ve ego, kuralı erteletir. Plan önceden yazılmış olmalıdır."
         }
       ]
     },
     {
-      id: "temel-3",
-      level: "Seviye 3",
-      title: "Psikoloji: FOMO ve sabır",
-      desc: "Kaçırma korkusu ve sabırsızlık, birçok hesabı teknik analizden önce yorar.",
+      id: "psikoloji",
+      level: "Seviye 3 · Psikoloji",
+      title: "FOMO, sabır ve gürültü",
+      summary:
+        "Kaçırma korkusu ve sürekli ekran yenileme, birçok hesabı grafik bilgisinden önce yorar. Bu modül zihinsel hijyeni anlatır.",
+      topics: ["FOMO", "Sabır", "Gürültü", "Alışkanlık"],
+      questionsCount: 3,
       reward: 500,
+      lesson: {
+        title: "Ders notu",
+        paragraphs: [
+          "FOMO (kaçırma korkusu), planı değil kalabalığı takip ettirir. Yeşil mumlar ve “son tren” anlatıları acele girişe iter; acele girişlerin bedeli sıkça yüksektir.",
+          "İki tür bekleme vardır. Umutsuz bekleme: gerekçe yok, sadece “belki döner”. Planlı sabır: neden girdiğin, ne olursa çıkacağın net. İlki bahane; ikincisi strateji gibi hissedilir.",
+          "Haber ve fiyatı saniyede bir yenilemek bilgi değil, gürültü yığar. Kontrol sıklığını bilinçli sınırlamak zayıflık değil, disiplindir."
+        ],
+        bullets: [
+          "FOMO → plansız giriş riski",
+          "Planlı sabır ≠ umutsuz bekleme",
+          "Ekran süresi ≠ daha iyi analiz"
+        ]
+      },
       questions: [
         {
-          q: "FOMO (kaçırma korkusu) genelde neye yol açar?",
+          q: "FOMO genelde neye yol açar?",
           options: [
             "Daha düşük işlem maliyeti",
-            "Plansız, acele girişler",
-            "Otomatik risk limitine uyum",
-            "Daha uzun vadeli tutma disiplini"
+            "Plansız ve acele girişler",
+            "Otomatik risk limitine sıkı uyum",
+            "Daha uzun vadeli sessiz tutma"
           ],
           answer: 1,
-          explain: "FOMO, planı değil kalabalığı takip ettirir. Acele girişlerin bedeli sıkça yüksektir."
+          explain: "Kaçırma korkusu kalabalığı takip ettirir; planı ikinci plana atar."
         },
         {
           q: "Planlı sabır ile umutsuz bekleme farkı nedir?",
           options: [
-            "İkisi de aynıdır",
-            "Planlı sabırda giriş/çıkış gerekçesi nettir; umutta sadece “belki döner” vardır",
+            "İkisi de aynı şeydir",
+            "Planlı sabırda gerekçe ve kurallar nettir; umutta yalnızca “belki” vardır",
             "Umut her zaman daha kârlıdır",
-            "Sabır yalnızca günlük işlemde geçerlidir"
+            "Sabır sadece günlük işlemde geçerlidir"
           ],
           answer: 1,
-          explain: "Sabır strateji olabilir; gerekçesiz bekleme çoğu zaman bahanedir."
+          explain: "Gerekçeli bekleme strateji olabilir; gerekçesiz bekleme çoğu zaman bahanedir."
         },
         {
-          q: "Haber akışını sürekli yenilemek çoğu zaman neyi artırır?",
+          q: "Fiyatı ve haberleri sürekli yenilemek çoğu zaman neyi artırır?",
           options: [
             "Sadece bilgi kalitesini",
             "Duygusal gürültü ve işlem dürtüsünü",
-            "Temettü oranını",
-            "Şirketin bilanço kalemini"
+            "Şirketin bilanço kârını",
+            "Temettü dağıtım tarihini"
           ],
           answer: 1,
-          explain: "Sürekli yenileme bilgi değil, gürültü yığar. Kontrol sıklığını sınırlamak disiplindir."
+          explain: "Sürekli yenileme gürültü biriktirir. Bilinçli seyrek kontrol daha sakin karar verir."
         }
       ]
     }
@@ -578,54 +794,55 @@
     } catch (e) {}
     return { completed: {}, coins: 0 };
   }
-
   function saveState(s) {
-    try {
-      localStorage.setItem(STORAGE, JSON.stringify(s));
-    } catch (e) {}
+    try { localStorage.setItem(STORAGE, JSON.stringify(s)); } catch (e) {}
   }
 
   var state = loadState();
-  var currentModule = null;
+  var current = null;
   var qIndex = 0;
   var score = 0;
   var answered = false;
 
   function completedCount() {
     var n = 0;
-    MODULES.forEach(function (m) {
-      if (state.completed[m.id]) n++;
-    });
+    MODULES.forEach(function (m) { if (state.completed[m.id]) n++; });
     return n;
   }
 
-  function updateProgress() {
+  function updateStats() {
     var c = completedCount();
     var pct = Math.round((c / MODULES.length) * 100);
+    document.getElementById("statMods").textContent = String(MODULES.length);
+    document.getElementById("statQ").textContent = String(
+      MODULES.reduce(function (a, m) { return a + m.questions.length; }, 0)
+    );
+    document.getElementById("statCoin").textContent = "+" + (state.coins || 0) + " ₺";
+    document.getElementById("progText").textContent = c + " / " + MODULES.length + " tamamlandı";
+    document.getElementById("progPct").textContent = pct + "%";
     document.getElementById("progFill").style.width = pct + "%";
-    document.getElementById("progText").textContent = c + " / " + MODULES.length + " modül";
-    document.getElementById("coinText").textContent = "+" + (state.coins || 0) + " ₺ sanal";
   }
 
   function renderModules() {
-    var root = document.getElementById("modules");
-    root.innerHTML = MODULES.map(function (m) {
+    document.getElementById("modules").innerHTML = MODULES.map(function (m) {
       var done = !!state.completed[m.id];
       return (
-        '<article class="mod' + (done ? " done" : "") + '" data-id="' + m.id + '">' +
-        '<div class="mod-top">' +
-        "<div>" +
-        '<div class="lvl">' + m.level + "</div>" +
-        "<h2>" + m.title + "</h2>" +
-        '<p class="desc">' + m.desc + "</p>" +
-        "</div>" +
+        '<article class="mod' + (done ? " done" : "") + '">' +
+        '<div class="mod-head">' +
+        '<div class="row">' +
+        "<div><div class=\"lvl\">" + m.level + "</div><h3>" + m.title + "</h3></div>" +
         '<div class="reward">+' + m.reward + " ₺</div>" +
         "</div>" +
-        '<div class="actions">' +
+        '<p class="body-text">' + m.summary + "</p>" +
+        '<div class="topics">' + m.topics.map(function (t) { return "<span>" + t + "</span>"; }).join("") + "</div>" +
+        "</div>" +
+        '<div class="mod-foot">' +
+        '<div class="meta">' + m.questionsCount + " soru · önce ders, sonra test" +
+        (done ? ' · <span class="ok">Tamamlandı ✓</span>' : "") +
+        "</div>" +
         '<button type="button" class="btn btn-primary" data-start="' + m.id + '">' +
-        (done ? "Tekrar çöz" : "Teste başla") +
+        (done ? "Tekrar et" : "Derse başla") +
         "</button>" +
-        (done ? '<span class="status">Tamamlandı ✓</span>' : "") +
         "</div></article>"
       );
     }).join("");
@@ -634,40 +851,57 @@
   function showHome() {
     document.getElementById("homeView").hidden = false;
     document.getElementById("quizView").hidden = true;
-    updateProgress();
+    updateStats();
     renderModules();
   }
 
   function startModule(id) {
-    currentModule = MODULES.filter(function (m) { return m.id === id; })[0];
-    if (!currentModule) return;
+    current = MODULES.filter(function (m) { return m.id === id; })[0];
+    if (!current) return;
     qIndex = 0;
     score = 0;
     answered = false;
     document.getElementById("homeView").hidden = true;
     document.getElementById("quizView").hidden = false;
-    renderQuestion();
+    renderLessonThenQuiz();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
+  function renderLessonThenQuiz() {
+    var m = current;
+    var L = m.lesson;
+    var root = document.getElementById("quizRoot");
+    root.innerHTML =
+      '<div class="lesson">' +
+      '<div class="q-meta" style="font-size:12px;font-weight:700;color:var(--dim);margin-bottom:8px">' + m.level + "</div>" +
+      "<h3>" + L.title + ": " + m.title + "</h3>" +
+      L.paragraphs.map(function (p) { return "<p>" + p + "</p>"; }).join("") +
+      (L.bullets && L.bullets.length
+        ? "<ul>" + L.bullets.map(function (b) { return "<li>" + b + "</li>"; }).join("") + "</ul>"
+        : "") +
+      "</div>" +
+      '<button type="button" class="btn btn-primary btn-lg" id="btnToQuiz" style="width:100%;margin-bottom:8px">Anladım — teste geç</button>';
+
+    document.getElementById("btnToQuiz").addEventListener("click", renderQuestion);
+  }
+
   function renderQuestion() {
-    var m = currentModule;
-    var qs = m.questions;
-    if (qIndex >= qs.length) {
+    var m = current;
+    if (qIndex >= m.questions.length) {
       renderResult();
       return;
     }
-    var item = qs[qIndex];
+    var item = m.questions[qIndex];
     answered = false;
     var root = document.getElementById("quizRoot");
     root.innerHTML =
       '<div class="quiz">' +
-      '<div class="q-meta">' + m.level + " · Soru " + (qIndex + 1) + " / " + qs.length + "</div>" +
+      '<div class="q-meta">Test · Soru ' + (qIndex + 1) + " / " + m.questions.length + "</div>" +
       "<h3>" + item.q + "</h3>" +
       '<div class="opts" id="opts"></div>' +
       '<div class="feedback" id="fb"></div>' +
       '<div class="quiz-nav">' +
-      '<button type="button" class="btn btn-primary" id="btnNext" disabled>Devam</button>' +
+      '<button type="button" class="btn btn-primary" id="btnNext" disabled>Sonraki</button>' +
       "</div></div>";
 
     var opts = document.getElementById("opts");
@@ -679,8 +913,7 @@
       b.addEventListener("click", function () {
         if (answered) return;
         answered = true;
-        var buttons = opts.querySelectorAll(".opt");
-        buttons.forEach(function (x, j) {
+        opts.querySelectorAll(".opt").forEach(function (x, j) {
           x.disabled = true;
           if (j === item.answer) x.classList.add("correct");
           if (j === i && i !== item.answer) x.classList.add("wrong");
@@ -692,7 +925,7 @@
           fb.textContent = "Doğru. " + item.explain;
         } else {
           fb.className = "feedback show no";
-          fb.textContent = "Bu kez olmadı. " + item.explain;
+          fb.textContent = "Bu kez değil. " + item.explain;
         }
         document.getElementById("btnNext").disabled = false;
       });
@@ -706,7 +939,7 @@
   }
 
   function renderResult() {
-    var m = currentModule;
+    var m = current;
     var total = m.questions.length;
     var pass = score >= Math.ceil(total * 0.66);
     var already = !!state.completed[m.id];
@@ -717,7 +950,6 @@
       state.coins = (state.coins || 0) + m.reward;
       gained = m.reward;
       saveState(state);
-      /* Lig bakiyesine nazik katkı (varsa) */
       try {
         if (window.Store && Store.getGame && Store.setGame) {
           var g = Store.getGame() || {};
@@ -732,40 +964,33 @@
       } catch (e) {}
     }
 
-    var root = document.getElementById("quizRoot");
-    root.innerHTML =
+    document.getElementById("quizRoot").innerHTML =
       '<div class="result-card">' +
-      "<h3>" + (pass ? "Modül tamam" : "Biraz daha pekiştirelim") + "</h3>" +
+      "<h3>" + (pass ? "Modül tamamlandı" : "Biraz daha pekiştirelim") + "</h3>" +
       "<p>" + score + " / " + total + " doğru." +
       (pass
         ? already
-          ? " Bu modülü daha önce tamamlamıştın; ödül bir kez verilir."
-          : " Harika — sanal ödül bakiyene eklendi."
-        : " Geçmek için çoğu soruyu doğru yanıtlaman yeterli. İstersen tekrar dene.") +
+          ? " Bu modülü daha önce bitirmiştin; sanal ödül bir kez verilir."
+          : " Tebrikler — sanal ödül bakiyene eklendi. İstersen ligde pratik yap."
+        : " Geçmek için soruların çoğunu doğru yanıtlaman yeterli. Ders notuna dönüp tekrar deneyebilirsin.") +
       "</p>" +
       (gained ? '<div class="coins">+' + gained + " ₺ sanal</div>" : "") +
       '<div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center">' +
-      '<button type="button" class="btn btn-primary" id="btnHome">Modüllere dön</button>' +
+      '<button type="button" class="btn btn-primary" id="btnHome">Akademiye dön</button>' +
       (!pass
         ? '<button type="button" class="btn btn-ghost" id="btnRetry">Tekrar dene</button>'
-        : '<a class="btn btn-ghost" href="oyun.html">Lige git</a>') +
+        : '<a class="btn btn-ghost" href="oyun.html">Sanal lig</a>') +
       "</div></div>";
 
     document.getElementById("btnHome").addEventListener("click", showHome);
-    var retry = document.getElementById("btnRetry");
-    if (retry) {
-      retry.addEventListener("click", function () {
-        startModule(m.id);
-      });
-    }
+    var r = document.getElementById("btnRetry");
+    if (r) r.addEventListener("click", function () { startModule(m.id); });
   }
 
   document.getElementById("modules").addEventListener("click", function (e) {
     var b = e.target.closest("[data-start]");
-    if (!b) return;
-    startModule(b.getAttribute("data-start"));
+    if (b) startModule(b.getAttribute("data-start"));
   });
-
   document.getElementById("btnBack").addEventListener("click", showHome);
 
   showHome();
