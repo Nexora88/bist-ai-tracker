@@ -3,21 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Hisseler · Nexora AI</title>
-  <meta name="description" content="BIST, NASDAQ ve NYSE hisseleri — son fiyat, AI skoru, takip listesi. Her hisse bir kez." />
+  <title>Hisse Kartları · Nexora AI</title>
+  <meta name="description" content="BIST, NASDAQ, NYSE — açık/kapalı, tatil günleri, geri sayım, önbellekli fiyat." />
+  <meta name="theme-color" content="#0d0d1a" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #060a12;
-      --panel: rgba(15, 23, 42, 0.94);
-      --border: rgba(148, 163, 184, 0.12);
-      --text: #f1f5f9;
-      --muted: #94a3b8;
-      --dim: #64748b;
-      --accent: #10b981;
-      --cyan: #22d3ee;
-      --rose: #f87171;
+      --bg: #0d0d1a;
+      --panel: rgba(18, 18, 32, 0.94);
+      --border: rgba(148, 163, 184, 0.14);
+      --text: #f8fafc;
+      --muted: #cbd5e1;
+      --dim: #94a3b8;
+      --faint: #64748b;
+      --cyan: #00f0ff;
+      --up: #34d399;
+      --down: #f87171;
       --amber: #fbbf24;
+      --grad: linear-gradient(135deg, #00f0ff, #007bff 50%, #7b2cff);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -26,120 +29,208 @@
       color: var(--text);
       min-height: 100vh;
       line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
     }
     a { color: inherit; text-decoration: none; }
-    button, input, select { font: inherit; color: inherit; border: none; background: none; cursor: pointer; }
+    button, input { font: inherit; color: inherit; border: none; background: none; }
+    button { cursor: pointer; }
     input { outline: none; }
 
+    .atmosphere {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 70% 45% at 15% -10%, rgba(0,240,255,0.1), transparent 55%),
+        radial-gradient(ellipse 50% 40% at 100% 80%, rgba(123,44,255,0.08), transparent 50%),
+        var(--bg);
+    }
+    .shell { position: relative; z-index: 1; }
+
     .nav {
-      position: sticky; top: 0; z-index: 40;
-      height: 56px; display: flex; align-items: center; justify-content: space-between;
+      height: 56px;
+      display: flex; align-items: center; justify-content: space-between;
       gap: 10px; padding: 0 14px;
-      background: rgba(6, 10, 18, 0.94);
+      background: rgba(13, 13, 26, 0.9);
       backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 40;
     }
-    .brand { font-weight: 800; letter-spacing: -0.03em; }
-    .brand em { font-style: normal; color: var(--accent); }
-    .nav-links { display: none; gap: 2px; }
-    @media (min-width: 900px) {
-      .nav-links { display: flex; }
-      .nav-links a {
-        font-size: 13px; font-weight: 600; color: var(--muted);
-        padding: 7px 10px; border-radius: 9px;
-      }
-      .nav-links a:hover, .nav-links a.on {
-        color: var(--text); background: rgba(255,255,255,0.05);
-      }
+    .brand {
+      display: flex; align-items: center; gap: 8px;
+      font-weight: 800; font-size: 14px;
     }
-
-    .wrap { max-width: 1100px; margin: 0 auto; padding: 16px 14px 48px; }
-
-    .head { margin-bottom: 14px; }
-    .badge {
-      display: inline-flex; font-size: 12px; font-weight: 700; color: var(--cyan);
-      background: rgba(34, 211, 238, 0.1);
-      border: 1px solid rgba(34, 211, 238, 0.28);
-      padding: 5px 11px; border-radius: 999px; margin-bottom: 10px;
+    .mark {
+      width: 28px; height: 28px; border-radius: 8px;
+      background: var(--grad);
+      display: grid; place-items: center;
+      font-size: 11px; font-weight: 900; color: #0d0d1a;
     }
-    h1 {
-      font-size: clamp(1.4rem, 3vw, 1.85rem);
-      font-weight: 800; letter-spacing: -0.03em;
-    }
-    h1 span {
-      background: linear-gradient(90deg, var(--accent), var(--cyan));
+    .brand em {
+      font-style: normal;
+      background: var(--grad);
       -webkit-background-clip: text; background-clip: text; color: transparent;
     }
-    .lead { color: var(--muted); font-size: 14px; margin-top: 6px; max-width: 540px; }
-
-    .toolbar {
-      display: flex; flex-wrap: wrap; gap: 8px;
-      align-items: center; margin: 14px 0 12px;
+    .nav-right { display: flex; gap: 8px; align-items: center; }
+    .nav-right a {
+      padding: 8px 12px; border-radius: 9px;
+      font-size: 12px; font-weight: 700;
     }
-    .toolbar input {
-      flex: 1; min-width: 160px;
-      background: var(--panel);
+    .nav-right .ghost {
       box-shadow: inset 0 0 0 1px var(--border);
-      border-radius: 12px;
-      padding: 12px 14px;
-      font-size: 15px;
+      background: rgba(18, 18, 32, 0.7);
     }
-    .toolbar input:focus {
-      box-shadow: inset 0 0 0 1px rgba(16,185,129,0.45);
+    .nav-right .primary {
+      color: #0d0d1a;
+      background: var(--grad);
+    }
+
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 0 14px 56px; }
+
+    .page-head { padding: 24px 0 8px; }
+    .page-head h1 {
+      font-size: clamp(1.5rem, 3.5vw, 1.9rem);
+      font-weight: 800;
+      letter-spacing: -0.035em;
+    }
+    .page-head h1 span {
+      background: var(--grad);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .page-head p {
+      margin-top: 8px;
+      font-size: 14px;
+      color: var(--muted);
+      max-width: 54ch;
+      line-height: 1.6;
+    }
+
+    .note {
+      margin: 14px 0 18px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: rgba(18, 18, 32, 0.8);
+      border: 1px solid var(--border);
+      font-size: 12.5px;
+      color: var(--dim);
+      line-height: 1.55;
     }
 
     .markets {
-      display: flex; flex-wrap: wrap; gap: 6px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    @media (min-width: 720px) {
+      .markets { grid-template-columns: repeat(3, 1fr); }
+    }
+    .mkt {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      text-align: left;
+      width: 100%;
+    }
+    .mkt:hover {
+      transform: translateY(-2px);
+      border-color: rgba(0, 240, 255, 0.35);
+    }
+    .mkt.on {
+      border-color: rgba(0, 240, 255, 0.5);
+      box-shadow: 0 0 0 1px rgba(0, 240, 255, 0.15), 0 12px 32px rgba(0,0,0,0.25);
+    }
+    .mkt-top {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 8px; margin-bottom: 10px;
+    }
+    .mkt-name {
+      font-size: 15px; font-weight: 800;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .mkt-name .flag { font-size: 18px; }
+    .status {
+      font-size: 11px; font-weight: 800;
+      padding: 4px 10px; border-radius: 999px;
+    }
+    .status.open {
+      color: #022c22;
+      background: linear-gradient(135deg, #34d399, #10b981);
+    }
+    .status.closed {
+      color: #e2e8f0;
+      background: rgba(100, 116, 139, 0.45);
+    }
+    .status.holiday {
+      color: #0d0d1a;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    }
+    .mkt-clock {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+    .mkt-clock strong { color: var(--cyan); font-weight: 800; }
+    .mkt-sub {
+      margin-top: 6px;
+      font-size: 11.5px;
+      color: var(--faint);
+      line-height: 1.45;
+    }
+    .mkt-holiday {
+      margin-top: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--amber);
+    }
+
+    .toolbar {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      align-items: center;
       margin-bottom: 14px;
     }
-    .chip {
-      font-size: 12px; font-weight: 700;
-      padding: 8px 14px; border-radius: 999px;
-      color: var(--muted);
-      background: rgba(30, 41, 59, 0.9);
-      box-shadow: inset 0 0 0 1px var(--border);
-    }
-    .chip.on {
-      color: #022c22;
-      background: linear-gradient(135deg, var(--accent), #059669);
-      box-shadow: none;
-    }
-    .chip .plan { font-size: 10px; opacity: 0.85; margin-left: 4px; }
-
-    .meta-line {
-      display: flex; flex-wrap: wrap; gap: 8px 14px;
+    .search {
+      flex: 1;
+      min-width: 160px;
+      display: flex;
       align-items: center;
-      font-size: 12.5px; color: var(--dim);
-      margin-bottom: 12px;
-    }
-    .meta-line strong { color: var(--muted); font-weight: 700; }
-
-    .btn {
-      display: inline-flex; align-items: center; justify-content: center;
-      padding: 10px 14px; border-radius: 11px;
-      font-size: 13px; font-weight: 700;
-    }
-    .btn-soft {
-      background: rgba(30, 41, 59, 0.95);
-      color: var(--text);
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: rgba(6, 6, 15, 0.7);
       box-shadow: inset 0 0 0 1px var(--border);
     }
-    .btn-sm { padding: 7px 11px; font-size: 12px; border-radius: 9px; }
-    .btn-watch {
-      background: rgba(34, 211, 238, 0.1);
-      color: var(--cyan);
-      box-shadow: inset 0 0 0 1px rgba(34, 211, 238, 0.28);
+    .search input {
+      flex: 1;
+      font-size: 14px;
+      font-weight: 600;
     }
-    .btn-watch.on {
-      background: rgba(16, 185, 129, 0.15);
-      color: #34d399;
-      box-shadow: inset 0 0 0 1px rgba(16, 185, 129, 0.35);
+    .search input::placeholder { color: var(--faint); }
+    .tool-btn {
+      padding: 10px 14px;
+      border-radius: 11px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--muted);
+      background: var(--panel);
+      box-shadow: inset 0 0 0 1px var(--border);
     }
+
+    .meta-row {
+      display: flex; flex-wrap: wrap; gap: 10px 16px;
+      font-size: 12.5px;
+      color: var(--dim);
+      margin-bottom: 14px;
+      font-weight: 600;
+    }
+    .meta-row strong { color: var(--muted); }
 
     .grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 12px;
+      gap: 10px;
     }
     @media (min-width: 560px) {
       .grid { grid-template-columns: repeat(2, 1fr); }
@@ -152,193 +243,187 @@
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+      padding: 14px;
+      transition: border-color 0.2s, transform 0.2s;
     }
-    .card:hover { border-color: rgba(16, 185, 129, 0.35); }
+    .card:hover {
+      border-color: rgba(0, 240, 255, 0.35);
+      transform: translateY(-2px);
+    }
     .card-top {
-      display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;
+      display: flex; justify-content: space-between; align-items: flex-start;
+      gap: 8px;
     }
-    .card-sym { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.02em; }
-    .card-sym .flag { margin-right: 4px; }
-    .card-mkt {
-      font-size: 11px; font-weight: 700; color: var(--dim);
-      text-transform: uppercase; letter-spacing: 0.04em;
-    }
-    .card-name {
-      font-size: 13px; color: var(--muted);
+    .sym { font-size: 15px; font-weight: 800; }
+    .sym .fg { margin-right: 4px; }
+    .name {
+      font-size: 12px; color: var(--dim);
       margin-top: 2px;
-      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      max-width: 160px;
     }
-    .card-price {
-      font-size: 1.25rem; font-weight: 800;
+    .price-block { text-align: right; }
+    .price {
+      font-size: 15px; font-weight: 800;
       font-variant-numeric: tabular-nums;
     }
-    .card-price .tag {
-      font-size: 11px; font-weight: 600; color: var(--dim);
-      margin-left: 6px;
-    }
-    .up { color: #34d399; }
-    .down { color: var(--rose); }
-    .card-pct { font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
-    .card-meta {
-      display: flex; flex-wrap: wrap; gap: 6px 10px;
-      font-size: 12px; color: var(--dim);
-    }
-
-    .score-row {
-      display: flex; align-items: center; gap: 8px;
+    .price.skeleton {
+      color: var(--faint);
       font-size: 12px;
+      font-weight: 600;
     }
-    .score-bar {
-      flex: 1; height: 6px;
-      background: rgba(148, 163, 184, 0.15);
-      border-radius: 99px;
+    .chg {
+      font-size: 12px; font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+    .chg.up { color: var(--up); }
+    .chg.down { color: var(--down); }
+
+    .card-mid { margin-top: 12px; }
+    .bar-label {
+      display: flex; justify-content: space-between;
+      font-size: 11px; font-weight: 700; color: var(--faint);
+      margin-bottom: 4px;
+    }
+    .bar {
+      height: 6px; border-radius: 99px;
+      background: rgba(148, 163, 184, 0.12);
       overflow: hidden;
     }
-    .score-fill {
-      height: 100%;
+    .bar i {
+      display: block; height: 100%;
       border-radius: 99px;
-      background: linear-gradient(90deg, var(--accent), var(--cyan));
+      background: var(--grad);
     }
-    .score-num { font-weight: 800; min-width: 2.5em; text-align: right; }
-
-    .risk {
-      display: inline-flex;
+    .tags {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      margin-top: 10px;
+    }
+    .tag {
       font-size: 11px; font-weight: 700;
       padding: 3px 8px; border-radius: 999px;
+      color: var(--dim);
+      background: rgba(6, 6, 15, 0.5);
+      box-shadow: inset 0 0 0 1px var(--border);
     }
-    .risk-low { background: rgba(16,185,129,0.15); color: #34d399; }
-    .risk-medium { background: rgba(251,191,36,0.12); color: var(--amber); }
-    .risk-high { background: rgba(248,113,113,0.12); color: #fca5a5; }
-
     .card-actions {
-      display: flex; flex-wrap: wrap; gap: 6px;
-      margin-top: auto;
-      padding-top: 4px;
+      display: flex; gap: 6px;
+      margin-top: 12px;
+    }
+    .card-actions a, .card-actions button {
+      flex: 1;
+      text-align: center;
+      padding: 8px;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .btn-ghost {
+      color: var(--muted);
+      box-shadow: inset 0 0 0 1px var(--border);
+    }
+    .btn-watch {
+      color: #0d0d1a;
+      background: linear-gradient(135deg, #00f0ff, #007bff);
+    }
+    .btn-watch.on {
+      color: var(--cyan);
+      background: transparent;
+      box-shadow: inset 0 0 0 1px rgba(0, 240, 255, 0.4);
     }
 
-    .empty, .loading {
-      grid-column: 1 / -1;
+    .empty {
       text-align: center;
       padding: 40px 16px;
-      color: var(--dim);
+      color: var(--faint);
       font-size: 14px;
     }
-    .empty strong, .loading strong {
-      display: block; color: var(--muted); margin-bottom: 6px; font-size: 15px;
-    }
-
-    .skel {
-      background: linear-gradient(90deg, rgba(30,41,59,0.8) 25%, rgba(51,65,85,0.9) 50%, rgba(30,41,59,0.8) 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.2s infinite;
-      border-radius: 8px;
-      height: 1em;
-    }
-    @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-
-    .pager {
-      display: flex; justify-content: center; align-items: center; gap: 10px;
-      margin-top: 18px;
-    }
-    .pager span { font-size: 13px; color: var(--muted); font-weight: 600; }
-
-    .legal {
-      margin-top: 24px;
-      font-size: 12px; color: var(--dim); line-height: 1.55;
-    }
-    footer {
-      text-align: center; color: var(--dim); font-size: 12px;
-      padding: 8px 14px 32px;
-    }
-    footer a { color: var(--muted); margin: 0 5px; font-weight: 600; }
-
-    .toast {
-      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-      background: #0f172a;
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 12px 18px;
+    .load-more {
+      display: block;
+      width: 100%;
+      margin-top: 16px;
+      padding: 12px;
       border-radius: 12px;
-      font-size: 13px; font-weight: 600;
-      z-index: 100;
-      opacity: 0; pointer-events: none;
-      transition: opacity 0.25s;
-      max-width: 90vw;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--muted);
+      background: var(--panel);
+      box-shadow: inset 0 0 0 1px var(--border);
     }
-    .toast.show { opacity: 1; }
+
+    footer {
+      text-align: center;
+      padding: 20px 14px 40px;
+      font-size: 12px;
+      color: var(--faint);
+      border-top: 1px solid var(--border);
+    }
+    footer a {
+      color: var(--dim);
+      margin: 0 6px;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
-  <nav class="nav">
-    <a class="brand" href="index.html">Nexora <em>AI</em></a>
-    <div class="nav-links">
+  <div class="atmosphere" aria-hidden="true"></div>
+
+  <div class="shell">
+    <nav class="nav">
+      <a class="brand" href="index.html">
+        <span class="mark">N</span>
+        Nexora <em>AI</em>
+      </a>
+      <div class="nav-right">
+        <a class="ghost" href="ara.html">Ara</a>
+        <a class="ghost" href="oyun.html">Lig</a>
+        <a class="primary" href="ultra-grafik.html">Grafik</a>
+      </div>
+    </nav>
+
+    <main class="wrap">
+      <header class="page-head">
+        <h1>Hisse <span>kartları</span></h1>
+        <p>
+          Hafta sonu ve resmi tatiller kapalı sayılır. Geri sayım bir sonraki
+          işlem gününe göre çalışır. Fiyatlar 60 sn önbelleklidir.
+        </p>
+      </header>
+
+      <div class="note">
+        Tatil listeleri bilinen sabit / ilan edilmiş günleri kapsar; borsa özel
+        yarı gün veya sonradan ilan edilen tatiller için manuel güncelleme gerekebilir.
+        Veriler gecikmeli olabilir · yatırım tavsiyesi değildir.
+      </div>
+
+      <div class="markets" id="markets"></div>
+
+      <div class="toolbar">
+        <div class="search">
+          <span style="color:var(--faint)">⌕</span>
+          <input id="q" type="search" placeholder="Sembol veya şirket adı…" autocomplete="off" />
+        </div>
+        <button type="button" class="tool-btn" id="btnRefresh">Yenile</button>
+      </div>
+
+      <div class="meta-row">
+        <span>Piyasa: <strong id="metaMkt">—</strong></span>
+        <span>Görünen: <strong id="metaCount">0</strong></span>
+        <span id="metaCache">Önbellek: —</span>
+      </div>
+
+      <div class="grid" id="grid"></div>
+      <button type="button" class="load-more" id="btnMore" hidden>Daha fazla göster</button>
+      <div class="empty" id="empty" hidden>Sonuç yok.</div>
+    </main>
+
+    <footer>
       <a href="index.html">Ana</a>
-      <a class="on" href="stock.html">Hisseler</a>
       <a href="portfolio.html">Portföy</a>
-      <a href="ultra-grafik.html">Grafik</a>
-      <a href="radar.html">Pusula</a>
-      <a href="ai-analiz.html">AI</a>
-    </div>
-    <a class="btn btn-soft" href="portfolio.html">Portföy</a>
-  </nav>
-
-  <main class="wrap">
-    <header class="head">
-      <div class="badge">Canlı kartlar · her hisse bir kez</div>
-      <h1>Hisse <span>Kartları</span></h1>
-      <p class="lead">
-        BIST, NASDAQ ve NYSE. Aynı sembol listede kaç kez olursa olsun kartlarda yalnızca bir kez görünür.
-      </p>
-    </header>
-
-    <div class="toolbar">
-      <input id="q" type="search" placeholder="ASELS, Aselsan, MCD…" autocomplete="off" enterkeyhint="search" />
-      <button type="button" class="btn btn-soft" id="btnRefresh">Fiyatları yenile</button>
-    </div>
-
-    <div class="markets" id="markets">
-      <button type="button" class="chip on" data-m="bist">🇹🇷 BIST <span class="plan">ücretsiz</span></button>
-      <button type="button" class="chip" data-m="nasdaq">🇺🇸 NASDAQ <span class="plan">ücretsiz</span></button>
-      <button type="button" class="chip" data-m="nyse">🇺🇸 NYSE <span class="plan">ücretsiz</span></button>
-    </div>
-
-    <div class="meta-line">
-      <span><strong id="countLabel">0</strong> hisse</span>
-      <span>Fiyatlar gecikmeli olabilir · kapalı piyasada son kapanış</span>
-    </div>
-
-    <div class="grid" id="grid">
-      <div class="loading"><strong>Yükleniyor…</strong>Hisse listesi hazırlanıyor</div>
-    </div>
-
-    <div class="pager" id="pager" hidden>
-      <button type="button" class="btn btn-soft btn-sm" id="btnPrev">← Önceki</button>
-      <span id="pageInfo">1</span>
-      <button type="button" class="btn btn-soft btn-sm" id="btnNext">Sonraki →</button>
-    </div>
-
-    <p class="legal">
-      Buradaki skorlar ve fiyatlar bilgilendirme amaçlıdır; yatırım tavsiyesi değildir.
-      Veriler en az birkaç dakika gecikmeli olabilir.
-    </p>
-  </main>
-
-  <footer>
-    Nexora AI
-    <a href="portfolio.html">Portföy</a>
-    <a href="ultra-grafik.html">Grafik</a>
-    <a href="alarm.html">Alarm</a>
-    <a href="about.html">Hakkımızda</a>
-  </footer>
-
-  <div class="toast" id="toast"></div>
+      <a href="oyun.html">Lig</a>
+      <a href="about.html">Hakkımızda</a>
+    </footer>
+  </div>
 
   <script src="assets/js/secrets.js"></script>
   <script src="assets/js/api.js"></script>
@@ -347,470 +432,607 @@
 (function () {
   "use strict";
 
-  var market = "bist";
-  var stocks = [];
-  var filtered = [];
-  var page = 0;
-  var PAGE_SIZE = 24;
-  var quoteCache = {};
-  var loadToken = 0;
+  /**
+   * Tatil takvimi — YYYY-MM-DD (borsanın yerel takvim günü)
+   * BIST: sabit milli günler + bilinen dini tatil pencereleri (2025–2027 yaklaşık)
+   * US: federal / borsa tatilleri
+   * Not: Ramazan/Kurban kesin tarihleri Diyanet’e göre kayabilir; gerekirse güncelle.
+   */
+  var HOLIDAYS = {
+    bist: {
+      /* 2025 */
+      "2025-01-01": "Yılbaşı",
+      "2025-03-30": "Ramazan Bayramı arifesi (yarı/tatil)",
+      "2025-03-31": "Ramazan Bayramı",
+      "2025-04-01": "Ramazan Bayramı",
+      "2025-04-02": "Ramazan Bayramı",
+      "2025-04-23": "23 Nisan",
+      "2025-05-01": "Emek ve Dayanışma Günü",
+      "2025-05-19": "19 Mayıs",
+      "2025-06-05": "Kurban Bayramı arifesi",
+      "2025-06-06": "Kurban Bayramı",
+      "2025-06-07": "Kurban Bayramı",
+      "2025-06-08": "Kurban Bayramı",
+      "2025-06-09": "Kurban Bayramı",
+      "2025-07-15": "15 Temmuz",
+      "2025-08-30": "30 Ağustos",
+      "2025-10-28": "29 Ekim arifesi (yarım gün olabilir)",
+      "2025-10-29": "29 Ekim Cumhuriyet Bayramı",
+      /* 2026 */
+      "2026-01-01": "Yılbaşı",
+      "2026-03-19": "Ramazan Bayramı arifesi",
+      "2026-03-20": "Ramazan Bayramı",
+      "2026-03-21": "Ramazan Bayramı",
+      "2026-03-22": "Ramazan Bayramı",
+      "2026-04-23": "23 Nisan",
+      "2026-05-01": "Emek ve Dayanışma Günü",
+      "2026-05-19": "19 Mayıs",
+      "2026-05-26": "Kurban Bayramı arifesi",
+      "2026-05-27": "Kurban Bayramı",
+      "2026-05-28": "Kurban Bayramı",
+      "2026-05-29": "Kurban Bayramı",
+      "2026-05-30": "Kurban Bayramı",
+      "2026-07-15": "15 Temmuz",
+      "2026-08-30": "30 Ağustos",
+      "2026-10-28": "29 Ekim arifesi",
+      "2026-10-29": "29 Ekim Cumhuriyet Bayramı",
+      /* 2027 sabit milli */
+      "2027-01-01": "Yılbaşı",
+      "2027-04-23": "23 Nisan",
+      "2027-05-01": "Emek ve Dayanışma Günü",
+      "2027-05-19": "19 Mayıs",
+      "2027-07-15": "15 Temmuz",
+      "2027-08-30": "30 Ağustos",
+      "2027-10-29": "29 Ekim Cumhuriyet Bayramı"
+    },
+    us: {
+      "2025-01-01": "New Year's Day",
+      "2025-01-20": "Martin Luther King Jr. Day",
+      "2025-02-17": "Presidents' Day",
+      "2025-04-18": "Good Friday",
+      "2025-05-26": "Memorial Day",
+      "2025-06-19": "Juneteenth",
+      "2025-07-04": "Independence Day",
+      "2025-09-01": "Labor Day",
+      "2025-11-27": "Thanksgiving",
+      "2025-12-25": "Christmas",
+      "2026-01-01": "New Year's Day",
+      "2026-01-19": "Martin Luther King Jr. Day",
+      "2026-02-16": "Presidents' Day",
+      "2026-04-03": "Good Friday",
+      "2026-05-25": "Memorial Day",
+      "2026-06-19": "Juneteenth",
+      "2026-07-03": "Independence Day (observed)",
+      "2026-09-07": "Labor Day",
+      "2026-11-26": "Thanksgiving",
+      "2026-12-25": "Christmas",
+      "2027-01-01": "New Year's Day",
+      "2027-01-18": "Martin Luther King Jr. Day",
+      "2027-02-15": "Presidents' Day",
+      "2027-03-26": "Good Friday",
+      "2027-05-31": "Memorial Day",
+      "2027-06-18": "Juneteenth (observed)",
+      "2027-07-05": "Independence Day (observed)",
+      "2027-09-06": "Labor Day",
+      "2027-11-25": "Thanksgiving",
+      "2027-12-24": "Christmas (observed)"
+    }
+  };
 
-  function ysym(symbol, m) {
-    var s = String(symbol || "").toUpperCase().trim();
+  var MARKETS = [
+    {
+      id: "bist",
+      name: "BIST",
+      flag: "🇹🇷",
+      label: "İstanbul",
+      tz: "Europe/Istanbul",
+      open: [10, 0],
+      close: [18, 0],
+      holidaySet: "bist",
+      file: "data/bist.json"
+    },
+    {
+      id: "nasdaq",
+      name: "NASDAQ",
+      flag: "🇺🇸",
+      label: "New York",
+      tz: "America/New_York",
+      open: [9, 30],
+      close: [16, 0],
+      holidaySet: "us",
+      file: "data/nasdaq.json"
+    },
+    {
+      id: "nyse",
+      name: "NYSE",
+      flag: "🇺🇸",
+      label: "New York",
+      tz: "America/New_York",
+      open: [9, 30],
+      close: [16, 0],
+      holidaySet: "us",
+      file: "data/nyse.json"
+    }
+  ];
+
+  var CACHE_TTL_MS = 60 * 1000;
+  var CACHE_KEY = "nexora_quote_cache_v1";
+  var PAGE_SIZE = 24;
+  var MAX_CONCURRENT = 4;
+
+  var state = {
+    marketId: "bist",
+    list: [],
+    filtered: [],
+    shown: 0,
+    watch: loadWatch()
+  };
+
+  function loadWatch() {
+    try {
+      if (window.Store && Store.getWatchlist) {
+        var w = Store.getWatchlist();
+        if (Array.isArray(w)) return w.map(function (x) { return String(x).toUpperCase(); });
+      }
+      var raw = localStorage.getItem("nexora_watchlist_v1");
+      var arr = raw ? JSON.parse(raw) : [];
+      return Array.isArray(arr)
+        ? arr.map(function (x) { return String(x.symbol || x).toUpperCase(); })
+        : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveWatch() {
+    try {
+      if (window.Store && Store.setWatchlist) Store.setWatchlist(state.watch.slice());
+      else {
+        localStorage.setItem(
+          "nexora_watchlist_v1",
+          JSON.stringify(state.watch.map(function (s) { return { symbol: s }; }))
+        );
+      }
+    } catch (e) {}
+  }
+
+  function pad(n) {
+    return n < 10 ? "0" + n : String(n);
+  }
+
+  function partsInTz(tz, date) {
+    date = date || new Date();
+    var fmt = new Intl.DateTimeFormat("en-GB", {
+      timeZone: tz,
+      weekday: "short",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false
+    });
+    var parts = {};
+    fmt.formatToParts(date).forEach(function (p) {
+      if (p.type !== "literal") parts[p.type] = p.value;
+    });
+    var wd = { Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6, Sun: 0 }[parts.weekday];
+    return {
+      weekday: wd,
+      year: +parts.year,
+      month: +parts.month,
+      day: +parts.day,
+      hour: +parts.hour,
+      minute: +parts.minute,
+      second: +parts.second
+    };
+  }
+
+  function ymd(p) {
+    return p.year + "-" + pad(p.month) + "-" + pad(p.day);
+  }
+
+  function holidayName(mkt, p) {
+    var set = HOLIDAYS[mkt.holidaySet] || {};
+    return set[ymd(p)] || null;
+  }
+
+  function isNonTradingDay(mkt, p) {
+    if (p.weekday === 0 || p.weekday === 6) return { closed: true, reason: "weekend", name: "Hafta sonu" };
+    var h = holidayName(mkt, p);
+    if (h) return { closed: true, reason: "holiday", name: h };
+    return { closed: false };
+  }
+
+  function zonedTimeToUtcMs(tz, y, mo, d, h, mi) {
+    var guess = Date.UTC(y, mo - 1, d, h, mi, 0);
+    for (var i = 0; i < 5; i++) {
+      var p = partsInTz(tz, new Date(guess));
+      var asUtc = Date.UTC(p.year, p.month - 1, p.day, p.hour, p.minute, p.second);
+      var target = Date.UTC(y, mo - 1, d, h, mi, 0);
+      guess += target - asUtc;
+    }
+    return guess;
+  }
+
+  /** Bir sonraki işlem gününün açılış anı (tatil + hafta sonu atlanır) */
+  function nextOpenMs(mkt, fromDate) {
+    var p = partsInTz(mkt.tz, fromDate);
+    var y = p.year, mo = p.month, d = p.day;
+    for (var step = 0; step < 20; step++) {
+      var probe = new Date(Date.UTC(y, mo - 1, d + step, 12, 0, 0));
+      /* o günün tz parçaları */
+      var dayParts = partsInTz(mkt.tz, probe);
+      /* probe öğlen UTC; daha doğru: adım adım tarih */
+      var check = {
+        year: y,
+        month: mo,
+        day: d
+      };
+      /* d + step takvim */
+      var tmp = new Date(Date.UTC(y, mo - 1, d + step));
+      check.year = tmp.getUTCFullYear();
+      check.month = tmp.getUTCMonth() + 1;
+      check.day = tmp.getUTCDate();
+      /* weekday o dilimde */
+      var noonUtc = zonedTimeToUtcMs(mkt.tz, check.year, check.month, check.day, 12, 0);
+      var tp = partsInTz(mkt.tz, new Date(noonUtc));
+      var nt = isNonTradingDay(mkt, tp);
+      if (nt.closed) continue;
+      return {
+        ms: zonedTimeToUtcMs(mkt.tz, tp.year, tp.month, tp.day, mkt.open[0], mkt.open[1]),
+        parts: tp
+      };
+    }
+    return { ms: fromDate.getTime() + 86400000, parts: p };
+  }
+
+  function marketSession(mkt, now) {
+    now = now || new Date();
+    var p = partsInTz(mkt.tz, now);
+    var nt = isNonTradingDay(mkt, p);
+    var openMin = mkt.open[0] * 60 + mkt.open[1];
+    var closeMin = mkt.close[0] * 60 + mkt.close[1];
+    var curMin = p.hour * 60 + p.minute;
+
+    var isOpen = !nt.closed && curMin >= openMin && curMin < closeMin;
+    var holidayToday = nt.reason === "holiday" ? nt.name : null;
+
+    var targetMs;
+    var until;
+    if (isOpen) {
+      targetMs = zonedTimeToUtcMs(mkt.tz, p.year, p.month, p.day, mkt.close[0], mkt.close[1]);
+      until = "kapanışa";
+    } else if (!nt.closed && curMin < openMin) {
+      targetMs = zonedTimeToUtcMs(mkt.tz, p.year, p.month, p.day, mkt.open[0], mkt.open[1]);
+      until = "açılışa";
+    } else {
+      /* kapalı: kapanış sonrası, hafta sonu veya tatil → sonraki işlem günü açılış */
+      var base = now;
+      if (!nt.closed && curMin >= closeMin) {
+        /* yarına kaydır */
+        base = new Date(now.getTime() + 36e5);
+      }
+      var next = nextOpenMs(mkt, base);
+      /* nextOpen bugünün açılışını döndürürse ve biz kapanış sonrasıysek bir gün daha ileri */
+      if (!nt.closed && curMin >= closeMin) {
+        var tomorrow = new Date(zonedTimeToUtcMs(mkt.tz, p.year, p.month, p.day, 23, 0) + 2 * 36e5);
+        next = nextOpenMs(mkt, tomorrow);
+      }
+      if (nt.closed) {
+        next = nextOpenMs(mkt, now);
+      }
+      targetMs = next.ms;
+      until = "açılışa";
+    }
+
+    var diff = Math.max(0, targetMs - now.getTime());
+    var totalSec = Math.floor(diff / 1000);
+    var h = Math.floor(totalSec / 3600);
+    var m = Math.floor((totalSec % 3600) / 60);
+
+    var statusKind = isOpen ? "open" : holidayToday ? "holiday" : "closed";
+    var label = isOpen ? "Açık" : holidayToday ? "Tatil" : "Kapalı";
+
+    return {
+      isOpen: isOpen,
+      statusKind: statusKind,
+      label: label,
+      until: until,
+      text: h + " sa " + m + " dk",
+      holidayToday: holidayToday,
+      weekend: nt.reason === "weekend"
+    };
+  }
+
+  /* ----- cache / quotes (önceki ile aynı mantık) ----- */
+  function readCache() {
+    try {
+      return JSON.parse(sessionStorage.getItem(CACHE_KEY) || "{}");
+    } catch (e) {
+      return {};
+    }
+  }
+  function writeCache(map) {
+    try {
+      sessionStorage.setItem(CACHE_KEY, JSON.stringify(map));
+    } catch (e) {}
+  }
+  function getCached(symbol) {
+    var row = readCache()[symbol];
+    if (!row || Date.now() - row.t > CACHE_TTL_MS) return null;
+    return row;
+  }
+  function setCached(symbol, data) {
+    var map = readCache();
+    map[symbol] = { t: Date.now(), price: data.price, pct: data.pct };
+    writeCache(map);
+  }
+
+  function quoteSymbol(item, marketId) {
+    var s = String(item.symbol || "").toUpperCase().trim();
     if (!s) return "";
-    if (m === "bist" && s.indexOf(".") === -1) return s + ".IS";
+    if (s.indexOf(".") !== -1) return s;
+    if (marketId === "bist") return s + ".IS";
     return s;
   }
 
-  function qKey(symbol, m) {
-    return String(symbol).toUpperCase() + "|" + m;
+  async function fetchOneQuote(qSym) {
+    var hit = getCached(qSym);
+    if (hit) return { price: hit.price, pct: hit.pct, cached: true };
+    try {
+      if (window.API && API.getLiveQuote) {
+        var q = await API.getLiveQuote(qSym);
+        if (q && q.price != null && Number(q.price) > 0) {
+          var row = { price: Number(q.price), pct: q.pct != null ? q.pct : q.changePercent };
+          setCached(qSym, row);
+          return row;
+        }
+      }
+    } catch (e) {}
+    try {
+      var url =
+        "https://query1.finance.yahoo.com/v8/finance/chart/" +
+        encodeURIComponent(qSym) +
+        "?interval=1d&range=5d";
+      var res = await fetch(url);
+      var data = await res.json();
+      var meta = data && data.chart && data.chart.result && data.chart.result[0] && data.chart.result[0].meta;
+      if (meta) {
+        var px = meta.regularMarketPrice || meta.previousClose;
+        if (px != null && Number(px) > 0) {
+          var row2 = { price: Number(px), pct: meta.regularMarketChangePercent };
+          setCached(qSym, row2);
+          return row2;
+        }
+      }
+    } catch (e) {}
+    return null;
   }
 
-  function toast(msg) {
-    var el = document.getElementById("toast");
-    el.textContent = msg;
-    el.classList.add("show");
-    clearTimeout(toast._t);
-    toast._t = setTimeout(function () { el.classList.remove("show"); }, 2000);
+  async function fillPrices(items) {
+    var i = 0;
+    async function worker() {
+      while (i < items.length) {
+        var idx = i++;
+        var item = items[idx];
+        var qSym = quoteSymbol(item, state.marketId);
+        var el = document.querySelector('[data-q="' + String(qSym).replace(/"/g, '\\"') + '"]');
+        if (!el || !qSym) continue;
+        var q = await fetchOneQuote(qSym);
+        if (!q) {
+          el.innerHTML = '<div class="price skeleton">Fiyat yok</div>';
+          continue;
+        }
+        var pct = q.pct;
+        var chgCls = pct > 0 ? "up" : pct < 0 ? "down" : "";
+        var chgTxt = pct != null ? (pct > 0 ? "+" : "") + Number(pct).toFixed(2) + "%" : "";
+        el.innerHTML =
+          '<div class="price">' +
+          formatPrice(q.price) +
+          "</div>" +
+          (chgTxt ? '<div class="chg ' + chgCls + '">' + chgTxt + "</div>" : "");
+      }
+    }
+    var ws = [];
+    for (var w = 0; w < MAX_CONCURRENT; w++) ws.push(worker());
+    await Promise.all(ws);
+    updateCacheMeta();
   }
 
-  function fmt(n) {
-    if (n == null || !isFinite(Number(n))) return "—";
-    return Number(n).toLocaleString("tr-TR", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
+  function formatPrice(n) {
+    return Number(n).toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
-  function fmtPct(n) {
-    if (n == null || !isFinite(Number(n))) return "";
-    var v = Number(n);
-    return (v > 0 ? "+" : "") + v.toFixed(2) + "%";
-  }
-
-  function riskClass(r) {
-    r = String(r || "Medium").toLowerCase();
-    if (r === "low" || r === "düşük") return "risk-low";
-    if (r === "high" || r === "yüksek") return "risk-high";
-    return "risk-medium";
-  }
-
-  function riskLabel(r) {
-    r = String(r || "Medium");
-    if (/low|düşük/i.test(r)) return "Düşük";
-    if (/high|yüksek/i.test(r)) return "Yüksek";
-    return "Orta";
-  }
-
-  /** Sembole göre tekilleştir — kaç kez yazılırsa yazılsın 1 kez */
   function uniqueBySymbol(list) {
-    var seen = {};
-    var out = [];
+    var seen = {}, out = [];
     for (var i = 0; i < list.length; i++) {
-      var s = list[i];
-      var sym = String(s.symbol || "").toUpperCase().trim();
+      var sym = String(list[i].symbol || "").toUpperCase().trim();
       if (!sym || seen[sym]) continue;
       seen[sym] = true;
-      s.symbol = sym;
-      out.push(s);
+      out.push(list[i]);
     }
     return out;
   }
 
-  function getWatch() {
-    if (window.Store && Store.getWatchlist) return Store.getWatchlist();
+  function renderMarkets() {
+    document.getElementById("markets").innerHTML = MARKETS.map(function (m) {
+      var ses = marketSession(m);
+      var holidayLine = "";
+      if (ses.holidayToday) {
+        holidayLine = '<div class="mkt-holiday">🏖 ' + ses.holidayToday + "</div>";
+      } else if (ses.weekend) {
+        holidayLine = '<div class="mkt-holiday" style="color:var(--dim)">Hafta sonu</div>';
+      }
+      return (
+        '<button type="button" class="mkt' +
+        (m.id === state.marketId ? " on" : "") +
+        '" data-mkt="' +
+        m.id +
+        '">' +
+        '<div class="mkt-top">' +
+        '<div class="mkt-name"><span class="flag">' +
+        m.flag +
+        "</span>" +
+        m.name +
+        "</div>" +
+        '<span class="status ' +
+        ses.statusKind +
+        '">' +
+        ses.label +
+        "</span>" +
+        "</div>" +
+        '<div class="mkt-clock">' +
+        ses.until +
+        " <strong>" +
+        ses.text +
+        "</strong></div>" +
+        '<div class="mkt-sub">' +
+        m.label +
+        " · " +
+        pad(m.open[0]) +
+        ":" +
+        pad(m.open[1]) +
+        "–" +
+        pad(m.close[0]) +
+        ":" +
+        pad(m.close[1]) +
+        " yerel</div>" +
+        holidayLine +
+        "</button>"
+      );
+    }).join("");
+  }
+
+  async function loadMarket(id) {
+    state.marketId = id;
+    state.shown = 0;
+    document.getElementById("grid").innerHTML = "";
+    document.getElementById("empty").hidden = true;
+    var mkt = MARKETS.filter(function (m) { return m.id === id; })[0];
+    document.getElementById("metaMkt").textContent = mkt.name;
     try {
-      var raw = localStorage.getItem("nexora_watchlist_v1");
-      var d = raw ? JSON.parse(raw) : [];
-      return Array.isArray(d) ? d : [];
-    } catch (e) {
-      return [];
-    }
-  }
-
-  function isWatched(symbol, m) {
-    symbol = String(symbol).toUpperCase();
-    m = String(m).toLowerCase();
-    return getWatch().some(function (w) {
-      return w.symbol === symbol && String(w.market || "").toLowerCase() === m;
-    });
-  }
-
-  function toggleWatch(symbol, m, name) {
-    symbol = String(symbol).toUpperCase();
-    m = String(m).toLowerCase();
-    if (window.Store && Store.toggleWatch) {
-      Store.toggleWatch(symbol, m);
-    } else {
-      var list = getWatch();
-      var i = list.findIndex(function (x) {
-        return x.symbol === symbol && String(x.market || "").toLowerCase() === m;
-      });
-      if (i >= 0) list.splice(i, 1);
-      else list.push({ symbol: symbol, name: name || symbol, market: m, addedAt: Date.now() });
-      try {
-        localStorage.setItem("nexora_watchlist_v1", JSON.stringify(list));
-      } catch (e) {}
-    }
-    var on = isWatched(symbol, m);
-    toast(on ? symbol + " takibe alındı" : symbol + " listeden çıktı");
-    return on;
-  }
-
-  async function loadMarket(m) {
-    try {
-      var res = await fetch("data/" + m + ".json", { cache: "no-store" });
+      var res = await fetch(mkt.file + "?t=" + Date.now().toString().slice(0, 8));
       var data = await res.json();
-      var list = Array.isArray(data) ? data : (data.stocks || []);
-
-      var mapped = list.map(function (s) {
-        return {
-          symbol: String(s.symbol || "").toUpperCase().trim(),
-          name: s.name || s.symbol,
-          market: s.market || m.toUpperCase(),
-          country: s.country || (m === "bist" ? "TR" : "USA"),
-          flag: s.flag || (m === "bist" ? "🇹🇷" : "🇺🇸"),
-          sector: s.sector || "—",
-          plan: s.plan || "free",
-          aiScore: s.aiScore != null ? Number(s.aiScore) : 50,
-          risk: s.risk || "Medium"
-        };
-      });
-
-      return uniqueBySymbol(mapped);
+      state.list = uniqueBySymbol(Array.isArray(data) ? data : []);
     } catch (e) {
-      return [];
+      state.list = [];
     }
+    applyFilter();
+    renderMarkets();
   }
 
-  async function fetchQuote(symbol, m) {
-    var key = qKey(symbol, m);
-    if (quoteCache[key] && Date.now() - quoteCache[key].ts < 60000) {
-      return quoteCache[key].data;
-    }
-
-    var data = null;
-    var sym = ysym(symbol, m);
-
-    if (window.API && typeof API.getLiveQuote === "function") {
-      try {
-        var q = await API.getLiveQuote(sym);
-        if (q && q.price != null && isFinite(Number(q.price)) && Number(q.price) > 0) {
-          data = {
-            price: Number(q.price),
-            pct: q.pct != null ? Number(q.pct) : (q.changePercent != null ? Number(q.changePercent) : null),
-            tag: null
-          };
-        }
-      } catch (e) {}
-    }
-
-    if (!data) {
-      try {
-        var yUrl =
-          "https://query1.finance.yahoo.com/v8/finance/chart/" +
-          encodeURIComponent(sym) +
-          "?range=5d&interval=1d";
-        var proxies = [
-          "https://api.allorigins.win/raw?url=",
-          "https://corsproxy.io/?"
-        ];
-        for (var p = 0; p < proxies.length && !data; p++) {
-          try {
-            var res = await fetch(proxies[p] + encodeURIComponent(yUrl));
-            if (!res.ok) continue;
-            var json = await res.json();
-            var r = json && json.chart && json.chart.result && json.chart.result[0];
-            if (!r || !r.meta) continue;
-            var meta = r.meta;
-            var price =
-              meta.regularMarketPrice != null
-                ? meta.regularMarketPrice
-                : meta.previousClose;
-            var prev =
-              meta.chartPreviousClose != null
-                ? meta.chartPreviousClose
-                : meta.previousClose;
-            if (price == null || !isFinite(Number(price)) || Number(price) <= 0) continue;
-            var pct = null;
-            if (prev != null && Number(prev) !== 0) {
-              pct = ((Number(price) - Number(prev)) / Number(prev)) * 100;
-            }
-            var isClose =
-              meta.regularMarketPrice == null ||
-              meta.marketState === "CLOSED" ||
-              meta.marketState === "PRE" ||
-              meta.marketState === "POST";
-            data = {
-              price: Number(price),
-              pct: pct,
-              tag: isClose ? "Son kapanış" : null
-            };
-          } catch (e) {}
-        }
-      } catch (e) {}
-    }
-
-    if (!data && window.API && typeof API.getHistory === "function") {
-      try {
-        var hist = await API.getHistory(sym, "5d");
-        if (Array.isArray(hist) && hist.length) {
-          var last = hist[hist.length - 1];
-          var close = Number(last.close != null ? last.close : last.value);
-          var prevH =
-            hist.length > 1
-              ? Number(
-                  hist[hist.length - 2].close != null
-                    ? hist[hist.length - 2].close
-                    : hist[hist.length - 2].value
-                )
-              : null;
-          if (isFinite(close) && close > 0) {
-            data = {
-              price: close,
-              pct: prevH && prevH > 0 ? ((close - prevH) / prevH) * 100 : null,
-              tag: "Son kapanış"
-            };
-          }
-        }
-      } catch (e) {}
-    }
-
-    if (data) {
-      quoteCache[key] = { data: data, ts: Date.now() };
-    }
-    return data;
+  function applyFilter() {
+    var q = (document.getElementById("q").value || "").trim().toLowerCase();
+    state.filtered = state.list.filter(function (item) {
+      if (!q) return true;
+      return (
+        String(item.symbol || "").toLowerCase().indexOf(q) !== -1 ||
+        String(item.name || "").toLowerCase().indexOf(q) !== -1
+      );
+    });
+    state.shown = 0;
+    document.getElementById("grid").innerHTML = "";
+    document.getElementById("metaCount").textContent = String(state.filtered.length);
+    renderMore();
   }
 
-  function filterList() {
-    var q = String(document.getElementById("q").value || "")
-      .trim()
-      .toLowerCase();
-    if (!q) {
-      filtered = stocks.slice();
-    } else {
-      filtered = stocks.filter(function (s) {
-        return (
-          s.symbol.toLowerCase().indexOf(q) !== -1 ||
-          String(s.name || "").toLowerCase().indexOf(q) !== -1 ||
-          String(s.sector || "").toLowerCase().indexOf(q) !== -1
-        );
-      });
-    }
-    // Filtre sonrası da garanti tekilleştir
-    filtered = uniqueBySymbol(filtered);
-    page = 0;
-    document.getElementById("countLabel").textContent = String(filtered.length);
-    renderPage();
-  }
-
-  function pageSlice() {
-    var start = page * PAGE_SIZE;
-    return filtered.slice(start, start + PAGE_SIZE);
-  }
-
-  function renderPage() {
-    var grid = document.getElementById("grid");
-    var slice = pageSlice();
-    var totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-
-    document.getElementById("pager").hidden = filtered.length <= PAGE_SIZE;
-    document.getElementById("pageInfo").textContent =
-      page + 1 + " / " + totalPages;
-    document.getElementById("btnPrev").disabled = page <= 0;
-    document.getElementById("btnNext").disabled = page >= totalPages - 1;
-
-    if (!filtered.length) {
-      grid.innerHTML =
-        '<div class="empty"><strong>Sonuç yok</strong>Farklı bir arama veya piyasa dene</div>';
+  function renderMore() {
+    var slice = state.filtered.slice(state.shown, state.shown + PAGE_SIZE);
+    if (!state.filtered.length) {
+      document.getElementById("empty").hidden = false;
+      document.getElementById("btnMore").hidden = true;
       return;
     }
-
-    grid.innerHTML = slice
-      .map(function (s) {
-        var score = Math.max(0, Math.min(100, s.aiScore || 50));
-        var watched = isWatched(s.symbol, market);
+    document.getElementById("empty").hidden = true;
+    var html = slice
+      .map(function (item) {
+        var sym = String(item.symbol || "").toUpperCase();
+        var qSym = quoteSymbol(item, state.marketId);
+        var score = item.aiScore != null ? Number(item.aiScore) : 70;
+        var watched = state.watch.indexOf(sym) !== -1;
+        var flag = item.flag || (state.marketId === "bist" ? "🇹🇷" : "🇺🇸");
         return (
-          '<article class="card" data-sym="' +
-          s.symbol +
-          '">' +
-          '<div class="card-top">' +
-          "<div>" +
-          '<div class="card-sym"><span class="flag">' +
-          (s.flag || "") +
+          '<article class="card">' +
+          '<div class="card-top"><div>' +
+          '<div class="sym"><span class="fg">' +
+          flag +
           "</span>" +
-          s.symbol +
-          "</div>" +
-          '<div class="card-name">' +
-          (s.name || "") +
-          "</div>" +
-          "</div>" +
-          '<div class="card-mkt">' +
-          (s.market || market.toUpperCase()) +
-          "</div>" +
-          "</div>" +
-          '<div class="card-price" data-price>—</div>' +
-          '<div class="card-pct" data-pct></div>' +
-          '<div class="card-meta">' +
-          "<span>Sektör: " +
-          (s.sector || "—") +
-          "</span>" +
-          '<span class="risk ' +
-          riskClass(s.risk) +
-          '">Risk: ' +
-          riskLabel(s.risk) +
-          "</span>" +
-          "</div>" +
-          '<div class="score-row">' +
-          "<span>AI</span>" +
-          '<div class="score-bar"><div class="score-fill" style="width:' +
+          sym +
+          '</div><div class="name">' +
+          (item.name || "") +
+          "</div></div>" +
+          '<div class="price-block" data-q="' +
+          qSym +
+          '"><div class="price skeleton">…</div></div></div>' +
+          '<div class="card-mid"><div class="bar-label"><span>AI skoru</span><span>' +
           score +
-          '%"></div></div>' +
-          '<span class="score-num">' +
-          score +
-          "</span>" +
-          "</div>" +
+          '/100</span></div><div class="bar"><i style="width:' +
+          Math.min(100, score) +
+          '%"></i></div>' +
+          '<div class="tags"><span class="tag">' +
+          (item.sector || "—") +
+          '</span><span class="tag">' +
+          (item.risk || "—") +
+          "</span></div></div>" +
           '<div class="card-actions">' +
-          '<a class="btn btn-soft btn-sm" href="ultra-grafik.html?symbol=' +
-          encodeURIComponent(s.symbol) +
-          "&market=" +
-          encodeURIComponent(market) +
+          '<a class="btn-ghost" href="ultra-grafik.html?s=' +
+          encodeURIComponent(qSym) +
           '">Grafik</a>' +
-          '<a class="btn btn-soft btn-sm" href="ai-analiz.html?symbol=' +
-          encodeURIComponent(s.symbol) +
-          "&market=" +
-          encodeURIComponent(market) +
-          '">AI</a>' +
-          '<button type="button" class="btn btn-sm btn-watch' +
+          '<button type="button" class="btn-watch' +
           (watched ? " on" : "") +
           '" data-watch="' +
-          s.symbol +
+          sym +
           '">' +
-          (watched ? "Takiptesin" : "Takibe al") +
-          "</button>" +
-          "</div>" +
-          "</article>"
+          (watched ? "Takipten çık" : "Takip et") +
+          "</button></div></article>"
         );
       })
       .join("");
-
+    document.getElementById("grid").insertAdjacentHTML("beforeend", html);
+    state.shown += slice.length;
+    document.getElementById("btnMore").hidden = state.shown >= state.filtered.length;
     fillPrices(slice);
   }
 
-  async function fillPrices(list) {
-    var token = loadToken;
-    for (var i = 0; i < list.length; i++) {
-      if (token !== loadToken) return;
-      var s = list[i];
-      var card = document.querySelector('.card[data-sym="' + s.symbol + '"]');
-      if (!card) continue;
-
-      var priceEl = card.querySelector("[data-price]");
-      var pctEl = card.querySelector("[data-pct]");
-      if (!priceEl) continue;
-
-      if (priceEl.textContent === "—") {
-        priceEl.innerHTML = '<div class="skel" style="width:72px;height:1.1em"></div>';
-      }
-
-      var q = await fetchQuote(s.symbol, market);
-      if (token !== loadToken) return;
-
-      if (q && q.price != null) {
-        var cls = q.pct > 0 ? "up" : q.pct < 0 ? "down" : "";
-        priceEl.innerHTML =
-          '<span class="' +
-          cls +
-          '">' +
-          fmt(q.price) +
-          "</span>" +
-          (q.tag ? '<span class="tag">' + q.tag + "</span>" : "");
-        pctEl.innerHTML = q.pct != null
-          ? '<span class="' + cls + '">' + fmtPct(q.pct) + "</span>"
-          : "";
-      } else {
-        priceEl.textContent = "—";
-        pctEl.textContent = "";
-      }
-    }
-  }
-
-  async function switchMarket(m) {
-    market = m;
-    loadToken++;
-    page = 0;
-    quoteCache = {};
-
-    document.querySelectorAll("#markets .chip").forEach(function (c) {
-      c.classList.toggle("on", c.getAttribute("data-m") === m);
-    });
-
-    document.getElementById("grid").innerHTML =
-      '<div class="loading"><strong>Yükleniyor…</strong>' +
-      m.toUpperCase() +
-      " listesi</div>";
-
-    stocks = await loadMarket(m);
-    filterList();
+  function updateCacheMeta() {
+    var n = Object.keys(readCache()).length;
+    document.getElementById("metaCache").textContent =
+      "Önbellek: " + n + " · TTL " + CACHE_TTL_MS / 1000 + "s";
   }
 
   document.getElementById("markets").addEventListener("click", function (e) {
-    var c = e.target.closest("[data-m]");
-    if (!c) return;
-    switchMarket(c.getAttribute("data-m"));
+    var btn = e.target.closest("[data-mkt]");
+    if (btn) loadMarket(btn.getAttribute("data-mkt"));
   });
-
+  document.getElementById("btnMore").addEventListener("click", renderMore);
+  var qTimer;
   document.getElementById("q").addEventListener("input", function () {
-    filterList();
+    clearTimeout(qTimer);
+    qTimer = setTimeout(applyFilter, 200);
   });
-
   document.getElementById("btnRefresh").addEventListener("click", function () {
-    quoteCache = {};
-    loadToken++;
-    toast("Fiyatlar yenileniyor…");
-    renderPage();
+    try { sessionStorage.removeItem(CACHE_KEY); } catch (e) {}
+    state.shown = 0;
+    document.getElementById("grid").innerHTML = "";
+    renderMore();
   });
-
-  document.getElementById("btnPrev").addEventListener("click", function () {
-    if (page > 0) {
-      page--;
-      loadToken++;
-      renderPage();
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  });
-
-  document.getElementById("btnNext").addEventListener("click", function () {
-    var totalPages = Math.ceil(filtered.length / PAGE_SIZE);
-    if (page < totalPages - 1) {
-      page++;
-      loadToken++;
-      renderPage();
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  });
-
   document.getElementById("grid").addEventListener("click", function (e) {
     var b = e.target.closest("[data-watch]");
     if (!b) return;
     var sym = b.getAttribute("data-watch");
-    var card = b.closest(".card");
-    var name = card ? (card.querySelector(".card-name") || {}).textContent : sym;
-    var on = toggleWatch(sym, market, name);
-    b.classList.toggle("on", on);
-    b.textContent = on ? "Takiptesin" : "Takibe al";
+    var i = state.watch.indexOf(sym);
+    if (i === -1) state.watch.push(sym);
+    else state.watch.splice(i, 1);
+    saveWatch();
+    b.classList.toggle("on", state.watch.indexOf(sym) !== -1);
+    b.textContent = state.watch.indexOf(sym) !== -1 ? "Takipten çık" : "Takip et";
   });
 
-  var params = new URLSearchParams(location.search);
-  var m0 = (params.get("market") || "bist").toLowerCase();
-  if (["bist", "nasdaq", "nyse"].indexOf(m0) === -1) m0 = "bist";
-  if (params.get("q") || params.get("symbol")) {
-    document.getElementById("q").value = String(
-      params.get("q") || params.get("symbol") || ""
-    ).toUpperCase();
-  }
-
-  switchMarket(m0);
+  loadMarket("bist");
+  setInterval(renderMarkets, 30000);
+  updateCacheMeta();
 })();
   </script>
 </body>
