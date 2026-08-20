@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Hisse Kartları · Nexora AI</title>
-  <meta name="description" content="BIST, NASDAQ, NYSE hisse listesi. Açık/kapalı, tatil, arama, tekil semboller." />
+  <meta name="description" content="BIST, NASDAQ, NYSE ücretsiz. Diğer piyasalar Premium / Elite." />
   <meta name="theme-color" content="#0d0d1a" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
@@ -21,6 +21,8 @@
       --down: #f87171;
       --amber: #fbbf24;
       --grad: linear-gradient(135deg, #00f0ff, #007bff 50%, #7b2cff);
+      --prem: linear-gradient(135deg, #fbbf24, #f59e0b 45%, #ea580c);
+      --elite: linear-gradient(135deg, #c4b5fd, #7b2cff 55%, #4c1d95);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -74,11 +76,11 @@
       padding: 8px 12px; border-radius: 9px;
       font-size: 12px; font-weight: 700;
     }
-    .nav-right .ghost {
+    .ghost {
       box-shadow: inset 0 0 0 1px var(--border);
       background: rgba(18, 18, 32, 0.7);
     }
-    .nav-right .primary {
+    .primary-btn {
       color: #0d0d1a;
       background: var(--grad);
     }
@@ -113,16 +115,34 @@
       line-height: 1.55;
     }
 
-    /* Piyasa sekmeleri */
+    .section-label {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--faint);
+      margin: 4px 0 8px;
+    }
+
     .markets {
       display: grid;
       grid-template-columns: 1fr;
       gap: 8px;
-      margin-bottom: 16px;
+      margin-bottom: 10px;
     }
-    @media (min-width: 640px) {
+    @media (min-width: 560px) {
       .markets { grid-template-columns: repeat(3, 1fr); }
     }
+    .markets-locked {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    @media (min-width: 560px) {
+      .markets-locked { grid-template-columns: repeat(3, 1fr); }
+    }
+
     .mkt {
       width: 100%;
       text-align: left;
@@ -130,7 +150,8 @@
       border-radius: 16px;
       background: var(--panel);
       border: 1px solid var(--border);
-      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      position: relative;
     }
     .mkt:hover {
       transform: translateY(-1px);
@@ -140,17 +161,27 @@
       border-color: rgba(0, 240, 255, 0.5);
       box-shadow: 0 0 0 1px rgba(0, 240, 255, 0.12), 0 10px 28px rgba(0,0,0,0.25);
     }
+    .mkt.locked {
+      opacity: 0.92;
+      border-style: dashed;
+      border-color: rgba(251, 191, 36, 0.35);
+    }
+    .mkt.locked:hover {
+      border-color: rgba(251, 191, 36, 0.55);
+      box-shadow: 0 8px 24px rgba(251, 191, 36, 0.12);
+    }
     .mkt-top {
       display: flex; justify-content: space-between; align-items: center;
-      gap: 8px; margin-bottom: 8px;
+      gap: 6px; margin-bottom: 8px;
     }
     .mkt-name {
-      font-size: 14.5px; font-weight: 800;
-      display: flex; align-items: center; gap: 7px;
+      font-size: 14px; font-weight: 800;
+      display: flex; align-items: center; gap: 6px;
     }
     .status {
-      font-size: 10.5px; font-weight: 800;
-      padding: 4px 9px; border-radius: 999px;
+      font-size: 10px; font-weight: 800;
+      padding: 3px 8px; border-radius: 999px;
+      white-space: nowrap;
     }
     .status.open {
       color: #022c22;
@@ -164,21 +195,31 @@
       color: #0d0d1a;
       background: linear-gradient(135deg, #fbbf24, #f59e0b);
     }
+    .lock-badge {
+      font-size: 10px; font-weight: 800;
+      padding: 3px 8px; border-radius: 999px;
+      color: #0d0d1a;
+      background: var(--prem);
+    }
+    .lock-badge.elite {
+      background: var(--elite);
+      color: #fff;
+    }
     .mkt-count {
-      font-size: 1.35rem;
+      font-size: 1.25rem;
       font-weight: 800;
       letter-spacing: -0.03em;
       font-variant-numeric: tabular-nums;
     }
     .mkt-count span {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
       color: var(--dim);
-      margin-left: 4px;
+      margin-left: 3px;
     }
     .mkt-clock {
-      margin-top: 6px;
-      font-size: 12.5px;
+      margin-top: 5px;
+      font-size: 12px;
       font-weight: 600;
       color: var(--muted);
     }
@@ -187,10 +228,76 @@
       margin-top: 4px;
       font-size: 11px;
       color: var(--faint);
-      line-height: 1.4;
     }
 
-    /* Arama */
+    /* Premium kilit paneli */
+    .gate {
+      display: none;
+      margin-bottom: 16px;
+      padding: 20px 16px;
+      border-radius: 18px;
+      background:
+        linear-gradient(145deg, rgba(251, 191, 36, 0.14), rgba(123, 44, 255, 0.12)),
+        var(--panel);
+      border: 1px solid rgba(251, 191, 36, 0.4);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+    }
+    .gate.show { display: block; }
+    .gate h3 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .gate h3 span {
+      background: var(--prem);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .gate p {
+      margin-top: 8px;
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .gate-pills {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      margin: 14px 0;
+    }
+    .gate-pills span {
+      font-size: 12px; font-weight: 700;
+      padding: 6px 12px; border-radius: 999px;
+    }
+    .gate-pills .p {
+      color: #0d0d1a;
+      background: var(--prem);
+    }
+    .gate-pills .e {
+      color: #fff;
+      background: var(--elite);
+    }
+    .gate-actions {
+      display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .gate-actions a {
+      padding: 11px 16px;
+      border-radius: 11px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .btn-prem {
+      color: #0d0d1a;
+      background: var(--prem);
+      box-shadow: 0 4px 18px rgba(251, 191, 36, 0.35);
+    }
+    .btn-elite {
+      color: #fff;
+      background: var(--elite);
+      box-shadow: 0 4px 18px rgba(123, 44, 255, 0.35);
+    }
+    .btn-soft {
+      color: var(--muted);
+      box-shadow: inset 0 0 0 1px var(--border);
+    }
+
     .search-bar {
       display: flex;
       align-items: center;
@@ -215,7 +322,6 @@
       font-weight: 700;
       color: var(--dim);
       padding: 4px 8px;
-      border-radius: 8px;
       display: none;
     }
     .search-bar .clear.show { display: block; }
@@ -229,7 +335,6 @@
     }
     .list-meta strong { color: var(--muted); }
 
-    /* Alt alta modern satırlar */
     .list {
       display: flex;
       flex-direction: column;
@@ -245,21 +350,14 @@
       border-radius: 16px;
       background: var(--panel);
       border: 1px solid var(--border);
-      transition: border-color 0.15s, background 0.15s;
+      transition: border-color 0.15s;
     }
-    .row:hover {
-      border-color: rgba(0, 240, 255, 0.35);
-      background: rgba(22, 22, 40, 0.98);
-    }
+    .row:hover { border-color: rgba(0, 240, 255, 0.35); }
 
-    .row-left { min-width: 0; }
     .row-sym {
       font-size: 15px;
       font-weight: 800;
-      letter-spacing: -0.02em;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      display: flex; align-items: center; gap: 6px;
     }
     .row-name {
       font-size: 12.5px;
@@ -283,35 +381,23 @@
       box-shadow: inset 0 0 0 1px var(--border);
     }
     .ai-mini {
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      display: flex; align-items: center; gap: 6px;
       margin-top: 8px;
     }
-    .ai-mini .lab {
-      font-size: 10px;
-      font-weight: 700;
-      color: var(--faint);
-    }
+    .ai-mini .lab { font-size: 10px; font-weight: 700; color: var(--faint); }
     .ai-bar {
-      flex: 1;
-      max-width: 80px;
-      height: 4px;
+      flex: 1; max-width: 72px; height: 4px;
       border-radius: 99px;
       background: rgba(148, 163, 184, 0.15);
       overflow: hidden;
     }
     .ai-bar i {
-      display: block;
-      height: 100%;
+      display: block; height: 100%;
       border-radius: 99px;
       background: var(--grad);
     }
     .ai-mini .sc {
-      font-size: 11px;
-      font-weight: 800;
-      color: var(--muted);
-      font-variant-numeric: tabular-nums;
+      font-size: 11px; font-weight: 800; color: var(--muted);
     }
 
     .row-right {
@@ -326,11 +412,6 @@
       font-weight: 800;
       font-variant-numeric: tabular-nums;
     }
-    .price.sk {
-      color: var(--faint);
-      font-size: 12px;
-      font-weight: 600;
-    }
     .chg {
       font-size: 12px;
       font-weight: 700;
@@ -339,12 +420,42 @@
     .chg.up { color: var(--up); }
     .chg.down { color: var(--down); }
 
-    .row-actions {
-      display: flex;
-      gap: 6px;
+    /* Yükleniyor iskelet */
+    .skel {
+      display: inline-block;
+      height: 14px;
+      width: 72px;
+      border-radius: 6px;
+      background: linear-gradient(
+        90deg,
+        rgba(148, 163, 184, 0.12) 0%,
+        rgba(0, 240, 255, 0.22) 45%,
+        rgba(148, 163, 184, 0.12) 100%
+      );
+      background-size: 200% 100%;
+      animation: shimmer 1.1s ease-in-out infinite;
     }
-    .row-actions a,
-    .row-actions button {
+    .skel.sm { width: 48px; height: 11px; margin-top: 4px; }
+    @keyframes shimmer {
+      0% { background-position: 100% 0; }
+      100% { background-position: -100% 0; }
+    }
+    .pulse-dot {
+      display: inline-block;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--cyan);
+      margin-right: 6px;
+      animation: blink 1s ease-in-out infinite;
+      vertical-align: middle;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.25; }
+    }
+
+    .row-actions { display: flex; gap: 6px; }
+    .row-actions a, .row-actions button {
       padding: 7px 10px;
       border-radius: 9px;
       font-size: 11.5px;
@@ -366,11 +477,10 @@
 
     .empty {
       text-align: center;
-      padding: 48px 16px;
+      padding: 40px 16px;
       color: var(--faint);
       font-size: 14px;
     }
-
     .load-more {
       display: block;
       width: 100%;
@@ -383,7 +493,17 @@
       background: var(--panel);
       box-shadow: inset 0 0 0 1px var(--border);
     }
-    .load-more:hover { color: var(--text); }
+
+    .loading-banner {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--cyan);
+      margin-bottom: 10px;
+    }
+    .loading-banner.show { display: flex; }
 
     footer {
       text-align: center;
@@ -392,11 +512,7 @@
       color: var(--faint);
       border-top: 1px solid var(--border);
     }
-    footer a {
-      color: var(--dim);
-      margin: 0 6px;
-      font-weight: 600;
-    }
+    footer a { color: var(--dim); margin: 0 6px; font-weight: 600; }
   </style>
 </head>
 <body>
@@ -409,9 +525,8 @@
         Nexora <em>AI</em>
       </a>
       <div class="nav-right">
-        <a class="ghost" href="ara.html">Ara</a>
         <a class="ghost" href="oyun.html">Lig</a>
-        <a class="primary" href="ultra-grafik.html">Grafik</a>
+        <a class="primary-btn" href="premium.html">Planlar</a>
       </div>
     </nav>
 
@@ -419,21 +534,48 @@
       <header class="page-head">
         <h1>Hisse <span>kartları</span></h1>
         <p>
-          Borsaya dokun → hisse sayısı ve liste. Arama anlık süzülür; her sembol bir kez.
+          BIST, NASDAQ ve NYSE herkese açık. Diğer borsalar Premium ve Elite
+          üyeliğe özeldir.
         </p>
       </header>
 
       <div class="note">
-        Hafta sonu ve tatiller kapalı. Fiyatlar ~60 sn önbellekli (gereksiz API yok).
-        Veriler gecikmeli olabilir · tavsiye değildir.
+        Fiyatlar gecikmeli olabilir · 60 sn önbellek · yatırım tavsiyesi değildir.
+        JSON: <code style="color:var(--cyan)">data/*.json → stocks[]</code>
       </div>
 
-      <div class="markets" id="markets"></div>
+      <div class="section-label">Ücretsiz piyasalar</div>
+      <div class="markets" id="marketsFree"></div>
 
-      <div class="search-bar">
+      <div class="section-label">Üyelik ile</div>
+      <div class="markets-locked" id="marketsLocked"></div>
+
+      <div class="gate" id="gate">
+        <h3>🔒 <span id="gateTitle">Bu piyasa kilitli</span></h3>
+        <p id="gateText">
+          Bu bölüm yalnızca Premium ve Elite üyelere açıktır. Ücretsiz planda
+          BIST, NASDAQ ve NYSE listelerini kullanmaya devam edebilirsin.
+        </p>
+        <div class="gate-pills">
+          <span class="p">Pro · Premium</span>
+          <span class="e">Elite</span>
+        </div>
+        <div class="gate-actions">
+          <a class="btn-prem" href="premium.html">Planları gör</a>
+          <a class="btn-elite" href="register.html?plan=elite">Elite’e geç</a>
+          <button type="button" class="btn-soft" id="gateClose">Kapat</button>
+        </div>
+      </div>
+
+      <div class="search-bar" id="searchWrap">
         <span style="color:var(--faint);font-weight:700">⌕</span>
-        <input id="q" type="search" placeholder="THYAO, Aselsan, Apple…" autocomplete="off" enterkeyhint="search" />
+        <input id="q" type="search" placeholder="THYAO, Apple, Aselsan…" autocomplete="off" />
         <button type="button" class="clear" id="btnClear">Temizle</button>
+      </div>
+
+      <div class="loading-banner" id="loadBanner">
+        <span class="pulse-dot"></span>
+        Fiyatlar güncelleniyor…
       </div>
 
       <div class="list-meta">
@@ -443,13 +585,13 @@
 
       <div class="list" id="list"></div>
       <button type="button" class="load-more" id="btnMore" hidden>Daha fazla</button>
-      <div class="empty" id="empty" hidden>Eşleşen hisse yok. Yazımı veya borsayı değiştir.</div>
+      <div class="empty" id="empty" hidden>Eşleşen hisse yok.</div>
     </main>
 
     <footer>
       <a href="index.html">Ana</a>
       <a href="portfolio.html">Portföy</a>
-      <a href="oyun.html">Lig</a>
+      <a href="premium.html">Premium</a>
       <a href="about.html">Hakkımızda</a>
     </footer>
   </div>
@@ -461,84 +603,7 @@
 (function () {
   "use strict";
 
-  var HOLIDAYS = {
-    bist: {
-      "2025-01-01": "Yılbaşı",
-      "2025-03-30": "Ramazan Bayramı arifesi",
-      "2025-03-31": "Ramazan Bayramı",
-      "2025-04-01": "Ramazan Bayramı",
-      "2025-04-02": "Ramazan Bayramı",
-      "2025-04-23": "23 Nisan",
-      "2025-05-01": "1 Mayıs",
-      "2025-05-19": "19 Mayıs",
-      "2025-06-05": "Kurban Bayramı arifesi",
-      "2025-06-06": "Kurban Bayramı",
-      "2025-06-07": "Kurban Bayramı",
-      "2025-06-08": "Kurban Bayramı",
-      "2025-06-09": "Kurban Bayramı",
-      "2025-07-15": "15 Temmuz",
-      "2025-08-30": "30 Ağustos",
-      "2025-10-28": "29 Ekim arifesi",
-      "2025-10-29": "29 Ekim",
-      "2026-01-01": "Yılbaşı",
-      "2026-03-19": "Ramazan Bayramı arifesi",
-      "2026-03-20": "Ramazan Bayramı",
-      "2026-03-21": "Ramazan Bayramı",
-      "2026-03-22": "Ramazan Bayramı",
-      "2026-04-23": "23 Nisan",
-      "2026-05-01": "1 Mayıs",
-      "2026-05-19": "19 Mayıs",
-      "2026-05-26": "Kurban Bayramı arifesi",
-      "2026-05-27": "Kurban Bayramı",
-      "2026-05-28": "Kurban Bayramı",
-      "2026-05-29": "Kurban Bayramı",
-      "2026-05-30": "Kurban Bayramı",
-      "2026-07-15": "15 Temmuz",
-      "2026-08-30": "30 Ağustos",
-      "2026-10-28": "29 Ekim arifesi",
-      "2026-10-29": "29 Ekim",
-      "2027-01-01": "Yılbaşı",
-      "2027-04-23": "23 Nisan",
-      "2027-05-01": "1 Mayıs",
-      "2027-05-19": "19 Mayıs",
-      "2027-07-15": "15 Temmuz",
-      "2027-08-30": "30 Ağustos",
-      "2027-10-29": "29 Ekim"
-    },
-    us: {
-      "2025-01-01": "New Year",
-      "2025-01-20": "MLK Day",
-      "2025-02-17": "Presidents' Day",
-      "2025-04-18": "Good Friday",
-      "2025-05-26": "Memorial Day",
-      "2025-06-19": "Juneteenth",
-      "2025-07-04": "Independence Day",
-      "2025-09-01": "Labor Day",
-      "2025-11-27": "Thanksgiving",
-      "2025-12-25": "Christmas",
-      "2026-01-01": "New Year",
-      "2026-01-19": "MLK Day",
-      "2026-02-16": "Presidents' Day",
-      "2026-04-03": "Good Friday",
-      "2026-05-25": "Memorial Day",
-      "2026-06-19": "Juneteenth",
-      "2026-07-03": "Independence Day (obs.)",
-      "2026-09-07": "Labor Day",
-      "2026-11-26": "Thanksgiving",
-      "2026-12-25": "Christmas",
-      "2027-01-01": "New Year",
-      "2027-01-18": "MLK Day",
-      "2027-02-15": "Presidents' Day",
-      "2027-03-26": "Good Friday",
-      "2027-05-31": "Memorial Day",
-      "2027-06-18": "Juneteenth (obs.)",
-      "2027-07-05": "Independence Day (obs.)",
-      "2027-09-06": "Labor Day",
-      "2027-11-25": "Thanksgiving",
-      "2027-12-24": "Christmas (obs.)"
-    }
-  };
-
+  /* Ücretsiz: BIST + NASDAQ + NYSE | Kilitli: diğerleri */
   var MARKETS = [
     {
       id: "bist",
@@ -550,6 +615,8 @@
       close: [18, 0],
       holidaySet: "bist",
       file: "data/bist.json",
+      plan: "free",
+      suffix: ".IS",
       count: null
     },
     {
@@ -562,6 +629,8 @@
       close: [16, 0],
       holidaySet: "us",
       file: "data/nasdaq.json",
+      plan: "free",
+      suffix: "",
       count: null
     },
     {
@@ -574,14 +643,123 @@
       close: [16, 0],
       holidaySet: "us",
       file: "data/nyse.json",
+      plan: "free",
+      suffix: "",
+      count: null
+    },
+    {
+      id: "lse",
+      name: "LSE",
+      flag: "🇬🇧",
+      label: "Londra",
+      tz: "Europe/London",
+      open: [8, 0],
+      close: [16, 30],
+      holidaySet: "us",
+      file: "data/lse.json",
+      plan: "premium",
+      suffix: ".L",
+      count: null
+    },
+    {
+      id: "xetra",
+      name: "XETRA",
+      flag: "🇩🇪",
+      label: "Frankfurt",
+      tz: "Europe/Berlin",
+      open: [9, 0],
+      close: [17, 30],
+      holidaySet: "us",
+      file: "data/xetra.json",
+      plan: "premium",
+      suffix: ".DE",
+      count: null
+    },
+    {
+      id: "tse",
+      name: "TSE",
+      flag: "🇯🇵",
+      label: "Tokyo",
+      tz: "Asia/Tokyo",
+      open: [9, 0],
+      close: [15, 0],
+      holidaySet: "us",
+      file: "data/tse.json",
+      plan: "premium",
+      suffix: ".T",
+      count: null
+    },
+    {
+      id: "tsx",
+      name: "TSX",
+      flag: "🇨🇦",
+      label: "Toronto",
+      tz: "America/Toronto",
+      open: [9, 30],
+      close: [16, 0],
+      holidaySet: "us",
+      file: "data/tsx.json",
+      plan: "premium",
+      suffix: ".TO",
+      count: null
+    },
+    {
+      id: "hkex",
+      name: "HKEX",
+      flag: "🇭🇰",
+      label: "Hong Kong",
+      tz: "Asia/Hong_Kong",
+      open: [9, 30],
+      close: [16, 0],
+      holidaySet: "us",
+      file: "data/hkex.json",
+      plan: "elite",
+      suffix: ".HK",
+      count: null
+    },
+    {
+      id: "otc",
+      name: "OTCQB",
+      flag: "🇺🇸",
+      label: "OTC",
+      tz: "America/New_York",
+      open: [9, 30],
+      close: [16, 0],
+      holidaySet: "us",
+      file: "data/otc.json",
+      plan: "elite",
+      suffix: "",
       count: null
     }
   ];
 
-  var CACHE_TTL_MS = 60 * 1000;
+  var HOLIDAYS = {
+    bist: {
+      "2025-01-01": "Yılbaşı", "2025-04-23": "23 Nisan", "2025-05-01": "1 Mayıs",
+      "2025-05-19": "19 Mayıs", "2025-07-15": "15 Temmuz", "2025-08-30": "30 Ağustos",
+      "2025-10-29": "29 Ekim",
+      "2026-01-01": "Yılbaşı", "2026-03-20": "Ramazan Bayramı", "2026-03-21": "Ramazan Bayramı",
+      "2026-03-22": "Ramazan Bayramı", "2026-04-23": "23 Nisan", "2026-05-01": "1 Mayıs",
+      "2026-05-19": "19 Mayıs", "2026-05-27": "Kurban Bayramı", "2026-05-28": "Kurban Bayramı",
+      "2026-05-29": "Kurban Bayramı", "2026-05-30": "Kurban Bayramı", "2026-07-15": "15 Temmuz",
+      "2026-08-30": "30 Ağustos", "2026-10-29": "29 Ekim"
+    },
+    us: {
+      "2025-01-01": "New Year", "2025-01-20": "MLK", "2025-02-17": "Presidents",
+      "2025-04-18": "Good Friday", "2025-05-26": "Memorial", "2025-06-19": "Juneteenth",
+      "2025-07-04": "Independence", "2025-09-01": "Labor", "2025-11-27": "Thanksgiving",
+      "2025-12-25": "Christmas",
+      "2026-01-01": "New Year", "2026-01-19": "MLK", "2026-02-16": "Presidents",
+      "2026-04-03": "Good Friday", "2026-05-25": "Memorial", "2026-06-19": "Juneteenth",
+      "2026-07-03": "Independence", "2026-09-07": "Labor", "2026-11-26": "Thanksgiving",
+      "2026-12-25": "Christmas"
+    }
+  };
+
+  var CACHE_TTL = 60000;
   var CACHE_KEY = "nexora_quote_cache_v1";
   var PAGE = 40;
-  var MAX_PARALLEL = 4;
+  var PARALLEL = 4;
 
   var state = {
     marketId: "bist",
@@ -589,15 +767,11 @@
     filtered: [],
     shown: 0,
     watch: loadWatch(),
-    countsLoaded: false
+    loadingQuotes: 0
   };
 
   function loadWatch() {
     try {
-      if (window.Store && Store.getWatchlist) {
-        var w = Store.getWatchlist();
-        if (Array.isArray(w)) return w.map(function (x) { return String(x).toUpperCase(); });
-      }
       var raw = localStorage.getItem("nexora_watchlist_v1");
       var arr = raw ? JSON.parse(raw) : [];
       return Array.isArray(arr)
@@ -607,21 +781,27 @@
       return [];
     }
   }
-
   function saveWatch() {
     try {
-      if (window.Store && Store.setWatchlist) Store.setWatchlist(state.watch.slice());
-      else {
-        localStorage.setItem(
-          "nexora_watchlist_v1",
-          JSON.stringify(state.watch.map(function (s) { return { symbol: s }; }))
-        );
-      }
+      localStorage.setItem(
+        "nexora_watchlist_v1",
+        JSON.stringify(state.watch.map(function (s) { return { symbol: s }; }))
+      );
     } catch (e) {}
   }
 
   function pad(n) {
     return n < 10 ? "0" + n : String(n);
+  }
+
+  /** JSON: dizi VEYA { stocks: [...] } */
+  function extractStocks(data) {
+    if (!data) return [];
+    if (Array.isArray(data)) return data;
+    if (Array.isArray(data.stocks)) return data.stocks;
+    if (Array.isArray(data.items)) return data.items;
+    if (Array.isArray(data.data)) return data.data;
+    return [];
   }
 
   function uniqueBySymbol(list) {
@@ -671,7 +851,7 @@
 
   function nonTrading(mkt, p) {
     if (p.weekday === 0 || p.weekday === 6)
-      return { closed: true, reason: "weekend", name: "Hafta sonu" };
+      return { closed: true, reason: "weekend" };
     var h = (HOLIDAYS[mkt.holidaySet] || {})[ymd(p)];
     if (h) return { closed: true, reason: "holiday", name: h };
     return { closed: false };
@@ -731,7 +911,6 @@
       targetMs = nextOpenMs(mkt, base);
       until = "açılışa";
     }
-
     var sec = Math.max(0, Math.floor((targetMs - now.getTime()) / 1000));
     var h = Math.floor(sec / 3600);
     var m = Math.floor((sec % 3600) / 60);
@@ -742,12 +921,10 @@
       label: isOpen ? "Açık" : holidayToday ? "Tatil" : "Kapalı",
       until: until,
       text: h + " sa " + m + " dk",
-      holidayToday: holidayToday,
-      weekend: nt.reason === "weekend"
+      holidayToday: holidayToday
     };
   }
 
-  /* cache */
   function readCache() {
     try {
       return JSON.parse(sessionStorage.getItem(CACHE_KEY) || "{}");
@@ -762,7 +939,7 @@
   }
   function getCached(sym) {
     var r = readCache()[sym];
-    if (!r || Date.now() - r.t > CACHE_TTL_MS) return null;
+    if (!r || Date.now() - r.t > CACHE_TTL) return null;
     return r;
   }
   function setCached(sym, data) {
@@ -771,16 +948,16 @@
     writeCache(map);
   }
 
-  function quoteSymbol(item, marketId) {
+  function quoteSymbol(item, mkt) {
     var s = String(item.symbol || "").toUpperCase().trim();
     if (!s) return "";
     if (s.indexOf(".") !== -1) return s;
-    return marketId === "bist" ? s + ".IS" : s;
+    return s + (mkt.suffix || "");
   }
 
   async function fetchOneQuote(qSym) {
     var hit = getCached(qSym);
-    if (hit) return { price: hit.price, pct: hit.pct };
+    if (hit) return { price: hit.price, pct: hit.pct, cached: true };
     try {
       if (window.API && API.getLiveQuote) {
         var q = await API.getLiveQuote(qSym);
@@ -822,18 +999,26 @@
     });
   }
 
-  async function fillPrices(items) {
+  function setLoadingBanner(on) {
+    document.getElementById("loadBanner").classList.toggle("show", !!on);
+  }
+
+  async function fillPrices(items, mkt) {
+    state.loadingQuotes += 1;
+    setLoadingBanner(true);
     var i = 0;
     async function worker() {
       while (i < items.length) {
         var idx = i++;
         var item = items[idx];
-        var qSym = quoteSymbol(item, state.marketId);
-        var el = document.querySelector('[data-q="' + qSym.replace(/\\/g, "\\\\").replace(/"/g, '\\"') + '"]');
+        var qSym = quoteSymbol(item, mkt);
+        var el = document.querySelector(
+          '[data-q="' + String(qSym).replace(/\\/g, "\\\\").replace(/"/g, '\\"') + '"]'
+        );
         if (!el || !qSym) continue;
         var q = await fetchOneQuote(qSym);
         if (!q) {
-          el.innerHTML = '<div class="price sk">Fiyat yok</div>';
+          el.innerHTML = '<div class="price" style="color:var(--faint);font-size:12px">Fiyat yok</div>';
           continue;
         }
         var pct = q.pct;
@@ -848,97 +1033,129 @@
       }
     }
     var jobs = [];
-    for (var w = 0; w < MAX_PARALLEL; w++) jobs.push(worker());
+    for (var w = 0; w < PARALLEL; w++) jobs.push(worker());
     await Promise.all(jobs);
+    state.loadingQuotes = Math.max(0, state.loadingQuotes - 1);
+    if (state.loadingQuotes === 0) setLoadingBanner(false);
     document.getElementById("metaCache").textContent =
       "Önbellek: " + Object.keys(readCache()).length + " · 60s";
   }
 
+  function mktCardHtml(m, locked) {
+    var ses = marketSession(m);
+    var cnt =
+      m.count != null
+        ? '<div class="mkt-count">' + m.count + "<span>hisse</span></div>"
+        : '<div class="mkt-count" style="font-size:12px;color:var(--faint)">…</div>';
+    var badge = locked
+      ? '<span class="lock-badge' +
+        (m.plan === "elite" ? " elite" : "") +
+        '">🔒 ' +
+        (m.plan === "elite" ? "Elite" : "Premium") +
+        "</span>"
+      : '<span class="status ' + ses.statusKind + '">' + ses.label + "</span>";
+    return (
+      '<button type="button" class="mkt' +
+      (m.id === state.marketId && !locked ? " on" : "") +
+      (locked ? " locked" : "") +
+      '" data-mkt="' +
+      m.id +
+      '" data-locked="' +
+      (locked ? "1" : "0") +
+      '">' +
+      '<div class="mkt-top">' +
+      '<div class="mkt-name">' +
+      m.flag +
+      " " +
+      m.name +
+      "</div>" +
+      badge +
+      "</div>" +
+      cnt +
+      (locked
+        ? '<div class="mkt-sub">Üyelik gerekli · dokun</div>'
+        : '<div class="mkt-clock">' +
+          ses.until +
+          " <strong>" +
+          ses.text +
+          "</strong></div>" +
+          '<div class="mkt-sub">' +
+          m.label +
+          "</div>") +
+      "</button>"
+    );
+  }
+
   function renderMarkets() {
-    document.getElementById("markets").innerHTML = MARKETS.map(function (m) {
-      var ses = marketSession(m);
-      var cnt =
-        m.count != null
-          ? '<div class="mkt-count">' + m.count + "<span>hisse</span></div>"
-          : '<div class="mkt-count" style="font-size:13px;color:var(--faint)">…</div>';
-      var extra = "";
-      if (ses.holidayToday)
-        extra = '<div class="mkt-sub" style="color:var(--amber);font-weight:700">🏖 ' + ses.holidayToday + "</div>";
-      else if (ses.weekend)
-        extra = '<div class="mkt-sub">Hafta sonu</div>';
-      return (
-        '<button type="button" class="mkt' +
-        (m.id === state.marketId ? " on" : "") +
-        '" data-mkt="' +
-        m.id +
-        '">' +
-        '<div class="mkt-top">' +
-        '<div class="mkt-name">' +
-        m.flag +
-        " " +
-        m.name +
-        "</div>" +
-        '<span class="status ' +
-        ses.statusKind +
-        '">' +
-        ses.label +
-        "</span></div>" +
-        cnt +
-        '<div class="mkt-clock">' +
-        ses.until +
-        " <strong>" +
-        ses.text +
-        "</strong></div>" +
-        '<div class="mkt-sub">' +
-        m.label +
-        " · " +
-        pad(m.open[0]) +
-        ":" +
-        pad(m.open[1]) +
-        "–" +
-        pad(m.close[0]) +
-        ":" +
-        pad(m.close[1]) +
-        "</div>" +
-        extra +
-        "</button>"
-      );
-    }).join("");
+    var free = MARKETS.filter(function (m) { return m.plan === "free"; });
+    var locked = MARKETS.filter(function (m) { return m.plan !== "free"; });
+    document.getElementById("marketsFree").innerHTML = free
+      .map(function (m) { return mktCardHtml(m, false); })
+      .join("");
+    document.getElementById("marketsLocked").innerHTML = locked
+      .map(function (m) { return mktCardHtml(m, true); })
+      .join("");
+  }
+
+  async function loadJson(file) {
+    var paths = [file, "./" + file, "/" + file];
+    for (var i = 0; i < paths.length; i++) {
+      try {
+        var res = await fetch(paths[i] + (paths[i].indexOf("?") >= 0 ? "" : "?t=" + Date.now().toString().slice(0, 8)));
+        if (!res.ok) continue;
+        var data = await res.json();
+        return uniqueBySymbol(extractStocks(data));
+      } catch (e) {}
+    }
+    return [];
   }
 
   async function preloadCounts() {
     await Promise.all(
       MARKETS.map(async function (m) {
-        try {
-          var res = await fetch(m.file + "?t=" + Date.now().toString().slice(0, 8));
-          var data = await res.json();
-          m.count = uniqueBySymbol(Array.isArray(data) ? data : []).length;
-        } catch (e) {
-          m.count = 0;
+        if (m.plan !== "free") {
+          m.count = "—";
+          return;
         }
+        var list = await loadJson(m.file);
+        m.count = list.length;
       })
     );
-    state.countsLoaded = true;
     renderMarkets();
   }
 
+  function showGate(m) {
+    var gate = document.getElementById("gate");
+    document.getElementById("gateTitle").textContent = m.name + " kilitli";
+    document.getElementById("gateText").textContent =
+      m.name +
+      " (" +
+      m.label +
+      ") yalnızca " +
+      (m.plan === "elite" ? "Elite" : "Premium ve Elite") +
+      " üyelere açıktır. Ücretsiz planda BIST, NASDAQ ve NYSE ile devam edebilirsin.";
+    gate.classList.add("show");
+    gate.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
   async function loadMarket(id) {
+    var mkt = MARKETS.filter(function (m) { return m.id === id; })[0];
+    if (!mkt) return;
+    if (mkt.plan !== "free") {
+      showGate(mkt);
+      return;
+    }
+    document.getElementById("gate").classList.remove("show");
     state.marketId = id;
     state.shown = 0;
     document.getElementById("list").innerHTML = "";
     document.getElementById("empty").hidden = true;
     document.getElementById("btnMore").hidden = true;
+    setLoadingBanner(true);
 
-    var mkt = MARKETS.filter(function (m) { return m.id === id; })[0];
-    try {
-      var res = await fetch(mkt.file + "?t=" + Date.now().toString().slice(0, 8));
-      var data = await res.json();
-      state.list = uniqueBySymbol(Array.isArray(data) ? data : []);
-      mkt.count = state.list.length;
-    } catch (e) {
-      state.list = [];
-      mkt.count = 0;
-    }
+    state.list = await loadJson(mkt.file);
+    mkt.count = state.list.length;
+    setLoadingBanner(false);
     applyFilter();
     renderMarkets();
   }
@@ -946,18 +1163,16 @@
   function applyFilter() {
     var q = (document.getElementById("q").value || "").trim().toLowerCase();
     document.getElementById("btnClear").classList.toggle("show", !!q);
-
     state.filtered = !q
       ? state.list.slice()
       : state.list.filter(function (item) {
-          var s = String(item.symbol || "").toLowerCase();
-          var n = String(item.name || "").toLowerCase();
-          return s.indexOf(q) !== -1 || n.indexOf(q) !== -1;
+          return (
+            String(item.symbol || "").toLowerCase().indexOf(q) !== -1 ||
+            String(item.name || "").toLowerCase().indexOf(q) !== -1
+          );
         });
-
     state.shown = 0;
     document.getElementById("list").innerHTML = "";
-
     var mkt = MARKETS.filter(function (m) { return m.id === state.marketId; })[0];
     document.getElementById("metaLine").innerHTML =
       "<strong>" +
@@ -967,12 +1182,12 @@
       " / " +
       state.list.length +
       " hisse" +
-      (q ? " · filtre: “" + q.replace(/</g, "") + "”" : "");
-
+      (q ? " · “" + q.replace(/</g, "") + "”" : "");
     renderMore();
   }
 
   function renderMore() {
+    var mkt = MARKETS.filter(function (m) { return m.id === state.marketId; })[0];
     var slice = state.filtered.slice(state.shown, state.shown + PAGE);
     if (!state.filtered.length) {
       document.getElementById("empty").hidden = false;
@@ -980,43 +1195,32 @@
       return;
     }
     document.getElementById("empty").hidden = true;
-
     var html = slice
       .map(function (item) {
         var sym = String(item.symbol || "").toUpperCase();
-        var qSym = quoteSymbol(item, state.marketId);
+        var qSym = quoteSymbol(item, mkt);
         var score = item.aiScore != null ? Number(item.aiScore) : 70;
         var watched = state.watch.indexOf(sym) !== -1;
-        var flag = item.flag || (state.marketId === "bist" ? "🇹🇷" : "🇺🇸");
+        var flag = item.flag || mkt.flag || "";
         return (
           '<article class="row">' +
-          '<div class="row-left">' +
-          '<div class="row-sym">' +
+          '<div><div class="row-sym">' +
           flag +
           " " +
           sym +
-          "</div>" +
-          '<div class="row-name">' +
+          '</div><div class="row-name">' +
           (item.name || "—") +
-          "</div>" +
-          '<div class="row-tags">' +
-          '<span class="tag">' +
+          '</div><div class="row-tags"><span class="tag">' +
           (item.sector || "—") +
-          "</span>" +
-          '<span class="tag">' +
-          (item.risk || "—") +
-          "</span></div>" +
-          '<div class="ai-mini"><span class="lab">AI</span>' +
-          '<div class="ai-bar"><i style="width:' +
+          '</span></div><div class="ai-mini"><span class="lab">AI</span><div class="ai-bar"><i style="width:' +
           Math.min(100, score) +
-          '%"></i></div>' +
-          '<span class="sc">' +
+          '%"></i></div><span class="sc">' +
           score +
           "</span></div></div>" +
           '<div class="row-right">' +
           '<div data-q="' +
           qSym +
-          '"><div class="price sk">…</div></div>' +
+          '"><div class="skel"></div><div class="skel sm"></div></div>' +
           '<div class="row-actions">' +
           '<a class="btn-g" href="ultra-grafik.html?s=' +
           encodeURIComponent(qSym) +
@@ -1031,29 +1235,33 @@
         );
       })
       .join("");
-
     document.getElementById("list").insertAdjacentHTML("beforeend", html);
     state.shown += slice.length;
     document.getElementById("btnMore").hidden = state.shown >= state.filtered.length;
-    fillPrices(slice);
+    fillPrices(slice, mkt);
   }
 
-  document.getElementById("markets").addEventListener("click", function (e) {
+  document.getElementById("marketsFree").addEventListener("click", onMktClick);
+  document.getElementById("marketsLocked").addEventListener("click", onMktClick);
+  function onMktClick(e) {
     var b = e.target.closest("[data-mkt]");
-    if (b) loadMarket(b.getAttribute("data-mkt"));
-  });
+    if (!b) return;
+    loadMarket(b.getAttribute("data-mkt"));
+  }
 
+  document.getElementById("gateClose").addEventListener("click", function () {
+    document.getElementById("gate").classList.remove("show");
+  });
   document.getElementById("btnMore").addEventListener("click", renderMore);
 
   var qTimer;
   document.getElementById("q").addEventListener("input", function () {
     clearTimeout(qTimer);
-    qTimer = setTimeout(applyFilter, 160);
+    qTimer = setTimeout(applyFilter, 150);
   });
   document.getElementById("btnClear").addEventListener("click", function () {
     document.getElementById("q").value = "";
     applyFilter();
-    document.getElementById("q").focus();
   });
 
   document.getElementById("list").addEventListener("click", function (e) {
