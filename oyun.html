@@ -3,1080 +3,767 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Sanal Lig · Nexora AI</title>
-  <meta name="description" content="20 kişilik gruplar, yükselen puan eşiği, ayın finans turnuvası. Sanal bakiye ile yarış." />
+  <title>Nexora Lig · Sanal Arena</title>
+  <meta name="description" content="Sanal 100.000 ₺ ile ligde yarış. Kademeler, gruplar, günlük ödül, ay turnuvası." />
+  <meta name="theme-color" content="#0d0d1a" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
   <style>
-    :root {
-      --bg: #060a12;
-      --panel: rgba(15, 23, 42, 0.94);
-      --border: rgba(148, 163, 184, 0.12);
-      --text: #f1f5f9;
-      --muted: #94a3b8;
-      --dim: #64748b;
-      --accent: #10b981;
-      --cyan: #22d3ee;
-      --rose: #f87171;
-      --amber: #fbbf24;
-      --gold: #f59e0b;
-      --violet: #a78bfa;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: Inter, system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      line-height: 1.5;
-    }
-    a { color: inherit; text-decoration: none; }
-    button, input, select { font: inherit; color: inherit; border: none; background: none; cursor: pointer; }
-    input { outline: none; }
+    /* Oyun sayfasına özel katman */
+    body { background: var(--nx-bg, #0d0d1a); }
+    .game-wrap { max-width: 960px; margin: 0 auto; padding: 0 14px 64px; position: relative; z-index: 1; }
 
-    .nav {
-      position: sticky; top: 0; z-index: 40;
-      height: 56px; display: flex; align-items: center; justify-content: space-between;
-      gap: 10px; padding: 0 14px;
-      background: rgba(6, 10, 18, 0.94);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--border);
+    .arena-hero {
+      padding: 28px 0 18px;
+      text-align: center;
     }
-    .brand { font-weight: 800; letter-spacing: -0.03em; }
-    .brand em { font-style: normal; color: var(--accent); }
-    .nav-links { display: none; gap: 2px; }
-    @media (min-width: 900px) {
-      .nav-links { display: flex; }
-      .nav-links a {
-        font-size: 13px; font-weight: 600; color: var(--muted);
-        padding: 7px 10px; border-radius: 9px;
-      }
-      .nav-links a:hover, .nav-links a.on {
-        color: var(--text); background: rgba(255,255,255,0.05);
-      }
+    .arena-hero .pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 12px; font-weight: 700; color: #00f0ff;
+      background: rgba(0,240,255,0.1); border: 1px solid rgba(0,240,255,0.28);
+      padding: 6px 14px; border-radius: 999px; margin-bottom: 12px;
     }
-
-    .wrap { max-width: 980px; margin: 0 auto; padding: 16px 14px 48px; }
-
-    .head { margin-bottom: 14px; }
-    .badge {
-      display: inline-flex; font-size: 12px; font-weight: 700; color: var(--gold);
-      background: rgba(245, 158, 11, 0.12);
-      border: 1px solid rgba(245, 158, 11, 0.35);
-      padding: 5px 11px; border-radius: 999px; margin-bottom: 10px;
+    .arena-hero h1 {
+      font-size: clamp(1.7rem, 4vw, 2.3rem);
+      font-weight: 800; letter-spacing: -0.04em;
     }
-    h1 {
-      font-size: clamp(1.4rem, 3vw, 1.85rem);
-      font-weight: 800; letter-spacing: -0.03em;
-    }
-    h1 span {
-      background: linear-gradient(90deg, var(--gold), var(--accent));
+    .arena-hero h1 span {
+      background: linear-gradient(105deg, #00f0ff, #007bff, #7b2cff);
       -webkit-background-clip: text; background-clip: text; color: transparent;
     }
-    .lead { color: var(--muted); font-size: 14px; margin-top: 6px; max-width: 560px; }
-
-    .btn {
-      display: inline-flex; align-items: center; justify-content: center;
-      padding: 11px 14px; border-radius: 11px;
-      font-size: 13px; font-weight: 700;
-    }
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent), #059669);
-      color: #022c22;
-    }
-    .btn-soft {
-      background: rgba(30, 41, 59, 0.95);
-      color: var(--text);
-      box-shadow: inset 0 0 0 1px var(--border);
-    }
-    .btn-gold {
-      background: linear-gradient(135deg, #f59e0b, #d97706);
-      color: #1c1000;
-    }
-    .btn-sm { padding: 8px 12px; font-size: 12px; border-radius: 9px; }
-    .btn-danger {
-      background: rgba(248, 113, 113, 0.12);
-      color: #fca5a5;
-      box-shadow: inset 0 0 0 1px rgba(248, 113, 113, 0.25);
-      padding: 7px 10px;
-      font-size: 12px;
+    .arena-hero p {
+      margin: 10px auto 0; max-width: 46ch;
+      font-size: 14.5px; color: var(--nx-muted, #cbd5e1); line-height: 1.65;
     }
 
-    .hero-stats {
+    /* HUD */
+    .hud {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: 1fr 1fr;
       gap: 10px;
-      margin: 16px 0;
+      margin: 20px 0 16px;
     }
-    @media (min-width: 640px) {
-      .hero-stats { grid-template-columns: repeat(4, 1fr); }
+    @media (min-width: 700px) {
+      .hud { grid-template-columns: repeat(4, 1fr); }
     }
-    .stat {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 14px 16px;
-    }
-    .stat .lbl {
-      font-size: 11px; font-weight: 600; color: var(--dim);
-      text-transform: uppercase; letter-spacing: 0.04em;
-    }
-    .stat .val {
-      font-size: 1.2rem; font-weight: 800; margin-top: 4px;
-      font-variant-numeric: tabular-nums;
-    }
-    .stat .val.up { color: #34d399; }
-    .stat .val.down { color: var(--rose); }
-    .stat .sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
-
-    .section {
-      background: var(--panel);
-      border: 1px solid var(--border);
+    .hud-card {
+      background: rgba(18,18,32,0.92);
+      border: 1px solid rgba(148,163,184,0.14);
       border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 14px;
-    }
-    .section-h {
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 10px; flex-wrap: wrap; margin-bottom: 12px;
-    }
-    .section-h h2 {
-      font-size: 1.05rem; font-weight: 800; letter-spacing: -0.02em;
-    }
-    .section-h .hint { font-size: 12px; color: var(--dim); }
-
-    .league-pill {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-size: 13px; font-weight: 800;
-      padding: 6px 12px; border-radius: 999px;
-    }
-    .lg-tahta { background: rgba(120,113,108,0.2); color: #a8a29e; }
-    .lg-bronz { background: rgba(180,83,9,0.2); color: #fdba74; }
-    .lg-gumus { background: rgba(148,163,184,0.2); color: #cbd5e1; }
-    .lg-altin { background: rgba(245,158,11,0.2); color: #fbbf24; }
-    .lg-platin { background: rgba(34,211,238,0.15); color: #22d3ee; }
-    .lg-elmas { background: rgba(167,139,250,0.2); color: #c4b5fd; }
-    .lg-sampiyon { background: rgba(16,185,129,0.2); color: #34d399; }
-
-    .progress-wrap { margin: 10px 0 4px; }
-    .progress-lbl {
-      display: flex; justify-content: space-between;
-      font-size: 12px; color: var(--muted); margin-bottom: 6px;
-    }
-    .progress-bar {
-      height: 10px;
-      background: rgba(148,163,184,0.12);
-      border-radius: 99px;
+      padding: 14px 12px;
+      text-align: center;
+      position: relative;
       overflow: hidden;
     }
-    .progress-fill {
-      height: 100%;
-      border-radius: 99px;
-      background: linear-gradient(90deg, var(--accent), var(--cyan));
-      transition: width 0.4s ease;
+    .hud-card::after {
+      content: "";
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(0,240,255,0.06), transparent 50%);
+      pointer-events: none;
+    }
+    .hud-card .label {
+      font-size: 11px; font-weight: 700; color: #94a3b8;
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .hud-card .value {
+      margin-top: 6px;
+      font-size: 1.25rem; font-weight: 800;
+      letter-spacing: -0.03em;
+      font-variant-numeric: tabular-nums;
+    }
+    .hud-card .value.tier {
+      background: linear-gradient(105deg, #00f0ff, #7b2cff);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      font-size: 1.15rem;
+    }
+    .hud-card .sub {
+      margin-top: 4px; font-size: 11.5px; color: #64748b; font-weight: 600;
+    }
+
+    /* Faz bandı */
+    .phase {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      margin-bottom: 18px;
+      background: rgba(18,18,32,0.9);
+      border: 1px solid rgba(148,163,184,0.14);
+    }
+    .phase .tag {
+      font-size: 12px; font-weight: 800;
+      padding: 5px 11px; border-radius: 999px;
+    }
+    .phase .tag.compete {
+      color: #022c22; background: linear-gradient(135deg, #34d399, #10b981);
+    }
+    .phase .tag.results {
+      color: #0d0d1a; background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    }
+    .phase .tag.break {
+      color: #e2e8f0; background: rgba(100,116,139,0.4);
+    }
+    .phase p { font-size: 13px; color: #94a3b8; flex: 1; min-width: 180px; }
+
+    /* Sekmeler */
+    .tabs {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      margin-bottom: 16px;
+    }
+    .tab {
+      padding: 9px 14px; border-radius: 999px;
+      font-size: 13px; font-weight: 700;
+      color: #94a3b8;
+      background: rgba(30,41,59,0.6);
+      box-shadow: inset 0 0 0 1px rgba(148,163,184,0.12);
+    }
+    .tab.on {
+      color: #0d0d1a;
+      background: linear-gradient(135deg, #00f0ff, #007bff);
+      box-shadow: none;
+    }
+
+    .panel { display: none; }
+    .panel.on { display: block; }
+
+    /* İşlem */
+    .trade-box {
+      background: rgba(18,18,32,0.95);
+      border: 1px solid rgba(148,163,184,0.14);
+      border-radius: 18px;
+      padding: 18px 16px;
+      margin-bottom: 14px;
+    }
+    .trade-box h3 {
+      font-size: 15px; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.02em;
+    }
+    .trade-row {
+      display: grid; gap: 10px;
+    }
+    @media (min-width: 560px) {
+      .trade-row { grid-template-columns: 1.2fr 0.8fr 0.8fr auto; align-items: end; }
+    }
+    .field label {
+      display: block; font-size: 11px; font-weight: 700; color: #94a3b8; margin-bottom: 6px;
+    }
+    .field input, .field select {
+      width: 100%; padding: 12px 12px;
+      border-radius: 11px;
+      background: rgba(6,6,15,0.75);
+      box-shadow: inset 0 0 0 1px rgba(148,163,184,0.14);
+      font-size: 14px; font-weight: 600;
+    }
+    .field input:focus, .field select:focus {
+      box-shadow: inset 0 0 0 1.5px rgba(0,240,255,0.45);
+    }
+    .side-btns { display: flex; gap: 6px; }
+    .side-btns button {
+      flex: 1; padding: 12px; border-radius: 11px; font-weight: 800; font-size: 13px;
+      box-shadow: inset 0 0 0 1px rgba(148,163,184,0.2);
+      color: #94a3b8;
+    }
+    .side-btns button.on.buy {
+      color: #022c22; background: linear-gradient(135deg, #34d399, #10b981); box-shadow: none;
+    }
+    .side-btns button.on.sell {
+      color: #fff; background: linear-gradient(135deg, #f87171, #e11d48); box-shadow: none;
+    }
+    .trade-msg {
+      margin-top: 12px; padding: 11px 12px; border-radius: 11px;
+      font-size: 13px; font-weight: 600; display: none;
+    }
+    .trade-msg.show { display: block; }
+    .trade-msg.ok { background: rgba(16,185,129,0.12); color: #a7f3d0; }
+    .trade-msg.err { background: rgba(248,113,113,0.12); color: #fecaca; }
+
+    /* Ödüller */
+    .reward-row {
+      display: grid; gap: 10px;
+      margin-bottom: 16px;
+    }
+    @media (min-width: 560px) {
+      .reward-row { grid-template-columns: 1fr 1fr; }
+    }
+    .reward-card {
+      background: rgba(18,18,32,0.92);
+      border: 1px solid rgba(148,163,184,0.14);
+      border-radius: 16px;
+      padding: 16px;
+    }
+    .reward-card h4 { font-size: 14px; font-weight: 800; }
+    .reward-card p { font-size: 13px; color: #94a3b8; margin: 6px 0 12px; line-height: 1.5; }
+    .reward-card .amt { font-size: 1.2rem; font-weight: 800; color: #fbbf24; margin-bottom: 10px; }
+
+    /* Kademe yolu */
+    .tier-track {
+      display: flex; gap: 6px; overflow-x: auto;
+      padding: 8px 0 14px; margin-bottom: 8px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .tier-chip {
+      flex: 0 0 auto;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 12px; font-weight: 800;
+      color: #64748b;
+      background: rgba(18,18,32,0.9);
+      border: 1px solid rgba(148,163,184,0.12);
+      text-align: center;
+      min-width: 88px;
+    }
+    .tier-chip .pts { font-size: 10px; font-weight: 600; color: #64748b; margin-top: 3px; }
+    .tier-chip.now {
+      color: #0d0d1a;
+      background: linear-gradient(135deg, #00f0ff, #7b2cff);
+      border-color: transparent;
+    }
+    .tier-chip.now .pts { color: rgba(13,13,26,0.7); }
+    .tier-chip.done {
+      color: #34d399;
+      border-color: rgba(52,211,153,0.3);
+    }
+
+    /* Liderlik */
+    .board {
+      background: rgba(18,18,32,0.95);
+      border: 1px solid rgba(148,163,184,0.14);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+    .board-head {
+      display: grid;
+      grid-template-columns: 40px 1fr auto auto;
+      gap: 8px;
+      padding: 12px 14px;
+      font-size: 11px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      color: #64748b;
+      border-bottom: 1px solid rgba(148,163,184,0.1);
+      background: rgba(6,6,15,0.5);
+    }
+    .board-row {
+      display: grid;
+      grid-template-columns: 40px 1fr auto auto;
+      gap: 8px; align-items: center;
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(148,163,184,0.06);
+      font-size: 13.5px;
+      transition: background 0.15s;
+    }
+    .board-row:last-child { border-bottom: none; }
+    .board-row.you {
+      background: rgba(0,240,255,0.08);
+      box-shadow: inset 3px 0 0 #00f0ff;
+    }
+    .board-row .rank {
+      font-weight: 800; color: #94a3b8;
+      font-variant-numeric: tabular-nums;
+    }
+    .board-row .rank.gold { color: #fbbf24; }
+    .board-row .rank.silver { color: #cbd5e1; }
+    .board-row .rank.bronze { color: #d97706; }
+    .board-row .name { font-weight: 700; }
+    .board-row .name .you-tag {
+      font-size: 10px; font-weight: 800; color: #00f0ff; margin-left: 6px;
+    }
+    .board-row .tier-name {
+      font-size: 11px; font-weight: 700; color: #94a3b8;
+    }
+    .board-row .pnl {
+      font-weight: 800; font-variant-numeric: tabular-nums; text-align: right;
+    }
+
+    /* Canlı katılanlar */
+    .live-bar {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 12px; flex-wrap: wrap;
+    }
+    .live-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #34d399;
+      box-shadow: 0 0 10px #34d399;
+      animation: pulse 1.6s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    .live-bar span { font-size: 13px; font-weight: 600; color: #94a3b8; }
+    .live-bar strong { color: #e2e8f0; }
+
+    .avatars {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      margin-bottom: 16px;
+    }
+    .avatar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(18,18,32,0.9);
+      border: 1px solid rgba(148,163,184,0.12);
+      font-size: 12.5px; font-weight: 700;
+    }
+    .avatar .dot {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: grid; place-items: center;
+      font-size: 11px; font-weight: 800; color: #0d0d1a;
+      background: linear-gradient(135deg, #00f0ff, #7b2cff);
+    }
+    .avatar.you {
+      border-color: rgba(0,240,255,0.4);
+      background: rgba(0,240,255,0.08);
+    }
+
+    /* Pozisyonlar */
+    .pos-empty {
+      text-align: center; padding: 28px 16px;
+      color: #64748b; font-size: 14px;
+    }
+    .pos-list { display: grid; gap: 8px; }
+    .pos-item {
+      display: flex; justify-content: space-between; align-items: center; gap: 10px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(18,18,32,0.9);
+      border: 1px solid rgba(148,163,184,0.12);
+    }
+    .pos-item .sym { font-weight: 800; }
+    .pos-item .meta { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+
+    .nick-row {
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: end;
+      margin-bottom: 16px;
+    }
+    .nick-row input {
+      flex: 1; min-width: 140px;
+      padding: 12px 14px; border-radius: 11px;
+      background: rgba(6,6,15,0.75);
+      box-shadow: inset 0 0 0 1px rgba(148,163,184,0.14);
+      font-weight: 600;
     }
 
     .rules {
-      font-size: 13px; color: var(--muted);
-      line-height: 1.65;
+      margin-top: 20px;
+      padding: 16px;
+      border-radius: 14px;
+      background: rgba(18,18,32,0.7);
+      border: 1px solid rgba(148,163,184,0.12);
+      font-size: 13px; color: #94a3b8; line-height: 1.65;
     }
-    .rules ul { padding-left: 18px; margin-top: 8px; }
+    .rules strong { color: #e2e8f0; }
+    .rules ul { margin: 8px 0 0 1.1em; list-style: disc; }
     .rules li { margin-bottom: 4px; }
-    .rules strong { color: var(--text); }
 
-    .form-row {
-      display: flex; flex-wrap: wrap; gap: 8px;
-      margin-bottom: 12px;
+    .nav-mini {
+      height: 56px; display: flex; align-items: center; justify-content: space-between;
+      padding: 0 14px;
+      background: rgba(13,13,26,0.9);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(148,163,184,0.14);
+      position: sticky; top: 0; z-index: 40;
     }
-    .form-row input, .form-row select {
-      background: rgba(6, 10, 18, 0.6);
-      box-shadow: inset 0 0 0 1px var(--border);
-      border-radius: 11px;
-      padding: 11px 12px;
-      font-size: 14px;
+    .nav-mini a.brand {
+      display: flex; align-items: center; gap: 8px;
+      font-weight: 800; font-size: 14px;
     }
-    .form-row input:focus {
-      box-shadow: inset 0 0 0 1px rgba(16,185,129,0.45);
+    .nav-mini .mark {
+      width: 28px; height: 28px; border-radius: 8px;
+      background: linear-gradient(135deg, #00f0ff, #7b2cff);
+      display: grid; place-items: center;
+      font-size: 11px; font-weight: 900; color: #0d0d1a;
     }
-    .form-row input.sym { flex: 1; min-width: 110px; }
-    .form-row input.num { width: 100px; }
-
-    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13.5px;
-    }
-    th {
-      text-align: left;
-      font-size: 11px; font-weight: 700; color: var(--dim);
-      text-transform: uppercase; letter-spacing: 0.04em;
-      padding: 8px 10px;
-      border-bottom: 1px solid var(--border);
-      white-space: nowrap;
-    }
-    td {
-      padding: 11px 10px;
-      border-bottom: 1px solid rgba(148,163,184,0.06);
-      vertical-align: middle;
-      font-variant-numeric: tabular-nums;
-    }
-    tr:last-child td { border-bottom: none; }
-    tr.me td { background: rgba(16,185,129,0.08); }
-    tr.top1 td:first-child { color: var(--gold); font-weight: 800; }
-    tr.top2 td:first-child { color: #cbd5e1; font-weight: 800; }
-    tr.top3 td:first-child { color: #fdba74; font-weight: 800; }
-    .up { color: #34d399; }
-    .down { color: var(--rose); }
-    .nick { font-weight: 700; }
-    .empty {
-      text-align: center; padding: 24px; color: var(--dim); font-size: 14px;
-    }
-
-    .calendar {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 8px;
-      margin-top: 10px;
-    }
-    @media (min-width: 560px) {
-      .calendar { grid-template-columns: repeat(3, 1fr); }
-    }
-    .cal-card {
-      background: rgba(6, 10, 18, 0.5);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 12px;
-    }
-    .cal-card.active {
-      border-color: rgba(16,185,129,0.4);
-      box-shadow: 0 0 0 1px rgba(16,185,129,0.15);
-    }
-    .cal-card .t { font-size: 11px; font-weight: 700; color: var(--dim); text-transform: uppercase; }
-    .cal-card .d { font-size: 14px; font-weight: 800; margin-top: 4px; }
-    .cal-card .s { font-size: 12px; color: var(--muted); margin-top: 4px; }
-
-    .reward-box {
-      background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(16,185,129,0.08));
-      border: 1px solid rgba(245,158,11,0.28);
-      border-radius: 12px;
-      padding: 14px;
-      margin-top: 12px;
-      font-size: 13px;
-      color: var(--muted);
-    }
-    .reward-box strong { color: var(--text); }
-
-    .pyramid {
-      display: flex; flex-direction: column; gap: 8px;
-      margin-top: 10px;
-    }
-    .pyr-row {
-      display: flex; align-items: center; gap: 10px;
-      padding: 10px 12px;
-      background: rgba(6,10,18,0.45);
-      border-radius: 11px;
-      border: 1px solid var(--border);
-      font-size: 13px;
-    }
-    .pyr-row .rank { font-weight: 800; min-width: 5.5em; }
-    .pyr-row .need { color: var(--muted); margin-left: auto; font-size: 12px; white-space: nowrap; }
-
-    .toast {
-      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-      background: #0f172a;
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 12px 18px;
-      border-radius: 12px;
-      font-size: 13px; font-weight: 600;
-      z-index: 100;
-      opacity: 0; pointer-events: none;
-      transition: opacity 0.25s;
-      max-width: 92vw;
-    }
-    .toast.show { opacity: 1; }
-
-    .legal {
-      margin-top: 18px;
-      font-size: 12px; color: var(--dim); line-height: 1.55;
-    }
-    footer {
-      text-align: center; color: var(--dim); font-size: 12px;
-      padding: 8px 14px 32px;
-    }
-    footer a { color: var(--muted); margin: 0 5px; font-weight: 600; }
   </style>
 </head>
 <body>
-  <nav class="nav">
-    <a class="brand" href="index.html">Nexora <em>AI</em></a>
-    <div class="nav-links">
-      <a href="index.html">Ana</a>
-      <a href="stock.html">Hisseler</a>
-      <a href="portfolio.html">Portföy</a>
-      <a class="on" href="oyun.html">Lig</a>
-      <a href="egitim.html">Akademi</a>
-      <a href="premium.html">Premium</a>
+  <div class="nx-atmosphere" style="position:fixed;inset:0;z-index:0;pointer-events:none;background:
+    radial-gradient(ellipse 70% 45% at 20% -10%, rgba(0,240,255,0.12), transparent 55%),
+    radial-gradient(ellipse 50% 40% at 100% 70%, rgba(123,44,255,0.12), transparent 50%),
+    #0d0d1a;"></div>
+
+  <nav class="nav-mini">
+    <a class="brand" href="index.html">
+      <span class="mark">N</span>
+      Nexora <span style="background:linear-gradient(90deg,#00f0ff,#7b2cff);-webkit-background-clip:text;background-clip:text;color:transparent">Lig</span>
+    </a>
+    <div style="display:flex;gap:8px">
+      <a class="nx-btn nx-btn-ghost nx-btn-sm" href="stock.html" style="padding:8px 12px;font-size:12px;font-weight:700;border-radius:9px;background:rgba(18,18,32,0.7);box-shadow:inset 0 0 0 1px rgba(148,163,184,0.14)">Hisseler</a>
+      <a class="nx-btn nx-btn-sm" href="egitim.html" style="padding:8px 12px;font-size:12px;font-weight:700;border-radius:9px;background:linear-gradient(135deg,#00f0ff,#007bff);color:#0d0d1a">Akademi</a>
     </div>
-    <a class="btn btn-soft" href="portfolio.html">Portföy</a>
   </nav>
 
-  <main class="wrap">
-    <header class="head">
-      <div class="badge">🏆 Sanal lig · 20 kişilik gruplar</div>
+  <main class="game-wrap">
+    <header class="arena-hero">
+      <div class="pill">♛ Sanal arena · gerçek para yok</div>
       <h1>Nexora <span>Lig</span></h1>
-      <p class="lead">
-        100.000 ₺ sanal bakiye ile başla. Her lig 20 kişilik gruptur; yükseldikçe
-        hem puan eşiği hem gruptan çıkan kişi sayısı zorlaşır.
+      <p>
+        100.000 ₺ sanal bakiye ile başla. Al–sat, puan kazan, kademe atla.
+        Ayın 1–22’si yarış; 23–29 sonuç ve ödül tablosu.
       </p>
     </header>
 
-    <!-- ÖZET -->
-    <div class="hero-stats">
-      <div class="stat">
-        <div class="lbl">Sanal bakiye</div>
-        <div class="val" id="stBalance">100.000 ₺</div>
-        <div class="sub" id="stEquity">Toplam değer</div>
+    <div class="hud" id="hud">
+      <div class="hud-card">
+        <div class="label">Nakit</div>
+        <div class="value" id="hudCash">—</div>
+        <div class="sub">Sanal ₺</div>
       </div>
-      <div class="stat">
-        <div class="lbl">Lig puanı</div>
-        <div class="val" id="stPoints">0</div>
-        <div class="sub" id="stNeed">Sonraki eşik</div>
+      <div class="hud-card">
+        <div class="label">Toplam</div>
+        <div class="value" id="hudEquity">—</div>
+        <div class="sub">Nakit + pozisyon</div>
       </div>
-      <div class="stat">
-        <div class="lbl">Lig</div>
-        <div class="val" style="font-size:1rem" id="stLeagueWrap">
-          <span class="league-pill lg-tahta" id="stLeague">Tahta</span>
-        </div>
-        <div class="sub" id="stGroup">Grup · sıra</div>
+      <div class="hud-card">
+        <div class="label">Kademe</div>
+        <div class="value tier" id="hudTier">—</div>
+        <div class="sub" id="hudPoints">0 puan</div>
       </div>
-      <div class="stat">
-        <div class="lbl">Ay kârı</div>
-        <div class="val" id="stMonthPct">—</div>
-        <div class="sub" id="stPhase">Dönem</div>
+      <div class="hud-card">
+        <div class="label">Ay P/L</div>
+        <div class="value" id="hudPnl">—</div>
+        <div class="sub" id="hudSeason">Sezon</div>
       </div>
     </div>
 
-    <!-- PROFİL / TAKMA AD -->
-    <section class="section">
-      <div class="section-h">
-        <div>
-          <h2>Yarışçı profili</h2>
-          <div class="hint">Tabloda görünecek takma adın</div>
-        </div>
-      </div>
-      <div class="form-row">
-        <input id="nick" type="text" maxlength="18" placeholder="Takma ad (örn. Nexora88)" style="flex:1;min-width:160px" />
-        <button type="button" class="btn btn-primary" id="btnNick">Kaydet</button>
-        <button type="button" class="btn btn-soft" id="btnDaily">Günlük +50 ₺</button>
-      </div>
-      <div class="progress-wrap">
-        <div class="progress-lbl">
-          <span>Yükselme ilerlemesi</span>
-          <span id="progText">0 / 100 puan</span>
-        </div>
-        <div class="progress-bar"><div class="progress-fill" id="progFill" style="width:0%"></div></div>
-      </div>
-    </section>
+    <div class="phase" id="phaseBox">
+      <span class="tag compete" id="phaseTag">Yarış</span>
+      <p id="phaseText">Turnuva fazı yükleniyor…</p>
+    </div>
 
-    <!-- LİG KURALLARI + PİRAMİT -->
-    <section class="section">
-      <div class="section-h">
-        <div>
-          <h2>Lig yapısı</h2>
-          <div class="hint">Her basamakta 20 kişilik grup · eşiğe ulaş + sıraya gir</div>
+    <div class="tabs" role="tablist">
+      <button type="button" class="tab on" data-tab="arena">Arena</button>
+      <button type="button" class="tab" data-tab="board">Sıralama</button>
+      <button type="button" class="tab" data-tab="live">Katılanlar</button>
+      <button type="button" class="tab" data-tab="bag">Pozisyonlar</button>
+      <button type="button" class="tab" data-tab="rules">Kurallar</button>
+    </div>
+
+    <!-- ARENA -->
+    <div class="panel on" id="panel-arena">
+      <div class="tier-track" id="tierTrack"></div>
+
+      <div class="reward-row">
+        <div class="reward-card">
+          <h4>Günlük giriş</h4>
+          <p>Her gün ilk ziyarette sanal nakit. Ligde kalmak için küçük ama düzenli katkı.</p>
+          <div class="amt">+50 ₺</div>
+          <button type="button" class="nx-btn nx-btn-accent" id="btnDaily" style="padding:10px 14px;border-radius:10px;font-weight:700;background:linear-gradient(135deg,#10b981,#059669);color:#022c22">Ödülü al</button>
+        </div>
+        <div class="reward-card">
+          <h4>Happy Hour</h4>
+          <p>12:00–13:00 veya 17:30–18:30 arası girişte ekstra. Sayaç: <strong id="hhStatus">—</strong></p>
+          <div class="amt">+200 ₺</div>
+          <button type="button" class="nx-btn" id="btnHappy" style="padding:10px 14px;border-radius:10px;font-weight:700;background:linear-gradient(135deg,#00f0ff,#7b2cff);color:#0d0d1a">Happy Hour al</button>
         </div>
       </div>
-      <div class="pyramid" id="pyramid"></div>
-      <div class="rules" style="margin-top:12px">
+
+      <div class="trade-box">
+        <h3>Hızlı işlem</h3>
+        <div class="trade-row">
+          <div class="field">
+            <label>Sembol</label>
+            <input id="sym" list="symList" placeholder="THYAO, ASELS, AAPL…" autocomplete="off" />
+            <datalist id="symList">
+              <option value="THYAO"><option value="ASELS"><option value="EREGL">
+              <option value="BIMAS"><option value="SISE"><option value="AAPL">
+              <option value="MSFT"><option value="NVDA"><option value="TSLA">
+            </datalist>
+          </div>
+          <div class="field">
+            <label>Adet</label>
+            <input id="qty" type="number" min="1" step="1" value="10" />
+          </div>
+          <div class="field">
+            <label>Fiyat (₺ / $)</label>
+            <input id="price" type="number" min="0.01" step="0.01" placeholder="Örn. 320" />
+          </div>
+          <div class="field">
+            <label>Yön</label>
+            <div class="side-btns">
+              <button type="button" class="on buy" data-side="buy" id="btnBuy">AL</button>
+              <button type="button" data-side="sell" id="btnSell">SAT</button>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="nx-btn nx-btn-primary" id="btnTrade" style="margin-top:14px;width:100%;padding:13px;border-radius:12px;font-weight:800;background:linear-gradient(135deg,#00f0ff,#007bff);color:#0d0d1a">
+          Emri uygula
+        </button>
+        <div class="trade-msg" id="tradeMsg"></div>
+      </div>
+
+      <div class="nick-row">
+        <div class="field" style="flex:1">
+          <label>Takma ad (sıralamada görünür)</label>
+          <input id="nick" maxlength="20" placeholder="Örn. SakinEl" />
+        </div>
+        <button type="button" class="nx-btn nx-btn-ghost" id="btnNick" style="padding:12px 16px;border-radius:11px;font-weight:700;box-shadow:inset 0 0 0 1px rgba(148,163,184,0.2)">Kaydet</button>
+      </div>
+    </div>
+
+    <!-- SIRALAMA -->
+    <div class="panel" id="panel-board">
+      <div class="live-bar">
+        <i class="live-dot"></i>
+        <span>Ay turnuvası sıralaması · <strong id="boardPhase">—</strong></span>
+      </div>
+      <div class="board">
+        <div class="board-head">
+          <span>#</span><span>Oyuncu</span><span>Kademe</span><span>P/L %</span>
+        </div>
+        <div id="boardBody"></div>
+      </div>
+      <p style="margin-top:12px;font-size:12.5px;color:#64748b;line-height:1.55">
+        Üst sıralar demo rakipler + sen. Canlı sunucu bağlandığında gerçek oyuncularla dolar.
+        Elmas / Şampiyon birincisine aylık Pro denemesi hedeflenir (demo duyurusu X’te).
+      </p>
+    </div>
+
+    <!-- KATILANLAR -->
+    <div class="panel" id="panel-live">
+      <div class="live-bar">
+        <i class="live-dot"></i>
+        <span><strong id="liveCount">0</strong> ligde aktif (bu cihaz + demo oda)</span>
+      </div>
+      <div class="avatars" id="avatars"></div>
+      <p style="font-size:13px;color:#94a3b8;line-height:1.6">
+        İsimler sanal odada görünür. Gerçek zamanlı çok oyunculu katman (Supabase / socket)
+        açıldığında bu liste sunucudan beslenir. Şimdilik lig motorun + demo katılımcılar.
+      </p>
+    </div>
+
+    <!-- POZİSYON -->
+    <div class="panel" id="panel-bag">
+      <div id="posRoot"></div>
+    </div>
+
+    <!-- KURALLAR -->
+    <div class="panel" id="panel-rules">
+      <div class="rules">
+        <strong>Nasıl yükselirsin?</strong>
         <ul>
-          <li>Her lig <strong>20 kişilik</strong> gruptur; sıralama ay içi kâr ve puana göre.</li>
-          <li>Yükselmek için hem <strong>puan eşiğini</strong> geç hem gruptaki <strong>kota sırasına</strong> gir.</li>
-          <li>Üst liglere çıktıkça eşik artar, gruptan çıkan kişi sayısı azalır (5 → 3 → 2 → 1).</li>
-          <li>Yetersiz bakiyede işlem açılmaz; mesajla uyarılır.</li>
+          <li>Al–sat ve günlük / Happy Hour ile puan birikir.</li>
+          <li>Kademe eşikleri: Tahta → Bronz → Gümüş → Altın → Platin → Elmas → Şampiyon.</li>
+          <li>Üst kademelerde gruptan yükselen sayısı azalır (5 → 3 → 1).</li>
+          <li>Ayın 1–22: yarış · 23–29: sonuç · ay sonu ara · yeni ayda sezon yenilenir.</li>
+          <li>Yetersiz bakiyede emir reddedilir — hile yok, net mesaj var.</li>
+          <li>Gerçek para yoktur. Eğitim ve oyun amaçlıdır; yatırım tavsiyesi değildir.</li>
         </ul>
       </div>
-    </section>
-
-    <!-- AY TAKVİMİ -->
-    <section class="section">
-      <div class="section-h">
-        <div>
-          <h2>Ayın finans turnuvası</h2>
-          <div class="hint" id="monthTitle">Bu ayın takvimi</div>
-        </div>
-      </div>
-      <div class="calendar" id="calendar"></div>
-      <div class="reward-box">
-        <strong>Ödüller (dönem sonunda)</strong><br />
-        Grup 1–5 (veya üst lig kotası): bir üst lige yükselme hakkı.<br />
-        Ay birincisi (Şampiyon / Elmas zirve): 1 ay Pro deneme veya onaylı makale hakkı.<br />
-        2–3: ekstra sanal bakiye ve profil rozeti.
-      </div>
-    </section>
-
-    <!-- GRUP LİDERLİK -->
-    <section class="section">
-      <div class="section-h">
-        <div>
-          <h2>Grup sıralaması</h2>
-          <div class="hint">20 kişilik grubun · sen yeşil satırdasın</div>
-        </div>
-        <button type="button" class="btn btn-soft btn-sm" id="btnRefreshBoard">Yenile</button>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Yarışçı</th>
-              <th>Puan</th>
-              <th>Ay kârı</th>
-            </tr>
-          </thead>
-          <tbody id="boardBody">
-            <tr><td colspan="4" class="empty">Yükleniyor…</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- SANAL İŞLEM -->
-    <section class="section">
-      <div class="section-h">
-        <div>
-          <h2>Sanal işlem</h2>
-          <div class="hint">Al / sat · kâr puanı besler · gerçek para değildir</div>
-        </div>
-      </div>
-      <div class="form-row">
-        <input class="sym" id="txSym" type="text" placeholder="Sembol (ASELS, AAPL)" />
-        <select id="txSide">
-          <option value="buy">Al</option>
-          <option value="sell">Sat</option>
-        </select>
-        <input class="num" id="txQty" type="number" min="1" step="1" placeholder="Adet" value="10" />
-        <button type="button" class="btn btn-primary" id="btnTx">Uygula</button>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Hisse</th>
-              <th>Adet</th>
-              <th>Maliyet</th>
-              <th>İşlem</th>
-            </tr>
-          </thead>
-          <tbody id="posBody">
-            <tr><td colspan="4" class="empty">Açık sanal pozisyon yok</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <p class="legal">
-      Sanal lig tamamen simülasyondur; gerçek para ve yatırım tavsiyesi yoktur.
-      Sıralama ve ödüller bilgilendirme / oyunlaştırma amaçlıdır.
-    </p>
+    </div>
   </main>
 
-  <footer>
-    Nexora AI · Lig
-    <a href="stock.html">Hisseler</a>
-    <a href="portfolio.html">Portföy</a>
-    <a href="egitim.html">Akademi</a>
-    <a href="about.html">Hakkımızda</a>
-  </footer>
-
-  <div class="toast" id="toast"></div>
-
-  <script src="assets/js/secrets.js"></script>
-  <script src="assets/js/api.js"></script>
   <script src="assets/js/store.js"></script>
+  <script src="assets/js/league.js"></script>
   <script>
 (function () {
   "use strict";
 
-  /** Lig basamakları: 20 kişilik grup, yükseldikçe eşik ↑ ve kota ↓ */
-  var LEAGUES = [
-    { id: "tahta",    name: "Tahta",    cls: "lg-tahta",    need: 100,  promoteTop: 5 },
-    { id: "bronz",    name: "Bronz",    cls: "lg-bronz",    need: 180,  promoteTop: 5 },
-    { id: "gumus",    name: "Gümüş",    cls: "lg-gumus",    need: 280,  promoteTop: 4 },
-    { id: "altin",    name: "Altın",    cls: "lg-altin",    need: 420,  promoteTop: 3 },
-    { id: "platin",   name: "Platin",   cls: "lg-platin",   need: 600,  promoteTop: 3 },
-    { id: "elmas",    name: "Elmas",    cls: "lg-elmas",    need: 850,  promoteTop: 2 },
-    { id: "sampiyon", name: "Şampiyon", cls: "lg-sampiyon", need: 1200, promoteTop: 1 }
-  ];
-
-  var GROUP_SIZE = 20;
-  var START_BALANCE = 100000;
-  var DAILY_BONUS = 50;
-  var HAPPY_BONUS = 200;
-
-  var FAKE_NAMES = [
-    "Nexora88", "Ahmet_Yatirim", "BorsaKedi", "ThyaoFan", "AselsanAvcisi",
-    "GrafikUstasi", "SwingKing", "KademeliAl", "RiskYonetici", "HisseAvcisi",
-    "PiyasaPusula", "Volatilite", "TemettuSever", "NasdaqGezgin", "BISTKaplan",
-    "AltinOran", "StopLossPro", "MomentumTR", "Analizci", "LigSavascisi",
-    "PortfoyMimari", "GunlukScalp", "UzunVade", "KisaVade", "BetaTest"
-  ];
-
-  function toast(msg) {
-    var el = document.getElementById("toast");
-    el.textContent = msg;
-    el.classList.add("show");
-    clearTimeout(toast._t);
-    toast._t = setTimeout(function () { el.classList.remove("show"); }, 2400);
+  if (!window.League) {
+    console.error("league.js yüklenmedi");
+    return;
   }
 
-  function fmt(n) {
-    if (n == null || !isFinite(Number(n))) return "—";
-    return Number(n).toLocaleString("tr-TR", { maximumFractionDigits: 0 });
-  }
+  var side = "buy";
+  var LIVE_NAMES = [
+    "Nexora88", "Ahmet_Yatirim", "SakinEl", "BIST_Hunter", "BlueChip",
+    "Dipci", "Volator", "TemettuSever", "Grafikci", "RiskYonet",
+    "PortfoyMaster", "AlSatci", "UzunVade", "KisaVade", "AnalistTR"
+  ];
 
-  function fmt2(n) {
-    if (n == null || !isFinite(Number(n))) return "—";
+  League.init();
+
+  /* Sekmeler */
+  document.querySelectorAll(".tab").forEach(function (t) {
+    t.addEventListener("click", function () {
+      document.querySelectorAll(".tab").forEach(function (x) { x.classList.remove("on"); });
+      document.querySelectorAll(".panel").forEach(function (x) { x.classList.remove("on"); });
+      t.classList.add("on");
+      var id = "panel-" + t.getAttribute("data-tab");
+      var p = document.getElementById(id);
+      if (p) p.classList.add("on");
+      if (t.getAttribute("data-tab") === "board") renderBoard();
+      if (t.getAttribute("data-tab") === "live") renderLive();
+      if (t.getAttribute("data-tab") === "bag") renderPos();
+    });
+  });
+
+  /* AL / SAT */
+  document.getElementById("btnBuy").addEventListener("click", function () {
+    side = "buy";
+    document.getElementById("btnBuy").className = "on buy";
+    document.getElementById("btnSell").className = "";
+  });
+  document.getElementById("btnSell").addEventListener("click", function () {
+    side = "sell";
+    document.getElementById("btnSell").className = "on sell";
+    document.getElementById("btnBuy").className = "";
+  });
+
+  function money(n) {
     return Number(n).toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
-  function leagueById(id) {
-    for (var i = 0; i < LEAGUES.length; i++) {
-      if (LEAGUES[i].id === id) return LEAGUES[i];
+  function refreshHud() {
+    var s = League.getState();
+    document.getElementById("hudCash").textContent = money(s.cash);
+    document.getElementById("hudEquity").textContent = money(s.equity);
+    document.getElementById("hudTier").textContent = s.tierName;
+    document.getElementById("hudPoints").textContent = s.points + " puan" +
+      (s.pointsToNext != null ? " · sonrakine " + s.pointsToNext : " · zirve");
+    var pnl = s.tournament ? s.tournament.pnlPct : 0;
+    var pnlEl = document.getElementById("hudPnl");
+    pnlEl.textContent = (pnl > 0 ? "+" : "") + pnl + "%";
+    pnlEl.style.color = pnl > 0 ? "#34d399" : pnl < 0 ? "#f87171" : "#e2e8f0";
+    document.getElementById("hudSeason").textContent = "Sezon " + (s.seasonId || "—");
+
+    var phase = s.tournamentPhase;
+    var tag = document.getElementById("phaseTag");
+    var text = document.getElementById("phaseText");
+    tag.className = "tag " + phase;
+    if (phase === "compete") {
+      tag.textContent = "Yarış · 1–22";
+      text.textContent = "Bu pencerede P/L birikir. İşlem yap, sıralamada yüksel.";
+    } else if (phase === "results") {
+      tag.textContent = "Sonuç · 23–29";
+      text.textContent = "Tablolar netleşiyor. Ödül ve duyurular X hesabında paylaşılır.";
+    } else {
+      tag.textContent = "Ara";
+      text.textContent = "Sezon arası. Yeni ayın 1’inde yarış yeniden açılır.";
     }
-    return LEAGUES[0];
+
+    document.getElementById("hhStatus").textContent = s.isHappyHour ? "Şu an açık" : "Kapalı";
+    document.getElementById("nick").value = s.nickname || "";
+    renderTiers(s);
   }
 
-  function leagueIndex(id) {
-    for (var i = 0; i < LEAGUES.length; i++) {
-      if (LEAGUES[i].id === id) return i;
-    }
-    return 0;
-  }
-
-  function defaultGame() {
-    return {
-      nick: "",
-      balance: START_BALANCE,
-      points: 0,
-      league: "tahta",
-      groupId: 1,
-      rank: 12,
-      positions: [],
-      monthStartEquity: START_BALANCE,
-      lastDaily: null,
-      lastHappy: null,
-      seasonMonth: null,
-      createdAt: Date.now()
-    };
-  }
-
-  function loadGame() {
-    var g = null;
-    if (window.Store && Store.getGame) g = Store.getGame();
-    else {
-      try {
-        var raw = localStorage.getItem("nexora_game_v2");
-        g = raw ? JSON.parse(raw) : null;
-      } catch (e) {}
-    }
-    if (!g || typeof g !== "object") g = defaultGame();
-    if (!Array.isArray(g.positions)) g.positions = [];
-    if (g.balance == null) g.balance = START_BALANCE;
-    if (g.points == null) g.points = 0;
-    if (!g.league) g.league = "tahta";
-    return g;
-  }
-
-  function saveGame(g) {
-    g.updatedAt = Date.now();
-    if (window.Store && Store.setGame) Store.setGame(g);
-    else {
-      try {
-        localStorage.setItem("nexora_game_v2", JSON.stringify(g));
-      } catch (e) {}
-    }
-  }
-
-  /** Ay fazı: 1–22 yarış, 22–28 sonuç, 29+ hazırlık */
-  function monthPhase(now) {
-    now = now || new Date();
-    var day = now.getDate();
-    var y = now.getFullYear();
-    var m = now.getMonth();
-    var name = now.toLocaleString("tr-TR", { month: "long", year: "numeric" });
-    if (day >= 1 && day <= 22) {
-      return {
-        id: "race",
-        label: "Yarış dönemi",
-        detail: "1 – 22 " + name,
-        active: "race"
-      };
-    }
-    if (day >= 23 && day <= 28) {
-      return {
-        id: "results",
-        label: "Sonuç & ödül",
-        detail: "23 – 28 " + name,
-        active: "results"
-      };
-    }
-    return {
-      id: "prep",
-      label: "Hazırlık",
-      detail: "29 – ay sonu · yeni ay 1’inde başlar",
-      active: "prep"
-    };
-  }
-
-  function renderCalendar() {
-    var now = new Date();
-    var phase = monthPhase(now);
-    var name = now.toLocaleString("tr-TR", { month: "long", year: "numeric" });
-    document.getElementById("monthTitle").textContent = name;
-    document.getElementById("stPhase").textContent = phase.label;
-
-    var cards = [
-      {
-        key: "race",
-        t: "Yarış",
-        d: "1 → 22",
-        s: "Sanal kâr ve puan birikir; sıralama canlı."
-      },
-      {
-        key: "results",
-        t: "Sonuç",
-        d: "23 → 28",
-        s: "Tablo kilitlenir; yükselmeler ve ödüller açıklanır."
-      },
-      {
-        key: "prep",
-        t: "Hazırlık",
-        d: "29 → son",
-        s: "Rozetler yerler; ayın 1’inde yeni gruplar."
-      }
-    ];
-
-    document.getElementById("calendar").innerHTML = cards
-      .map(function (c) {
-        return (
-          '<div class="cal-card' +
-          (phase.active === c.key ? " active" : "") +
-          '"><div class="t">' +
-          c.t +
-          '</div><div class="d">' +
-          c.d +
-          '</div><div class="s">' +
-          c.s +
-          "</div></div>"
-        );
-      })
-      .join("");
-  }
-
-  function renderPyramid() {
-    document.getElementById("pyramid").innerHTML = LEAGUES.map(function (L, i) {
-      var next = LEAGUES[i + 1];
+  function renderTiers(s) {
+    var track = document.getElementById("tierTrack");
+    var idx = s.tierIndex || 0;
+    track.innerHTML = (s.tiers || []).map(function (t, i) {
+      var cls = "tier-chip";
+      if (i < idx) cls += " done";
+      if (i === idx) cls += " now";
       return (
-        '<div class="pyr-row">' +
-        '<span class="league-pill ' +
-        L.cls +
-        '">' +
-        L.name +
-        "</span>" +
-        "<span>20 kişi · gruptan <strong>ilk " +
-        L.promoteTop +
-        "</strong></span>" +
-        '<span class="need">Eşik: ' +
-        L.need +
-        " puan" +
-        (next ? " → " + next.name : " · zirve") +
-        "</span>" +
+        '<div class="' + cls + '">' +
+        t.name +
+        '<div class="pts">' + t.minPoints + "+ puan · ↑" + t.promotionCount + "</div>" +
         "</div>"
       );
     }).join("");
   }
 
-  function equityOf(g) {
-    // Basit: nakit + pozisyon maliyeti (fiyat yoksa maliyet varsay)
-    var eq = Number(g.balance) || 0;
-    (g.positions || []).forEach(function (p) {
-      eq += Number(p.qty) * Number(p.avg || 0);
-    });
-    return eq;
+  function showTradeMsg(ok, msg) {
+    var el = document.getElementById("tradeMsg");
+    el.className = "trade-msg show " + (ok ? "ok" : "err");
+    el.textContent = msg;
   }
 
-  function monthPct(g) {
-    var start = Number(g.monthStartEquity) || START_BALANCE;
-    var eq = equityOf(g);
-    if (!start) return 0;
-    return ((eq - start) / start) * 100;
-  }
-
-  /** Puan: ay kârına bağlı yumuşak formül + işlem aktivitesi */
-  function recomputePoints(g) {
-    var pct = monthPct(g);
-    var fromProfit = Math.max(0, pct) * 8; // %10 kâr ≈ 80 puan
-    var tradeBonus = Math.min(80, (g.positions || []).length * 5);
-    // Mevcut puanı tamamen silme: en az eski puanın bir kısmı
-    var computed = Math.floor(fromProfit + tradeBonus);
-    if (g.points < computed) g.points = computed;
-    return g.points;
-  }
-
-  function tryPromote(g) {
-    var idx = leagueIndex(g.league);
-    var L = LEAGUES[idx];
-    if (idx >= LEAGUES.length - 1) return false;
-    if (g.points < L.need) return false;
-    // Kota: rank 1..promoteTop
-    if (g.rank > L.promoteTop) return false;
-    g.league = LEAGUES[idx + 1].id;
-    g.rank = Math.min(GROUP_SIZE, 10 + Math.floor(Math.random() * 6));
-    g.groupId = (g.groupId || 1) + 1;
-    toast("Tebrikler! " + LEAGUES[idx + 1].name + " ligine yükseldin.");
-    return true;
-  }
-
-  function renderStats(g) {
-    var L = leagueById(g.league);
-    var eq = equityOf(g);
-    var pct = monthPct(g);
-
-    document.getElementById("stBalance").textContent = fmt(g.balance) + " ₺";
-    document.getElementById("stEquity").textContent = "Toplam ≈ " + fmt(eq) + " ₺";
-    document.getElementById("stPoints").textContent = String(g.points || 0);
-    document.getElementById("stNeed").textContent =
-      "Eşik " + L.need + " · ilk " + L.promoteTop;
-
-    var pill = document.getElementById("stLeague");
-    pill.className = "league-pill " + L.cls;
-    pill.textContent = L.name;
-
-    document.getElementById("stGroup").textContent =
-      "Grup #" + (g.groupId || 1) + " · sıra " + (g.rank || "—") + " / " + GROUP_SIZE;
-
-    var pctEl = document.getElementById("stMonthPct");
-    pctEl.textContent = (pct >= 0 ? "+" : "") + pct.toFixed(1) + "%";
-    pctEl.className = "val " + (pct > 0 ? "up" : pct < 0 ? "down" : "");
-
-    var need = L.need;
-    var pts = g.points || 0;
-    var ratio = Math.min(100, (pts / need) * 100);
-    document.getElementById("progFill").style.width = ratio + "%";
-    document.getElementById("progText").textContent =
-      pts + " / " + need + " puan · gruptan ilk " + L.promoteTop;
-
-    document.getElementById("nick").value = g.nick || "";
-  }
-
-  /** 20 kişilik sahte + gerçek oyuncu tablosu */
-  function buildBoard(g) {
-    var L = leagueById(g.league);
-    var meNick = g.nick || "Sen";
-    var mePts = g.points || 0;
-    var mePct = monthPct(g);
-    var meRank = Math.max(1, Math.min(GROUP_SIZE, g.rank || 12));
-
-    var rows = [];
-    var used = {};
-    used[meNick.toLowerCase()] = true;
-
-    // Diğer 19
-    for (var i = 0; i < GROUP_SIZE; i++) {
-      if (i + 1 === meRank) {
-        rows.push({
-          rank: meRank,
-          nick: meNick,
-          points: mePts,
-          pct: mePct,
-          me: true
-        });
-        continue;
-      }
-      var name = FAKE_NAMES[i % FAKE_NAMES.length];
-      var n = 0;
-      while (used[name.toLowerCase()] && n < 30) {
-        name = FAKE_NAMES[(i + n + 3) % FAKE_NAMES.length] + (n > 5 ? String(n) : "");
-        n++;
-      }
-      used[name.toLowerCase()] = true;
-      // Puana göre dağınık ama inandırıcı
-      var base = mePts + (meRank - (i + 1)) * (12 + (i % 5));
-      base = Math.max(0, Math.floor(base + (Math.sin(i * 1.7) * 20)));
-      var p = mePct + (meRank - (i + 1)) * 1.1 + (i % 3) * 0.3;
-      rows.push({
-        rank: i + 1,
-        nick: name,
-        points: base,
-        pct: p,
-        me: false
-      });
-    }
-
-    // Rank alanına göre sırala (me sabit rank)
-    rows.sort(function (a, b) {
-      return a.rank - b.rank;
-    });
-    return rows;
-  }
-
-  function renderBoard(g) {
-    var rows = buildBoard(g);
-    document.getElementById("boardBody").innerHTML = rows
-      .map(function (r) {
-        var cls = r.me ? " me" : "";
-        if (r.rank === 1) cls += " top1";
-        else if (r.rank === 2) cls += " top2";
-        else if (r.rank === 3) cls += " top3";
-        var pctCls = r.pct > 0 ? "up" : r.pct < 0 ? "down" : "";
-        return (
-          '<tr class="' +
-          cls.trim() +
-          '"><td>' +
-          r.rank +
-          '</td><td class="nick">' +
-          r.nick +
-          (r.me ? " · sen" : "") +
-          "</td><td>" +
-          r.points +
-          '</td><td class="' +
-          pctCls +
-          '">' +
-          (r.pct >= 0 ? "+" : "") +
-          r.pct.toFixed(1) +
-          "%</td></tr>"
-        );
-      })
-      .join("");
-  }
-
-  function renderPositions(g) {
-    var body = document.getElementById("posBody");
-    var list = g.positions || [];
-    if (!list.length) {
-      body.innerHTML =
-        '<tr><td colspan="4" class="empty">Açık sanal pozisyon yok</td></tr>';
+  document.getElementById("btnTrade").addEventListener("click", function () {
+    var symbol = document.getElementById("sym").value.trim();
+    var qty = Number(document.getElementById("qty").value);
+    var price = Number(document.getElementById("price").value);
+    var res = League.applyTrade({ symbol: symbol, side: side, qty: qty, price: price });
+    if (!res.ok) {
+      showTradeMsg(false, res.error || "İşlem yapılamadı.");
       return;
     }
-    body.innerHTML = list
-      .map(function (p, idx) {
-        return (
-          "<tr><td><strong>" +
-          p.symbol +
-          "</strong></td><td>" +
-          p.qty +
-          "</td><td>" +
-          fmt2(p.avg) +
-          '</td><td><button type="button" class="btn btn-danger" data-close="' +
-          idx +
-          '">Kapat</button></td></tr>"
-        );
-      })
-      .join("");
-  }
+    showTradeMsg(true, (side === "buy" ? "Alındı: " : "Satıldı: ") + symbol.toUpperCase() + " × " + qty);
+    refreshHud();
+    renderPos();
+  });
 
-  async function estimatePrice(symbol) {
-    symbol = String(symbol || "").toUpperCase().trim();
-    if (!symbol) return null;
-    var y =
-      symbol.indexOf(".") === -1 && /^[A-Z]{3,6}$/.test(symbol) && symbol.length <= 6
-        ? symbol + ".IS"
-        : symbol;
-    // BIST varsayımı: kısa semboller
-    if (window.API && API.getLiveQuote) {
-      try {
-        var q = await API.getLiveQuote(y);
-        if (q && q.price > 0) return Number(q.price);
-        q = await API.getLiveQuote(symbol);
-        if (q && q.price > 0) return Number(q.price);
-      } catch (e) {}
-    }
-    return null;
-  }
+  document.getElementById("btnDaily").addEventListener("click", function () {
+    var r = League.claimDaily();
+    showTradeMsg(r.ok, r.ok ? ("+" + r.amount + " ₺ günlük ödül") : r.error);
+    refreshHud();
+  });
 
-  async function doTrade() {
-    var g = loadGame();
-    var symbol = String(document.getElementById("txSym").value || "")
-      .trim()
-      .toUpperCase();
-    var side = document.getElementById("txSide").value;
-    var qty = Number(document.getElementById("txQty").value);
+  document.getElementById("btnHappy").addEventListener("click", function () {
+    var r = League.claimHappyHour();
+    showTradeMsg(r.ok, r.ok ? ("+" + r.amount + " ₺ Happy Hour") : r.error);
+    refreshHud();
+  });
 
-    if (!symbol) {
-      toast("Sembol yaz");
-      return;
-    }
-    if (!isFinite(qty) || qty <= 0) {
-      toast("Geçerli adet gir");
-      return;
-    }
+  document.getElementById("btnNick").addEventListener("click", function () {
+    var r = League.setNickname(document.getElementById("nick").value);
+    showTradeMsg(r.ok, r.ok ? "Takma ad kaydedildi." : r.error);
+    refreshHud();
+    renderBoard();
+    renderLive();
+  });
 
-    var price = await estimatePrice(symbol);
-    if (price == null || price <= 0) {
-      // Simülasyon için sabit yedek (oyun bozulmasın)
-      price = 50 + (symbol.charCodeAt(0) % 40);
-      toast("Canlı fiyat yok — simülasyon fiyatı ile devam");
-    }
-
-    if (side === "buy") {
-      var cost = price * qty;
-      if (cost > g.balance) {
-        toast("Yetersiz sanal bakiye");
-        return;
-      }
-      g.balance -= cost;
-      var found = null;
-      for (var i = 0; i < g.positions.length; i++) {
-        if (g.positions[i].symbol === symbol) {
-          found = g.positions[i];
-          break;
-        }
-      }
-      if (found) {
-        var newQty = found.qty + qty;
-        found.avg = (found.avg * found.qty + price * qty) / newQty;
-        found.qty = newQty;
-      } else {
-        g.positions.push({ symbol: symbol, qty: qty, avg: price });
-      }
-      // İşlem puanı
-      g.points = (g.points || 0) + Math.min(15, Math.floor(qty / 5) + 2);
-      toast(symbol + " alındı · " + fmt2(price) + " ₺");
-    } else {
-      var pos = null;
-      var pidx = -1;
-      for (var j = 0; j < g.positions.length; j++) {
-        if (g.positions[j].symbol === symbol) {
-          pos = g.positions[j];
-          pidx = j;
-          break;
-        }
-      }
-      if (!pos || pos.qty < qty) {
-        toast("Yetersiz pozisyon");
-        return;
-      }
-      var pnl = (price - pos.avg) * qty;
-      g.balance += price * qty;
-      pos.qty -= qty;
-      if (pos.qty <= 0) g.positions.splice(pidx, 1);
-      if (pnl > 0) {
-        g.points = (g.points || 0) + Math.min(40, Math.floor(pnl / 50) + 5);
-        // Kâr sıralamayı iyileştirsin
-        if (g.rank > 1 && Math.random() > 0.4) g.rank -= 1;
-      } else if (g.rank < GROUP_SIZE && Math.random() > 0.5) {
-        g.rank += 1;
-      }
-      toast(
-        symbol +
-          " satıldı · K/Z " +
-          (pnl >= 0 ? "+" : "") +
-          fmt2(pnl) +
-          " ₺"
+  function renderBoard() {
+    var rows = League.getLeaderboard(12);
+    document.getElementById("boardPhase").textContent = League.getState().tournamentPhase;
+    document.getElementById("boardBody").innerHTML = rows.map(function (r) {
+      var rankCls = "rank";
+      if (r.rank === 1) rankCls += " gold";
+      else if (r.rank === 2) rankCls += " silver";
+      else if (r.rank === 3) rankCls += " bronze";
+      var pnl = (r.pnlPct > 0 ? "+" : "") + Number(r.pnlPct).toFixed(1) + "%";
+      var pnlColor = r.pnlPct > 0 ? "#34d399" : r.pnlPct < 0 ? "#f87171" : "#e2e8f0";
+      return (
+        '<div class="board-row' + (r.isYou ? " you" : "") + '">' +
+        '<span class="' + rankCls + '">' + r.rank + "</span>" +
+        '<span class="name">' + r.nickname +
+        (r.isYou ? '<span class="you-tag">SEN</span>' : "") +
+        "</span>" +
+        '<span class="tier-name">' + r.tierName + "</span>" +
+        '<span class="pnl" style="color:' + pnlColor + '">' + pnl + "</span>" +
+        "</div>"
       );
-    }
-
-    recomputePoints(g);
-    tryPromote(g);
-    saveGame(g);
-    refreshUI(g);
+    }).join("");
   }
 
-  function closePos(idx) {
-    var g = loadGame();
-    if (idx < 0 || idx >= g.positions.length) return;
-    var p = g.positions[idx];
-    // Maliyetten boz (fiyat bilinmiyorsa)
-    g.balance += p.qty * p.avg;
-    g.positions.splice(idx, 1);
-    saveGame(g);
-    toast(p.symbol + " pozisyon kapatıldı");
-    refreshUI(g);
+  function renderLive() {
+    var me = League.getState().nickname || "Sen";
+    var list = [me].concat(LIVE_NAMES).slice(0, 16);
+    document.getElementById("liveCount").textContent = String(list.length);
+    document.getElementById("avatars").innerHTML = list.map(function (n, i) {
+      var you = i === 0;
+      var initials = n.slice(0, 2).toUpperCase();
+      return (
+        '<div class="avatar' + (you ? " you" : "") + '">' +
+        '<span class="dot">' + initials + "</span>" +
+        n + (you ? " · sen" : "") +
+        "</div>"
+      );
+    }).join("");
   }
 
-  function claimDaily() {
-    var g = loadGame();
-    var today = new Date().toISOString().slice(0, 10);
-    if (g.lastDaily === today) {
-      toast("Bugünkü ödül alındı");
+  function renderPos() {
+    var s = League.getState();
+    var pos = s.positions || {};
+    var keys = Object.keys(pos);
+    var root = document.getElementById("posRoot");
+    if (!keys.length) {
+      root.innerHTML = '<div class="pos-empty">Açık pozisyon yok. Arena’dan işlem yap.</div>';
       return;
     }
-    g.balance += DAILY_BONUS;
-    g.points = (g.points || 0) + 3;
-    g.lastDaily = today;
-
-    // Happy hour: 12–13 veya 17:30–18:30 yerel
-    var now = new Date();
-    var h = now.getHours();
-    var mi = now.getMinutes();
-    var happy =
-      (h === 12) ||
-      (h === 17 && mi >= 30) ||
-      (h === 18 && mi <= 30);
-    if (happy && g.lastHappy !== today) {
-      g.balance += HAPPY_BONUS;
-      g.lastHappy = today;
-      toast("Günlük +50 ₺ ve Happy Hour +" + HAPPY_BONUS + " ₺!");
-    } else {
-      toast("Günlük ödül +" + DAILY_BONUS + " ₺");
-    }
-    saveGame(g);
-    refreshUI(g);
+    root.innerHTML =
+      '<div class="pos-list">' +
+      keys.map(function (sym) {
+        var p = pos[sym];
+        return (
+          '<div class="pos-item">' +
+          "<div><div class=\"sym\">" + sym + "</div>" +
+          '<div class="meta">Adet ' + p.qty + " · Ort. " + money(p.avgPrice) + "</div></div>" +
+          "<div style=\"text-align:right;font-weight:800\">" + money(p.lastPrice) + "</div>" +
+          "</div>"
+        );
+      }).join("") +
+      "</div>";
   }
 
-  function saveNick() {
-    var g = loadGame();
-    var n = String(document.getElementById("nick").value || "")
-      .trim()
-      .slice(0, 18);
-    if (!n) {
-      toast("Takma ad yaz");
-      return;
-    }
-    g.nick = n;
-    saveGame(g);
-    toast("Takma ad kaydedildi");
-    refreshUI(g);
-  }
+  refreshHud();
+  renderBoard();
+  renderLive();
+  renderPos();
 
-  function ensureSeason(g) {
-    var key = new Date().toISOString().slice(0, 7);
-    if (g.seasonMonth !== key) {
-      g.seasonMonth = key;
-      g.monthStartEquity = equityOf(g);
-      // Yeni ay: sırayı ortaya çek
-      if (!g.rank) g.rank = 10 + Math.floor(Math.random() * 6);
-    }
-    return g;
-  }
-
-  function refreshUI(g) {
-    g = ensureSeason(g);
-    recomputePoints(g);
-    renderStats(g);
-    renderBoard(g);
-    renderPositions(g);
-    saveGame(g);
-  }
-
-  document.getElementById("btnNick").addEventListener("click", saveNick);
-  document.getElementById("btnDaily").addEventListener("click", claimDaily);
-  document.getElementById("btnTx").addEventListener("click", doTrade);
-  document.getElementById("btnRefreshBoard").addEventListener("click", function () {
-    refreshUI(loadGame());
-    toast("Tablo güncellendi");
-  });
-
-  document.getElementById("posBody").addEventListener("click", function (e) {
-    var b = e.target.closest("[data-close]");
-    if (!b) return;
-    closePos(Number(b.getAttribute("data-close")));
-  });
-
-  renderPyramid();
-  renderCalendar();
-  refreshUI(loadGame());
+  /* Hafif canlı hissi: sıralamayı periyodik yenile */
+  setInterval(function () {
+    if (document.getElementById("panel-board").classList.contains("on")) renderBoard();
+    document.getElementById("hhStatus").textContent = League.isHappyHour() ? "Şu an açık" : "Kapalı";
+  }, 30000);
 })();
   </script>
 </body>
