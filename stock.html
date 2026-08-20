@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Hisse Kartları · Nexora AI</title>
-  <meta name="description" content="BIST, NASDAQ, NYSE ücretsiz. Diğer piyasalar Premium / Elite." />
+  <meta name="description" content="BIST, NASDAQ ve NYSE ücretsiz. Diğer piyasalar Premium ve Elite. Gecikmeli fiyat, açık/kapalı seans." />
   <meta name="theme-color" content="#0d0d1a" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
@@ -85,9 +85,9 @@
       background: var(--grad);
     }
 
-    .wrap { max-width: 720px; margin: 0 auto; padding: 0 14px 56px; }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 0 14px 40px; }
 
-    .page-head { padding: 22px 0 6px; }
+    .page-head { padding: 22px 0 8px; }
     .page-head h1 {
       font-size: clamp(1.45rem, 3.5vw, 1.85rem);
       font-weight: 800;
@@ -101,19 +101,21 @@
       margin-top: 8px;
       font-size: 14px;
       color: var(--muted);
-      line-height: 1.6;
+      line-height: 1.65;
+      max-width: 48ch;
     }
 
-    .note {
+    .info {
       margin: 12px 0 16px;
-      padding: 10px 14px;
-      border-radius: 12px;
-      background: rgba(18, 18, 32, 0.85);
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(18, 18, 32, 0.88);
       border: 1px solid var(--border);
-      font-size: 12.5px;
+      font-size: 13px;
       color: var(--dim);
-      line-height: 1.55;
+      line-height: 1.6;
     }
+    .info strong { color: var(--muted); }
 
     .section-label {
       font-size: 11px;
@@ -121,7 +123,7 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--faint);
-      margin: 4px 0 8px;
+      margin: 6px 0 8px;
     }
 
     .markets {
@@ -137,7 +139,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 8px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
     @media (min-width: 560px) {
       .markets-locked { grid-template-columns: repeat(3, 1fr); }
@@ -151,7 +153,6 @@
       background: var(--panel);
       border: 1px solid var(--border);
       transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
-      position: relative;
     }
     .mkt:hover {
       transform: translateY(-1px);
@@ -162,13 +163,12 @@
       box-shadow: 0 0 0 1px rgba(0, 240, 255, 0.12), 0 10px 28px rgba(0,0,0,0.25);
     }
     .mkt.locked {
-      opacity: 0.92;
       border-style: dashed;
       border-color: rgba(251, 191, 36, 0.35);
     }
     .mkt.locked:hover {
       border-color: rgba(251, 191, 36, 0.55);
-      box-shadow: 0 8px 24px rgba(251, 191, 36, 0.12);
+      box-shadow: 0 8px 24px rgba(251, 191, 36, 0.1);
     }
     .mkt-top {
       display: flex; justify-content: space-between; align-items: center;
@@ -181,7 +181,6 @@
     .status {
       font-size: 10px; font-weight: 800;
       padding: 3px 8px; border-radius: 999px;
-      white-space: nowrap;
     }
     .status.open {
       color: #022c22;
@@ -230,7 +229,6 @@
       color: var(--faint);
     }
 
-    /* Premium kilit paneli */
     .gate {
       display: none;
       margin-bottom: 16px;
@@ -244,7 +242,7 @@
     }
     .gate.show { display: block; }
     .gate h3 {
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       font-weight: 800;
       letter-spacing: -0.02em;
     }
@@ -266,18 +264,12 @@
       font-size: 12px; font-weight: 700;
       padding: 6px 12px; border-radius: 999px;
     }
-    .gate-pills .p {
-      color: #0d0d1a;
-      background: var(--prem);
-    }
-    .gate-pills .e {
-      color: #fff;
-      background: var(--elite);
-    }
+    .gate-pills .p { color: #0d0d1a; background: var(--prem); }
+    .gate-pills .e { color: #fff; background: var(--elite); }
     .gate-actions {
       display: flex; flex-wrap: wrap; gap: 8px;
     }
-    .gate-actions a {
+    .gate-actions a, .gate-actions button {
       padding: 11px 16px;
       border-radius: 11px;
       font-size: 13px;
@@ -286,12 +278,11 @@
     .btn-prem {
       color: #0d0d1a;
       background: var(--prem);
-      box-shadow: 0 4px 18px rgba(251, 191, 36, 0.35);
+      box-shadow: 0 4px 18px rgba(251, 191, 36, 0.3);
     }
     .btn-elite {
       color: #fff;
       background: var(--elite);
-      box-shadow: 0 4px 18px rgba(123, 44, 255, 0.35);
     }
     .btn-soft {
       color: var(--muted);
@@ -321,10 +312,30 @@
       font-size: 12px;
       font-weight: 700;
       color: var(--dim);
-      padding: 4px 8px;
       display: none;
     }
     .search-bar .clear.show { display: block; }
+
+    .loading-banner {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--cyan);
+      margin-bottom: 10px;
+    }
+    .loading-banner.show { display: flex; }
+    .pulse-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--cyan);
+      animation: blink 1s ease-in-out infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.25; }
+    }
 
     .list-meta {
       display: flex; flex-wrap: wrap; gap: 8px 14px;
@@ -335,11 +346,7 @@
     }
     .list-meta strong { color: var(--muted); }
 
-    .list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
+    .list { display: flex; flex-direction: column; gap: 8px; }
 
     .row {
       display: grid;
@@ -420,7 +427,6 @@
     .chg.up { color: var(--up); }
     .chg.down { color: var(--down); }
 
-    /* Yükleniyor iskelet */
     .skel {
       display: inline-block;
       height: 14px;
@@ -439,19 +445,6 @@
     @keyframes shimmer {
       0% { background-position: 100% 0; }
       100% { background-position: -100% 0; }
-    }
-    .pulse-dot {
-      display: inline-block;
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--cyan);
-      margin-right: 6px;
-      animation: blink 1s ease-in-out infinite;
-      vertical-align: middle;
-    }
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.25; }
     }
 
     .row-actions { display: flex; gap: 6px; }
@@ -494,25 +487,79 @@
       box-shadow: inset 0 0 0 1px var(--border);
     }
 
-    .loading-banner {
-      display: none;
-      align-items: center;
-      gap: 8px;
-      font-size: 12.5px;
-      font-weight: 600;
-      color: var(--cyan);
+    /* Alt: demo + sosyal */
+    .footer-card {
+      margin-top: 28px;
+      padding: 20px 16px;
+      border-radius: 18px;
+      background:
+        linear-gradient(160deg, rgba(0, 240, 255, 0.06), rgba(123, 44, 255, 0.08)),
+        var(--panel);
+      border: 1px solid var(--border);
+    }
+    .footer-card .demo-tag {
+      display: inline-flex;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--amber);
+      background: rgba(251, 191, 36, 0.12);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      padding: 4px 10px;
+      border-radius: 999px;
       margin-bottom: 10px;
     }
-    .loading-banner.show { display: flex; }
+    .footer-card h3 {
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .footer-card p {
+      margin-top: 8px;
+      font-size: 13.5px;
+      color: var(--dim);
+      line-height: 1.65;
+    }
+    .social-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .social-row a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .social-row a:hover { transform: translateY(-1px); }
+    .soc-x {
+      color: #fff;
+      background: #000;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+    }
+    .soc-sub {
+      color: #fff;
+      background: linear-gradient(135deg, #ff6719, #ee6337);
+      box-shadow: 0 4px 16px rgba(238, 99, 55, 0.3);
+    }
 
-    footer {
+    footer.site {
       text-align: center;
-      padding: 20px 14px 40px;
+      padding: 18px 14px 36px;
       font-size: 12px;
       color: var(--faint);
-      border-top: 1px solid var(--border);
     }
-    footer a { color: var(--dim); margin: 0 6px; font-weight: 600; }
+    footer.site a {
+      color: var(--dim);
+      margin: 0 6px;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
@@ -534,17 +581,20 @@
       <header class="page-head">
         <h1>Hisse <span>kartları</span></h1>
         <p>
-          BIST, NASDAQ ve NYSE herkese açık. Diğer borsalar Premium ve Elite
-          üyeliğe özeldir.
+          Üç büyük piyasayı ücretsiz tara. İleri borsalar üyelikle açılır;
+          seans durumu ve gecikmeli fiyatlarla sakin, net bir ekran.
         </p>
       </header>
 
-      <div class="note">
-        Fiyatlar gecikmeli olabilir · 60 sn önbellek · yatırım tavsiyesi değildir.
-        JSON: <code style="color:var(--cyan)">data/*.json → stocks[]</code>
+      <div class="info">
+        <strong>Nasıl çalışır?</strong>
+        BIST, NASDAQ ve NYSE herkese açık. Londra, Frankfurt, Tokyo, Toronto
+        Premium; Hong Kong ve OTC Elite planındadır. Fiyatlar kısa süreli
+        önbellekle gelir — sayfa canlı kalır, gereksiz yük oluşmaz.
+        Veriler gecikmeli olabilir; bu ekran yatırım tavsiyesi değildir.
       </div>
 
-      <div class="section-label">Ücretsiz piyasalar</div>
+      <div class="section-label">Ücretsiz</div>
       <div class="markets" id="marketsFree"></div>
 
       <div class="section-label">Üyelik ile</div>
@@ -554,10 +604,10 @@
         <h3>🔒 <span id="gateTitle">Bu piyasa kilitli</span></h3>
         <p id="gateText">
           Bu bölüm yalnızca Premium ve Elite üyelere açıktır. Ücretsiz planda
-          BIST, NASDAQ ve NYSE listelerini kullanmaya devam edebilirsin.
+          BIST, NASDAQ ve NYSE ile devam edebilirsin.
         </p>
         <div class="gate-pills">
-          <span class="p">Pro · Premium</span>
+          <span class="p">Premium</span>
           <span class="e">Elite</span>
         </div>
         <div class="gate-actions">
@@ -567,7 +617,7 @@
         </div>
       </div>
 
-      <div class="search-bar" id="searchWrap">
+      <div class="search-bar">
         <span style="color:var(--faint);font-weight:700">⌕</span>
         <input id="q" type="search" placeholder="THYAO, Apple, Aselsan…" autocomplete="off" />
         <button type="button" class="clear" id="btnClear">Temizle</button>
@@ -585,10 +635,27 @@
 
       <div class="list" id="list"></div>
       <button type="button" class="load-more" id="btnMore" hidden>Daha fazla</button>
-      <div class="empty" id="empty" hidden>Eşleşen hisse yok.</div>
+      <div class="empty" id="empty" hidden>Eşleşen hisse yok. Aramayı veya piyasayı değiştir.</div>
+
+      <aside class="footer-card">
+        <div class="demo-tag">Demo sürüm</div>
+        <h3>Gelişmeler ve derin okuma</h3>
+        <p>
+          Bu sürüm erken erişimdir. Duyurular ve kısa notlar için X;
+          OTC ve yatırım psikolojisi yazıları için Substack kanalını takip edebilirsin.
+        </p>
+        <div class="social-row">
+          <a class="soc-x" href="https://x.com/nexora88team" target="_blank" rel="noopener noreferrer">
+            𝕏 &nbsp;@nexora88team
+          </a>
+          <a class="soc-sub" href="https://substack.com/@pennydiphunter" target="_blank" rel="noopener noreferrer">
+            Substack · Penny Dip Hunter
+          </a>
+        </div>
+      </aside>
     </main>
 
-    <footer>
+    <footer class="site">
       <a href="index.html">Ana</a>
       <a href="portfolio.html">Portföy</a>
       <a href="premium.html">Premium</a>
@@ -603,156 +670,34 @@
 (function () {
   "use strict";
 
-  /* Ücretsiz: BIST + NASDAQ + NYSE | Kilitli: diğerleri */
   var MARKETS = [
-    {
-      id: "bist",
-      name: "BIST",
-      flag: "🇹🇷",
-      label: "İstanbul",
-      tz: "Europe/Istanbul",
-      open: [10, 0],
-      close: [18, 0],
-      holidaySet: "bist",
-      file: "data/bist.json",
-      plan: "free",
-      suffix: ".IS",
-      count: null
-    },
-    {
-      id: "nasdaq",
-      name: "NASDAQ",
-      flag: "🇺🇸",
-      label: "New York",
-      tz: "America/New_York",
-      open: [9, 30],
-      close: [16, 0],
-      holidaySet: "us",
-      file: "data/nasdaq.json",
-      plan: "free",
-      suffix: "",
-      count: null
-    },
-    {
-      id: "nyse",
-      name: "NYSE",
-      flag: "🇺🇸",
-      label: "New York",
-      tz: "America/New_York",
-      open: [9, 30],
-      close: [16, 0],
-      holidaySet: "us",
-      file: "data/nyse.json",
-      plan: "free",
-      suffix: "",
-      count: null
-    },
-    {
-      id: "lse",
-      name: "LSE",
-      flag: "🇬🇧",
-      label: "Londra",
-      tz: "Europe/London",
-      open: [8, 0],
-      close: [16, 30],
-      holidaySet: "us",
-      file: "data/lse.json",
-      plan: "premium",
-      suffix: ".L",
-      count: null
-    },
-    {
-      id: "xetra",
-      name: "XETRA",
-      flag: "🇩🇪",
-      label: "Frankfurt",
-      tz: "Europe/Berlin",
-      open: [9, 0],
-      close: [17, 30],
-      holidaySet: "us",
-      file: "data/xetra.json",
-      plan: "premium",
-      suffix: ".DE",
-      count: null
-    },
-    {
-      id: "tse",
-      name: "TSE",
-      flag: "🇯🇵",
-      label: "Tokyo",
-      tz: "Asia/Tokyo",
-      open: [9, 0],
-      close: [15, 0],
-      holidaySet: "us",
-      file: "data/tse.json",
-      plan: "premium",
-      suffix: ".T",
-      count: null
-    },
-    {
-      id: "tsx",
-      name: "TSX",
-      flag: "🇨🇦",
-      label: "Toronto",
-      tz: "America/Toronto",
-      open: [9, 30],
-      close: [16, 0],
-      holidaySet: "us",
-      file: "data/tsx.json",
-      plan: "premium",
-      suffix: ".TO",
-      count: null
-    },
-    {
-      id: "hkex",
-      name: "HKEX",
-      flag: "🇭🇰",
-      label: "Hong Kong",
-      tz: "Asia/Hong_Kong",
-      open: [9, 30],
-      close: [16, 0],
-      holidaySet: "us",
-      file: "data/hkex.json",
-      plan: "elite",
-      suffix: ".HK",
-      count: null
-    },
-    {
-      id: "otc",
-      name: "OTCQB",
-      flag: "🇺🇸",
-      label: "OTC",
-      tz: "America/New_York",
-      open: [9, 30],
-      close: [16, 0],
-      holidaySet: "us",
-      file: "data/otc.json",
-      plan: "elite",
-      suffix: "",
-      count: null
-    }
+    { id: "bist", name: "BIST", flag: "🇹🇷", label: "İstanbul", tz: "Europe/Istanbul", open: [10, 0], close: [18, 0], holidaySet: "bist", file: "data/bist.json", plan: "free", suffix: ".IS", count: null },
+    { id: "nasdaq", name: "NASDAQ", flag: "🇺🇸", label: "New York", tz: "America/New_York", open: [9, 30], close: [16, 0], holidaySet: "us", file: "data/nasdaq.json", plan: "free", suffix: "", count: null },
+    { id: "nyse", name: "NYSE", flag: "🇺🇸", label: "New York", tz: "America/New_York", open: [9, 30], close: [16, 0], holidaySet: "us", file: "data/nyse.json", plan: "free", suffix: "", count: null },
+    { id: "lse", name: "LSE", flag: "🇬🇧", label: "Londra", tz: "Europe/London", open: [8, 0], close: [16, 30], holidaySet: "us", file: "data/lse.json", plan: "premium", suffix: ".L", count: null },
+    { id: "xetra", name: "XETRA", flag: "🇩🇪", label: "Frankfurt", tz: "Europe/Berlin", open: [9, 0], close: [17, 30], holidaySet: "us", file: "data/xetra.json", plan: "premium", suffix: ".DE", count: null },
+    { id: "tse", name: "TSE", flag: "🇯🇵", label: "Tokyo", tz: "Asia/Tokyo", open: [9, 0], close: [15, 0], holidaySet: "us", file: "data/tse.json", plan: "premium", suffix: ".T", count: null },
+    { id: "tsx", name: "TSX", flag: "🇨🇦", label: "Toronto", tz: "America/Toronto", open: [9, 30], close: [16, 0], holidaySet: "us", file: "data/tsx.json", plan: "premium", suffix: ".TO", count: null },
+    { id: "hkex", name: "HKEX", flag: "🇭🇰", label: "Hong Kong", tz: "Asia/Hong_Kong", open: [9, 30], close: [16, 0], holidaySet: "us", file: "data/hkex.json", plan: "elite", suffix: ".HK", count: null },
+    { id: "otc", name: "OTCQB", flag: "🇺🇸", label: "OTC ABD", tz: "America/New_York", open: [9, 30], close: [16, 0], holidaySet: "us", file: "data/otc.json", plan: "elite", suffix: "", count: null }
   ];
 
   var HOLIDAYS = {
     bist: {
       "2025-01-01": "Yılbaşı", "2025-04-23": "23 Nisan", "2025-05-01": "1 Mayıs",
-      "2025-05-19": "19 Mayıs", "2025-07-15": "15 Temmuz", "2025-08-30": "30 Ağustos",
-      "2025-10-29": "29 Ekim",
-      "2026-01-01": "Yılbaşı", "2026-03-20": "Ramazan Bayramı", "2026-03-21": "Ramazan Bayramı",
-      "2026-03-22": "Ramazan Bayramı", "2026-04-23": "23 Nisan", "2026-05-01": "1 Mayıs",
-      "2026-05-19": "19 Mayıs", "2026-05-27": "Kurban Bayramı", "2026-05-28": "Kurban Bayramı",
-      "2026-05-29": "Kurban Bayramı", "2026-05-30": "Kurban Bayramı", "2026-07-15": "15 Temmuz",
-      "2026-08-30": "30 Ağustos", "2026-10-29": "29 Ekim"
+      "2025-05-19": "19 Mayıs", "2025-07-15": "15 Temmuz", "2025-08-30": "30 Ağustos", "2025-10-29": "29 Ekim",
+      "2026-01-01": "Yılbaşı", "2026-03-20": "Ramazan Bayramı", "2026-03-21": "Ramazan Bayramı", "2026-03-22": "Ramazan Bayramı",
+      "2026-04-23": "23 Nisan", "2026-05-01": "1 Mayıs", "2026-05-19": "19 Mayıs",
+      "2026-05-27": "Kurban Bayramı", "2026-05-28": "Kurban Bayramı", "2026-05-29": "Kurban Bayramı", "2026-05-30": "Kurban Bayramı",
+      "2026-07-15": "15 Temmuz", "2026-08-30": "30 Ağustos", "2026-10-29": "29 Ekim"
     },
     us: {
-      "2025-01-01": "New Year", "2025-01-20": "MLK", "2025-02-17": "Presidents",
-      "2025-04-18": "Good Friday", "2025-05-26": "Memorial", "2025-06-19": "Juneteenth",
-      "2025-07-04": "Independence", "2025-09-01": "Labor", "2025-11-27": "Thanksgiving",
-      "2025-12-25": "Christmas",
-      "2026-01-01": "New Year", "2026-01-19": "MLK", "2026-02-16": "Presidents",
-      "2026-04-03": "Good Friday", "2026-05-25": "Memorial", "2026-06-19": "Juneteenth",
-      "2026-07-03": "Independence", "2026-09-07": "Labor", "2026-11-26": "Thanksgiving",
-      "2026-12-25": "Christmas"
+      "2025-01-01": "New Year", "2025-01-20": "MLK", "2025-02-17": "Presidents", "2025-04-18": "Good Friday",
+      "2025-05-26": "Memorial", "2025-06-19": "Juneteenth", "2025-07-04": "Independence", "2025-09-01": "Labor",
+      "2025-11-27": "Thanksgiving", "2025-12-25": "Christmas",
+      "2026-01-01": "New Year", "2026-01-19": "MLK", "2026-02-16": "Presidents", "2026-04-03": "Good Friday",
+      "2026-05-25": "Memorial", "2026-06-19": "Juneteenth", "2026-07-03": "Independence", "2026-09-07": "Labor",
+      "2026-11-26": "Thanksgiving", "2026-12-25": "Christmas"
     }
   };
 
@@ -790,11 +735,8 @@
     } catch (e) {}
   }
 
-  function pad(n) {
-    return n < 10 ? "0" + n : String(n);
-  }
+  function pad(n) { return n < 10 ? "0" + n : String(n); }
 
-  /** JSON: dizi VEYA { stocks: [...] } */
   function extractStocks(data) {
     if (!data) return [];
     if (Array.isArray(data)) return data;
@@ -805,8 +747,7 @@
   }
 
   function uniqueBySymbol(list) {
-    var seen = {};
-    var out = [];
+    var seen = {}, out = [];
     for (var i = 0; i < list.length; i++) {
       var sym = String(list[i].symbol || "").toUpperCase().trim();
       if (!sym || seen[sym]) continue;
@@ -819,15 +760,8 @@
   function partsInTz(tz, date) {
     date = date || new Date();
     var fmt = new Intl.DateTimeFormat("en-GB", {
-      timeZone: tz,
-      weekday: "short",
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: false
+      timeZone: tz, weekday: "short", year: "numeric", month: "2-digit", day: "2-digit",
+      hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false
     });
     var parts = {};
     fmt.formatToParts(date).forEach(function (p) {
@@ -835,23 +769,15 @@
     });
     var wd = { Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6, Sun: 0 }[parts.weekday];
     return {
-      weekday: wd,
-      year: +parts.year,
-      month: +parts.month,
-      day: +parts.day,
-      hour: +parts.hour,
-      minute: +parts.minute,
-      second: +parts.second
+      weekday: wd, year: +parts.year, month: +parts.month, day: +parts.day,
+      hour: +parts.hour, minute: +parts.minute, second: +parts.second
     };
   }
 
-  function ymd(p) {
-    return p.year + "-" + pad(p.month) + "-" + pad(p.day);
-  }
+  function ymd(p) { return p.year + "-" + pad(p.month) + "-" + pad(p.day); }
 
   function nonTrading(mkt, p) {
-    if (p.weekday === 0 || p.weekday === 6)
-      return { closed: true, reason: "weekend" };
+    if (p.weekday === 0 || p.weekday === 6) return { closed: true, reason: "weekend" };
     var h = (HOLIDAYS[mkt.holidaySet] || {})[ymd(p)];
     if (h) return { closed: true, reason: "holiday", name: h };
     return { closed: false };
@@ -871,14 +797,7 @@
     var p0 = partsInTz(mkt.tz, from);
     for (var step = 0; step < 21; step++) {
       var tmp = new Date(Date.UTC(p0.year, p0.month - 1, p0.day + step));
-      var noon = zonedToUtc(
-        mkt.tz,
-        tmp.getUTCFullYear(),
-        tmp.getUTCMonth() + 1,
-        tmp.getUTCDate(),
-        12,
-        0
-      );
+      var noon = zonedToUtc(mkt.tz, tmp.getUTCFullYear(), tmp.getUTCMonth() + 1, tmp.getUTCDate(), 12, 0);
       var tp = partsInTz(mkt.tz, new Date(noon));
       if (nonTrading(mkt, tp).closed) continue;
       return zonedToUtc(mkt.tz, tp.year, tp.month, tp.day, mkt.open[0], mkt.open[1]);
@@ -895,7 +814,6 @@
     var curMin = p.hour * 60 + p.minute;
     var isOpen = !nt.closed && curMin >= openMin && curMin < closeMin;
     var holidayToday = nt.reason === "holiday" ? nt.name : null;
-
     var targetMs, until;
     if (isOpen) {
       targetMs = zonedToUtc(mkt.tz, p.year, p.month, p.day, mkt.close[0], mkt.close[1]);
@@ -905,37 +823,26 @@
       until = "açılışa";
     } else {
       var base = now;
-      if (!nt.closed && curMin >= closeMin) {
-        base = new Date(zonedToUtc(mkt.tz, p.year, p.month, p.day, 23, 30));
-      }
+      if (!nt.closed && curMin >= closeMin) base = new Date(zonedToUtc(mkt.tz, p.year, p.month, p.day, 23, 30));
       targetMs = nextOpenMs(mkt, base);
       until = "açılışa";
     }
     var sec = Math.max(0, Math.floor((targetMs - now.getTime()) / 1000));
-    var h = Math.floor(sec / 3600);
-    var m = Math.floor((sec % 3600) / 60);
-
     return {
       isOpen: isOpen,
       statusKind: isOpen ? "open" : holidayToday ? "holiday" : "closed",
       label: isOpen ? "Açık" : holidayToday ? "Tatil" : "Kapalı",
       until: until,
-      text: h + " sa " + m + " dk",
+      text: Math.floor(sec / 3600) + " sa " + Math.floor((sec % 3600) / 60) + " dk",
       holidayToday: holidayToday
     };
   }
 
   function readCache() {
-    try {
-      return JSON.parse(sessionStorage.getItem(CACHE_KEY) || "{}");
-    } catch (e) {
-      return {};
-    }
+    try { return JSON.parse(sessionStorage.getItem(CACHE_KEY) || "{}"); } catch (e) { return {}; }
   }
   function writeCache(map) {
-    try {
-      sessionStorage.setItem(CACHE_KEY, JSON.stringify(map));
-    } catch (e) {}
+    try { sessionStorage.setItem(CACHE_KEY, JSON.stringify(map)); } catch (e) {}
   }
   function getCached(sym) {
     var r = readCache()[sym];
@@ -957,29 +864,22 @@
 
   async function fetchOneQuote(qSym) {
     var hit = getCached(qSym);
-    if (hit) return { price: hit.price, pct: hit.pct, cached: true };
+    if (hit) return { price: hit.price, pct: hit.pct };
     try {
       if (window.API && API.getLiveQuote) {
         var q = await API.getLiveQuote(qSym);
         if (q && q.price != null && Number(q.price) > 0) {
-          var row = {
-            price: Number(q.price),
-            pct: q.pct != null ? q.pct : q.changePercent
-          };
+          var row = { price: Number(q.price), pct: q.pct != null ? q.pct : q.changePercent };
           setCached(qSym, row);
           return row;
         }
       }
     } catch (e) {}
     try {
-      var url =
-        "https://query1.finance.yahoo.com/v8/finance/chart/" +
-        encodeURIComponent(qSym) +
-        "?interval=1d&range=5d";
+      var url = "https://query1.finance.yahoo.com/v8/finance/chart/" + encodeURIComponent(qSym) + "?interval=1d&range=5d";
       var res = await fetch(url);
       var data = await res.json();
-      var meta =
-        data && data.chart && data.chart.result && data.chart.result[0] && data.chart.result[0].meta;
+      var meta = data && data.chart && data.chart.result && data.chart.result[0] && data.chart.result[0].meta;
       if (meta) {
         var px = meta.regularMarketPrice || meta.previousClose;
         if (px != null && Number(px) > 0) {
@@ -993,10 +893,7 @@
   }
 
   function formatPrice(n) {
-    return Number(n).toLocaleString("tr-TR", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
+    return Number(n).toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
   function setLoadingBanner(on) {
@@ -1012,9 +909,7 @@
         var idx = i++;
         var item = items[idx];
         var qSym = quoteSymbol(item, mkt);
-        var el = document.querySelector(
-          '[data-q="' + String(qSym).replace(/\\/g, "\\\\").replace(/"/g, '\\"') + '"]'
-        );
+        var el = document.querySelector('[data-q="' + String(qSym).replace(/\\/g, "\\\\").replace(/"/g, '\\"') + '"]');
         if (!el || !qSym) continue;
         var q = await fetchOneQuote(qSym);
         if (!q) {
@@ -1023,12 +918,9 @@
         }
         var pct = q.pct;
         var cls = pct > 0 ? "up" : pct < 0 ? "down" : "";
-        var txt =
-          pct != null ? (pct > 0 ? "+" : "") + Number(pct).toFixed(2) + "%" : "";
+        var txt = pct != null ? (pct > 0 ? "+" : "") + Number(pct).toFixed(2) + "%" : "";
         el.innerHTML =
-          '<div class="price">' +
-          formatPrice(q.price) +
-          "</div>" +
+          '<div class="price">' + formatPrice(q.price) + "</div>" +
           (txt ? '<div class="chg ' + cls + '">' + txt + "</div>" : "");
       }
     }
@@ -1044,70 +936,48 @@
   function mktCardHtml(m, locked) {
     var ses = marketSession(m);
     var cnt =
-      m.count != null
+      m.count != null && m.count !== "—"
         ? '<div class="mkt-count">' + m.count + "<span>hisse</span></div>"
+        : locked
+        ? '<div class="mkt-count" style="font-size:13px;color:var(--faint)">Üyelik</div>'
         : '<div class="mkt-count" style="font-size:12px;color:var(--faint)">…</div>';
     var badge = locked
-      ? '<span class="lock-badge' +
-        (m.plan === "elite" ? " elite" : "") +
-        '">🔒 ' +
-        (m.plan === "elite" ? "Elite" : "Premium") +
-        "</span>"
+      ? '<span class="lock-badge' + (m.plan === "elite" ? " elite" : "") + '">🔒 ' +
+        (m.plan === "elite" ? "Elite" : "Premium") + "</span>"
       : '<span class="status ' + ses.statusKind + '">' + ses.label + "</span>";
     return (
       '<button type="button" class="mkt' +
       (m.id === state.marketId && !locked ? " on" : "") +
       (locked ? " locked" : "") +
-      '" data-mkt="' +
-      m.id +
-      '" data-locked="' +
-      (locked ? "1" : "0") +
-      '">' +
-      '<div class="mkt-top">' +
-      '<div class="mkt-name">' +
-      m.flag +
-      " " +
-      m.name +
-      "</div>" +
-      badge +
-      "</div>" +
+      '" data-mkt="' + m.id + '">' +
+      '<div class="mkt-top"><div class="mkt-name">' + m.flag + " " + m.name + "</div>" + badge + "</div>" +
       cnt +
       (locked
-        ? '<div class="mkt-sub">Üyelik gerekli · dokun</div>'
-        : '<div class="mkt-clock">' +
-          ses.until +
-          " <strong>" +
-          ses.text +
-          "</strong></div>" +
-          '<div class="mkt-sub">' +
-          m.label +
-          "</div>") +
+        ? '<div class="mkt-sub">Dokun · plan gerekli</div>'
+        : '<div class="mkt-clock">' + ses.until + " <strong>" + ses.text + "</strong></div>" +
+          '<div class="mkt-sub">' + m.label + "</div>") +
       "</button>"
     );
   }
 
   function renderMarkets() {
-    var free = MARKETS.filter(function (m) { return m.plan === "free"; });
-    var locked = MARKETS.filter(function (m) { return m.plan !== "free"; });
-    document.getElementById("marketsFree").innerHTML = free
-      .map(function (m) { return mktCardHtml(m, false); })
-      .join("");
-    document.getElementById("marketsLocked").innerHTML = locked
-      .map(function (m) { return mktCardHtml(m, true); })
-      .join("");
+    document.getElementById("marketsFree").innerHTML = MARKETS.filter(function (m) {
+      return m.plan === "free";
+    }).map(function (m) { return mktCardHtml(m, false); }).join("");
+    document.getElementById("marketsLocked").innerHTML = MARKETS.filter(function (m) {
+      return m.plan !== "free";
+    }).map(function (m) { return mktCardHtml(m, true); }).join("");
   }
 
   async function loadJson(file) {
-    var paths = [file, "./" + file, "/" + file];
-    for (var i = 0; i < paths.length; i++) {
-      try {
-        var res = await fetch(paths[i] + (paths[i].indexOf("?") >= 0 ? "" : "?t=" + Date.now().toString().slice(0, 8)));
-        if (!res.ok) continue;
-        var data = await res.json();
-        return uniqueBySymbol(extractStocks(data));
-      } catch (e) {}
+    try {
+      var res = await fetch(file + "?t=" + Date.now().toString().slice(0, 8));
+      if (!res.ok) return [];
+      var data = await res.json();
+      return uniqueBySymbol(extractStocks(data));
+    } catch (e) {
+      return [];
     }
-    return [];
   }
 
   async function preloadCounts() {
@@ -1117,23 +987,19 @@
           m.count = "—";
           return;
         }
-        var list = await loadJson(m.file);
-        m.count = list.length;
+        m.count = (await loadJson(m.file)).length;
       })
     );
     renderMarkets();
   }
 
   function showGate(m) {
-    var gate = document.getElementById("gate");
     document.getElementById("gateTitle").textContent = m.name + " kilitli";
     document.getElementById("gateText").textContent =
-      m.name +
-      " (" +
-      m.label +
-      ") yalnızca " +
+      m.name + " (" + m.label + ") yalnızca " +
       (m.plan === "elite" ? "Elite" : "Premium ve Elite") +
       " üyelere açıktır. Ücretsiz planda BIST, NASDAQ ve NYSE ile devam edebilirsin.";
+    var gate = document.getElementById("gate");
     gate.classList.add("show");
     gate.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
@@ -1152,7 +1018,6 @@
     document.getElementById("empty").hidden = true;
     document.getElementById("btnMore").hidden = true;
     setLoadingBanner(true);
-
     state.list = await loadJson(mkt.file);
     mkt.count = state.list.length;
     setLoadingBanner(false);
@@ -1175,13 +1040,8 @@
     document.getElementById("list").innerHTML = "";
     var mkt = MARKETS.filter(function (m) { return m.id === state.marketId; })[0];
     document.getElementById("metaLine").innerHTML =
-      "<strong>" +
-      (mkt ? mkt.name : "") +
-      "</strong> · " +
-      state.filtered.length +
-      " / " +
-      state.list.length +
-      " hisse" +
+      "<strong>" + (mkt ? mkt.name : "") + "</strong> · " +
+      state.filtered.length + " / " + state.list.length + " hisse" +
       (q ? " · “" + q.replace(/</g, "") + "”" : "");
     renderMore();
   }
@@ -1195,60 +1055,38 @@
       return;
     }
     document.getElementById("empty").hidden = true;
-    var html = slice
-      .map(function (item) {
-        var sym = String(item.symbol || "").toUpperCase();
-        var qSym = quoteSymbol(item, mkt);
-        var score = item.aiScore != null ? Number(item.aiScore) : 70;
-        var watched = state.watch.indexOf(sym) !== -1;
-        var flag = item.flag || mkt.flag || "";
-        return (
-          '<article class="row">' +
-          '<div><div class="row-sym">' +
-          flag +
-          " " +
-          sym +
-          '</div><div class="row-name">' +
-          (item.name || "—") +
-          '</div><div class="row-tags"><span class="tag">' +
-          (item.sector || "—") +
-          '</span></div><div class="ai-mini"><span class="lab">AI</span><div class="ai-bar"><i style="width:' +
-          Math.min(100, score) +
-          '%"></i></div><span class="sc">' +
-          score +
-          "</span></div></div>" +
-          '<div class="row-right">' +
-          '<div data-q="' +
-          qSym +
-          '"><div class="skel"></div><div class="skel sm"></div></div>' +
-          '<div class="row-actions">' +
-          '<a class="btn-g" href="ultra-grafik.html?s=' +
-          encodeURIComponent(qSym) +
-          '">Grafik</a>' +
-          '<button type="button" class="btn-w' +
-          (watched ? " on" : "") +
-          '" data-watch="' +
-          sym +
-          '">' +
-          (watched ? "Takipte" : "Takip") +
-          "</button></div></div></article>"
-        );
-      })
-      .join("");
+    var html = slice.map(function (item) {
+      var sym = String(item.symbol || "").toUpperCase();
+      var qSym = quoteSymbol(item, mkt);
+      var score = item.aiScore != null ? Number(item.aiScore) : 70;
+      var watched = state.watch.indexOf(sym) !== -1;
+      var flag = item.flag || mkt.flag || "";
+      return (
+        '<article class="row"><div>' +
+        '<div class="row-sym">' + flag + " " + sym + "</div>" +
+        '<div class="row-name">' + (item.name || "—") + "</div>" +
+        '<div class="row-tags"><span class="tag">' + (item.sector || "—") + "</span></div>" +
+        '<div class="ai-mini"><span class="lab">AI</span><div class="ai-bar"><i style="width:' +
+        Math.min(100, score) + '%"></i></div><span class="sc">' + score + "</span></div></div>" +
+        '<div class="row-right"><div data-q="' + qSym + '"><div class="skel"></div><div class="skel sm"></div></div>' +
+        '<div class="row-actions">' +
+        '<a class="btn-g" href="ultra-grafik.html?s=' + encodeURIComponent(qSym) + '">Grafik</a>' +
+        '<button type="button" class="btn-w' + (watched ? " on" : "") + '" data-watch="' + sym + '">' +
+        (watched ? "Takipte" : "Takip") + "</button></div></div></article>"
+      );
+    }).join("");
     document.getElementById("list").insertAdjacentHTML("beforeend", html);
     state.shown += slice.length;
     document.getElementById("btnMore").hidden = state.shown >= state.filtered.length;
     fillPrices(slice, mkt);
   }
 
-  document.getElementById("marketsFree").addEventListener("click", onMktClick);
-  document.getElementById("marketsLocked").addEventListener("click", onMktClick);
   function onMktClick(e) {
     var b = e.target.closest("[data-mkt]");
-    if (!b) return;
-    loadMarket(b.getAttribute("data-mkt"));
+    if (b) loadMarket(b.getAttribute("data-mkt"));
   }
-
+  document.getElementById("marketsFree").addEventListener("click", onMktClick);
+  document.getElementById("marketsLocked").addEventListener("click", onMktClick);
   document.getElementById("gateClose").addEventListener("click", function () {
     document.getElementById("gate").classList.remove("show");
   });
@@ -1263,7 +1101,6 @@
     document.getElementById("q").value = "";
     applyFilter();
   });
-
   document.getElementById("list").addEventListener("click", function (e) {
     var b = e.target.closest("[data-watch]");
     if (!b) return;
