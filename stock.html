@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Hisse Kartları · Nexora AI</title>
-  <meta name="description" content="BIST, NASDAQ, NYSE — açık/kapalı, tatil günleri, geri sayım, önbellekli fiyat." />
+  <meta name="description" content="BIST, NASDAQ, NYSE hisse listesi. Açık/kapalı, tatil, arama, tekil semboller." />
   <meta name="theme-color" content="#0d0d1a" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
@@ -48,7 +48,7 @@
     .nav {
       height: 56px;
       display: flex; align-items: center; justify-content: space-between;
-      gap: 10px; padding: 0 14px;
+      padding: 0 14px;
       background: rgba(13, 13, 26, 0.9);
       backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border);
@@ -69,7 +69,7 @@
       background: var(--grad);
       -webkit-background-clip: text; background-clip: text; color: transparent;
     }
-    .nav-right { display: flex; gap: 8px; align-items: center; }
+    .nav-right { display: flex; gap: 8px; }
     .nav-right a {
       padding: 8px 12px; border-radius: 9px;
       font-size: 12px; font-weight: 700;
@@ -83,11 +83,11 @@
       background: var(--grad);
     }
 
-    .wrap { max-width: 1100px; margin: 0 auto; padding: 0 14px 56px; }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 0 14px 56px; }
 
-    .page-head { padding: 24px 0 8px; }
+    .page-head { padding: 22px 0 6px; }
     .page-head h1 {
-      font-size: clamp(1.5rem, 3.5vw, 1.9rem);
+      font-size: clamp(1.45rem, 3.5vw, 1.85rem);
       font-weight: 800;
       letter-spacing: -0.035em;
     }
@@ -99,60 +99,58 @@
       margin-top: 8px;
       font-size: 14px;
       color: var(--muted);
-      max-width: 54ch;
       line-height: 1.6;
     }
 
     .note {
-      margin: 14px 0 18px;
+      margin: 12px 0 16px;
       padding: 10px 14px;
       border-radius: 12px;
-      background: rgba(18, 18, 32, 0.8);
+      background: rgba(18, 18, 32, 0.85);
       border: 1px solid var(--border);
       font-size: 12.5px;
       color: var(--dim);
       line-height: 1.55;
     }
 
+    /* Piyasa sekmeleri */
     .markets {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 10px;
-      margin-bottom: 20px;
+      gap: 8px;
+      margin-bottom: 16px;
     }
-    @media (min-width: 720px) {
+    @media (min-width: 640px) {
       .markets { grid-template-columns: repeat(3, 1fr); }
     }
     .mkt {
+      width: 100%;
+      text-align: left;
+      padding: 14px;
+      border-radius: 16px;
       background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 16px;
-      cursor: pointer;
-      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
-      text-align: left;
-      width: 100%;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
     }
     .mkt:hover {
-      transform: translateY(-2px);
-      border-color: rgba(0, 240, 255, 0.35);
+      transform: translateY(-1px);
+      border-color: rgba(0, 240, 255, 0.3);
     }
     .mkt.on {
       border-color: rgba(0, 240, 255, 0.5);
-      box-shadow: 0 0 0 1px rgba(0, 240, 255, 0.15), 0 12px 32px rgba(0,0,0,0.25);
+      box-shadow: 0 0 0 1px rgba(0, 240, 255, 0.12), 0 10px 28px rgba(0,0,0,0.25);
     }
     .mkt-top {
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 8px; margin-bottom: 10px;
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 8px; margin-bottom: 8px;
     }
     .mkt-name {
-      font-size: 15px; font-weight: 800;
-      display: flex; align-items: center; gap: 8px;
+      font-size: 14.5px; font-weight: 800;
+      display: flex; align-items: center; gap: 7px;
     }
-    .mkt-name .flag { font-size: 18px; }
     .status {
-      font-size: 11px; font-weight: 800;
-      padding: 4px 10px; border-radius: 999px;
+      font-size: 10.5px; font-weight: 800;
+      padding: 4px 9px; border-radius: 999px;
     }
     .status.open {
       color: #022c22;
@@ -166,167 +164,201 @@
       color: #0d0d1a;
       background: linear-gradient(135deg, #fbbf24, #f59e0b);
     }
-    .mkt-clock {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--muted);
+    .mkt-count {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
       font-variant-numeric: tabular-nums;
     }
-    .mkt-clock strong { color: var(--cyan); font-weight: 800; }
-    .mkt-sub {
-      margin-top: 6px;
-      font-size: 11.5px;
-      color: var(--faint);
-      line-height: 1.45;
-    }
-    .mkt-holiday {
-      margin-top: 8px;
+    .mkt-count span {
       font-size: 12px;
-      font-weight: 700;
-      color: var(--amber);
+      font-weight: 600;
+      color: var(--dim);
+      margin-left: 4px;
+    }
+    .mkt-clock {
+      margin-top: 6px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .mkt-clock strong { color: var(--cyan); }
+    .mkt-sub {
+      margin-top: 4px;
+      font-size: 11px;
+      color: var(--faint);
+      line-height: 1.4;
     }
 
-    .toolbar {
-      display: flex; flex-wrap: wrap; gap: 8px;
-      align-items: center;
-      margin-bottom: 14px;
-    }
-    .search {
-      flex: 1;
-      min-width: 160px;
+    /* Arama */
+    .search-bar {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 10px 14px;
-      border-radius: 12px;
-      background: rgba(6, 6, 15, 0.7);
-      box-shadow: inset 0 0 0 1px var(--border);
-    }
-    .search input {
-      flex: 1;
-      font-size: 14px;
-      font-weight: 600;
-    }
-    .search input::placeholder { color: var(--faint); }
-    .tool-btn {
-      padding: 10px 14px;
-      border-radius: 11px;
-      font-size: 12.5px;
-      font-weight: 700;
-      color: var(--muted);
-      background: var(--panel);
-      box-shadow: inset 0 0 0 1px var(--border);
-    }
-
-    .meta-row {
-      display: flex; flex-wrap: wrap; gap: 10px 16px;
-      font-size: 12.5px;
-      color: var(--dim);
-      margin-bottom: 14px;
-      font-weight: 600;
-    }
-    .meta-row strong { color: var(--muted); }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr;
       gap: 10px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(6, 6, 15, 0.75);
+      box-shadow: inset 0 0 0 1px var(--border);
+      margin-bottom: 10px;
     }
-    @media (min-width: 560px) {
-      .grid { grid-template-columns: repeat(2, 1fr); }
+    .search-bar:focus-within {
+      box-shadow: inset 0 0 0 1.5px rgba(0, 240, 255, 0.45);
     }
-    @media (min-width: 900px) {
-      .grid { grid-template-columns: repeat(3, 1fr); }
+    .search-bar input {
+      flex: 1;
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .search-bar input::placeholder { color: var(--faint); }
+    .search-bar .clear {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--dim);
+      padding: 4px 8px;
+      border-radius: 8px;
+      display: none;
+    }
+    .search-bar .clear.show { display: block; }
+
+    .list-meta {
+      display: flex; flex-wrap: wrap; gap: 8px 14px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--dim);
+      margin-bottom: 12px;
+    }
+    .list-meta strong { color: var(--muted); }
+
+    /* Alt alta modern satırlar */
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
-    .card {
+    .row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 14px;
+      border-radius: 16px;
       background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 14px;
-      transition: border-color 0.2s, transform 0.2s;
+      transition: border-color 0.15s, background 0.15s;
     }
-    .card:hover {
+    .row:hover {
       border-color: rgba(0, 240, 255, 0.35);
-      transform: translateY(-2px);
+      background: rgba(22, 22, 40, 0.98);
     }
-    .card-top {
-      display: flex; justify-content: space-between; align-items: flex-start;
-      gap: 8px;
+
+    .row-left { min-width: 0; }
+    .row-sym {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
-    .sym { font-size: 15px; font-weight: 800; }
-    .sym .fg { margin-right: 4px; }
-    .name {
-      font-size: 12px; color: var(--dim);
+    .row-name {
+      font-size: 12.5px;
+      color: var(--dim);
       margin-top: 2px;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-      max-width: 160px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
-    .price-block { text-align: right; }
-    .price {
-      font-size: 15px; font-weight: 800;
+    .row-tags {
+      display: flex; flex-wrap: wrap; gap: 5px;
+      margin-top: 8px;
+    }
+    .tag {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 999px;
+      color: var(--dim);
+      background: rgba(6, 6, 15, 0.55);
+      box-shadow: inset 0 0 0 1px var(--border);
+    }
+    .ai-mini {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .ai-mini .lab {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--faint);
+    }
+    .ai-bar {
+      flex: 1;
+      max-width: 80px;
+      height: 4px;
+      border-radius: 99px;
+      background: rgba(148, 163, 184, 0.15);
+      overflow: hidden;
+    }
+    .ai-bar i {
+      display: block;
+      height: 100%;
+      border-radius: 99px;
+      background: var(--grad);
+    }
+    .ai-mini .sc {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--muted);
       font-variant-numeric: tabular-nums;
     }
-    .price.skeleton {
+
+    .row-right {
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+    .price {
+      font-size: 15px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+    .price.sk {
       color: var(--faint);
       font-size: 12px;
       font-weight: 600;
     }
     .chg {
-      font-size: 12px; font-weight: 700;
+      font-size: 12px;
+      font-weight: 700;
       font-variant-numeric: tabular-nums;
     }
     .chg.up { color: var(--up); }
     .chg.down { color: var(--down); }
 
-    .card-mid { margin-top: 12px; }
-    .bar-label {
-      display: flex; justify-content: space-between;
-      font-size: 11px; font-weight: 700; color: var(--faint);
-      margin-bottom: 4px;
+    .row-actions {
+      display: flex;
+      gap: 6px;
     }
-    .bar {
-      height: 6px; border-radius: 99px;
-      background: rgba(148, 163, 184, 0.12);
-      overflow: hidden;
-    }
-    .bar i {
-      display: block; height: 100%;
-      border-radius: 99px;
-      background: var(--grad);
-    }
-    .tags {
-      display: flex; flex-wrap: wrap; gap: 6px;
-      margin-top: 10px;
-    }
-    .tag {
-      font-size: 11px; font-weight: 700;
-      padding: 3px 8px; border-radius: 999px;
-      color: var(--dim);
-      background: rgba(6, 6, 15, 0.5);
-      box-shadow: inset 0 0 0 1px var(--border);
-    }
-    .card-actions {
-      display: flex; gap: 6px;
-      margin-top: 12px;
-    }
-    .card-actions a, .card-actions button {
-      flex: 1;
-      text-align: center;
-      padding: 8px;
+    .row-actions a,
+    .row-actions button {
+      padding: 7px 10px;
       border-radius: 9px;
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 700;
     }
-    .btn-ghost {
+    .btn-g {
       color: var(--muted);
       box-shadow: inset 0 0 0 1px var(--border);
     }
-    .btn-watch {
+    .btn-w {
       color: #0d0d1a;
       background: linear-gradient(135deg, #00f0ff, #007bff);
     }
-    .btn-watch.on {
+    .btn-w.on {
       color: var(--cyan);
       background: transparent;
       box-shadow: inset 0 0 0 1px rgba(0, 240, 255, 0.4);
@@ -334,15 +366,16 @@
 
     .empty {
       text-align: center;
-      padding: 40px 16px;
+      padding: 48px 16px;
       color: var(--faint);
       font-size: 14px;
     }
+
     .load-more {
       display: block;
       width: 100%;
-      margin-top: 16px;
-      padding: 12px;
+      margin-top: 12px;
+      padding: 13px;
       border-radius: 12px;
       font-weight: 700;
       font-size: 13px;
@@ -350,6 +383,7 @@
       background: var(--panel);
       box-shadow: inset 0 0 0 1px var(--border);
     }
+    .load-more:hover { color: var(--text); }
 
     footer {
       text-align: center;
@@ -385,36 +419,31 @@
       <header class="page-head">
         <h1>Hisse <span>kartları</span></h1>
         <p>
-          Hafta sonu ve resmi tatiller kapalı sayılır. Geri sayım bir sonraki
-          işlem gününe göre çalışır. Fiyatlar 60 sn önbelleklidir.
+          Borsaya dokun → hisse sayısı ve liste. Arama anlık süzülür; her sembol bir kez.
         </p>
       </header>
 
       <div class="note">
-        Tatil listeleri bilinen sabit / ilan edilmiş günleri kapsar; borsa özel
-        yarı gün veya sonradan ilan edilen tatiller için manuel güncelleme gerekebilir.
-        Veriler gecikmeli olabilir · yatırım tavsiyesi değildir.
+        Hafta sonu ve tatiller kapalı. Fiyatlar ~60 sn önbellekli (gereksiz API yok).
+        Veriler gecikmeli olabilir · tavsiye değildir.
       </div>
 
       <div class="markets" id="markets"></div>
 
-      <div class="toolbar">
-        <div class="search">
-          <span style="color:var(--faint)">⌕</span>
-          <input id="q" type="search" placeholder="Sembol veya şirket adı…" autocomplete="off" />
-        </div>
-        <button type="button" class="tool-btn" id="btnRefresh">Yenile</button>
+      <div class="search-bar">
+        <span style="color:var(--faint);font-weight:700">⌕</span>
+        <input id="q" type="search" placeholder="THYAO, Aselsan, Apple…" autocomplete="off" enterkeyhint="search" />
+        <button type="button" class="clear" id="btnClear">Temizle</button>
       </div>
 
-      <div class="meta-row">
-        <span>Piyasa: <strong id="metaMkt">—</strong></span>
-        <span>Görünen: <strong id="metaCount">0</strong></span>
+      <div class="list-meta">
+        <span id="metaLine">—</span>
         <span id="metaCache">Önbellek: —</span>
       </div>
 
-      <div class="grid" id="grid"></div>
-      <button type="button" class="load-more" id="btnMore" hidden>Daha fazla göster</button>
-      <div class="empty" id="empty" hidden>Sonuç yok.</div>
+      <div class="list" id="list"></div>
+      <button type="button" class="load-more" id="btnMore" hidden>Daha fazla</button>
+      <div class="empty" id="empty" hidden>Eşleşen hisse yok. Yazımı veya borsayı değiştir.</div>
     </main>
 
     <footer>
@@ -432,22 +461,15 @@
 (function () {
   "use strict";
 
-  /**
-   * Tatil takvimi — YYYY-MM-DD (borsanın yerel takvim günü)
-   * BIST: sabit milli günler + bilinen dini tatil pencereleri (2025–2027 yaklaşık)
-   * US: federal / borsa tatilleri
-   * Not: Ramazan/Kurban kesin tarihleri Diyanet’e göre kayabilir; gerekirse güncelle.
-   */
   var HOLIDAYS = {
     bist: {
-      /* 2025 */
       "2025-01-01": "Yılbaşı",
-      "2025-03-30": "Ramazan Bayramı arifesi (yarı/tatil)",
+      "2025-03-30": "Ramazan Bayramı arifesi",
       "2025-03-31": "Ramazan Bayramı",
       "2025-04-01": "Ramazan Bayramı",
       "2025-04-02": "Ramazan Bayramı",
       "2025-04-23": "23 Nisan",
-      "2025-05-01": "Emek ve Dayanışma Günü",
+      "2025-05-01": "1 Mayıs",
       "2025-05-19": "19 Mayıs",
       "2025-06-05": "Kurban Bayramı arifesi",
       "2025-06-06": "Kurban Bayramı",
@@ -456,16 +478,15 @@
       "2025-06-09": "Kurban Bayramı",
       "2025-07-15": "15 Temmuz",
       "2025-08-30": "30 Ağustos",
-      "2025-10-28": "29 Ekim arifesi (yarım gün olabilir)",
-      "2025-10-29": "29 Ekim Cumhuriyet Bayramı",
-      /* 2026 */
+      "2025-10-28": "29 Ekim arifesi",
+      "2025-10-29": "29 Ekim",
       "2026-01-01": "Yılbaşı",
       "2026-03-19": "Ramazan Bayramı arifesi",
       "2026-03-20": "Ramazan Bayramı",
       "2026-03-21": "Ramazan Bayramı",
       "2026-03-22": "Ramazan Bayramı",
       "2026-04-23": "23 Nisan",
-      "2026-05-01": "Emek ve Dayanışma Günü",
+      "2026-05-01": "1 Mayıs",
       "2026-05-19": "19 Mayıs",
       "2026-05-26": "Kurban Bayramı arifesi",
       "2026-05-27": "Kurban Bayramı",
@@ -475,19 +496,18 @@
       "2026-07-15": "15 Temmuz",
       "2026-08-30": "30 Ağustos",
       "2026-10-28": "29 Ekim arifesi",
-      "2026-10-29": "29 Ekim Cumhuriyet Bayramı",
-      /* 2027 sabit milli */
+      "2026-10-29": "29 Ekim",
       "2027-01-01": "Yılbaşı",
       "2027-04-23": "23 Nisan",
-      "2027-05-01": "Emek ve Dayanışma Günü",
+      "2027-05-01": "1 Mayıs",
       "2027-05-19": "19 Mayıs",
       "2027-07-15": "15 Temmuz",
       "2027-08-30": "30 Ağustos",
-      "2027-10-29": "29 Ekim Cumhuriyet Bayramı"
+      "2027-10-29": "29 Ekim"
     },
     us: {
-      "2025-01-01": "New Year's Day",
-      "2025-01-20": "Martin Luther King Jr. Day",
+      "2025-01-01": "New Year",
+      "2025-01-20": "MLK Day",
       "2025-02-17": "Presidents' Day",
       "2025-04-18": "Good Friday",
       "2025-05-26": "Memorial Day",
@@ -496,26 +516,26 @@
       "2025-09-01": "Labor Day",
       "2025-11-27": "Thanksgiving",
       "2025-12-25": "Christmas",
-      "2026-01-01": "New Year's Day",
-      "2026-01-19": "Martin Luther King Jr. Day",
+      "2026-01-01": "New Year",
+      "2026-01-19": "MLK Day",
       "2026-02-16": "Presidents' Day",
       "2026-04-03": "Good Friday",
       "2026-05-25": "Memorial Day",
       "2026-06-19": "Juneteenth",
-      "2026-07-03": "Independence Day (observed)",
+      "2026-07-03": "Independence Day (obs.)",
       "2026-09-07": "Labor Day",
       "2026-11-26": "Thanksgiving",
       "2026-12-25": "Christmas",
-      "2027-01-01": "New Year's Day",
-      "2027-01-18": "Martin Luther King Jr. Day",
+      "2027-01-01": "New Year",
+      "2027-01-18": "MLK Day",
       "2027-02-15": "Presidents' Day",
       "2027-03-26": "Good Friday",
       "2027-05-31": "Memorial Day",
-      "2027-06-18": "Juneteenth (observed)",
-      "2027-07-05": "Independence Day (observed)",
+      "2027-06-18": "Juneteenth (obs.)",
+      "2027-07-05": "Independence Day (obs.)",
       "2027-09-06": "Labor Day",
       "2027-11-25": "Thanksgiving",
-      "2027-12-24": "Christmas (observed)"
+      "2027-12-24": "Christmas (obs.)"
     }
   };
 
@@ -529,7 +549,8 @@
       open: [10, 0],
       close: [18, 0],
       holidaySet: "bist",
-      file: "data/bist.json"
+      file: "data/bist.json",
+      count: null
     },
     {
       id: "nasdaq",
@@ -540,7 +561,8 @@
       open: [9, 30],
       close: [16, 0],
       holidaySet: "us",
-      file: "data/nasdaq.json"
+      file: "data/nasdaq.json",
+      count: null
     },
     {
       id: "nyse",
@@ -551,21 +573,23 @@
       open: [9, 30],
       close: [16, 0],
       holidaySet: "us",
-      file: "data/nyse.json"
+      file: "data/nyse.json",
+      count: null
     }
   ];
 
   var CACHE_TTL_MS = 60 * 1000;
   var CACHE_KEY = "nexora_quote_cache_v1";
-  var PAGE_SIZE = 24;
-  var MAX_CONCURRENT = 4;
+  var PAGE = 40;
+  var MAX_PARALLEL = 4;
 
   var state = {
     marketId: "bist",
     list: [],
     filtered: [],
     shown: 0,
-    watch: loadWatch()
+    watch: loadWatch(),
+    countsLoaded: false
   };
 
   function loadWatch() {
@@ -598,6 +622,18 @@
 
   function pad(n) {
     return n < 10 ? "0" + n : String(n);
+  }
+
+  function uniqueBySymbol(list) {
+    var seen = {};
+    var out = [];
+    for (var i = 0; i < list.length; i++) {
+      var sym = String(list[i].symbol || "").toUpperCase().trim();
+      if (!sym || seen[sym]) continue;
+      seen[sym] = true;
+      out.push(list[i]);
+    }
+    return out;
   }
 
   function partsInTz(tz, date) {
@@ -633,112 +669,77 @@
     return p.year + "-" + pad(p.month) + "-" + pad(p.day);
   }
 
-  function holidayName(mkt, p) {
-    var set = HOLIDAYS[mkt.holidaySet] || {};
-    return set[ymd(p)] || null;
-  }
-
-  function isNonTradingDay(mkt, p) {
-    if (p.weekday === 0 || p.weekday === 6) return { closed: true, reason: "weekend", name: "Hafta sonu" };
-    var h = holidayName(mkt, p);
+  function nonTrading(mkt, p) {
+    if (p.weekday === 0 || p.weekday === 6)
+      return { closed: true, reason: "weekend", name: "Hafta sonu" };
+    var h = (HOLIDAYS[mkt.holidaySet] || {})[ymd(p)];
     if (h) return { closed: true, reason: "holiday", name: h };
     return { closed: false };
   }
 
-  function zonedTimeToUtcMs(tz, y, mo, d, h, mi) {
+  function zonedToUtc(tz, y, mo, d, h, mi) {
     var guess = Date.UTC(y, mo - 1, d, h, mi, 0);
     for (var i = 0; i < 5; i++) {
       var p = partsInTz(tz, new Date(guess));
       var asUtc = Date.UTC(p.year, p.month - 1, p.day, p.hour, p.minute, p.second);
-      var target = Date.UTC(y, mo - 1, d, h, mi, 0);
-      guess += target - asUtc;
+      guess += Date.UTC(y, mo - 1, d, h, mi, 0) - asUtc;
     }
     return guess;
   }
 
-  /** Bir sonraki işlem gününün açılış anı (tatil + hafta sonu atlanır) */
-  function nextOpenMs(mkt, fromDate) {
-    var p = partsInTz(mkt.tz, fromDate);
-    var y = p.year, mo = p.month, d = p.day;
-    for (var step = 0; step < 20; step++) {
-      var probe = new Date(Date.UTC(y, mo - 1, d + step, 12, 0, 0));
-      /* o günün tz parçaları */
-      var dayParts = partsInTz(mkt.tz, probe);
-      /* probe öğlen UTC; daha doğru: adım adım tarih */
-      var check = {
-        year: y,
-        month: mo,
-        day: d
-      };
-      /* d + step takvim */
-      var tmp = new Date(Date.UTC(y, mo - 1, d + step));
-      check.year = tmp.getUTCFullYear();
-      check.month = tmp.getUTCMonth() + 1;
-      check.day = tmp.getUTCDate();
-      /* weekday o dilimde */
-      var noonUtc = zonedTimeToUtcMs(mkt.tz, check.year, check.month, check.day, 12, 0);
-      var tp = partsInTz(mkt.tz, new Date(noonUtc));
-      var nt = isNonTradingDay(mkt, tp);
-      if (nt.closed) continue;
-      return {
-        ms: zonedTimeToUtcMs(mkt.tz, tp.year, tp.month, tp.day, mkt.open[0], mkt.open[1]),
-        parts: tp
-      };
+  function nextOpenMs(mkt, from) {
+    var p0 = partsInTz(mkt.tz, from);
+    for (var step = 0; step < 21; step++) {
+      var tmp = new Date(Date.UTC(p0.year, p0.month - 1, p0.day + step));
+      var noon = zonedToUtc(
+        mkt.tz,
+        tmp.getUTCFullYear(),
+        tmp.getUTCMonth() + 1,
+        tmp.getUTCDate(),
+        12,
+        0
+      );
+      var tp = partsInTz(mkt.tz, new Date(noon));
+      if (nonTrading(mkt, tp).closed) continue;
+      return zonedToUtc(mkt.tz, tp.year, tp.month, tp.day, mkt.open[0], mkt.open[1]);
     }
-    return { ms: fromDate.getTime() + 86400000, parts: p };
+    return from.getTime() + 86400000;
   }
 
   function marketSession(mkt, now) {
     now = now || new Date();
     var p = partsInTz(mkt.tz, now);
-    var nt = isNonTradingDay(mkt, p);
+    var nt = nonTrading(mkt, p);
     var openMin = mkt.open[0] * 60 + mkt.open[1];
     var closeMin = mkt.close[0] * 60 + mkt.close[1];
     var curMin = p.hour * 60 + p.minute;
-
     var isOpen = !nt.closed && curMin >= openMin && curMin < closeMin;
     var holidayToday = nt.reason === "holiday" ? nt.name : null;
 
-    var targetMs;
-    var until;
+    var targetMs, until;
     if (isOpen) {
-      targetMs = zonedTimeToUtcMs(mkt.tz, p.year, p.month, p.day, mkt.close[0], mkt.close[1]);
+      targetMs = zonedToUtc(mkt.tz, p.year, p.month, p.day, mkt.close[0], mkt.close[1]);
       until = "kapanışa";
     } else if (!nt.closed && curMin < openMin) {
-      targetMs = zonedTimeToUtcMs(mkt.tz, p.year, p.month, p.day, mkt.open[0], mkt.open[1]);
+      targetMs = zonedToUtc(mkt.tz, p.year, p.month, p.day, mkt.open[0], mkt.open[1]);
       until = "açılışa";
     } else {
-      /* kapalı: kapanış sonrası, hafta sonu veya tatil → sonraki işlem günü açılış */
       var base = now;
       if (!nt.closed && curMin >= closeMin) {
-        /* yarına kaydır */
-        base = new Date(now.getTime() + 36e5);
+        base = new Date(zonedToUtc(mkt.tz, p.year, p.month, p.day, 23, 30));
       }
-      var next = nextOpenMs(mkt, base);
-      /* nextOpen bugünün açılışını döndürürse ve biz kapanış sonrasıysek bir gün daha ileri */
-      if (!nt.closed && curMin >= closeMin) {
-        var tomorrow = new Date(zonedTimeToUtcMs(mkt.tz, p.year, p.month, p.day, 23, 0) + 2 * 36e5);
-        next = nextOpenMs(mkt, tomorrow);
-      }
-      if (nt.closed) {
-        next = nextOpenMs(mkt, now);
-      }
-      targetMs = next.ms;
+      targetMs = nextOpenMs(mkt, base);
       until = "açılışa";
     }
 
-    var diff = Math.max(0, targetMs - now.getTime());
-    var totalSec = Math.floor(diff / 1000);
-    var h = Math.floor(totalSec / 3600);
-    var m = Math.floor((totalSec % 3600) / 60);
-
-    var statusKind = isOpen ? "open" : holidayToday ? "holiday" : "closed";
-    var label = isOpen ? "Açık" : holidayToday ? "Tatil" : "Kapalı";
+    var sec = Math.max(0, Math.floor((targetMs - now.getTime()) / 1000));
+    var h = Math.floor(sec / 3600);
+    var m = Math.floor((sec % 3600) / 60);
 
     return {
       isOpen: isOpen,
-      statusKind: statusKind,
-      label: label,
+      statusKind: isOpen ? "open" : holidayToday ? "holiday" : "closed",
+      label: isOpen ? "Açık" : holidayToday ? "Tatil" : "Kapalı",
       until: until,
       text: h + " sa " + m + " dk",
       holidayToday: holidayToday,
@@ -746,7 +747,7 @@
     };
   }
 
-  /* ----- cache / quotes (önceki ile aynı mantık) ----- */
+  /* cache */
   function readCache() {
     try {
       return JSON.parse(sessionStorage.getItem(CACHE_KEY) || "{}");
@@ -759,14 +760,14 @@
       sessionStorage.setItem(CACHE_KEY, JSON.stringify(map));
     } catch (e) {}
   }
-  function getCached(symbol) {
-    var row = readCache()[symbol];
-    if (!row || Date.now() - row.t > CACHE_TTL_MS) return null;
-    return row;
+  function getCached(sym) {
+    var r = readCache()[sym];
+    if (!r || Date.now() - r.t > CACHE_TTL_MS) return null;
+    return r;
   }
-  function setCached(symbol, data) {
+  function setCached(sym, data) {
     var map = readCache();
-    map[symbol] = { t: Date.now(), price: data.price, pct: data.pct };
+    map[sym] = { t: Date.now(), price: data.price, pct: data.pct };
     writeCache(map);
   }
 
@@ -774,18 +775,20 @@
     var s = String(item.symbol || "").toUpperCase().trim();
     if (!s) return "";
     if (s.indexOf(".") !== -1) return s;
-    if (marketId === "bist") return s + ".IS";
-    return s;
+    return marketId === "bist" ? s + ".IS" : s;
   }
 
   async function fetchOneQuote(qSym) {
     var hit = getCached(qSym);
-    if (hit) return { price: hit.price, pct: hit.pct, cached: true };
+    if (hit) return { price: hit.price, pct: hit.pct };
     try {
       if (window.API && API.getLiveQuote) {
         var q = await API.getLiveQuote(qSym);
         if (q && q.price != null && Number(q.price) > 0) {
-          var row = { price: Number(q.price), pct: q.pct != null ? q.pct : q.changePercent };
+          var row = {
+            price: Number(q.price),
+            pct: q.pct != null ? q.pct : q.changePercent
+          };
           setCached(qSym, row);
           return row;
         }
@@ -798,7 +801,8 @@
         "?interval=1d&range=5d";
       var res = await fetch(url);
       var data = await res.json();
-      var meta = data && data.chart && data.chart.result && data.chart.result[0] && data.chart.result[0].meta;
+      var meta =
+        data && data.chart && data.chart.result && data.chart.result[0] && data.chart.result[0].meta;
       if (meta) {
         var px = meta.regularMarketPrice || meta.previousClose;
         if (px != null && Number(px) > 0) {
@@ -811,6 +815,13 @@
     return null;
   }
 
+  function formatPrice(n) {
+    return Number(n).toLocaleString("tr-TR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
   async function fillPrices(items) {
     var i = 0;
     async function worker() {
@@ -818,53 +829,43 @@
         var idx = i++;
         var item = items[idx];
         var qSym = quoteSymbol(item, state.marketId);
-        var el = document.querySelector('[data-q="' + String(qSym).replace(/"/g, '\\"') + '"]');
+        var el = document.querySelector('[data-q="' + qSym.replace(/\\/g, "\\\\").replace(/"/g, '\\"') + '"]');
         if (!el || !qSym) continue;
         var q = await fetchOneQuote(qSym);
         if (!q) {
-          el.innerHTML = '<div class="price skeleton">Fiyat yok</div>';
+          el.innerHTML = '<div class="price sk">Fiyat yok</div>';
           continue;
         }
         var pct = q.pct;
-        var chgCls = pct > 0 ? "up" : pct < 0 ? "down" : "";
-        var chgTxt = pct != null ? (pct > 0 ? "+" : "") + Number(pct).toFixed(2) + "%" : "";
+        var cls = pct > 0 ? "up" : pct < 0 ? "down" : "";
+        var txt =
+          pct != null ? (pct > 0 ? "+" : "") + Number(pct).toFixed(2) + "%" : "";
         el.innerHTML =
           '<div class="price">' +
           formatPrice(q.price) +
           "</div>" +
-          (chgTxt ? '<div class="chg ' + chgCls + '">' + chgTxt + "</div>" : "");
+          (txt ? '<div class="chg ' + cls + '">' + txt + "</div>" : "");
       }
     }
-    var ws = [];
-    for (var w = 0; w < MAX_CONCURRENT; w++) ws.push(worker());
-    await Promise.all(ws);
-    updateCacheMeta();
-  }
-
-  function formatPrice(n) {
-    return Number(n).toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  }
-
-  function uniqueBySymbol(list) {
-    var seen = {}, out = [];
-    for (var i = 0; i < list.length; i++) {
-      var sym = String(list[i].symbol || "").toUpperCase().trim();
-      if (!sym || seen[sym]) continue;
-      seen[sym] = true;
-      out.push(list[i]);
-    }
-    return out;
+    var jobs = [];
+    for (var w = 0; w < MAX_PARALLEL; w++) jobs.push(worker());
+    await Promise.all(jobs);
+    document.getElementById("metaCache").textContent =
+      "Önbellek: " + Object.keys(readCache()).length + " · 60s";
   }
 
   function renderMarkets() {
     document.getElementById("markets").innerHTML = MARKETS.map(function (m) {
       var ses = marketSession(m);
-      var holidayLine = "";
-      if (ses.holidayToday) {
-        holidayLine = '<div class="mkt-holiday">🏖 ' + ses.holidayToday + "</div>";
-      } else if (ses.weekend) {
-        holidayLine = '<div class="mkt-holiday" style="color:var(--dim)">Hafta sonu</div>';
-      }
+      var cnt =
+        m.count != null
+          ? '<div class="mkt-count">' + m.count + "<span>hisse</span></div>"
+          : '<div class="mkt-count" style="font-size:13px;color:var(--faint)">…</div>';
+      var extra = "";
+      if (ses.holidayToday)
+        extra = '<div class="mkt-sub" style="color:var(--amber);font-weight:700">🏖 ' + ses.holidayToday + "</div>";
+      else if (ses.weekend)
+        extra = '<div class="mkt-sub">Hafta sonu</div>';
       return (
         '<button type="button" class="mkt' +
         (m.id === state.marketId ? " on" : "") +
@@ -872,17 +873,17 @@
         m.id +
         '">' +
         '<div class="mkt-top">' +
-        '<div class="mkt-name"><span class="flag">' +
+        '<div class="mkt-name">' +
         m.flag +
-        "</span>" +
+        " " +
         m.name +
         "</div>" +
         '<span class="status ' +
         ses.statusKind +
         '">' +
         ses.label +
-        "</span>" +
-        "</div>" +
+        "</span></div>" +
+        cnt +
         '<div class="mkt-clock">' +
         ses.until +
         " <strong>" +
@@ -898,26 +899,45 @@
         pad(m.close[0]) +
         ":" +
         pad(m.close[1]) +
-        " yerel</div>" +
-        holidayLine +
+        "</div>" +
+        extra +
         "</button>"
       );
     }).join("");
   }
 
+  async function preloadCounts() {
+    await Promise.all(
+      MARKETS.map(async function (m) {
+        try {
+          var res = await fetch(m.file + "?t=" + Date.now().toString().slice(0, 8));
+          var data = await res.json();
+          m.count = uniqueBySymbol(Array.isArray(data) ? data : []).length;
+        } catch (e) {
+          m.count = 0;
+        }
+      })
+    );
+    state.countsLoaded = true;
+    renderMarkets();
+  }
+
   async function loadMarket(id) {
     state.marketId = id;
     state.shown = 0;
-    document.getElementById("grid").innerHTML = "";
+    document.getElementById("list").innerHTML = "";
     document.getElementById("empty").hidden = true;
+    document.getElementById("btnMore").hidden = true;
+
     var mkt = MARKETS.filter(function (m) { return m.id === id; })[0];
-    document.getElementById("metaMkt").textContent = mkt.name;
     try {
       var res = await fetch(mkt.file + "?t=" + Date.now().toString().slice(0, 8));
       var data = await res.json();
       state.list = uniqueBySymbol(Array.isArray(data) ? data : []);
+      mkt.count = state.list.length;
     } catch (e) {
       state.list = [];
+      mkt.count = 0;
     }
     applyFilter();
     renderMarkets();
@@ -925,27 +945,42 @@
 
   function applyFilter() {
     var q = (document.getElementById("q").value || "").trim().toLowerCase();
-    state.filtered = state.list.filter(function (item) {
-      if (!q) return true;
-      return (
-        String(item.symbol || "").toLowerCase().indexOf(q) !== -1 ||
-        String(item.name || "").toLowerCase().indexOf(q) !== -1
-      );
-    });
+    document.getElementById("btnClear").classList.toggle("show", !!q);
+
+    state.filtered = !q
+      ? state.list.slice()
+      : state.list.filter(function (item) {
+          var s = String(item.symbol || "").toLowerCase();
+          var n = String(item.name || "").toLowerCase();
+          return s.indexOf(q) !== -1 || n.indexOf(q) !== -1;
+        });
+
     state.shown = 0;
-    document.getElementById("grid").innerHTML = "";
-    document.getElementById("metaCount").textContent = String(state.filtered.length);
+    document.getElementById("list").innerHTML = "";
+
+    var mkt = MARKETS.filter(function (m) { return m.id === state.marketId; })[0];
+    document.getElementById("metaLine").innerHTML =
+      "<strong>" +
+      (mkt ? mkt.name : "") +
+      "</strong> · " +
+      state.filtered.length +
+      " / " +
+      state.list.length +
+      " hisse" +
+      (q ? " · filtre: “" + q.replace(/</g, "") + "”" : "");
+
     renderMore();
   }
 
   function renderMore() {
-    var slice = state.filtered.slice(state.shown, state.shown + PAGE_SIZE);
+    var slice = state.filtered.slice(state.shown, state.shown + PAGE);
     if (!state.filtered.length) {
       document.getElementById("empty").hidden = false;
       document.getElementById("btnMore").hidden = true;
       return;
     }
     document.getElementById("empty").hidden = true;
+
     var html = slice
       .map(function (item) {
         var sym = String(item.symbol || "").toUpperCase();
@@ -954,71 +989,74 @@
         var watched = state.watch.indexOf(sym) !== -1;
         var flag = item.flag || (state.marketId === "bist" ? "🇹🇷" : "🇺🇸");
         return (
-          '<article class="card">' +
-          '<div class="card-top"><div>' +
-          '<div class="sym"><span class="fg">' +
+          '<article class="row">' +
+          '<div class="row-left">' +
+          '<div class="row-sym">' +
           flag +
-          "</span>" +
+          " " +
           sym +
-          '</div><div class="name">' +
-          (item.name || "") +
-          "</div></div>" +
-          '<div class="price-block" data-q="' +
-          qSym +
-          '"><div class="price skeleton">…</div></div></div>' +
-          '<div class="card-mid"><div class="bar-label"><span>AI skoru</span><span>' +
-          score +
-          '/100</span></div><div class="bar"><i style="width:' +
+          "</div>" +
+          '<div class="row-name">' +
+          (item.name || "—") +
+          "</div>" +
+          '<div class="row-tags">' +
+          '<span class="tag">' +
+          (item.sector || "—") +
+          "</span>" +
+          '<span class="tag">' +
+          (item.risk || "—") +
+          "</span></div>" +
+          '<div class="ai-mini"><span class="lab">AI</span>' +
+          '<div class="ai-bar"><i style="width:' +
           Math.min(100, score) +
           '%"></i></div>' +
-          '<div class="tags"><span class="tag">' +
-          (item.sector || "—") +
-          '</span><span class="tag">' +
-          (item.risk || "—") +
+          '<span class="sc">' +
+          score +
           "</span></div></div>" +
-          '<div class="card-actions">' +
-          '<a class="btn-ghost" href="ultra-grafik.html?s=' +
+          '<div class="row-right">' +
+          '<div data-q="' +
+          qSym +
+          '"><div class="price sk">…</div></div>' +
+          '<div class="row-actions">' +
+          '<a class="btn-g" href="ultra-grafik.html?s=' +
           encodeURIComponent(qSym) +
           '">Grafik</a>' +
-          '<button type="button" class="btn-watch' +
+          '<button type="button" class="btn-w' +
           (watched ? " on" : "") +
           '" data-watch="' +
           sym +
           '">' +
-          (watched ? "Takipten çık" : "Takip et") +
-          "</button></div></article>"
+          (watched ? "Takipte" : "Takip") +
+          "</button></div></div></article>"
         );
       })
       .join("");
-    document.getElementById("grid").insertAdjacentHTML("beforeend", html);
+
+    document.getElementById("list").insertAdjacentHTML("beforeend", html);
     state.shown += slice.length;
     document.getElementById("btnMore").hidden = state.shown >= state.filtered.length;
     fillPrices(slice);
   }
 
-  function updateCacheMeta() {
-    var n = Object.keys(readCache()).length;
-    document.getElementById("metaCache").textContent =
-      "Önbellek: " + n + " · TTL " + CACHE_TTL_MS / 1000 + "s";
-  }
-
   document.getElementById("markets").addEventListener("click", function (e) {
-    var btn = e.target.closest("[data-mkt]");
-    if (btn) loadMarket(btn.getAttribute("data-mkt"));
+    var b = e.target.closest("[data-mkt]");
+    if (b) loadMarket(b.getAttribute("data-mkt"));
   });
+
   document.getElementById("btnMore").addEventListener("click", renderMore);
+
   var qTimer;
   document.getElementById("q").addEventListener("input", function () {
     clearTimeout(qTimer);
-    qTimer = setTimeout(applyFilter, 200);
+    qTimer = setTimeout(applyFilter, 160);
   });
-  document.getElementById("btnRefresh").addEventListener("click", function () {
-    try { sessionStorage.removeItem(CACHE_KEY); } catch (e) {}
-    state.shown = 0;
-    document.getElementById("grid").innerHTML = "";
-    renderMore();
+  document.getElementById("btnClear").addEventListener("click", function () {
+    document.getElementById("q").value = "";
+    applyFilter();
+    document.getElementById("q").focus();
   });
-  document.getElementById("grid").addEventListener("click", function (e) {
+
+  document.getElementById("list").addEventListener("click", function (e) {
     var b = e.target.closest("[data-watch]");
     if (!b) return;
     var sym = b.getAttribute("data-watch");
@@ -1026,13 +1064,15 @@
     if (i === -1) state.watch.push(sym);
     else state.watch.splice(i, 1);
     saveWatch();
-    b.classList.toggle("on", state.watch.indexOf(sym) !== -1);
-    b.textContent = state.watch.indexOf(sym) !== -1 ? "Takipten çık" : "Takip et";
+    var on = state.watch.indexOf(sym) !== -1;
+    b.classList.toggle("on", on);
+    b.textContent = on ? "Takipte" : "Takip";
   });
 
+  renderMarkets();
+  preloadCounts();
   loadMarket("bist");
   setInterval(renderMarkets, 30000);
-  updateCacheMeta();
 })();
   </script>
 </body>
