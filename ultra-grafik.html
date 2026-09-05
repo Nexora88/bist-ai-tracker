@@ -60,7 +60,7 @@ a{color:inherit;text-decoration:none}button,input{font:inherit;color:inherit;bor
 .overlay{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center;background:rgba(6,10,18,.9);z-index:6}
 .overlay.show{display:flex}
 .overlay .t{font-size:15px;font-weight:800}
-.overlay .m{font-size:13px;color:var(--muted);max-width:36ch;line-height:1.55}
+.overlay .m{font-size:13px;color:var(--muted);max-width:38ch;line-height:1.55}
 .loader{width:36px;height:36px;border-radius:50%;border:3px solid rgba(34,211,238,.15);border-top-color:var(--cyan);animation:spin .75s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .legend{margin-top:10px;font-size:12px;font-weight:600;color:var(--dim)}
@@ -89,7 +89,7 @@ a{color:inherit;text-decoration:none}button,input{font:inherit;color:inherit;bor
 
     <div class="search-row">
       <div class="search-box">
-        <input id="q" type="search" placeholder="Ara: THYAO, Aselsan, Apple…" autocomplete="off" />
+        <input id="q" type="search" placeholder="Ara: THYAO, AKBNK, Apple…" autocomplete="off" />
         <div class="suggest" id="suggest"></div>
       </div>
       <button type="button" class="btn-go" id="btnLoad">Grafiği aç</button>
@@ -133,7 +133,7 @@ a{color:inherit;text-decoration:none}button,input{font:inherit;color:inherit;bor
     <div class="legend">Yeşil yükseliş · Kırmızı düşüş · MA20 / MA50 · Hacim</div>
     <aside class="legal">
       <strong>Yasal uyarı:</strong> Yatırım tavsiyesi değildir. Veriler gecikmeli olabilir (≈15 dk).
-      Karar senin sorumluluğundadır. <a href="about.html" style="color:var(--cyan)">Hakkımızda</a>
+      <a href="about.html" style="color:var(--cyan)">Hakkımızda</a>
     </aside>
   </main>
 
@@ -141,7 +141,6 @@ a{color:inherit;text-decoration:none}button,input{font:inherit;color:inherit;bor
     <a href="index.html">Ana sayfa</a>
     <a href="stock.html">Hisseler</a>
     <a href="portfolio.html">Portföy</a>
-    <a href="premium.html">Premium</a>
     <a href="https://x.com/nexora88team" target="_blank" rel="noopener">X</a>
   </footer>
 </div>
@@ -150,17 +149,19 @@ a{color:inherit;text-decoration:none}button,input{font:inherit;color:inherit;bor
 (function () {
   "use strict";
 
-  /* ========== Ayarlar ========== */
+  /**
+   * Kendi Cloudflare proxy'n varsa BURAYA yaz (en stabil yol).
+   * Örn: "https://nexora-yahoo.xxxx.workers.dev"
+   * Boş bırakırsan alttaki ücretsiz proxy zinciri dener.
+   */
+  var MY_PROXY = "";
+
   var market = "bist";
   var rangeKey = "3mo";
   var chartType = "candle";
   var selected = null;
   var busy = false;
   var chart = null;
-  var series = null;
-  var volSeries = null;
-  var ma20 = null;
-  var ma50 = null;
   var catalogs = { bist: [], nasdaq: [], nyse: [] };
 
   var RANGE = {
@@ -172,6 +173,15 @@ a{color:inherit;text-decoration:none}button,input{font:inherit;color:inherit;bor
     "1y":  { range: "1y",  interval: "1d" },
     "5y":  { range: "5y",  interval: "1wk" }
   };
+
+  /* Alternatif CORS proxy listesi (sırayla dener) */
+  var PUBLIC_PROXIES = [
+    { name: "allorigins-get", build: function (u) { return "https://api.allorigins.win/get?url=" + encodeURIComponent(u); }, parse: "allorigins" },
+    { name: "allorigins-raw", build: function (u) { return "https://api.allorigins.win/raw?url=" + encodeURIComponent(u); }, parse: "raw" },
+    { name: "corsproxy", build: function (u) { return "https://corsproxy.io/?" + encodeURIComponent(u); }, parse: "raw" },
+    { name: "thingproxy", build: function (u) { return "https://thingproxy.freeboard.io/fetch/" + u; }, parse: "raw" },
+    { name: "yacdn", build: function (u) { return "https://yacdn.org/proxy/" + u; }, parse: "raw" }
+  ];
 
   var $ = function (id) { return document.getElementById(id); };
 
@@ -187,7 +197,6 @@ a{color:inherit;text-decoration:none}button,input{font:inherit;color:inherit;bor
     } catch (e) { return "—"; }
   }
 
-  /* ========== Liste: data/*.json (stock.html gibi) ========== */
   function extract(data) {
     if (!data) return [];
     if (Array.isArray(data)) return data;
@@ -208,8 +217,8 @@ a{color:inherit;text-decoration:none}button,input{font:inherit;color:inherit;bor
   function loadCatalog(id) {
     return fetch("data/" + id + ".json?t=" + Date.now().toString().slice(0, 8))
       .then(function (r) { if (!r.ok) throw new Error("json"); return r.json(); })
-      .then(function (d) { catalogs[id] = unique(extract(d)); return catalogs[id]; })
-      .catch(function () { catalogs[id] = catalogs[id] || []; return catalogs[id]; });
+      .then(function (d) { catalogs[id] = unique(extract(d)); })
+      .catch(function () { catalogs[id] = catalogs[id] || []; });
   }
 
   function yahooSymbol(raw) {
@@ -220,11 +229,10 @@ a{color:inherit;text-decoration:none}button,input{font:inherit;color:inherit;bor
     return s;
   }
 
-  /* ========== Veri: Yahoo chart (proxy zinciri) ========== */
   function fetchText(url, ms) {
     var ctrl = new AbortController();
-    var t = setTimeout(function () { ctrl.abort(); }, ms || 10000);
-    return fetch(url, { signal: ctrl.signal, mode: "cors", cache: "no-store" })
+    var t = setTimeout(function () { ctrl.abort(); }, ms || 9000);
+    return fetch(url, { signal: ctrl.signal, mode: "cors", cache: "no-store", credentials: "omit" })
       .then(function (r) {
         clearTimeout(t);
         if (!r.ok) throw new Error("HTTP " + r.status);
@@ -236,10 +244,14 @@ a{color:inherit;text-decoration:none}button,input{font:inherit;color:inherit;bor
       });
   }
 
-  function parseYahoo(text) {
-    var payload = JSON.parse(text);
+  function parseYahooJson(text) {
+    var payload = typeof text === "string" ? JSON.parse(text) : text;
+    /* allorigins /get formatı */
+    if (payload && typeof payload.contents === "string") {
+      payload = JSON.parse(payload.contents);
+    }
     var result = payload && payload.chart && payload.chart.result && payload.chart.result[0];
-    if (!result) throw new Error("Boş");
+    if (!result) throw new Error("Yahoo boş");
     var ts = result.timestamp || [];
     var q = (result.indicators && result.indicators.quote && result.indicators.quote[0]) || {};
     var candles = [];
@@ -259,60 +271,85 @@ a{color:inherit;text-decoration:none}button,input{font:inherit;color:inherit;bor
     return candles;
   }
 
-  /** Ana veri çekici — stock sayfasındaki gibi sembol + Yahoo */
-  function loadOHLC(symbol) {
+  function yahooUrl(symbol) {
     var map = RANGE[rangeKey] || RANGE["3mo"];
-    var yUrl =
+    return (
       "https://query1.finance.yahoo.com/v8/finance/chart/" +
       encodeURIComponent(symbol) +
       "?range=" + encodeURIComponent(map.range) +
-      "&interval=" + encodeURIComponent(map.interval);
-
-    /* 1) Varsa Nexora API / Worker */
-    if (window.API && typeof window.API.getOHLC === "function") {
-      return window.API.getOHLC(symbol, rangeKey, market).then(function (pack) {
-        if (pack && pack.candles && pack.candles.length) {
-          return { candles: pack.candles, source: pack.source || "api" };
-        }
-        throw new Error("API boş");
-      }).catch(function () {
-        return loadOHLCProxies(yUrl);
-      });
-    }
-    return loadOHLCProxies(yUrl);
+      "&interval=" + encodeURIComponent(map.interval)
+    );
   }
 
-  function loadOHLCProxies(yUrl) {
-    var proxies = [
-      "https://api.allorigins.win/raw?url=",
-      "https://api.codetabs.com/v1/proxy?quest="
-    ];
+  function loadOHLC(symbol) {
+    var yUrl = yahooUrl(symbol);
+
+    /* 0) Kendi Cloudflare proxy */
+    if (MY_PROXY) {
+      var myUrl = MY_PROXY.replace(/\/$/, "") + "?url=" + encodeURIComponent(yUrl);
+      return fetchText(myUrl, 12000)
+        .then(function (t) { return { candles: parseYahooJson(t), source: "my-proxy" }; })
+        .catch(function () { return loadPublic(yUrl); });
+    }
+
+    /* 0b) config workerOhlcUrl (API anahtarlı worker) */
+    if (window.NEXORA_CONFIG && window.NEXORA_CONFIG.workerOhlcUrl) {
+      var w =
+        String(window.NEXORA_CONFIG.workerOhlcUrl).replace(/\/$/, "") +
+        "?symbol=" + encodeURIComponent(symbol) +
+        "&range=" + encodeURIComponent(rangeKey);
+      return fetchText(w, 12000)
+        .then(function (t) {
+          var j = JSON.parse(t);
+          if (j.candles && j.candles.length) return { candles: j.candles, source: j.source || "worker" };
+          throw new Error("Worker boş");
+        })
+        .catch(function () { return loadPublic(yUrl); });
+    }
+
+    /* 0c) API.getOHLC */
+    if (window.API && typeof window.API.getOHLC === "function") {
+      return window.API.getOHLC(symbol, rangeKey, market)
+        .then(function (pack) {
+          if (pack && pack.candles && pack.candles.length) {
+            return { candles: pack.candles, source: pack.source || "api" };
+          }
+          throw new Error("API boş");
+        })
+        .catch(function () { return loadPublic(yUrl); });
+    }
+
+    return loadPublic(yUrl);
+  }
+
+  function loadPublic(yUrl) {
     var i = 0;
     function next() {
-      if (i >= proxies.length) {
-        return Promise.reject(new Error("Veri alınamadı — ağ veya proxy engeli"));
+      if (i >= PUBLIC_PROXIES.length) {
+        return Promise.reject(
+          new Error("Proxy engeli. MY_PROXY alanına kendi Cloudflare adresini yaz.")
+        );
       }
-      var full = proxies[i++] + encodeURIComponent(yUrl);
-      return fetchText(full, 10000)
+      var p = PUBLIC_PROXIES[i++];
+      return fetchText(p.build(yUrl), 9000)
         .then(function (text) {
-          if (!text || text.charAt(0) === "<") throw new Error("HTML");
-          return { candles: parseYahoo(text), source: "yahoo" };
+          if (!text || text.length < 30) throw new Error("Boş");
+          if (text.charAt(0) === "<") throw new Error("HTML");
+          return { candles: parseYahooJson(text), source: p.name };
         })
         .catch(function () { return next(); });
     }
     return next();
   }
 
-  /* ========== Grafik (TradingView Lightweight Charts) ========== */
+  /* Chart */
   function destroyChart() {
     if (chart) {
       try { chart.remove(); } catch (e) {}
       chart = null;
-      series = volSeries = ma20 = ma50 = null;
     }
     $("chart").innerHTML = "";
   }
-
   function sma(candles, period) {
     var out = [], sum = 0;
     for (var i = 0; i < candles.length; i++) {
@@ -322,11 +359,9 @@ a{color:inherit;text-decoration:none}button,input{font:inherit;color:inherit;bor
     }
     return out;
   }
-
   function drawChart(candles) {
     destroyChart();
-    if (!window.LightweightCharts) throw new Error("Grafik kütüphanesi yok");
-
+    if (!window.LightweightCharts) throw new Error("Kütüphane yok");
     var el = $("chart");
     chart = LightweightCharts.createChart(el, {
       layout: { background: { type: "solid", color: "#0b1220" }, textColor: "#94a3b8" },
@@ -341,15 +376,14 @@ a{color:inherit;text-decoration:none}button,input{font:inherit;color:inherit;bor
       height: Math.min(window.innerHeight * 0.52, 500)
     });
 
+    var series;
     if (chartType === "line") {
       series = chart.addLineSeries({ color: "#22d3ee", lineWidth: 2 });
       series.setData(candles.map(function (b) { return { time: b.time, value: b.close }; }));
     } else if (chartType === "area") {
       series = chart.addAreaSeries({
-        lineColor: "#22d3ee",
-        topColor: "rgba(34,211,238,0.35)",
-        bottomColor: "rgba(34,211,238,0.02)",
-        lineWidth: 2
+        lineColor: "#22d3ee", topColor: "rgba(34,211,238,0.35)",
+        bottomColor: "rgba(34,211,238,0.02)", lineWidth: 2
       });
       series.setData(candles.map(function (b) { return { time: b.time, value: b.close }; }));
     } else if (chartType === "bar") {
@@ -368,28 +402,24 @@ a{color:inherit;text-decoration:none}button,input{font:inherit;color:inherit;bor
       }));
     }
 
-    volSeries = chart.addHistogramSeries({
-      priceFormat: { type: "volume" },
-      priceScaleId: "",
+    var vol = chart.addHistogramSeries({
+      priceFormat: { type: "volume" }, priceScaleId: "",
       scaleMargins: { top: 0.82, bottom: 0 }
     });
-    volSeries.setData(candles.map(function (b) {
+    vol.setData(candles.map(function (b) {
       return {
-        time: b.time,
-        value: b.volume || 0,
+        time: b.time, value: b.volume || 0,
         color: b.close >= b.open ? "rgba(52,211,153,0.35)" : "rgba(248,113,113,0.35)"
       };
     }));
 
     if (chartType === "candle" || chartType === "bar") {
-      ma20 = chart.addLineSeries({ color: "#00f0ff", lineWidth: 1, lastValueVisible: false, priceLineVisible: false });
-      ma50 = chart.addLineSeries({ color: "#a78bfa", lineWidth: 1, lastValueVisible: false, priceLineVisible: false });
-      ma20.setData(sma(candles, 20));
-      ma50.setData(sma(candles, 50));
+      var m20 = chart.addLineSeries({ color: "#00f0ff", lineWidth: 1, lastValueVisible: false, priceLineVisible: false });
+      var m50 = chart.addLineSeries({ color: "#a78bfa", lineWidth: 1, lastValueVisible: false, priceLineVisible: false });
+      m20.setData(sma(candles, 20));
+      m50.setData(sma(candles, 50));
     }
-
     chart.timeScale().fitContent();
-
     if (typeof ResizeObserver !== "undefined") {
       new ResizeObserver(function () {
         if (chart) chart.applyOptions({ width: el.clientWidth });
@@ -397,7 +427,6 @@ a{color:inherit;text-decoration:none}button,input{font:inherit;color:inherit;bor
     }
   }
 
-  /* ========== UI ========== */
   function showOv(load, title, msg) {
     $("ov").classList.add("show");
     $("spin").style.display = load ? "block" : "none";
@@ -410,19 +439,13 @@ a{color:inherit;text-decoration:none}button,input{font:inherit;color:inherit;bor
     var box = $("suggest");
     q = String(q || "").trim().toLowerCase();
     if (!q) { box.classList.remove("show"); box.innerHTML = ""; return; }
-    var list = catalogs[market] || [];
-    var hits = [];
+    var list = catalogs[market] || [], hits = [];
     for (var i = 0; i < list.length && hits.length < 12; i++) {
       var it = list[i];
       var s = String(it.symbol || "").toLowerCase();
       var n = String(it.name || "").toLowerCase();
       if (s.indexOf(q) !== -1 || n.indexOf(q) !== -1) hits.push(it);
     }
-    hits.sort(function (a, b) {
-      var as = String(a.symbol || "").toLowerCase();
-      var bs = String(b.symbol || "").toLowerCase();
-      return (as.indexOf(q) === 0 ? 0 : 1) - (bs.indexOf(q) === 0 ? 0 : 1) || as.localeCompare(bs);
-    });
     if (!hits.length) { box.classList.remove("show"); box.innerHTML = ""; return; }
     box.innerHTML = hits.map(function (it) {
       var sym = String(it.symbol || "").toUpperCase();
@@ -443,20 +466,15 @@ a{color:inherit;text-decoration:none}button,input{font:inherit;color:inherit;bor
     selected = { symbol: sym, name: name || "" };
     $("q").value = sym;
     $("suggest").classList.remove("show");
-
     busy = true;
     $("btnLoad").disabled = true;
-    showOv(true, "Yükleniyor", sym + " grafiği hazırlanıyor…");
+    showOv(true, "Yükleniyor", sym + "…");
 
-    var full = yahooSymbol(sym);
-
-    loadOHLC(full)
+    loadOHLC(yahooSymbol(sym))
       .then(function (pack) {
         drawChart(pack.candles);
-        var first = pack.candles[0];
-        var last = pack.candles[pack.candles.length - 1];
+        var first = pack.candles[0], last = pack.candles[pack.candles.length - 1];
         var chg = first.close ? ((last.close - first.close) / first.close) * 100 : 0;
-
         $("kSym").textContent = sym;
         $("kName").textContent = name || (market === "bist" ? "BIST" : market.toUpperCase());
         $("kPrice").textContent = money(last.close);
@@ -469,7 +487,7 @@ a{color:inherit;text-decoration:none}button,input{font:inherit;color:inherit;bor
       })
       .catch(function (err) {
         destroyChart();
-        showOv(false, "Veri alınamadı", (err && err.message) || "Tekrar dene veya başka hisse seç.");
+        showOv(false, "Veri alınamadı", (err && err.message) || "Tekrar dene.");
       })
       .then(function () {
         busy = false;
@@ -477,7 +495,6 @@ a{color:inherit;text-decoration:none}button,input{font:inherit;color:inherit;bor
       });
   }
 
-  /* Events */
   $("markets").addEventListener("click", function (e) {
     var b = e.target.closest("button[data-m]");
     if (!b) return;
@@ -488,7 +505,6 @@ a{color:inherit;text-decoration:none}button,input{font:inherit;color:inherit;bor
     $("suggest").classList.remove("show");
     loadCatalog(market);
   });
-
   var qTimer;
   $("q").addEventListener("input", function () {
     clearTimeout(qTimer);
@@ -506,7 +522,6 @@ a{color:inherit;text-decoration:none}button,input{font:inherit;color:inherit;bor
   document.addEventListener("click", function (e) {
     if (!e.target.closest(".search-box")) $("suggest").classList.remove("show");
   });
-
   $("ranges").addEventListener("click", function (e) {
     var b = e.target.closest("button[data-r]");
     if (!b) return;
