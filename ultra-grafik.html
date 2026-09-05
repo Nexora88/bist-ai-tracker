@@ -3,97 +3,515 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Ultra Grafik · Nexora AI</title>
-  <meta name="theme-color" content="#0d0d1a" />
+  <title>Grafik · Nexora AI</title>
+  <meta name="description" content="BIST, NASDAQ ve NYSE için Nexora grafik ekranı. Mum, çizgi, alan. Veriler gecikmeli olabilir." />
+  <meta name="theme-color" content="#060a12" />
+  <meta name="robots" content="index,follow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #0d0d1a; --panel: rgba(18,18,32,.96); --border: rgba(148,163,184,.14);
-      --text: #f8fafc; --muted: #cbd5e1; --dim: #94a3b8; --faint: #64748b;
-      --cyan: #00f0ff; --up: #34d399; --down: #f87171;
-      --grad: linear-gradient(135deg,#00f0ff,#007bff 50%,#7b2cff);
+      --bg: #060a12;
+      --panel: rgba(15, 23, 42, 0.94);
+      --panel-soft: rgba(15, 23, 42, 0.72);
+      --border: rgba(148, 163, 184, 0.12);
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --dim: #64748b;
+      --faint: #475569;
+      --accent: #10b981;
+      --cyan: #22d3ee;
+      --up: #34d399;
+      --down: #f87171;
+      --amber: #fbbf24;
+      --grad: linear-gradient(135deg, #22d3ee 0%, #10b981 100%);
+      --grad-btn: linear-gradient(135deg, #22d3ee 0%, #6366f1 100%);
+      --radius: 14px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: Inter, system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: Inter, system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
     a { color: inherit; text-decoration: none; }
     button, input { font: inherit; color: inherit; border: none; background: none; }
     button { cursor: pointer; }
+    input { outline: none; }
+
+    .atmosphere {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 70% 45% at 8% -8%, rgba(16, 185, 129, 0.14), transparent 52%),
+        radial-gradient(ellipse 55% 40% at 92% 5%, rgba(34, 211, 238, 0.1), transparent 48%),
+        radial-gradient(ellipse 40% 30% at 50% 100%, rgba(99, 102, 241, 0.06), transparent 50%),
+        var(--bg);
+    }
+    .stars {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        radial-gradient(1px 1px at 12% 18%, rgba(255,255,255,0.35), transparent),
+        radial-gradient(1px 1px at 28% 62%, rgba(255,255,255,0.22), transparent),
+        radial-gradient(1px 1px at 55% 28%, rgba(255,255,255,0.28), transparent),
+        radial-gradient(1px 1px at 78% 72%, rgba(255,255,255,0.2), transparent),
+        radial-gradient(1px 1px at 90% 22%, rgba(255,255,255,0.25), transparent);
+      animation: twinkle 8s ease-in-out infinite alternate;
+    }
+    @keyframes twinkle {
+      from { opacity: 0.55; }
+      to { opacity: 1; }
+    }
+    .app { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* ——— Nav ——— */
     .nav {
-      height: 56px; display: flex; align-items: center; justify-content: space-between;
-      padding: 0 14px; background: rgba(13,13,26,.92); border-bottom: 1px solid var(--border);
-      position: sticky; top: 0; z-index: 20;
+      height: 58px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px;
+      padding: 0 16px;
+      background: rgba(6, 10, 18, 0.88);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 50;
     }
-    .brand { font-weight: 800; font-size: 14px; display: flex; gap: 8px; align-items: center; }
+    .brand {
+      display: flex; align-items: center; gap: 9px;
+      font-weight: 800; font-size: 14px; letter-spacing: -0.02em;
+      flex-shrink: 0;
+    }
     .mark {
-      width: 28px; height: 28px; border-radius: 8px; background: var(--grad);
-      display: grid; place-items: center; font-size: 11px; font-weight: 900; color: #0d0d1a;
+      width: 30px; height: 30px; border-radius: 10px;
+      background: var(--grad);
+      display: grid; place-items: center;
+      font-size: 12px; font-weight: 900; color: #042f2e;
+      box-shadow: 0 0 20px rgba(34, 211, 238, 0.25);
     }
-    .brand em { font-style: normal; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
-    .nav a.x { padding: 8px 12px; border-radius: 9px; font-size: 12px; font-weight: 700; box-shadow: inset 0 0 0 1px var(--border); }
-    .wrap { max-width: 1100px; margin: 0 auto; padding: 16px 14px 48px; }
-    .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 12px; }
-    .search {
-      flex: 1; min-width: 150px; display: flex; padding: 10px 12px; border-radius: 12px;
-      background: rgba(6,6,15,.75); box-shadow: inset 0 0 0 1px var(--border);
+    .brand em {
+      font-style: normal;
+      background: var(--grad);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
     }
-    .search input { flex: 1; font-size: 15px; font-weight: 700; text-transform: uppercase; outline: none; }
-    .go {
-      padding: 10px 16px; border-radius: 11px; font-weight: 800; font-size: 13px;
-      color: #0d0d1a; background: var(--grad);
+    .nav-links {
+      display: none;
+      align-items: center;
+      gap: 2px;
+      flex: 1;
+      justify-content: center;
     }
-    .go:disabled { opacity: .5; cursor: not-allowed; }
-    .ranges { display: flex; flex-wrap: wrap; gap: 6px; }
-    .ranges button {
-      padding: 8px 12px; border-radius: 999px; font-size: 12px; font-weight: 700;
-      color: var(--dim); background: var(--panel); box-shadow: inset 0 0 0 1px var(--border);
+    @media (min-width: 900px) {
+      .nav-links { display: flex; }
     }
-    .ranges button.on { color: #0d0d1a; background: var(--grad); box-shadow: none; }
-    .kpi { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-    @media (min-width: 640px) { .kpi { grid-template-columns: repeat(4, 1fr); } }
-    .kpi-card { padding: 12px 14px; border-radius: 14px; background: var(--panel); border: 1px solid var(--border); }
-    .kpi-card .l { font-size: 11px; font-weight: 700; color: var(--faint); text-transform: uppercase; }
-    .kpi-card .v { margin-top: 4px; font-size: 1.15rem; font-weight: 800; font-variant-numeric: tabular-nums; }
-    .kpi-card .v.up { color: var(--up); } .kpi-card .v.down { color: var(--down); }
-    .kpi-card .s { margin-top: 2px; font-size: 11px; color: var(--dim); font-weight: 600; }
-    .shell {
-      position: relative; border-radius: 16px; border: 1px solid var(--border);
-      background: #0a0a14; overflow: hidden; min-height: 380px;
+    .nav-links a {
+      font-size: 13px; font-weight: 600;
+      color: var(--muted);
+      padding: 7px 11px; border-radius: 9px;
+      transition: color 0.15s, background 0.15s;
     }
-    #chart { width: 100%; height: min(58vh, 520px); min-height: 360px; }
+    .nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+    .nav-links a.on {
+      color: var(--text);
+      background: rgba(34, 211, 238, 0.1);
+    }
+    .nav-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .nav-right a.pill {
+      padding: 8px 14px; border-radius: 999px;
+      font-size: 12px; font-weight: 700;
+      color: #042f2e;
+      background: var(--grad);
+      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.25);
+    }
+    .nav-right a.ghost {
+      padding: 8px 12px; border-radius: 999px;
+      font-size: 12px; font-weight: 700;
+      color: var(--muted);
+      box-shadow: inset 0 0 0 1px var(--border);
+    }
+
+    /* ——— Main ——— */
+    .wrap {
+      width: 100%;
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 18px 14px 32px;
+      flex: 1;
+    }
+
+    .page-head {
+      margin-bottom: 16px;
+      animation: fadeUp 0.5s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .badge {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: 12px; font-weight: 700;
+      color: var(--cyan);
+      background: rgba(34, 211, 238, 0.1);
+      border: 1px solid rgba(34, 211, 238, 0.28);
+      padding: 5px 12px; border-radius: 999px;
+      margin-bottom: 10px;
+    }
+    .badge i {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+      animation: pulse 1.6s ease infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
+    }
+    .page-head h1 {
+      font-size: clamp(1.35rem, 3.2vw, 1.75rem);
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      line-height: 1.2;
+    }
+    .page-head h1 span {
+      background: var(--grad);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .page-head p {
+      margin-top: 8px;
+      font-size: 14px;
+      color: var(--muted);
+      max-width: 48ch;
+      line-height: 1.6;
+    }
+
+    /* ——— Markets ——— */
+    .markets {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      margin-bottom: 12px;
+      animation: fadeUp 0.55s ease 0.05s both;
+    }
+    .markets button {
+      padding: 9px 15px;
+      border-radius: 999px;
+      font-size: 13px; font-weight: 700;
+      color: var(--muted);
+      background: var(--panel);
+      box-shadow: inset 0 0 0 1px var(--border);
+      transition: transform 0.15s, box-shadow 0.15s, color 0.15s, background 0.15s;
+    }
+    .markets button:hover {
+      color: var(--text);
+      transform: translateY(-1px);
+    }
+    .markets button.on {
+      color: #042f2e;
+      background: var(--grad);
+      box-shadow: 0 4px 18px rgba(16, 185, 129, 0.3);
+    }
+
+    /* ——— Search ——— */
+    .search-row {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      margin-bottom: 12px;
+      animation: fadeUp 0.55s ease 0.08s both;
+    }
+    .search-box { flex: 1; min-width: 180px; position: relative; }
+    .search-box input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(6, 10, 18, 0.75);
+      box-shadow: inset 0 0 0 1px var(--border);
+      font-size: 14px; font-weight: 600;
+      transition: box-shadow 0.15s;
+    }
+    .search-box input:focus {
+      box-shadow: inset 0 0 0 1.5px rgba(34, 211, 238, 0.45);
+    }
+    .search-box input::placeholder {
+      color: var(--faint); font-weight: 500;
+    }
+    .suggest {
+      display: none;
+      position: absolute;
+      left: 0; right: 0; top: calc(100% + 6px);
+      z-index: 30;
+      max-height: 280px;
+      overflow-y: auto;
+      border-radius: 14px;
+      background: rgba(15, 23, 42, 0.98);
+      border: 1px solid var(--border);
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.5);
+    }
+    .suggest.show { display: block; animation: fadeUp 0.2s ease; }
+    .suggest button {
+      display: block; width: 100%;
+      padding: 11px 14px;
+      text-align: left;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.06);
+      transition: background 0.12s;
+    }
+    .suggest button:last-child { border-bottom: none; }
+    .suggest button:hover { background: rgba(34, 211, 238, 0.08); }
+    .suggest .sym { font-weight: 800; font-size: 13px; }
+    .suggest .nm { font-size: 12px; color: var(--dim); font-weight: 500; margin-top: 2px; }
+    .suggest .fg {
+      font-size: 10px; font-weight: 800;
+      color: var(--cyan); margin-right: 5px;
+    }
+    .btn-go {
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-weight: 800; font-size: 13px;
+      color: #042f2e;
+      background: var(--grad-btn);
+      box-shadow: 0 4px 18px rgba(99, 102, 241, 0.28);
+      transition: transform 0.15s, opacity 0.15s;
+    }
+    .btn-go:hover { transform: translateY(-1px); }
+    .btn-go:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* ——— Chips ——— */
+    .chip-label {
+      font-size: 11px; font-weight: 700;
+      color: var(--faint);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin: 6px 0 6px;
+    }
+    .chips {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      margin-bottom: 6px;
+    }
+    .chips button {
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px; font-weight: 700;
+      color: var(--dim);
+      background: var(--panel);
+      box-shadow: inset 0 0 0 1px var(--border);
+      transition: color 0.15s, background 0.15s, transform 0.15s;
+    }
+    .chips button:hover { color: var(--text); transform: translateY(-1px); }
+    .chips button.on {
+      color: #042f2e;
+      background: var(--grad-btn);
+      box-shadow: none;
+    }
+
+    /* ——— KPI ——— */
+    .kpi {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin: 14px 0 12px;
+      animation: fadeUp 0.55s ease 0.1s both;
+    }
+    @media (min-width: 640px) {
+      .kpi { grid-template-columns: repeat(4, 1fr); }
+    }
+    .kpi-card {
+      padding: 13px 14px;
+      border-radius: var(--radius);
+      background: var(--panel);
+      border: 1px solid var(--border);
+      transition: border-color 0.2s;
+    }
+    .kpi-card:hover { border-color: rgba(34, 211, 238, 0.25); }
+    .kpi-card .l {
+      font-size: 10px; font-weight: 700;
+      color: var(--faint);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .kpi-card .v {
+      margin-top: 5px;
+      font-size: 1.12rem; font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+    }
+    .kpi-card .v.up { color: var(--up); }
+    .kpi-card .v.down { color: var(--down); }
+    .kpi-card .s {
+      margin-top: 3px;
+      font-size: 11px; color: var(--dim); font-weight: 600;
+    }
+
+    /* ——— Chart ——— */
+    .chart-shell {
+      position: relative;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: #0b1220;
+      overflow: hidden;
+      min-height: 400px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+      animation: fadeUp 0.55s ease 0.12s both;
+    }
+    #chart {
+      width: 100%;
+      height: min(56vh, 500px);
+      min-height: 380px;
+    }
     .overlay {
-      position: absolute; inset: 0; display: none; flex-direction: column;
-      align-items: center; justify-content: center; gap: 10px; padding: 24px;
-      text-align: center; background: rgba(13,13,26,.88); z-index: 5;
+      position: absolute; inset: 0;
+      display: none;
+      flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 12px; padding: 28px;
+      text-align: center;
+      background: rgba(6, 10, 18, 0.9);
+      z-index: 6;
     }
     .overlay.show { display: flex; }
-    .overlay .t { font-size: 15px; font-weight: 800; }
-    .overlay .m { font-size: 13px; color: var(--dim); max-width: 36ch; line-height: 1.55; }
-    .spin {
-      width: 28px; height: 28px; border-radius: 50%;
-      border: 3px solid rgba(0,240,255,.15); border-top-color: var(--cyan);
-      animation: sp .7s linear infinite;
+    .overlay .t { font-size: 15px; font-weight: 800; letter-spacing: -0.02em; }
+    .overlay .m {
+      font-size: 13px; color: var(--muted);
+      max-width: 36ch; line-height: 1.55;
     }
-    @keyframes sp { to { transform: rotate(360deg); } }
-    .note {
-      margin-top: 14px; padding: 12px 14px; border-radius: 12px;
-      background: var(--panel); border: 1px solid var(--border);
-      font-size: 12.5px; color: var(--dim); line-height: 1.55;
+    .loader {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 3px solid rgba(34, 211, 238, 0.15);
+      border-top-color: var(--cyan);
+      animation: spin 0.75s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .pulse-bar {
+      width: 130px; height: 4px; border-radius: 99px;
+      background: rgba(148, 163, 184, 0.12);
+      overflow: hidden;
+    }
+    .pulse-bar i {
+      display: block; height: 100%; width: 40%;
+      border-radius: 99px;
+      background: var(--grad);
+      animation: slide 1.15s ease-in-out infinite;
+    }
+    @keyframes slide {
+      0% { transform: translateX(-120%); }
+      100% { transform: translateX(300%); }
+    }
+
+    .legend {
+      display: flex; flex-wrap: wrap; gap: 10px 16px;
+      margin-top: 12px;
+      font-size: 12px; font-weight: 600; color: var(--dim);
+    }
+    .legend b { color: var(--muted); font-weight: 700; }
+
+    /* ——— Legal ——— */
+    .legal {
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: var(--panel-soft);
+      border: 1px solid var(--border);
+      font-size: 12.5px;
+      color: var(--dim);
+      line-height: 1.65;
+    }
+    .legal strong { color: var(--muted); }
+    .legal a {
+      color: var(--cyan);
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    /* ——— Footer ——— */
+    .site-footer {
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      padding: 22px 16px 28px;
+      background: rgba(6, 10, 18, 0.6);
+    }
+    .footer-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px 24px;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .footer-brand {
+      font-size: 13px; font-weight: 700; color: var(--muted);
+    }
+    .footer-brand span {
+      background: var(--grad);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .footer-links {
+      display: flex; flex-wrap: wrap; gap: 8px 14px;
+    }
+    .footer-links a {
+      font-size: 12.5px; font-weight: 600; color: var(--dim);
+      transition: color 0.15s;
+    }
+    .footer-links a:hover { color: var(--cyan); }
+    .footer-legal {
+      width: 100%;
+      margin-top: 4px;
+      font-size: 11.5px;
+      color: var(--faint);
+      line-height: 1.55;
+      max-width: 70ch;
     }
   </style>
 </head>
 <body>
-  <nav class="nav">
-    <a class="brand" href="index.html"><span class="mark">N</span> Nexora <em>Grafik</em></a>
-    <a class="x" href="stock.html">Hisseler</a>
-  </nav>
+  <div class="atmosphere" aria-hidden="true"></div>
+  <div class="stars" aria-hidden="true"></div>
 
-  <main class="wrap">
-    <div class="toolbar">
-      <div class="search">
-        <input id="sym" type="text" placeholder="THYAO, AAPL…" autocomplete="off" spellcheck="false" />
+  <div class="app">
+    <nav class="nav">
+      <a class="brand" href="index.html">
+        <span class="mark">N</span>
+        Nexora <em>AI</em>
+      </a>
+      <div class="nav-links">
+        <a href="stock.html">Hisseler</a>
+        <a href="portfolio.html">Portföy</a>
+        <a class="on" href="ultra-grafik.html">Grafik</a>
+        <a href="egitim.html">Akademi</a>
+        <a href="oyun.html">Lig</a>
+        <a href="makale.html">Makaleler</a>
+        <a href="premium.html">Premium</a>
       </div>
-      <button type="button" class="go" id="btn">Yükle</button>
-      <div class="ranges" id="ranges">
+      <div class="nav-right">
+        <a class="ghost" href="stock.html">Hisseler</a>
+        <a class="pill" href="index.html">Keşfet</a>
+      </div>
+    </nav>
+
+    <main class="wrap">
+      <header class="page-head">
+        <div class="badge"><i></i> BIST · NASDAQ · NYSE</div>
+        <h1>Piyasayı <span>grafikle</span> oku</h1>
+        <p>
+          Borsa seç, hisse ara, zaman dilimi ve grafik tipini değiştir.
+          Veri kaynaklardan gelir; çizim Nexora motorunda yapılır.
+        </p>
+      </header>
+
+      <div class="markets" id="markets" role="tablist" aria-label="Piyasa">
+        <button type="button" class="on" data-m="bist" role="tab" aria-selected="true">TR BIST</button>
+        <button type="button" data-m="nasdaq" role="tab" aria-selected="false">US NASDAQ</button>
+        <button type="button" data-m="nyse" role="tab" aria-selected="false">US NYSE</button>
+      </div>
+
+      <div class="search-row">
+        <div class="search-box">
+          <input id="q" type="search" placeholder="Ara: THYAO, Aselsan, Apple…" autocomplete="off" spellcheck="false" aria-label="Hisse ara" />
+          <div class="suggest" id="suggest" role="listbox"></div>
+        </div>
+        <button type="button" class="btn-go" id="btnLoad">Grafiği aç</button>
+      </div>
+
+      <div class="chip-label">Zaman aralığı</div>
+      <div class="chips" id="ranges">
         <button type="button" data-r="1d">1G</button>
         <button type="button" data-r="5d">5G</button>
         <button type="button" data-r="1mo">1A</button>
@@ -102,31 +520,89 @@
         <button type="button" data-r="1y">1Y</button>
         <button type="button" data-r="5y">5Y</button>
       </div>
-    </div>
 
-    <div class="kpi">
-      <div class="kpi-card"><div class="l">Sembol</div><div class="v" id="kSym">—</div><div class="s" id="kSrc">—</div></div>
-      <div class="kpi-card"><div class="l">Son</div><div class="v" id="kPrice">—</div><div class="s" id="kAsOf">—</div></div>
-      <div class="kpi-card"><div class="l">Değişim</div><div class="v" id="kChg">—</div><div class="s">Dönem (ilk→son)</div></div>
-      <div class="kpi-card"><div class="l">Bar</div><div class="v" id="kBars">—</div><div class="s" id="kRange">—</div></div>
-    </div>
-
-    <div class="shell">
-      <div id="chart"></div>
-      <div class="overlay show" id="ov">
-        <div class="spin" id="spin"></div>
-        <div class="t" id="ovT">Hazır</div>
-        <div class="m" id="ovM">Sembol yaz → Yükle. TradingView penceresi yok; Nexora motoru çizer.</div>
+      <div class="chip-label">Grafik tipi</div>
+      <div class="chips" id="types">
+        <button type="button" data-t="candle" class="on">Mum</button>
+        <button type="button" data-t="bar">Bar</button>
+        <button type="button" data-t="line">Çizgi</button>
+        <button type="button" data-t="area">Alan</button>
       </div>
-    </div>
 
-    <div class="note">
-      <strong style="color:#cbd5e1">Not:</strong> Veriler gecikmeli olabilir. Kapalı sezonda son bar gösterilir.
-      Aralık değişince grafik sıfırdan kurulur. Yatırım tavsiyesi değildir.
-    </div>
-  </main>
+      <div class="kpi">
+        <div class="kpi-card">
+          <div class="l">Sembol</div>
+          <div class="v" id="kSym">—</div>
+          <div class="s" id="kName">Piyasa · ara · aç</div>
+        </div>
+        <div class="kpi-card">
+          <div class="l">Son</div>
+          <div class="v" id="kPrice">—</div>
+          <div class="s" id="kAsOf">—</div>
+        </div>
+        <div class="kpi-card">
+          <div class="l">Dönem</div>
+          <div class="v" id="kChg">—</div>
+          <div class="s">İlk bar → son bar</div>
+        </div>
+        <div class="kpi-card">
+          <div class="l">Bar / kaynak</div>
+          <div class="v" id="kBars">—</div>
+          <div class="s" id="kSrc">—</div>
+        </div>
+      </div>
 
-  <!-- Sıra önemli -->
+      <div class="chart-shell">
+        <div id="chart" role="img" aria-label="Hisse fiyat grafiği"></div>
+        <div class="overlay show" id="ov">
+          <div class="loader" id="spin" style="display:none" aria-hidden="true"></div>
+          <div class="pulse-bar" id="pbar" style="display:none" aria-hidden="true"><i></i></div>
+          <div class="t" id="ovT">Grafik hazır</div>
+          <div class="m" id="ovM">Borsa seç, hisse ara veya yaz, ardından Grafiği aç.</div>
+        </div>
+      </div>
+
+      <div class="legend">
+        <span><b>Yeşil</b> yükseliş</span>
+        <span><b>Kırmızı</b> düşüş</span>
+        <span><b>MA20</b> / <b>MA50</b></span>
+        <span>Hacim alt bant</span>
+      </div>
+
+      <aside class="legal">
+        <strong>Yasal uyarı:</strong>
+        Bu ekrandaki fiyat, grafik ve özetler yatırım tavsiyesi değildir;
+        SPK düzenlemeleri kapsamında yatırım danışmanlığı sayılmaz.
+        Veriler kaynak kuralları gereği <strong>gecikmeli</strong> olabilir
+        (çoğu durumda en az 15 dakika). Kararlarını kendi araştırman ve risk tercihinle ver.
+        Gizlilik ve aydınlatma metinleri için
+        <a href="about.html">Hakkımızda</a> sayfasına bakabilirsin.
+      </aside>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-brand">Nexora <span>AI</span></div>
+        <div class="footer-links">
+          <a href="index.html">Ana sayfa</a>
+          <a href="stock.html">Hisseler</a>
+          <a href="portfolio.html">Portföy</a>
+          <a href="oyun.html">Lig</a>
+          <a href="egitim.html">Akademi</a>
+          <a href="makale.html">Makaleler</a>
+          <a href="premium.html">Premium</a>
+          <a href="alarm.html">Alarm</a>
+          <a href="about.html">Hakkımızda</a>
+          <a href="https://x.com/nexora88team" target="_blank" rel="noopener noreferrer">X</a>
+        </div>
+        <p class="footer-legal">
+          Nexora AI bilgilendirme amaçlıdır; aracı kurum veya portföy yönetim şirketi değildir.
+          Sermaye piyasası işlemleri risk içerir. Geçmiş performans gelecek sonuçların garantisi değildir.
+        </p>
+      </div>
+    </footer>
+  </div>
+
   <script src="assets/js/secrets.js"></script>
   <script src="assets/js/config.js"></script>
   <script src="assets/js/api.js"></script>
@@ -134,95 +610,290 @@
   <script>
 (function () {
   "use strict";
-  var range = "3mo";
-  var busy = false;
-  var $ = function (id) { return document.getElementById(id); };
 
-  function ov(kind, t, m) {
-    $("ov").classList.add("show");
-    $("spin").style.display = kind === "load" ? "block" : "none";
-    $("ovT").textContent = t;
-    $("ovM").textContent = m || "";
-  }
-  function hide() { $("ov").classList.remove("show"); }
+  var market = "bist";
+  var range = "3mo";
+  var chartType = "candle";
+  var selected = null;
+  var busy = false;
+  var catalogs = { bist: [], nasdaq: [], nyse: [] };
+
+  var $ = function (id) { return document.getElementById(id); };
 
   function money(n) {
     if (n == null || !isFinite(n)) return "—";
-    return Number(n).toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return Number(n).toLocaleString("tr-TR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
   }
+
   function when(sec) {
     try {
       return new Date(sec * 1000).toLocaleString("tr-TR", {
-        day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit"
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
       });
-    } catch (e) { return "—"; }
+    } catch (e) {
+      return "—";
+    }
   }
 
-  async function load() {
+  function extractStocks(data) {
+    if (!data) return [];
+    if (Array.isArray(data)) return data;
+    if (Array.isArray(data.stocks)) return data.stocks;
+    if (Array.isArray(data.items)) return data.items;
+    return [];
+  }
+
+  function unique(list) {
+    var seen = {};
+    var out = [];
+    for (var i = 0; i < list.length; i++) {
+      var s = String(list[i].symbol || "").toUpperCase().trim();
+      if (!s || seen[s]) continue;
+      seen[s] = true;
+      out.push(list[i]);
+    }
+    return out;
+  }
+
+  async function loadCatalog(id) {
+    if (catalogs[id] && catalogs[id].length) return catalogs[id];
+    try {
+      var res = await fetch("data/" + id + ".json?t=" + Date.now().toString().slice(0, 8));
+      if (!res.ok) throw new Error("katalog");
+      var data = await res.json();
+      catalogs[id] = unique(extractStocks(data));
+    } catch (e) {
+      catalogs[id] = [];
+    }
+    return catalogs[id];
+  }
+
+  function showOv(mode, title, msg) {
+    $("ov").classList.add("show");
+    var loading = mode === "load";
+    $("spin").style.display = loading ? "block" : "none";
+    $("pbar").style.display = loading ? "block" : "none";
+    $("ovT").textContent = title;
+    $("ovM").textContent = msg || "";
+  }
+
+  function hideOv() {
+    $("ov").classList.remove("show");
+  }
+
+  function renderSuggest(q) {
+    var box = $("suggest");
+    q = String(q || "").trim().toLowerCase();
+    if (!q) {
+      box.classList.remove("show");
+      box.innerHTML = "";
+      return;
+    }
+    var list = catalogs[market] || [];
+    var hits = [];
+    for (var i = 0; i < list.length && hits.length < 12; i++) {
+      var it = list[i];
+      var s = String(it.symbol || "").toLowerCase();
+      var n = String(it.name || "").toLowerCase();
+      if (s.indexOf(q) !== -1 || n.indexOf(q) !== -1) hits.push(it);
+    }
+    hits.sort(function (a, b) {
+      var as = String(a.symbol || "").toLowerCase();
+      var bs = String(b.symbol || "").toLowerCase();
+      var a0 = as.indexOf(q) === 0 ? 0 : 1;
+      var b0 = bs.indexOf(q) === 0 ? 0 : 1;
+      if (a0 !== b0) return a0 - b0;
+      return as.localeCompare(bs);
+    });
+    if (!hits.length) {
+      box.classList.remove("show");
+      box.innerHTML = "";
+      return;
+    }
+    var flag = market === "bist" ? "TR" : "US";
+    box.innerHTML = hits.map(function (it) {
+      var sym = String(it.symbol || "").toUpperCase();
+      var name = String(it.name || "").replace(/"/g, "");
+      return (
+        '<button type="button" role="option" data-sym="' + sym + '" data-name="' + name + '">' +
+        '<span class="fg">' + flag + "</span>" +
+        '<span class="sym">' + sym + "</span>" +
+        '<div class="nm">' + (it.name || "") + "</div></button>"
+      );
+    }).join("");
+    box.classList.add("show");
+  }
+
+  async function openChart(symbol, name) {
     if (busy) return;
     if (!window.NexoraEngine) {
-      ov("err", "Motor yok", "assets/js/engine.js yüklenemedi.");
+      showOv("err", "Motor yüklenemedi", "assets/js/engine.js dosyasını kontrol et.");
       return;
     }
-    var symbol = ($("sym").value || "").trim().toUpperCase();
+    symbol = String(symbol || $("q").value || "")
+      .trim()
+      .toUpperCase()
+      .replace(/\.IS$/i, "");
     if (!symbol) {
-      ov("err", "Sembol gerekli", "Örnek: THYAO, GARAN, AAPL");
+      showOv("err", "Hisse seç", "Listeden bir hisse seç veya sembol yaz.");
       return;
     }
+
+    selected = { symbol: symbol, name: name || "" };
+    $("q").value = symbol;
+    $("suggest").classList.remove("show");
+
     busy = true;
-    $("btn").disabled = true;
-    ov("load", "Yükleniyor", symbol + " · " + range);
+    $("btnLoad").disabled = true;
+    showOv("load", "Grafik hazırlanıyor", symbol + " verisi alınıyor ve çiziliyor…");
 
     try {
       NexoraEngine.destroy();
-      var info = await NexoraEngine.render($("chart"), symbol, range, { height: Math.min(window.innerHeight * 0.55, 520) });
-      var chg = info.first && info.last
-        ? ((info.last.close - info.first.close) / info.first.close) * 100
-        : 0;
-      $("kSym").textContent = symbol;
-      $("kSrc").textContent = "Kaynak: " + (info.source || "—");
+      var info = await NexoraEngine.render($("chart"), symbol, range, chartType, {
+        marketId: market,
+        height: Math.min(window.innerHeight * 0.52, 500)
+      });
+
+      var chg =
+        info.first && info.last
+          ? ((info.last.close - info.first.close) / info.first.close) * 100
+          : 0;
+
+      $("kSym").textContent = info.display || symbol;
+      $("kName").textContent =
+        name || (market === "bist" ? "BIST" : market.toUpperCase());
       $("kPrice").textContent = money(info.last.close);
-      $("kAsOf").textContent = "Bar: " + when(info.last.time);
+      $("kAsOf").textContent = when(info.last.time);
       $("kChg").textContent = (chg > 0 ? "+" : "") + chg.toFixed(2) + "%";
       $("kChg").className = "v " + (chg > 0 ? "up" : chg < 0 ? "down" : "");
       $("kBars").textContent = String(info.count);
-      $("kRange").textContent = range.toUpperCase();
-      hide();
+      $("kSrc").textContent = (info.source || "—") + " · " + range.toUpperCase();
+
+      hideOv();
+
       try {
         var u = new URL(location.href);
         u.searchParams.set("s", symbol);
+        u.searchParams.set("m", market);
         history.replaceState(null, "", u.pathname + u.search);
       } catch (e) {}
     } catch (err) {
-      ov("err", "Grafik yüklenemedi", (err && err.message) || "Sembol / ağ hatası. THYAO veya AAPL dene.");
+      showOv(
+        "err",
+        "Veri alınamadı",
+        (err && err.message) || "Sembol veya ağ hatası. Başka bir hisse dene."
+      );
       $("kPrice").textContent = "—";
       $("kChg").textContent = "—";
       $("kBars").textContent = "—";
     } finally {
       busy = false;
-      $("btn").disabled = false;
+      $("btnLoad").disabled = false;
     }
   }
+
+  /* Events */
+  $("markets").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-m]");
+    if (!b) return;
+    document.querySelectorAll("#markets button").forEach(function (x) {
+      x.classList.remove("on");
+      x.setAttribute("aria-selected", "false");
+    });
+    b.classList.add("on");
+    b.setAttribute("aria-selected", "true");
+    market = b.getAttribute("data-m");
+    $("q").value = "";
+    $("suggest").classList.remove("show");
+    loadCatalog(market);
+  });
+
+  var qTimer;
+  $("q").addEventListener("input", function () {
+    clearTimeout(qTimer);
+    var v = $("q").value;
+    qTimer = setTimeout(function () {
+      renderSuggest(v);
+    }, 120);
+  });
+  $("q").addEventListener("focus", function () {
+    if ($("q").value) renderSuggest($("q").value);
+  });
+  $("q").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      openChart($("q").value);
+    }
+  });
+
+  $("suggest").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-sym]");
+    if (!b) return;
+    openChart(b.getAttribute("data-sym"), b.getAttribute("data-name"));
+  });
+
+  document.addEventListener("click", function (e) {
+    if (!e.target.closest(".search-box")) $("suggest").classList.remove("show");
+  });
 
   $("ranges").addEventListener("click", function (e) {
     var b = e.target.closest("button[data-r]");
     if (!b) return;
-    $("ranges").querySelectorAll("button").forEach(function (x) { x.classList.remove("on"); });
+    document.querySelectorAll("#ranges button").forEach(function (x) {
+      x.classList.remove("on");
+    });
     b.classList.add("on");
     range = b.getAttribute("data-r");
-    if (($("sym").value || "").trim()) load();
+    if (selected) openChart(selected.symbol, selected.name);
   });
-  $("btn").addEventListener("click", load);
-  $("sym").addEventListener("keydown", function (e) { if (e.key === "Enter") load(); });
 
-  var q = "";
-  try { q = new URL(location.href).searchParams.get("s") || ""; } catch (e) {}
-  if (q) {
-    $("sym").value = q.replace(/\.IS$/i, "");
-    load();
+  $("types").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-t]");
+    if (!b) return;
+    document.querySelectorAll("#types button").forEach(function (x) {
+      x.classList.remove("on");
+    });
+    b.classList.add("on");
+    chartType = b.getAttribute("data-t");
+    if (selected) openChart(selected.symbol, selected.name);
+  });
+
+  $("btnLoad").addEventListener("click", function () {
+    openChart($("q").value);
+  });
+
+  loadCatalog("bist");
+  loadCatalog("nasdaq");
+  loadCatalog("nyse");
+
+  var qs = "";
+  var qm = "bist";
+  try {
+    var u = new URL(location.href);
+    qs = u.searchParams.get("s") || "";
+    qm = u.searchParams.get("m") || "bist";
+  } catch (e) {}
+
+  if (qm === "nasdaq" || qm === "nyse" || qm === "bist") {
+    market = qm;
+    document.querySelectorAll("#markets button").forEach(function (x) {
+      var on = x.getAttribute("data-m") === market;
+      x.classList.toggle("on", on);
+      x.setAttribute("aria-selected", on ? "true" : "false");
+    });
+  }
+
+  if (qs) {
+    openChart(qs);
   } else {
-    ov("idle", "Ultra grafik hazır", "Sembol gir → Yükle. Nexora motoru · TV widget yok.");
-    $("spin").style.display = "none";
+    showOv("idle", "Grafik hazır", "Borsa seç · hisse ara · Grafiği aç.");
   }
 })();
   </script>
