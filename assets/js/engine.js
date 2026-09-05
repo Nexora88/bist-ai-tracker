@@ -1,62 +1,83 @@
-/* Nexora AI — engine.js */
+/* Nexora AI — engine.js v2.2
+   Tarayıcıdan Yahoo'ya doğrudan istek YOK (CORS).
+   Sıra: Worker/API → proxy+Yahoo → alternatif proxy.
+*/
 (function (global) {
   "use strict";
 
   var cfg = global.NEXORA_CONFIG || {};
   var free = cfg.free || {};
   var chartCfg = cfg.chart || {};
-  var ranges = cfg.ranges || {};
-  var proxies = free.corsProxies || [
-    "https://api.allorigins.win/raw?url=",
-    "https://corsproxy.io/?"
-  ];
+  var ranges = cfg.ranges || {
+    "1d": { range: "1d", interval: "5m" },
+    "5d": { range: "5d", interval: "15m" },
+    "1mo": { range: "1mo", interval: "1d" },
+    "3mo": { range: "3mo", interval: "1d" },
+    "6mo": { range: "6mo", interval: "1d" },
+    "1y": { range: "1y", interval: "1d" },
+    "5y": { range: "5y", interval: "1wk" }
+  };
+
+  var PROXIES = (free.corsProxies && free.corsProxies.length)
+    ? free.corsProxies
+    : [
+        "https://api.allorigins.win/raw?url=",
+        "https://api.codetabs.com/v1/proxy?quest=",
+        "https://corsproxy.io/?"
+      ];
 
   var libPromise = null;
   var ohlcCache = {};
   var inst = null;
 
-  function fetchJson(url, ms) {
+  function fetchRaw(url, ms) {
     var c = new AbortController();
-    var t = setTimeout(function () { c.abort(); }, ms || 14000);
-    return fetch(url, { signal: c.signal, mode: "cors" })
-      .then(function (r) {
-        clearTimeout(t);
-        if (!r.ok) throw new Error("HTTP " + r.status);
-        return r.json();
-      })
-      .catch(function (e) {
-        clearTimeout(t);
-        throw e;
-      });
-  }
-
-  function fetchText(url, ms) {
-    var c = new AbortController();
-    var t = setTimeout(function () { c.abort(); }, ms || 14000);
-    return fetch(url, { signal: c.signal, mode: "cors" })
-      .then(function (r) {
-        clearTimeout(t);
-        if (!r.ok) throw new Error("HTTP " + r.status);
-        return r.text();
-      })
-      .catch(function (e) {
-        clearTimeout(t);
-        throw e;
-      });
-  }
-
-  function withProxies(url, asText) {
-    var list = [url];
-    for (var i = 0; i < proxies.length; i++) {
-      list.push(proxies[i] + encodeURIComponent(url));
-    }
-    var chain = Promise.reject(new Error("start"));
-    list.forEach(function (u) {
-      chain = chain.catch(function () {
-        return asText ? fetchText(u) : fetchJson(u);
-      });
+    var t = setTimeout(function () { c.abort(); }, ms || 16000);
+    return fetch(url, {
+      signal: c.signal,
+      mode: "cors",
+      credentials: "omit",
+      cache: "no-store"
+    }).then(function (r) {
+      clearTimeout(t);
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.text();
+    }).catch(function (e) {
+      clearTimeout(t);
+      throw e;
     });
-    return chain;
+  }
+
+  function fetchViaProxies(targetUrl) {
+    var errors = [];
+    var i = 0;
+
+    function next() {
+      if (i >= PROXIES.length) {
+        return Promise.reject(
+          new Error(errors.length ? errors[0] : "Tüm proxy kaynakları yanıt vermedi")
+        );
+      }
+      var proxy = PROXIES[i++];
+      var full = proxy + encodeURIComponent(targetUrl);
+      return fetchRaw(full)
+        .then(function (text) {
+          if (!text || text.length < 20) throw new Error("Boş cevap");
+          if (text.charAt(0) === "<" || /<!DOCTYPE|verify your browser/i.test(text)) {
+            throw new Error("Proxy HTML döndü");
+          }
+          try {
+            return JSON.parse(text);
+          } catch (e) {
+            throw new Error("JSON parse hatası");
+          }
+        })
+        .catch(function (err) {
+          errors.push((err && err.message) || "proxy hata");
+          return next();
+        });
+    }
+    return next();
   }
 
   function normalizeSymbol(raw, marketId) {
@@ -77,7 +98,7 @@
       payload.chart &&
       payload.chart.result &&
       payload.chart.result[0];
-    if (!result) throw new Error("Yahoo boş");
+    if (!result) throw new Error("Grafik verisi boş");
     var ts = result.timestamp || [];
     var q = (result.indicators && result.indicators.quote && result.indicators.quote[0]) || {};
     var candles = [];
@@ -97,62 +118,88 @@
         volume: v != null ? Number(v) : 0
       });
     }
-    if (!candles.length) throw new Error("Mum yok");
+    if (!candles.length) throw new Error("Mum çubuğu yok");
     return { candles: candles, meta: result.meta || {}, source: "yahoo" };
   }
 
-  function yahooOHLC(symbol, rangeKey) {
+  function yahooUrl(symbol, rangeKey) {
     var map = ranges[rangeKey] || { range: "3mo", interval: "1d" };
     var base = free.yahooChart || "https://query1.finance.yahoo.com/v8/finance/chart/";
-    var base2 = free.yahooChart2 || "https://query2.finance.yahoo.com/v8/finance/chart/";
-    var q =
+    return (
+      base +
       encodeURIComponent(symbol) +
       "?range=" + encodeURIComponent(map.range) +
-      "&interval=" + encodeURIComponent(map.interval);
-    return withProxies(base + q)
-      .catch(function () { return withProxies(base2 + q); })
-      .then(parseYahoo);
+      "&interval=" + encodeURIComponent(map.interval) +
+      "&includePrePost=false&events=div%2Csplits"
+    );
   }
 
-  function stooqCode(symbol) {
-    var s = String(symbol || "").toUpperCase();
-    if (s.indexOf(".IS") !== -1) return s.replace(".IS", ".tr").toLowerCase();
-    if (s.indexOf(".") !== -1) return s.toLowerCase();
-    return s.toLowerCase() + ".us";
+  function yahooUrl2(symbol, rangeKey) {
+    var map = ranges[rangeKey] || { range: "3mo", interval: "1d" };
+    var base = free.yahooChart2 || "https://query2.finance.yahoo.com/v8/finance/chart/";
+    return (
+      base +
+      encodeURIComponent(symbol) +
+      "?range=" + encodeURIComponent(map.range) +
+      "&interval=" + encodeURIComponent(map.interval)
+    );
   }
 
-  function parseStooqCsv(text) {
-    var lines = String(text || "").trim().split(/\r?\n/);
-    if (lines.length < 3) throw new Error("Stooq boş");
-    var candles = [];
-    for (var i = 1; i < lines.length; i++) {
-      var p = lines[i].split(",");
-      if (p.length < 5) continue;
-      var parts = p[0].split("-");
-      if (parts.length < 3) continue;
-      var time = Math.floor(Date.UTC(+parts[0], +parts[1] - 1, +parts[2]) / 1000);
-      var o = Number(p[1]), h = Number(p[2]), l = Number(p[3]), c = Number(p[4]);
-      var v = p[5] != null ? Number(p[5]) : 0;
-      if (!isFinite(c)) continue;
-      candles.push({
-        time: time,
-        open: isFinite(o) ? o : c,
-        high: isFinite(h) ? h : c,
-        low: isFinite(l) ? l : c,
-        close: c,
-        volume: isFinite(v) ? v : 0
+  function fromApiLayer(symbol, rangeKey) {
+    if (!global.API) return Promise.resolve(null);
+    var map = ranges[rangeKey] || { range: "3mo", interval: "1d" };
+
+    if (typeof global.API.getHistory !== "function") return Promise.resolve(null);
+
+    return global.API.getHistory(symbol, map.range, map.interval)
+      .then(function (j) {
+        if (!j) return null;
+        if (Array.isArray(j) && j.length >= 2 && j[0].time != null) {
+          var candles = j
+            .map(function (h) {
+              var close = Number(h.close != null ? h.close : h.value);
+              var time = h.time;
+              if (typeof time === "string") time = Math.floor(new Date(time).getTime() / 1000);
+              return {
+                time: time,
+                open: Number(h.open != null ? h.open : close),
+                high: Number(h.high != null ? h.high : close),
+                low: Number(h.low != null ? h.low : close),
+                close: close,
+                volume: Number(h.volume || 0)
+              };
+            })
+            .filter(function (b) {
+              return isFinite(b.close) && isFinite(b.time);
+            });
+          if (candles.length) return { candles: candles, meta: {}, source: "api" };
+        }
+        if (j.chart) return parseYahoo(j);
+        if (j.history && Array.isArray(j.history)) {
+          var c2 = j.history
+            .map(function (h) {
+              var close = Number(h.close != null ? h.close : h.value);
+              var time = h.time;
+              if (typeof time === "string") time = Math.floor(new Date(time).getTime() / 1000);
+              return {
+                time: time,
+                open: Number(h.open != null ? h.open : close),
+                high: Number(h.high != null ? h.high : close),
+                low: Number(h.low != null ? h.low : close),
+                close: close,
+                volume: Number(h.volume || 0)
+              };
+            })
+            .filter(function (b) {
+              return isFinite(b.close) && isFinite(b.time);
+            });
+          if (c2.length) return { candles: c2, meta: {}, source: "worker" };
+        }
+        return null;
+      })
+      .catch(function () {
+        return null;
       });
-    }
-    if (!candles.length) throw new Error("Stooq mum yok");
-    return { candles: candles, meta: {}, source: "stooq" };
-  }
-
-  function stooqOHLC(symbol) {
-    var code = stooqCode(symbol);
-    var url =
-      (free.stooq || "https://stooq.com/q/d/l/") +
-      "?s=" + encodeURIComponent(code) + "&i=d";
-    return withProxies(url, true).then(parseStooqCsv);
   }
 
   function getOHLC(symbol, rangeKey, marketId) {
@@ -164,38 +211,26 @@
     var hit = ohlcCache[key];
     if (hit && Date.now() < hit.exp) return Promise.resolve(hit.data);
 
-    var tryApi = Promise.resolve(null);
-    if (global.API && typeof global.API.getHistory === "function") {
-      var map = ranges[rangeKey] || { range: "3mo", interval: "1d" };
-      tryApi = global.API.getHistory(symbol, map.range, map.interval)
-        .then(function (j) {
-          if (!j) return null;
-          return parseYahoo(j);
-        })
-        .catch(function () { return null; });
-    }
-
-    return tryApi
+    return fromApiLayer(symbol, rangeKey)
       .then(function (fromApi) {
-        if (fromApi) return fromApi;
-        return yahooOHLC(symbol, rangeKey);
-      })
-      .catch(function () {
-        return stooqOHLC(symbol).then(function (pack) {
-          var mapDays = { "1d": 2, "5d": 8, "1mo": 35, "3mo": 100, "6mo": 200, "1y": 280, "5y": 1400 };
-          var n = mapDays[rangeKey] || 100;
-          if (pack.candles.length > n) pack.candles = pack.candles.slice(-n);
-          return pack;
-        });
+        if (fromApi && fromApi.candles && fromApi.candles.length) return fromApi;
+        return fetchViaProxies(yahooUrl(symbol, rangeKey))
+          .then(parseYahoo)
+          .catch(function () {
+            return fetchViaProxies(yahooUrl2(symbol, rangeKey)).then(parseYahoo);
+          });
       })
       .then(function (pack) {
+        if (!pack || !pack.candles || !pack.candles.length) {
+          throw new Error("Bu sembol için grafik verisi bulunamadı");
+        }
         var data = {
           symbol: symbol,
           display: displaySymbol(symbol),
           range: rangeKey,
           candles: pack.candles,
           meta: pack.meta || {},
-          source: pack.source || "unknown"
+          source: pack.source || "yahoo"
         };
         ohlcCache[key] = {
           exp: Date.now() + (chartCfg.cacheTtlMs || 120000),
@@ -208,7 +243,8 @@
   function loadLib() {
     if (global.LightweightCharts) return Promise.resolve(global.LightweightCharts);
     if (libPromise) return libPromise;
-    var url = chartCfg.libUrl ||
+    var url =
+      (chartCfg && chartCfg.libUrl) ||
       "https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js";
     libPromise = new Promise(function (resolve, reject) {
       var s = document.createElement("script");
@@ -220,7 +256,7 @@
       };
       s.onerror = function () {
         libPromise = null;
-        reject(new Error("Grafik kütüphanesi indirilemedi"));
+        reject(new Error("Grafik kütüphanesi indirilemedi (unpkg)"));
       };
       document.head.appendChild(s);
     });
@@ -274,7 +310,7 @@
           secondsVisible: false
         },
         width: container.clientWidth || 640,
-        height: options.height || chartCfg.height || 440
+        height: options.height || (chartCfg && chartCfg.height) || 440
       });
 
       var ro = null;
@@ -296,7 +332,9 @@
 
     ["series", "vol", "ma20", "ma50"].forEach(function (k) {
       if (inst[k]) {
-        try { chart.removeSeries(inst[k]); } catch (e) {}
+        try {
+          chart.removeSeries(inst[k]);
+        } catch (e) {}
         inst[k] = null;
       }
     });
@@ -304,10 +342,16 @@
     type = type || "candle";
 
     if (type === "line") {
-      inst.series = chart.addLineSeries({ color: "#22d3ee", lineWidth: 2, crosshairMarkerVisible: true });
-      inst.series.setData(candles.map(function (b) {
-        return { time: b.time, value: b.close };
-      }));
+      inst.series = chart.addLineSeries({
+        color: "#22d3ee",
+        lineWidth: 2,
+        crosshairMarkerVisible: true
+      });
+      inst.series.setData(
+        candles.map(function (b) {
+          return { time: b.time, value: b.close };
+        })
+      );
     } else if (type === "area") {
       inst.series = chart.addAreaSeries({
         lineColor: "#22d3ee",
@@ -315,14 +359,24 @@
         bottomColor: "rgba(34,211,238,0.02)",
         lineWidth: 2
       });
-      inst.series.setData(candles.map(function (b) {
-        return { time: b.time, value: b.close };
-      }));
+      inst.series.setData(
+        candles.map(function (b) {
+          return { time: b.time, value: b.close };
+        })
+      );
     } else if (type === "bar") {
       inst.series = chart.addBarSeries({ upColor: "#34d399", downColor: "#f87171" });
-      inst.series.setData(candles.map(function (b) {
-        return { time: b.time, open: b.open, high: b.high, low: b.low, close: b.close };
-      }));
+      inst.series.setData(
+        candles.map(function (b) {
+          return {
+            time: b.time,
+            open: b.open,
+            high: b.high,
+            low: b.low,
+            close: b.close
+          };
+        })
+      );
     } else {
       inst.series = chart.addCandlestickSeries({
         upColor: "#34d399",
@@ -332,9 +386,17 @@
         wickUpColor: "#34d399",
         wickDownColor: "#f87171"
       });
-      inst.series.setData(candles.map(function (b) {
-        return { time: b.time, open: b.open, high: b.high, low: b.low, close: b.close };
-      }));
+      inst.series.setData(
+        candles.map(function (b) {
+          return {
+            time: b.time,
+            open: b.open,
+            high: b.high,
+            low: b.low,
+            close: b.close
+          };
+        })
+      );
     }
 
     inst.vol = chart.addHistogramSeries({
@@ -342,26 +404,39 @@
       priceScaleId: "",
       scaleMargins: { top: 0.82, bottom: 0 }
     });
-    inst.vol.setData(candles.map(function (b) {
-      return {
-        time: b.time,
-        value: b.volume || 0,
-        color: b.close >= b.open ? "rgba(52,211,153,0.35)" : "rgba(248,113,113,0.35)"
-      };
-    }));
+    inst.vol.setData(
+      candles.map(function (b) {
+        return {
+          time: b.time,
+          value: b.volume || 0,
+          color:
+            b.close >= b.open
+              ? "rgba(52,211,153,0.35)"
+              : "rgba(248,113,113,0.35)"
+        };
+      })
+    );
 
     if (type === "candle" || type === "bar") {
       inst.ma20 = chart.addLineSeries({
-        color: "#00f0ff", lineWidth: 1, lastValueVisible: false, priceLineVisible: false
+        color: "#00f0ff",
+        lineWidth: 1,
+        lastValueVisible: false,
+        priceLineVisible: false
       });
       inst.ma50 = chart.addLineSeries({
-        color: "#a78bfa", lineWidth: 1, lastValueVisible: false, priceLineVisible: false
+        color: "#a78bfa",
+        lineWidth: 1,
+        lastValueVisible: false,
+        priceLineVisible: false
       });
       inst.ma20.setData(sma(candles, 20));
       inst.ma50.setData(sma(candles, 50));
     }
 
-    try { chart.timeScale().fitContent(); } catch (e) {}
+    try {
+      chart.timeScale().fitContent();
+    } catch (e) {}
 
     return {
       count: candles.length,
@@ -375,7 +450,10 @@
     var marketId = options.marketId || null;
     return getOHLC(symbol, rangeKey, marketId).then(function (pack) {
       return mount(container, options).then(function () {
-        var info = applyType(type || chartCfg.defaultType || "candle", pack.candles);
+        var info = applyType(
+          type || (chartCfg && chartCfg.defaultType) || "candle",
+          pack.candles
+        );
         if (!info.count) throw new Error("Çizilecek veri yok");
         return {
           symbol: pack.symbol,
@@ -400,7 +478,9 @@
     applyType: applyType,
     render: render,
     destroy: destroy,
-    clearCache: function () { ohlcCache = {}; }
+    clearCache: function () {
+      ohlcCache = {};
+    }
   };
   global.Engine = global.NexoraEngine;
 })(typeof window !== "undefined" ? window : this);
