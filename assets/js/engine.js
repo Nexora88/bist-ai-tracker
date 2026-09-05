@@ -1,1034 +1,283 @@
-// ===============================
-// BIST AI Tracker Engine v2.0
-// ===============================
-
-const Engine = {
-
-    currentSymbol: "",
-
-    refreshInterval: CONFIG.REFRESH_INTERVAL,
-
-    previousPrice: null,
-
-    timer: null,
-
-
-    async load(symbol){
-
-        this.currentSymbol = Market.normalize(symbol);
-
-        try{
-
-
-            const json = await API.getQuote(symbol);
-
-            const result = json.chart?.result?.[0];
-
-if (!result) {
-    throw new Error("API veri döndürmedi.");
-}
-
-
-            const meta = result.meta;
-
-            if (!meta) {
-     throw new Error("Meta verisi bulunamadı.");
-}
-
-            const quote = result.indicators?.quote?.[0];
-
-if (!quote) {
-    throw new Error("Veri bulunamadı.");
-}
-
-
-            const price =
-                meta.regularMarketPrice ??
-                meta.previousClose;
-
-            const change =
-                meta.regularMarketChangePercent ?? 0;
-
-            const volume =
-                quote.volume?.at(-1) ?? 0;
-            const high =
-                meta.regularMarketDayHigh;
-
-            const low =
-                meta.regularMarketDayLow;
-
-            this.setText(
-    "highLow",
-    `${(high ?? 0).toFixed(2)} ₺ / ${(low ?? 0).toFixed(2)} ₺`
-);
-
-            this.updatePrice(price);
-
-            this.updateChange(change);
-
-            this.setText("volume",
-                Intl.NumberFormat("tr-TR").format(volume));
-
-
-            this.setText(
-                "lastUpdate",
-                new Date().toLocaleTimeString("tr-TR")
-            );
-
-            this.checkAlarm(price);
-            const closes = quote.close ?? [];
-
-if (window.ChartManager && closes.length) {
-
-    const data = closes
-        .filter(price => price !== null)
-        .slice(-50)
-        .map(price => ({
-            close: Number(price)
-        }));
-
-    ChartManager.update(data);
-
-}
-
-}
-
-
-        catch(err){
-
-            console.error(err);
-
-            this.setText(
-                "connectionStatus",
-                "❌ Veri alınamadı"
-            );
-
-        }
-
-    },
-
-    updatePrice(price){
-
-        const el=document.getElementById("currentPrice");
-
-        if(!el) return;
-
-        el.textContent=price.toFixed(2)+" ₺";
-
-        if(this.previousPrice!==null){
-
-            if(price>this.previousPrice){
-
-                el.classList.remove("flash-down");
-
-                el.classList.add("flash-up");
-
-            }
-
-            if(price<this.previousPrice){
-
-                el.classList.remove("flash-up");
-
-                el.classList.add("flash-down");
-
-            }
-
-        }
-
-        this.previousPrice=price;
-
-    },
-
-    updateChange(change){
-
-        const el=document.getElementById("changePercent");
-
-        if(!el) return;
-
-        el.textContent=
-            (change>=0?"▲ +":"▼ ")
-            +change.toFixed(2)+"%";
-
-        el.className=
-            change>=0
-            ?"change up"
-            :"change down";
-
-    },
-
-    setText(id,text){
-
-        const el=document.getElementById(id);
-
-        if(el){
-
-            el.textContent=text;
-
-        }
-
-    },
-
-    start(){
-
-        if(this.timer){
-
-            clearInterval(this.timer);
-
-        }
-
-        this.timer=setInterval(()=>{
-
-            this.load(this.currentSymbol);
-
-        },this.refreshInterval);
-
-    }
-
-};
-// ===============================
-// Borsa Durumu
-// ===============================
-
-Engine.isMarketOpen=function(){
-
-    const now=new Date();
-
-    const day=now.getDay();
-
-    if(day===0||day===6){
-
-        return false;
-
-    }
-
-    const minutes=
-        now.getHours()*60+
-        now.getMinutes();
-
-    const open=9*60+40;
-
-    const close=18*60+10;
-
-    return minutes>=open&&minutes<=close;
-
-};
-
-Engine.updateMarketStatus=function(){
-
-    const status=document.getElementById("marketStatus");
-
-    if(!status) return;
-
-    if(this.isMarketOpen()){
-
-        status.textContent="🟢 Borsa Açık";
-
-        status.className="market-status market-open";
-
-    }else{
-
-        status.textContent="🔴 Borsa Kapalı";
-
-        status.className="market-status market-closed";
-
-    }
-
-};
-
-Engine.updateCountdown=function(){
-
-    const el=document.getElementById("marketCountdown");
-
-    if(!el) return;
-
-    const now=new Date();
-
-    let target=new Date();
-
-    if(this.isMarketOpen()){
-
-        target.setHours(18,10,0,0);
-
-        const diff=target-now;
-
-        const h=Math.floor(diff/3600000);
-
-        const m=Math.floor((diff%3600000)/60000);
-
-        const s=Math.floor((diff%60000)/1000);
-
-        el.textContent=`Kapanışa ${h}s ${m}dk ${s}sn`;
-
-    }else{
-
-        target.setHours(9,40,0,0);
-
-        if(now.getHours()>18){
-
-            target.setDate(target.getDate()+1);
-
-        }
-
-        while(target.getDay()===0||target.getDay()===6){
-
-            target.setDate(target.getDate()+1);
-
-        }
-
-        const diff=target-now;
-
-        const h=Math.floor(diff/3600000);
-
-        const m=Math.floor((diff%3600000)/60000);
-
-        el.textContent=`Açılışa ${h}s ${m}dk`;
-
-    }
-
-};
-
-setInterval(()=>{
-
-    Engine.updateMarketStatus();
-
-    Engine.updateCountdown();
-
-},1000);
-// ===============================
-// Alarm Sistemi
-// ===============================
-
-Engine.checkAlarm=function(price){
-
-    const key="alarm_"+this.currentSymbol;
-
-    const target=parseFloat(localStorage.getItem(key));
-
-    if(!target) return;
-
-    if(price>=target){
-
-        if(Notification.permission==="granted"){
-
-            new Notification(this.currentSymbol,{
-                body:`${target.toFixed(2)} ₺ seviyesine ulaştı.`
-            });
-
-        }
-
-        localStorage.removeItem(key);
-
-    }
-
-};
-
-// ===============================
-// İnternet Durumu
-// ===============================
-
-Engine.updateConnection=function(){
-
-    const el=document.getElementById("connectionStatus");
-
-    if(!el) return;
-
-    if(navigator.onLine){
-
-        el.textContent="🟢 Canlı Veri";
-
-        el.className="up";
-
-    }else{
-
-        el.textContent="🔴 İnternet Yok";
-
-        el.className="down";
-
-    }
-
-};
-
-window.addEventListener("online",()=>Engine.updateConnection());
-
-window.addEventListener("offline",()=>Engine.updateConnection());
-
-// ===============================
-// Manuel Yenile
-// ===============================
-
-Engine.refresh=function(){
-
-    this.load(this.currentSymbol);
-
-};
-
-// ===============================
-// Başlat
-// ===============================
-
-Engine.init=function(symbol){
-
-    if(Notification.permission==="default"){
-
-        Notification.requestPermission();
-
-    }
-
-    this.load(symbol);
-
-    this.start();
-
-    this.updateMarketStatus();
-
-    this.updateCountdown();
-
-    this.updateConnection();
-
-};
-
-window.Engine=Engine;
-
-/*=========================================================
-BÖLÜM 1
-AI Motor Bağlantısı
-=========================================================*/
-
-Engine.updateAI = async function(history, news) {
-
-    if (!window.AI) {
-
-        console.warn("AI Motoru yüklenmedi.");
-
-        return;
-
-    }
-
-    try {
-
-        const analysis = await AI.Engine.run(
-
-            this.currentSymbol,
-
-            history,
-
-            news
-
-        );
-
-        this.lastAnalysis = analysis;
-
-        this.updateAIWidgets(analysis);
-
-    }
-
-    catch(error) {
-
-        console.error(
-
-            "AI Analiz Hatası:",
-
-            error
-
-        );
-
-    }
-
-};
-
-Engine.updateAIWidgets = function(result) {
-
-    this.setText(
-
-        "aiRecommendation",
-
-        result.decision.recommendation
-
-    );
-
-    this.setText(
-
-        "aiConfidence",
-
-        result.confidence.score + "%"
-
-    );
-
-    this.setText(
-
-        "targetPrice",
-
-        result.target.targetPrice + " ₺"
-
-    );
-
-    this.setText(
-
-        "stopLoss",
-
-        result.target.stopLoss + " ₺"
-
-    );
-
-    this.setText(
-
-        "riskLevel",
-
-        result.risk.level
-
-    );
-
-};
-
-/*=========================================================
-BÖLÜM 2
-News.js Bağlantısı
-=========================================================*/
-
-Engine.updateNews = async function() {
-
-    if (!window.News) {
-
-        console.warn("News Engine yüklenmedi.");
-
-        return;
-
-    }
-
-    try {
-
-        const news = await News.get(
-
-            this.currentSymbol
-
-        );
-
-        this.lastNews = news;
-
-        this.renderNews(news);
-
-    }
-
-    catch(error) {
-
-        console.error(
-
-            "News Engine Hatası:",
-
-            error
-
-        );
-
-    }
-
-};
-
-Engine.renderNews = function(news) {
-
-    const container =
-
-        document.getElementById("newsContainer");
-
-    if (!container)
-        return;
-
-    News.render(
-
-        news,
-
-        "newsContainer"
-
-    );
-
-    const stats =
-
-        News.Statistics.generate(news);
-
-    this.setText(
-
-        "newsCount",
-
-        stats.total
-
-    );
-
-    this.setText(
-
-        "newsPositive",
-
-        stats.positive
-
-    );
-
-    this.setText(
-
-        "newsNegative",
-
-        stats.negative
-
-    );
-
-    this.setText(
-
-        "newsAverage",
-
-        stats.averageScore + "/100"
-
-    );
-
-};
-
-/*=========================================================
-BÖLÜM 3
-Portföy Bağlantısı
-=========================================================*/
-
-Engine.updatePortfolio = function(price) {
-
-    if (!window.Portfolio) {
-
-        return;
-
-    }
-
-    try {
-
-        const portfolio =
-
-            Portfolio.get(this.currentSymbol);
-
-        if (!portfolio)
-            return;
-
-        const currentValue =
-
-            portfolio.lot * price;
-
-        const costValue =
-
-            portfolio.lot * portfolio.averageCost;
-
-        const profit =
-
-            currentValue - costValue;
-
-        const percent =
-
-            ((profit / costValue) * 100) || 0;
-
-        this.setText(
-
-            "portfolioLot",
-
-            portfolio.lot
-
-        );
-
-        this.setText(
-
-            "portfolioCost",
-
-            portfolio.averageCost.toFixed(2) + " ₺"
-
-        );
-
-        this.setText(
-
-            "portfolioValue",
-
-            currentValue.toFixed(2) + " ₺"
-
-        );
-
-        this.setText(
-
-            "portfolioProfit",
-
-            profit.toFixed(2) + " ₺"
-
-        );
-
-        this.setText(
-
-            "portfolioPercent",
-
-            percent.toFixed(2) + "%"
-
-        );
-
-    }
-
-    catch(error) {
-
-        console.error(
-
-            "Portfolio Engine Hatası:",
-
-            error
-
-        );
-
-    }
-
-};
-
-Engine.refreshDashboard = function(price) {
-
-    this.updatePortfolio(price);
-
-};
-
-/*=========================================================
-BÖLÜM 4
-Dashboard Manager
-=========================================================*/
-
-Engine.updateDashboard = async function(history = [], price = 0) {
-
-    try {
-
-        await this.updateNews();
-
-        await this.updateAI(
-
-            history,
-
-            this.lastNews || []
-
-        );
-
-        this.updatePortfolio(price);
-
-        this.updateMarketStatus();
-
-        this.updateCountdown();
-
-        this.updateConnection();
-
-        this.setText(
-
-            "engineStatus",
-
-            "🟢 Sistem Aktif"
-
-        );
-
-        console.log(
-
-            "[Engine] Dashboard güncellendi."
-
-        );
-
-    }
-
-    catch(error) {
-
-        console.error(
-
-            "Dashboard Güncelleme Hatası:",
-
-            error
-
-        );
-
-        this.setText(
-
-            "engineStatus",
-
-            "🔴 Sistem Hatası"
-
-        );
-
-    }
-
-};
-
-/*=========================================================
-BÖLÜM 5
-Gelişmiş Hata Yönetimi
-=========================================================*/
-
-Engine.ErrorManager = {
-
-    errors: [],
-
-    maxErrors: 100,
-
-    log(type, message, details = null) {
-
-        const error = {
-
-            type,
-
-            message,
-
-            details,
-
-            time: new Date().toLocaleString("tr-TR")
-
-        };
-
-        this.errors.unshift(error);
-
-        if (this.errors.length > this.maxErrors) {
-
-            this.errors.pop();
-
-        }
-
-        console.error(
-
-            `[${type}] ${message}`,
-
-            details
-
-        );
-
-    },
-
-    getLast() {
-
-        return this.errors[0] || null;
-
-    },
-
-    getAll() {
-
-        return [...this.errors];
-
-    },
-
-    clear() {
-
-        this.errors = [];
-
-    }
-
-};
-
-Engine.safeRun = async function(task) {
-
-    try {
-
-        return await task();
-
-    }
-
-    catch(error) {
-
-        Engine.ErrorManager.log(
-
-            "ENGINE",
-
-            error.message,
-
-            error
-
-        );
-
-        return null;
-
-    }
-
-};
-
-/*=========================================================
-BÖLÜM 6
-Performans ve Cache
-=========================================================*/
-
-Engine.Performance = {
-
-    cache: new Map(),
-
-    maxCacheSize: 50,
-
-    stats: {
-
-        requests: 0,
-
-        cacheHits: 0,
-
-        cacheMisses: 0,
-
-        lastUpdate: null
-
-    },
-
-    set(key, value) {
-
-        if (this.cache.size >= this.maxCacheSize) {
-
-            const firstKey = this.cache.keys().next().value;
-
-            this.cache.delete(firstKey);
-
-        }
-
-        this.cache.set(key, {
-
-            value,
-
-            time: Date.now()
-
-        });
-
-    },
-
-    get(key, maxAge = 30000) {
-
-        const item = this.cache.get(key);
-
-        if (!item) {
-
-            this.stats.cacheMisses++;
-
-            return null;
-
-        }
-
-        if (Date.now() - item.time > maxAge) {
-
-            this.cache.delete(key);
-
-            this.stats.cacheMisses++;
-
-            return null;
-
-        }
-
-        this.stats.cacheHits++;
-
-        return item.value;
-
-    },
-
-    clear() {
-
-        this.cache.clear();
-
-    },
-
-    request() {
-
-        this.stats.requests++;
-
-        this.stats.lastUpdate = new Date();
-
-    }
-
-};
-
-Engine.optimize = function() {
-
-    this.Performance.request();
-
-    if (this.Performance.cache.size > this.Performance.maxCacheSize) {
-
-        this.Performance.clear();
-
-    }
-
-};
-
-/*=========================================================
-BÖLÜM 7
-Engine Final
-=========================================================*/
-
-Engine.VERSION = "3.0.0";
-
-Engine.APP_NAME = "BIST AI Tracker";
-
-Engine.AUTHOR = "Ahmet Eymen Bakraç";
-
-Engine.COPYRIGHT =
-"© 2026 Ahmet Eymen Bakraç. Tüm Hakları Saklıdır.";
-
-Engine.DISCLAIMER =
-"Bu uygulama yalnızca eğitim ve bilgilendirme amacıyla geliştirilmiştir. Sunulan analizler, haberler, yapay zekâ yorumları ve grafikler yatırım tavsiyesi değildir. Kullanıcılar finansal kararlarından tamamen kendileri sorumludur.";
-
-Engine.about = function () {
-
-    return {
-
-        application: this.APP_NAME,
-
-        version: this.VERSION,
-
-        author: this.AUTHOR,
-
-        copyright: this.COPYRIGHT,
-
-        disclaimer: this.DISCLAIMER,
-
-        currentSymbol: this.currentSymbol,
-
-        marketOpen: this.isMarketOpen(),
-
-        online: navigator.onLine
-
+/* Nexora AI — engine.js
+   Kendi mum grafiği (Lightweight Charts). TradingView widget YOK.
+   Aralık değişince destroy + yeniden kurulum.
+*/
+(function (global) {
+  "use strict";
+
+  var cfg = global.NEXORA_CONFIG || {};
+  var chartCfg = cfg.chart || {};
+  var ranges = cfg.ranges || {};
+  var free = cfg.free || {};
+
+  var libPromise = null;
+  var ohlcCache = {};
+  var instance = null;
+
+  function loadLib() {
+    if (global.LightweightCharts) return Promise.resolve(global.LightweightCharts);
+    if (libPromise) return libPromise;
+    var url = chartCfg.libUrl ||
+      "https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js";
+    libPromise = new Promise(function (resolve, reject) {
+      var s = document.createElement("script");
+      s.src = url;
+      s.async = true;
+      s.onload = function () {
+        if (global.LightweightCharts) resolve(global.LightweightCharts);
+        else reject(new Error("LightweightCharts yok"));
+      };
+      s.onerror = function () {
+        libPromise = null;
+        reject(new Error("Grafik kütüphanesi indirilemedi"));
+      };
+      document.head.appendChild(s);
+    });
+    return libPromise;
+  }
+
+  function normalizeSymbol(raw) {
+    var s = String(raw || "").trim().toUpperCase();
+    if (!s) return "";
+    if (s.indexOf(".") !== -1) return s;
+    var us = {
+      AAPL: 1, MSFT: 1, NVDA: 1, TSLA: 1, AMZN: 1, GOOGL: 1, GOOG: 1,
+      META: 1, NFLX: 1, AMD: 1, INTC: 1, JPM: 1, BAC: 1, V: 1, MA: 1
     };
+    if (us[s]) return s;
+    if (/^[A-Z]{3,6}$/.test(s)) return s + ".IS";
+    return s;
+  }
 
-};
+  function fetchJson(url, ms) {
+    var c = new AbortController();
+    var t = setTimeout(function () { c.abort(); }, ms || 12000);
+    return fetch(url, { signal: c.signal, mode: "cors" })
+      .then(function (r) {
+        clearTimeout(t);
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.json();
+      })
+      .catch(function (e) {
+        clearTimeout(t);
+        throw e;
+      });
+  }
 
-Engine.reset = function () {
+  function fetchWithFallback(targetUrl) {
+    var list = [targetUrl];
+    if (free.corsProxy) list.push(free.corsProxy + encodeURIComponent(targetUrl));
+    if (free.corsProxy2) list.push(free.corsProxy2 + encodeURIComponent(targetUrl));
+    var chain = Promise.reject(new Error("start"));
+    list.forEach(function (u) {
+      chain = chain.catch(function () { return fetchJson(u); });
+    });
+    return chain;
+  }
 
-    this.previousPrice = null;
+  function parseYahoo(payload) {
+    var result =
+      payload &&
+      payload.chart &&
+      payload.chart.result &&
+      payload.chart.result[0];
+    if (!result) throw new Error("Boş grafik cevabı");
+    var ts = result.timestamp || [];
+    var q = (result.indicators && result.indicators.quote && result.indicators.quote[0]) || {};
+    var candles = [];
+    for (var i = 0; i < ts.length; i++) {
+      var c = q.close && q.close[i];
+      if (c == null || !isFinite(Number(c))) continue;
+      var o = q.open && q.open[i];
+      var h = q.high && q.high[i];
+      var l = q.low && q.low[i];
+      var v = q.volume && q.volume[i];
+      candles.push({
+        time: ts[i],
+        open: Number(o != null ? o : c),
+        high: Number(h != null ? h : c),
+        low: Number(l != null ? l : c),
+        close: Number(c),
+        volume: v != null ? Number(v) : 0
+      });
+    }
+    if (!candles.length) throw new Error("Mum verisi yok");
+    return { candles: candles, meta: result.meta || {}, source: "yahoo" };
+  }
 
-    this.currentSymbol = "";
+  function getOHLC(symbol, rangeKey) {
+    symbol = normalizeSymbol(symbol);
+    rangeKey = rangeKey || chartCfg.defaultRange || "3mo";
+    var map = ranges[rangeKey] || { range: "3mo", interval: "1d" };
+    var cacheKey = symbol + "|" + rangeKey;
+    var hit = ohlcCache[cacheKey];
+    if (hit && Date.now() < hit.exp) return Promise.resolve(hit.data);
 
-    this.lastNews = [];
+    var yUrl =
+      (free.yahooChart || "https://query1.finance.yahoo.com/v8/finance/chart/") +
+      encodeURIComponent(symbol) +
+      "?range=" + encodeURIComponent(map.range) +
+      "&interval=" + encodeURIComponent(map.interval);
 
-    this.lastAnalysis = null;
-
-    if (this.Performance) {
-
-        this.Performance.clear();
-
+    /* 1) Mevcut API.getHistory varsa dene */
+    var p = Promise.resolve(null);
+    if (global.API && typeof global.API.getHistory === "function") {
+      p = global.API.getHistory(symbol, map.range, map.interval)
+        .then(function (j) { return j ? parseYahoo(j) : null; })
+        .catch(function () { return null; });
     }
 
-    if (window.News) {
+    return p.then(function (fromApi) {
+      if (fromApi) return fromApi;
+      return fetchWithFallback(yUrl).then(parseYahoo);
+    }).then(function (pack) {
+      ohlcCache[cacheKey] = {
+        exp: Date.now() + (chartCfg.cacheTtlMs || 180000),
+        data: {
+          symbol: symbol,
+          range: rangeKey,
+          candles: pack.candles,
+          meta: pack.meta,
+          source: pack.source
+        }
+      };
+      return ohlcCache[cacheKey].data;
+    });
+  }
 
-        News.clearCache();
-
+  function sma(candles, period) {
+    var out = [];
+    var sum = 0;
+    for (var i = 0; i < candles.length; i++) {
+      sum += candles[i].close;
+      if (i >= period) sum -= candles[i - period].close;
+      if (i >= period - 1) out.push({ time: candles[i].time, value: sum / period });
     }
+    return out;
+  }
 
-};
-
-Engine.restart = async function(symbol) {
-
-    this.reset();
-
-    await this.init(symbol);
-
-};
-
-Engine.destroy = function() {
-
-    if (this.timer) {
-
-        clearInterval(this.timer);
-
-        this.timer = null;
-
+  function destroy() {
+    if (instance) {
+      try {
+        if (instance.ro) instance.ro.disconnect();
+        if (instance.chart) instance.chart.remove();
+      } catch (e) {}
+      instance = null;
     }
+  }
 
-    this.reset();
+  function mount(container, options) {
+    options = options || {};
+    return loadLib().then(function (LC) {
+      destroy();
+      if (!container) throw new Error("Konteyner yok");
+      container.innerHTML = "";
 
-    console.log(
+      var chart = LC.createChart(container, {
+        layout: {
+          background: { type: "solid", color: options.bg || "#0d0d1a" },
+          textColor: "#94a3b8"
+        },
+        grid: {
+          vertLines: { color: "rgba(148,163,184,0.08)" },
+          horzLines: { color: "rgba(148,163,184,0.08)" }
+        },
+        rightPriceScale: {
+          borderColor: "rgba(148,163,184,0.12)",
+          scaleMargins: { top: 0.08, bottom: 0.2 }
+        },
+        timeScale: {
+          borderColor: "rgba(148,163,184,0.12)",
+          timeVisible: true,
+          secondsVisible: false
+        },
+        width: container.clientWidth || 640,
+        height: options.height || chartCfg.height || 420
+      });
 
-        `${this.APP_NAME} Engine durduruldu.`
+      var candle = chart.addCandlestickSeries({
+        upColor: "#34d399",
+        downColor: "#f87171",
+        borderUpColor: "#34d399",
+        borderDownColor: "#f87171",
+        wickUpColor: "#34d399",
+        wickDownColor: "#f87171"
+      });
+      var vol = chart.addHistogramSeries({
+        priceFormat: { type: "volume" },
+        priceScaleId: "",
+        scaleMargins: { top: 0.82, bottom: 0 }
+      });
+      var ma20 = chart.addLineSeries({ color: "#00f0ff", lineWidth: 1, lastValueVisible: false, priceLineVisible: false });
+      var ma50 = chart.addLineSeries({ color: "#7b2cff", lineWidth: 1, lastValueVisible: false, priceLineVisible: false });
 
-    );
+      var ro = null;
+      if (typeof ResizeObserver !== "undefined") {
+        ro = new ResizeObserver(function () {
+          chart.applyOptions({ width: container.clientWidth });
+        });
+        ro.observe(container);
+      }
 
-};
+      instance = { chart: chart, candle: candle, vol: vol, ma20: ma20, ma50: ma50, ro: ro };
+      return instance;
+    });
+  }
 
-Object.freeze(Engine);
+  function setCandles(candles) {
+    if (!instance || !candles || !candles.length) return { count: 0 };
+    instance.candle.setData(candles.map(function (b) {
+      return { time: b.time, open: b.open, high: b.high, low: b.low, close: b.close };
+    }));
+    instance.vol.setData(candles.map(function (b) {
+      return {
+        time: b.time,
+        value: b.volume || 0,
+        color: b.close >= b.open ? "rgba(52,211,153,0.4)" : "rgba(248,113,113,0.4)"
+      };
+    }));
+    instance.ma20.setData(sma(candles, 20));
+    instance.ma50.setData(sma(candles, 50));
+    try { instance.chart.timeScale().fitContent(); } catch (e) {}
+    return {
+      count: candles.length,
+      first: candles[0],
+      last: candles[candles.length - 1]
+    };
+  }
 
-console.log(
+  /**
+   * Tek çağrı: veri çek + çiz
+   * @returns {Promise<{symbol, source, count, last, first}>}
+   */
+  function render(container, symbol, rangeKey, options) {
+    return getOHLC(symbol, rangeKey).then(function (pack) {
+      return mount(container, options).then(function () {
+        var info = setCandles(pack.candles);
+        if (!info.count) throw new Error("Çizilecek bar yok");
+        return {
+          symbol: pack.symbol,
+          source: pack.source,
+          range: pack.range,
+          count: info.count,
+          first: info.first,
+          last: info.last,
+          meta: pack.meta
+        };
+      });
+    });
+  }
 
-`%c${Engine.APP_NAME} Engine v${Engine.VERSION} Hazır`,
+  global.NexoraEngine = {
+    normalizeSymbol: normalizeSymbol,
+    getOHLC: getOHLC,
+    mount: mount,
+    setCandles: setCandles,
+    render: render,
+    destroy: destroy,
+    clearCache: function () { ohlcCache = {}; }
+  };
 
-"color:#22c55e;font-size:15px;font-weight:bold;"
-
-);
+  /* Eski isim uyumu */
+  global.Engine = global.NexoraEngine;
+})(typeof window !== "undefined" ? window : this);
