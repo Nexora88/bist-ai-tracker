@@ -1,10 +1,10 @@
-/* Nexora AI — config.js (klasik script, export yok) */
+/* Nexora AI — config.js */
 (function (global) {
   "use strict";
 
   global.NEXORA_CONFIG = {
     name: "Nexora AI",
-    version: "2.1.0",
+    version: "2.2.0",
 
     supabaseUrl: "",
     supabaseAnonKey: "",
@@ -14,11 +14,10 @@
       enabled: true,
       yahooChart: "https://query1.finance.yahoo.com/v8/finance/chart/",
       yahooChart2: "https://query2.finance.yahoo.com/v8/finance/chart/",
-      stooq: "https://stooq.com/q/d/l/",
       corsProxies: [
         "https://api.allorigins.win/raw?url=",
-        "https://corsproxy.io/?",
-        "https://api.codetabs.com/v1/proxy?quest="
+        "https://api.codetabs.com/v1/proxy?quest=",
+        "https://corsproxy.io/?"
       ]
     },
 
