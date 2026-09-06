@@ -3,26 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Hisse Kartları · Nexora AI</title>
-  <meta name="description" content="BIST, NASDAQ ve NYSE ücretsiz. Diğer piyasalar Premium ve Elite. Gecikmeli fiyat, açık/kapalı seans." />
-  <meta name="theme-color" content="#0d0d1a" />
+  <title>Hisseler · Nexora AI</title>
+  <meta name="description" content="BIST, NASDAQ ve NYSE hisse listesi. Grafiğe tek tıkla geç." />
+  <meta name="theme-color" content="#060a12" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #0d0d1a;
-      --panel: rgba(18, 18, 32, 0.94);
-      --border: rgba(148, 163, 184, 0.14);
-      --text: #f8fafc;
-      --muted: #cbd5e1;
-      --dim: #94a3b8;
-      --faint: #64748b;
-      --cyan: #00f0ff;
+      --bg: #060a12;
+      --panel: rgba(15, 23, 42, 0.94);
+      --border: rgba(148, 163, 184, 0.12);
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --dim: #64748b;
+      --faint: #475569;
+      --cyan: #22d3ee;
       --up: #34d399;
       --down: #f87171;
-      --amber: #fbbf24;
-      --grad: linear-gradient(135deg, #00f0ff, #007bff 50%, #7b2cff);
-      --prem: linear-gradient(135deg, #fbbf24, #f59e0b 45%, #ea580c);
-      --elite: linear-gradient(135deg, #c4b5fd, #7b2cff 55%, #4c1d95);
+      --grad: linear-gradient(135deg, #22d3ee, #10b981);
+      --grad-btn: linear-gradient(135deg, #22d3ee, #6366f1);
+      --prem: linear-gradient(135deg, #fbbf24, #f59e0b);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -30,7 +29,6 @@
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      line-height: 1.5;
       -webkit-font-smoothing: antialiased;
     }
     a { color: inherit; text-decoration: none; }
@@ -41,1083 +39,638 @@
     .atmosphere {
       position: fixed; inset: 0; z-index: 0; pointer-events: none;
       background:
-        radial-gradient(ellipse 70% 45% at 15% -10%, rgba(0,240,255,0.1), transparent 55%),
-        radial-gradient(ellipse 50% 40% at 100% 80%, rgba(123,44,255,0.08), transparent 50%),
+        radial-gradient(ellipse 70% 45% at 8% -8%, rgba(16, 185, 129, 0.12), transparent 52%),
+        radial-gradient(ellipse 55% 40% at 92% 5%, rgba(34, 211, 238, 0.08), transparent 48%),
         var(--bg);
     }
-    .shell { position: relative; z-index: 1; }
+    .app { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; }
 
     .nav {
-      height: 56px;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 14px;
-      background: rgba(13, 13, 26, 0.9);
-      backdrop-filter: blur(14px);
+      height: 56px; display: flex; align-items: center; justify-content: space-between;
+      padding: 0 14px; gap: 10px;
+      background: rgba(6, 10, 18, 0.9); backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border);
       position: sticky; top: 0; z-index: 40;
     }
-    .brand {
-      display: flex; align-items: center; gap: 8px;
-      font-weight: 800; font-size: 14px;
-    }
+    .brand { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 14px; flex-shrink: 0; }
     .mark {
-      width: 28px; height: 28px; border-radius: 8px;
-      background: var(--grad);
-      display: grid; place-items: center;
-      font-size: 11px; font-weight: 900; color: #0d0d1a;
+      width: 28px; height: 28px; border-radius: 9px; background: var(--grad);
+      display: grid; place-items: center; font-size: 12px; font-weight: 900; color: #042f2e;
     }
     .brand em {
-      font-style: normal;
-      background: var(--grad);
+      font-style: normal; background: var(--grad);
       -webkit-background-clip: text; background-clip: text; color: transparent;
     }
-    .nav-right { display: flex; gap: 8px; }
-    .nav-right a {
-      padding: 8px 12px; border-radius: 9px;
-      font-size: 12px; font-weight: 700;
+    .nav-mid { display: none; flex: 1; justify-content: center; gap: 2px; }
+    @media (min-width: 900px) { .nav-mid { display: flex; } }
+    .nav-mid a {
+      font-size: 13px; font-weight: 600; color: var(--muted);
+      padding: 7px 11px; border-radius: 9px;
     }
-    .ghost {
-      box-shadow: inset 0 0 0 1px var(--border);
-      background: rgba(18, 18, 32, 0.7);
+    .nav-mid a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+    .nav-mid a.on { color: var(--text); background: rgba(34, 211, 238, 0.1); }
+    .nav-r { display: flex; gap: 8px; flex-shrink: 0; }
+    .nav-r a {
+      padding: 8px 12px; border-radius: 999px; font-size: 12px; font-weight: 700;
+      color: var(--muted); box-shadow: inset 0 0 0 1px var(--border);
     }
-    .primary-btn {
-      color: #0d0d1a;
-      background: var(--grad);
-    }
+    .nav-r a.pri { color: #042f2e; background: var(--grad); box-shadow: none; }
 
-    .wrap { max-width: 720px; margin: 0 auto; padding: 0 14px 40px; }
+    .wrap { max-width: 960px; margin: 0 auto; padding: 16px 14px 48px; width: 100%; flex: 1; }
 
-    .page-head { padding: 22px 0 8px; }
+    .page-head { margin-bottom: 14px; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: 12px; font-weight: 700; color: var(--cyan);
+      background: rgba(34, 211, 238, 0.1); border: 1px solid rgba(34, 211, 238, 0.25);
+      padding: 5px 12px; border-radius: 999px; margin-bottom: 10px;
+    }
+    .badge i {
+      width: 6px; height: 6px; border-radius: 50%; background: #10b981;
+      box-shadow: 0 0 8px #10b981; animation: pulse 1.6s ease infinite;
+    }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
     .page-head h1 {
-      font-size: clamp(1.45rem, 3.5vw, 1.85rem);
-      font-weight: 800;
-      letter-spacing: -0.035em;
+      font-size: clamp(1.3rem, 3vw, 1.65rem); font-weight: 800;
+      letter-spacing: -0.03em; line-height: 1.2;
     }
     .page-head h1 span {
-      background: var(--grad);
-      -webkit-background-clip: text; background-clip: text; color: transparent;
+      background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;
     }
-    .page-head p {
-      margin-top: 8px;
-      font-size: 14px;
-      color: var(--muted);
-      line-height: 1.65;
-      max-width: 48ch;
+    .page-head p { margin-top: 8px; font-size: 14px; color: var(--muted); max-width: 46ch; line-height: 1.55; }
+
+    .status-bar {
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+      margin-bottom: 12px; font-size: 12px; font-weight: 600; color: var(--dim);
+    }
+    .status-bar .dot {
+      width: 7px; height: 7px; border-radius: 50%; background: var(--up);
+      box-shadow: 0 0 6px var(--up);
+    }
+    .status-bar .dot.off { background: var(--down); box-shadow: 0 0 6px var(--down); }
+    .status-bar .count { margin-left: auto; color: var(--muted); }
+
+    .markets { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .markets button {
+      padding: 9px 14px; border-radius: 999px; font-size: 13px; font-weight: 700;
+      color: var(--muted); background: var(--panel); box-shadow: inset 0 0 0 1px var(--border);
+      transition: transform 0.12s, background 0.12s;
+    }
+    .markets button:hover { color: var(--text); transform: translateY(-1px); }
+    .markets button.on {
+      color: #042f2e; background: var(--grad); box-shadow: 0 4px 16px rgba(16, 185, 129, 0.28);
+    }
+    .markets button .n {
+      display: inline-block; margin-left: 6px; font-size: 11px; opacity: 0.85;
     }
 
-    .info {
-      margin: 12px 0 16px;
-      padding: 12px 14px;
-      border-radius: 14px;
-      background: rgba(18, 18, 32, 0.88);
-      border: 1px solid var(--border);
-      font-size: 13px;
-      color: var(--dim);
-      line-height: 1.6;
+    .search-row { margin-bottom: 12px; }
+    .search-row input {
+      width: 100%; padding: 12px 14px; border-radius: 12px;
+      background: rgba(6, 10, 18, 0.75); box-shadow: inset 0 0 0 1px var(--border);
+      font-size: 14px; font-weight: 600;
     }
-    .info strong { color: var(--muted); }
+    .search-row input:focus { box-shadow: inset 0 0 0 1.5px rgba(34, 211, 238, 0.45); }
+    .search-row input::placeholder { color: var(--faint); font-weight: 500; }
 
-    .section-label {
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--faint);
-      margin: 6px 0 8px;
+    .load-banner {
+      display: none; align-items: center; gap: 8px;
+      margin-bottom: 10px; font-size: 12px; font-weight: 600; color: var(--cyan);
+    }
+    .load-banner.show { display: flex; }
+    .load-banner .pd {
+      width: 8px; height: 8px; border-radius: 50%; background: var(--cyan);
+      animation: pulse 1s ease infinite;
     }
 
-    .markets {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 8px;
-      margin-bottom: 10px;
+    .list {
+      display: flex; flex-direction: column; gap: 8px;
     }
-    @media (min-width: 560px) {
-      .markets { grid-template-columns: repeat(3, 1fr); }
-    }
-    .markets-locked {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-    @media (min-width: 560px) {
-      .markets-locked { grid-template-columns: repeat(3, 1fr); }
-    }
-
-    .mkt {
-      width: 100%;
-      text-align: left;
-      padding: 14px;
-      border-radius: 16px;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
-    }
-    .mkt:hover {
-      transform: translateY(-1px);
-      border-color: rgba(0, 240, 255, 0.3);
-    }
-    .mkt.on {
-      border-color: rgba(0, 240, 255, 0.5);
-      box-shadow: 0 0 0 1px rgba(0, 240, 255, 0.12), 0 10px 28px rgba(0,0,0,0.25);
-    }
-    .mkt.locked {
-      border-style: dashed;
-      border-color: rgba(251, 191, 36, 0.35);
-    }
-    .mkt.locked:hover {
-      border-color: rgba(251, 191, 36, 0.55);
-      box-shadow: 0 8px 24px rgba(251, 191, 36, 0.1);
-    }
-    .mkt-top {
-      display: flex; justify-content: space-between; align-items: center;
-      gap: 6px; margin-bottom: 8px;
-    }
-    .mkt-name {
-      font-size: 14px; font-weight: 800;
-      display: flex; align-items: center; gap: 6px;
-    }
-    .status {
-      font-size: 10px; font-weight: 800;
-      padding: 3px 8px; border-radius: 999px;
-    }
-    .status.open {
-      color: #022c22;
-      background: linear-gradient(135deg, #34d399, #10b981);
-    }
-    .status.closed {
-      color: #e2e8f0;
-      background: rgba(100, 116, 139, 0.45);
-    }
-    .status.holiday {
-      color: #0d0d1a;
-      background: linear-gradient(135deg, #fbbf24, #f59e0b);
-    }
-    .lock-badge {
-      font-size: 10px; font-weight: 800;
-      padding: 3px 8px; border-radius: 999px;
-      color: #0d0d1a;
-      background: var(--prem);
-    }
-    .lock-badge.elite {
-      background: var(--elite);
-      color: #fff;
-    }
-    .mkt-count {
-      font-size: 1.25rem;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      font-variant-numeric: tabular-nums;
-    }
-    .mkt-count span {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--dim);
-      margin-left: 3px;
-    }
-    .mkt-clock {
-      margin-top: 5px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--muted);
-    }
-    .mkt-clock strong { color: var(--cyan); }
-    .mkt-sub {
-      margin-top: 4px;
-      font-size: 11px;
-      color: var(--faint);
-    }
-
-    .gate {
-      display: none;
-      margin-bottom: 16px;
-      padding: 20px 16px;
-      border-radius: 18px;
-      background:
-        linear-gradient(145deg, rgba(251, 191, 36, 0.14), rgba(123, 44, 255, 0.12)),
-        var(--panel);
-      border: 1px solid rgba(251, 191, 36, 0.4);
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
-    }
-    .gate.show { display: block; }
-    .gate h3 {
-      font-size: 1.1rem;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-    }
-    .gate h3 span {
-      background: var(--prem);
-      -webkit-background-clip: text; background-clip: text; color: transparent;
-    }
-    .gate p {
-      margin-top: 8px;
-      font-size: 13.5px;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-    .gate-pills {
-      display: flex; flex-wrap: wrap; gap: 8px;
-      margin: 14px 0;
-    }
-    .gate-pills span {
-      font-size: 12px; font-weight: 700;
-      padding: 6px 12px; border-radius: 999px;
-    }
-    .gate-pills .p { color: #0d0d1a; background: var(--prem); }
-    .gate-pills .e { color: #fff; background: var(--elite); }
-    .gate-actions {
-      display: flex; flex-wrap: wrap; gap: 8px;
-    }
-    .gate-actions a, .gate-actions button {
-      padding: 11px 16px;
-      border-radius: 11px;
-      font-size: 13px;
-      font-weight: 800;
-    }
-    .btn-prem {
-      color: #0d0d1a;
-      background: var(--prem);
-      box-shadow: 0 4px 18px rgba(251, 191, 36, 0.3);
-    }
-    .btn-elite {
-      color: #fff;
-      background: var(--elite);
-    }
-    .btn-soft {
-      color: var(--muted);
-      box-shadow: inset 0 0 0 1px var(--border);
-    }
-
-    .search-bar {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 14px;
-      border-radius: 14px;
-      background: rgba(6, 6, 15, 0.75);
-      box-shadow: inset 0 0 0 1px var(--border);
-      margin-bottom: 10px;
-    }
-    .search-bar:focus-within {
-      box-shadow: inset 0 0 0 1.5px rgba(0, 240, 255, 0.45);
-    }
-    .search-bar input {
-      flex: 1;
-      font-size: 15px;
-      font-weight: 600;
-    }
-    .search-bar input::placeholder { color: var(--faint); }
-    .search-bar .clear {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--dim);
-      display: none;
-    }
-    .search-bar .clear.show { display: block; }
-
-    .loading-banner {
-      display: none;
-      align-items: center;
-      gap: 8px;
-      font-size: 12.5px;
-      font-weight: 600;
-      color: var(--cyan);
-      margin-bottom: 10px;
-    }
-    .loading-banner.show { display: flex; }
-    .pulse-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--cyan);
-      animation: blink 1s ease-in-out infinite;
-    }
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.25; }
-    }
-
-    .list-meta {
-      display: flex; flex-wrap: wrap; gap: 8px 14px;
-      font-size: 12.5px;
-      font-weight: 600;
-      color: var(--dim);
-      margin-bottom: 12px;
-    }
-    .list-meta strong { color: var(--muted); }
-
-    .list { display: flex; flex-direction: column; gap: 8px; }
-
     .row {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 12px;
-      align-items: center;
-      padding: 14px;
-      border-radius: 16px;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      transition: border-color 0.15s;
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 14px; border-radius: 14px;
+      background: var(--panel); border: 1px solid var(--border);
+      transition: border-color 0.15s, transform 0.12s;
     }
-    .row:hover { border-color: rgba(0, 240, 255, 0.35); }
-
+    .row:hover { border-color: rgba(34, 211, 238, 0.28); transform: translateY(-1px); }
+    .row-main { flex: 1; min-width: 0; }
     .row-sym {
-      font-size: 15px;
-      font-weight: 800;
+      font-weight: 800; font-size: 14px; letter-spacing: -0.02em;
       display: flex; align-items: center; gap: 6px;
+    }
+    .row-sym .fg {
+      font-size: 10px; font-weight: 800; color: var(--cyan);
+      background: rgba(34, 211, 238, 0.1); padding: 2px 6px; border-radius: 6px;
     }
     .row-name {
-      font-size: 12.5px;
-      color: var(--dim);
-      margin-top: 2px;
+      font-size: 12px; color: var(--dim); font-weight: 500;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px;
+    }
+    .row-price { text-align: right; flex-shrink: 0; min-width: 88px; }
+    .row-price .p {
+      font-weight: 800; font-size: 14px; font-variant-numeric: tabular-nums;
+    }
+    .row-price .c {
+      font-size: 12px; font-weight: 700; margin-top: 2px;
+    }
+    .row-price .c.up { color: var(--up); }
+    .row-price .c.down { color: var(--down); }
+    .row-price .c.flat { color: var(--dim); }
+    .row-actions {
+      display: flex; gap: 6px; flex-shrink: 0;
+    }
+    .btn-g, .btn-w {
+      padding: 8px 12px; border-radius: 10px; font-size: 12px; font-weight: 700;
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
-    .row-tags {
-      display: flex; flex-wrap: wrap; gap: 5px;
-      margin-top: 8px;
+    .btn-g {
+      color: #042f2e; background: var(--grad-btn);
+      box-shadow: 0 2px 10px rgba(99, 102, 241, 0.25);
     }
-    .tag {
-      font-size: 10.5px;
-      font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 999px;
-      color: var(--dim);
-      background: rgba(6, 6, 15, 0.55);
-      box-shadow: inset 0 0 0 1px var(--border);
+    .btn-g:hover { filter: brightness(1.05); }
+    .btn-w {
+      color: var(--muted); box-shadow: inset 0 0 0 1px var(--border);
     }
-    .ai-mini {
-      display: flex; align-items: center; gap: 6px;
-      margin-top: 8px;
-    }
-    .ai-mini .lab { font-size: 10px; font-weight: 700; color: var(--faint); }
-    .ai-bar {
-      flex: 1; max-width: 72px; height: 4px;
-      border-radius: 99px;
-      background: rgba(148, 163, 184, 0.15);
-      overflow: hidden;
-    }
-    .ai-bar i {
-      display: block; height: 100%;
-      border-radius: 99px;
-      background: var(--grad);
-    }
-    .ai-mini .sc {
-      font-size: 11px; font-weight: 800; color: var(--muted);
-    }
-
-    .row-right {
-      text-align: right;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 8px;
-    }
-    .price {
-      font-size: 15px;
-      font-weight: 800;
-      font-variant-numeric: tabular-nums;
-    }
-    .chg {
-      font-size: 12px;
-      font-weight: 700;
-      font-variant-numeric: tabular-nums;
-    }
-    .chg.up { color: var(--up); }
-    .chg.down { color: var(--down); }
+    .btn-w.on { color: var(--cyan); box-shadow: inset 0 0 0 1px rgba(34, 211, 238, 0.4); }
 
     .skel {
-      display: inline-block;
-      height: 14px;
-      width: 72px;
-      border-radius: 6px;
-      background: linear-gradient(
-        90deg,
-        rgba(148, 163, 184, 0.12) 0%,
-        rgba(0, 240, 255, 0.22) 45%,
-        rgba(148, 163, 184, 0.12) 100%
-      );
-      background-size: 200% 100%;
-      animation: shimmer 1.1s ease-in-out infinite;
+      height: 14px; width: 64px; border-radius: 6px;
+      background: linear-gradient(90deg, rgba(148,163,184,0.08), rgba(148,163,184,0.18), rgba(148,163,184,0.08));
+      background-size: 200% 100%; animation: shimmer 1.2s ease infinite;
+      margin-left: auto;
     }
-    .skel.sm { width: 48px; height: 11px; margin-top: 4px; }
+    .skel.sm { height: 10px; width: 48px; margin-top: 6px; }
     @keyframes shimmer {
       0% { background-position: 100% 0; }
       100% { background-position: -100% 0; }
     }
 
-    .row-actions { display: flex; gap: 6px; }
-    .row-actions a, .row-actions button {
-      padding: 7px 10px;
-      border-radius: 9px;
-      font-size: 11.5px;
-      font-weight: 700;
-    }
-    .btn-g {
-      color: var(--muted);
-      box-shadow: inset 0 0 0 1px var(--border);
-    }
-    .btn-w {
-      color: #0d0d1a;
-      background: linear-gradient(135deg, #00f0ff, #007bff);
-    }
-    .btn-w.on {
-      color: var(--cyan);
-      background: transparent;
-      box-shadow: inset 0 0 0 1px rgba(0, 240, 255, 0.4);
-    }
-
     .empty {
-      text-align: center;
-      padding: 40px 16px;
-      color: var(--faint);
-      font-size: 14px;
-    }
-    .load-more {
-      display: block;
-      width: 100%;
-      margin-top: 12px;
-      padding: 13px;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 13px;
-      color: var(--muted);
-      background: var(--panel);
-      box-shadow: inset 0 0 0 1px var(--border);
+      text-align: center; padding: 40px 16px; color: var(--dim); font-size: 14px;
     }
 
-    /* Alt: demo + sosyal */
-    .footer-card {
-      margin-top: 28px;
-      padding: 20px 16px;
-      border-radius: 18px;
-      background:
-        linear-gradient(160deg, rgba(0, 240, 255, 0.06), rgba(123, 44, 255, 0.08)),
-        var(--panel);
-      border: 1px solid var(--border);
+    .legal {
+      margin-top: 20px; padding: 12px 14px; border-radius: 12px;
+      background: var(--panel); border: 1px solid var(--border);
+      font-size: 12.5px; color: var(--dim); line-height: 1.55;
     }
-    .footer-card .demo-tag {
-      display: inline-flex;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      color: var(--amber);
-      background: rgba(251, 191, 36, 0.12);
-      border: 1px solid rgba(251, 191, 36, 0.3);
-      padding: 4px 10px;
-      border-radius: 999px;
-      margin-bottom: 10px;
-    }
-    .footer-card h3 {
-      font-size: 1rem;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-    }
-    .footer-card p {
-      margin-top: 8px;
-      font-size: 13.5px;
-      color: var(--dim);
-      line-height: 1.65;
-    }
-    .social-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 16px;
-    }
-    .social-row a {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 11px 14px;
-      border-radius: 12px;
-      font-size: 13px;
-      font-weight: 700;
-      transition: transform 0.15s, box-shadow 0.15s;
-    }
-    .social-row a:hover { transform: translateY(-1px); }
-    .soc-x {
-      color: #fff;
-      background: #000;
-      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
-    }
-    .soc-sub {
-      color: #fff;
-      background: linear-gradient(135deg, #ff6719, #ee6337);
-      box-shadow: 0 4px 16px rgba(238, 99, 55, 0.3);
-    }
+    .legal a { color: var(--cyan); font-weight: 600; }
 
-    footer.site {
-      text-align: center;
-      padding: 18px 14px 36px;
-      font-size: 12px;
-      color: var(--faint);
+    .site-footer {
+      border-top: 1px solid var(--border); padding: 20px 14px 28px;
+      font-size: 12px; color: var(--faint); text-align: center;
     }
-    footer.site a {
-      color: var(--dim);
-      margin: 0 6px;
-      font-weight: 600;
+    .site-footer a { color: var(--cyan); font-weight: 600; margin: 0 6px; }
+
+    @media (max-width: 560px) {
+      .row { flex-wrap: wrap; }
+      .row-actions { width: 100%; margin-top: 4px; }
+      .btn-g, .btn-w { flex: 1; text-align: center; }
     }
   </style>
 </head>
 <body>
   <div class="atmosphere" aria-hidden="true"></div>
-
-  <div class="shell">
+  <div class="app">
     <nav class="nav">
       <a class="brand" href="index.html">
         <span class="mark">N</span>
         Nexora <em>AI</em>
       </a>
-      <div class="nav-right">
-        <a class="ghost" href="oyun.html">Lig</a>
-        <a class="primary-btn" href="premium.html">Planlar</a>
+      <div class="nav-mid">
+        <a class="on" href="stock.html">Hisseler</a>
+        <a href="ultra-grafik.html">Grafik</a>
+        <a href="portfolio.html">Portföy</a>
+        <a href="egitim.html">Akademi</a>
+        <a href="oyun.html">Lig</a>
+        <a href="premium.html">Premium</a>
+      </div>
+      <div class="nav-r">
+        <a href="ultra-grafik.html">Grafik</a>
+        <a class="pri" href="index.html">Keşfet</a>
       </div>
     </nav>
 
     <main class="wrap">
       <header class="page-head">
+        <div class="badge"><i></i> BIST · NASDAQ · NYSE</div>
         <h1>Hisse <span>kartları</span></h1>
         <p>
-          Üç büyük piyasayı ücretsiz tara. İleri borsalar üyelikle açılır;
-          seans durumu ve gecikmeli fiyatlarla sakin, net bir ekran.
+          Borsa seç, ara, fiyata bak. <strong>Grafik</strong> ile o hissenin
+          ekranına tek tıkla geçersin — tekrar aramana gerek yok.
         </p>
       </header>
 
-      <div class="info">
-        <strong>Nasıl çalışır?</strong>
-        BIST, NASDAQ ve NYSE herkese açık. Londra, Frankfurt, Tokyo, Toronto
-        Premium; Hong Kong ve OTC Elite planındadır. Fiyatlar kısa süreli
-        önbellekle gelir — sayfa canlı kalır, gereksiz yük oluşmaz.
-        Veriler gecikmeli olabilir; bu ekran yatırım tavsiyesi değildir.
+      <div class="status-bar" id="statusBar">
+        <span class="dot" id="sesDot"></span>
+        <span id="sesText">Piyasa durumu yükleniyor…</span>
+        <span class="count" id="countText"></span>
       </div>
 
-      <div class="section-label">Ücretsiz</div>
-      <div class="markets" id="marketsFree"></div>
-
-      <div class="section-label">Üyelik ile</div>
-      <div class="markets-locked" id="marketsLocked"></div>
-
-      <div class="gate" id="gate">
-        <h3>🔒 <span id="gateTitle">Bu piyasa kilitli</span></h3>
-        <p id="gateText">
-          Bu bölüm yalnızca Premium ve Elite üyelere açıktır. Ücretsiz planda
-          BIST, NASDAQ ve NYSE ile devam edebilirsin.
-        </p>
-        <div class="gate-pills">
-          <span class="p">Premium</span>
-          <span class="e">Elite</span>
-        </div>
-        <div class="gate-actions">
-          <a class="btn-prem" href="premium.html">Planları gör</a>
-          <a class="btn-elite" href="register.html?plan=elite">Elite’e geç</a>
-          <button type="button" class="btn-soft" id="gateClose">Kapat</button>
-        </div>
+      <div class="markets" id="markets" role="tablist">
+        <button type="button" class="on" data-m="bist" role="tab">TR BIST <span class="n" id="n-bist">—</span></button>
+        <button type="button" data-m="nasdaq" role="tab">US NASDAQ <span class="n" id="n-nasdaq">—</span></button>
+        <button type="button" data-m="nyse" role="tab">US NYSE <span class="n" id="n-nyse">—</span></button>
       </div>
 
-      <div class="search-bar">
-        <span style="color:var(--faint);font-weight:700">⌕</span>
-        <input id="q" type="search" placeholder="THYAO, Apple, Aselsan…" autocomplete="off" />
-        <button type="button" class="clear" id="btnClear">Temizle</button>
+      <div class="search-row">
+        <input id="q" type="search" placeholder="Ara: THYAO, AKBNK, Apple, Tesla…" autocomplete="off" />
       </div>
 
-      <div class="loading-banner" id="loadBanner">
-        <span class="pulse-dot"></span>
-        Fiyatlar güncelleniyor…
-      </div>
-
-      <div class="list-meta">
-        <span id="metaLine">—</span>
-        <span id="metaCache">Önbellek: —</span>
-      </div>
+      <div class="load-banner" id="loadBanner"><span class="pd"></span> Fiyatlar güncelleniyor…</div>
 
       <div class="list" id="list"></div>
-      <button type="button" class="load-more" id="btnMore" hidden>Daha fazla</button>
-      <div class="empty" id="empty" hidden>Eşleşen hisse yok. Aramayı veya piyasayı değiştir.</div>
 
-      <aside class="footer-card">
-        <div class="demo-tag">Demo sürüm</div>
-        <h3>Gelişmeler ve derin okuma</h3>
-        <p>
-          Bu sürüm erken erişimdir. Duyurular ve kısa notlar için X;
-          OTC ve yatırım psikolojisi yazıları için Substack kanalını takip edebilirsin.
-        </p>
-        <div class="social-row">
-          <a class="soc-x" href="https://x.com/nexora88team" target="_blank" rel="noopener noreferrer">
-            𝕏 &nbsp;@nexora88team
-          </a>
-          <a class="soc-sub" href="https://substack.com/@pennydiphunter" target="_blank" rel="noopener noreferrer">
-            Substack · Penny Dip Hunter
-          </a>
-        </div>
+      <aside class="legal">
+        <strong>Yasal uyarı:</strong> Buradaki bilgiler yatırım tavsiyesi değildir.
+        Veriler gecikmeli olabilir (≈15 dk). Kararlar size aittir.
+        <a href="about.html">Hakkımızda</a>
       </aside>
     </main>
 
-    <footer class="site">
-      <a href="index.html">Ana</a>
+    <footer class="site-footer">
+      <a href="index.html">Ana sayfa</a>
+      <a href="ultra-grafik.html">Grafik</a>
       <a href="portfolio.html">Portföy</a>
-      <a href="premium.html">Premium</a>
       <a href="about.html">Hakkımızda</a>
+      <a href="https://x.com/nexora88team" target="_blank" rel="noopener">X</a>
+      <p style="margin-top:10px">Nexora AI · Demo sürüm · Veriler gecikmeli olabilir</p>
     </footer>
   </div>
 
   <script src="assets/js/secrets.js"></script>
+  <script src="assets/js/config.js"></script>
   <script src="assets/js/api.js"></script>
-  <script src="assets/js/store.js"></script>
   <script>
 (function () {
   "use strict";
 
-  var MARKETS = [
-    { id: "bist", name: "BIST", flag: "🇹🇷", label: "İstanbul", tz: "Europe/Istanbul", open: [10, 0], close: [18, 0], holidaySet: "bist", file: "data/bist.json", plan: "free", suffix: ".IS", count: null },
-    { id: "nasdaq", name: "NASDAQ", flag: "🇺🇸", label: "New York", tz: "America/New_York", open: [9, 30], close: [16, 0], holidaySet: "us", file: "data/nasdaq.json", plan: "free", suffix: "", count: null },
-    { id: "nyse", name: "NYSE", flag: "🇺🇸", label: "New York", tz: "America/New_York", open: [9, 30], close: [16, 0], holidaySet: "us", file: "data/nyse.json", plan: "free", suffix: "", count: null },
-    { id: "lse", name: "LSE", flag: "🇬🇧", label: "Londra", tz: "Europe/London", open: [8, 0], close: [16, 30], holidaySet: "us", file: "data/lse.json", plan: "premium", suffix: ".L", count: null },
-    { id: "xetra", name: "XETRA", flag: "🇩🇪", label: "Frankfurt", tz: "Europe/Berlin", open: [9, 0], close: [17, 30], holidaySet: "us", file: "data/xetra.json", plan: "premium", suffix: ".DE", count: null },
-    { id: "tse", name: "TSE", flag: "🇯🇵", label: "Tokyo", tz: "Asia/Tokyo", open: [9, 0], close: [15, 0], holidaySet: "us", file: "data/tse.json", plan: "premium", suffix: ".T", count: null },
-    { id: "tsx", name: "TSX", flag: "🇨🇦", label: "Toronto", tz: "America/Toronto", open: [9, 30], close: [16, 0], holidaySet: "us", file: "data/tsx.json", plan: "premium", suffix: ".TO", count: null },
-    { id: "hkex", name: "HKEX", flag: "🇭🇰", label: "Hong Kong", tz: "Asia/Hong_Kong", open: [9, 30], close: [16, 0], holidaySet: "us", file: "data/hkex.json", plan: "elite", suffix: ".HK", count: null },
-    { id: "otc", name: "OTCQB", flag: "🇺🇸", label: "OTC ABD", tz: "America/New_York", open: [9, 30], close: [16, 0], holidaySet: "us", file: "data/otc.json", plan: "elite", suffix: "", count: null }
-  ];
+  var marketId = "bist";
+  var catalogs = { bist: [], nasdaq: [], nyse: [] };
+  var filterQ = "";
+  var quoteCache = {};
+  var CACHE_MS = 60000;
+  var WATCH_KEY = "nexora_watchlist";
 
-  var HOLIDAYS = {
-    bist: {
-      "2025-01-01": "Yılbaşı", "2025-04-23": "23 Nisan", "2025-05-01": "1 Mayıs",
-      "2025-05-19": "19 Mayıs", "2025-07-15": "15 Temmuz", "2025-08-30": "30 Ağustos", "2025-10-29": "29 Ekim",
-      "2026-01-01": "Yılbaşı", "2026-03-20": "Ramazan Bayramı", "2026-03-21": "Ramazan Bayramı", "2026-03-22": "Ramazan Bayramı",
-      "2026-04-23": "23 Nisan", "2026-05-01": "1 Mayıs", "2026-05-19": "19 Mayıs",
-      "2026-05-27": "Kurban Bayramı", "2026-05-28": "Kurban Bayramı", "2026-05-29": "Kurban Bayramı", "2026-05-30": "Kurban Bayramı",
-      "2026-07-15": "15 Temmuz", "2026-08-30": "30 Ağustos", "2026-10-29": "29 Ekim"
-    },
-    us: {
-      "2025-01-01": "New Year", "2025-01-20": "MLK", "2025-02-17": "Presidents", "2025-04-18": "Good Friday",
-      "2025-05-26": "Memorial", "2025-06-19": "Juneteenth", "2025-07-04": "Independence", "2025-09-01": "Labor",
-      "2025-11-27": "Thanksgiving", "2025-12-25": "Christmas",
-      "2026-01-01": "New Year", "2026-01-19": "MLK", "2026-02-16": "Presidents", "2026-04-03": "Good Friday",
-      "2026-05-25": "Memorial", "2026-06-19": "Juneteenth", "2026-07-03": "Independence", "2026-09-07": "Labor",
-      "2026-11-26": "Thanksgiving", "2026-12-25": "Christmas"
-    }
+  var MARKETS = {
+    bist:   { id: "bist",   name: "BIST",   flag: "TR", suffix: ".IS", tz: "Europe/Istanbul" },
+    nasdaq: { id: "nasdaq", name: "NASDAQ", flag: "US", suffix: "",    tz: "America/New_York" },
+    nyse:   { id: "nyse",   name: "NYSE",   flag: "US", suffix: "",    tz: "America/New_York" }
   };
 
-  var CACHE_TTL = 60000;
-  var CACHE_KEY = "nexora_quote_cache_v1";
-  var PAGE = 40;
-  var PARALLEL = 4;
+  var $ = function (id) { return document.getElementById(id); };
 
-  var state = {
-    marketId: "bist",
-    list: [],
-    filtered: [],
-    shown: 0,
-    watch: loadWatch(),
-    loadingQuotes: 0
-  };
-
-  function loadWatch() {
-    try {
-      var raw = localStorage.getItem("nexora_watchlist_v1");
-      var arr = raw ? JSON.parse(raw) : [];
-      return Array.isArray(arr)
-        ? arr.map(function (x) { return String(x.symbol || x).toUpperCase(); })
-        : [];
-    } catch (e) {
-      return [];
-    }
-  }
-  function saveWatch() {
-    try {
-      localStorage.setItem(
-        "nexora_watchlist_v1",
-        JSON.stringify(state.watch.map(function (s) { return { symbol: s }; }))
-      );
-    } catch (e) {}
-  }
-
-  function pad(n) { return n < 10 ? "0" + n : String(n); }
-
-  function extractStocks(data) {
+  function extract(data) {
     if (!data) return [];
     if (Array.isArray(data)) return data;
     if (Array.isArray(data.stocks)) return data.stocks;
     if (Array.isArray(data.items)) return data.items;
-    if (Array.isArray(data.data)) return data.data;
     return [];
   }
-
-  function uniqueBySymbol(list) {
+  function unique(list) {
     var seen = {}, out = [];
     for (var i = 0; i < list.length; i++) {
-      var sym = String(list[i].symbol || "").toUpperCase().trim();
-      if (!sym || seen[sym]) continue;
-      seen[sym] = true;
+      var s = String(list[i].symbol || "").toUpperCase().trim();
+      if (!s || seen[s]) continue;
+      seen[s] = true;
       out.push(list[i]);
     }
     return out;
   }
 
-  function partsInTz(tz, date) {
-    date = date || new Date();
-    var fmt = new Intl.DateTimeFormat("en-GB", {
-      timeZone: tz, weekday: "short", year: "numeric", month: "2-digit", day: "2-digit",
-      hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false
-    });
-    var parts = {};
-    fmt.formatToParts(date).forEach(function (p) {
-      if (p.type !== "literal") parts[p.type] = p.value;
-    });
-    var wd = { Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6, Sun: 0 }[parts.weekday];
-    return {
-      weekday: wd, year: +parts.year, month: +parts.month, day: +parts.day,
-      hour: +parts.hour, minute: +parts.minute, second: +parts.second
-    };
-  }
-
-  function ymd(p) { return p.year + "-" + pad(p.month) + "-" + pad(p.day); }
-
-  function nonTrading(mkt, p) {
-    if (p.weekday === 0 || p.weekday === 6) return { closed: true, reason: "weekend" };
-    var h = (HOLIDAYS[mkt.holidaySet] || {})[ymd(p)];
-    if (h) return { closed: true, reason: "holiday", name: h };
-    return { closed: false };
-  }
-
-  function zonedToUtc(tz, y, mo, d, h, mi) {
-    var guess = Date.UTC(y, mo - 1, d, h, mi, 0);
-    for (var i = 0; i < 5; i++) {
-      var p = partsInTz(tz, new Date(guess));
-      var asUtc = Date.UTC(p.year, p.month - 1, p.day, p.hour, p.minute, p.second);
-      guess += Date.UTC(y, mo - 1, d, h, mi, 0) - asUtc;
-    }
-    return guess;
-  }
-
-  function nextOpenMs(mkt, from) {
-    var p0 = partsInTz(mkt.tz, from);
-    for (var step = 0; step < 21; step++) {
-      var tmp = new Date(Date.UTC(p0.year, p0.month - 1, p0.day + step));
-      var noon = zonedToUtc(mkt.tz, tmp.getUTCFullYear(), tmp.getUTCMonth() + 1, tmp.getUTCDate(), 12, 0);
-      var tp = partsInTz(mkt.tz, new Date(noon));
-      if (nonTrading(mkt, tp).closed) continue;
-      return zonedToUtc(mkt.tz, tp.year, tp.month, tp.day, mkt.open[0], mkt.open[1]);
-    }
-    return from.getTime() + 86400000;
-  }
-
-  function marketSession(mkt, now) {
-    now = now || new Date();
-    var p = partsInTz(mkt.tz, now);
-    var nt = nonTrading(mkt, p);
-    var openMin = mkt.open[0] * 60 + mkt.open[1];
-    var closeMin = mkt.close[0] * 60 + mkt.close[1];
-    var curMin = p.hour * 60 + p.minute;
-    var isOpen = !nt.closed && curMin >= openMin && curMin < closeMin;
-    var holidayToday = nt.reason === "holiday" ? nt.name : null;
-    var targetMs, until;
-    if (isOpen) {
-      targetMs = zonedToUtc(mkt.tz, p.year, p.month, p.day, mkt.close[0], mkt.close[1]);
-      until = "kapanışa";
-    } else if (!nt.closed && curMin < openMin) {
-      targetMs = zonedToUtc(mkt.tz, p.year, p.month, p.day, mkt.open[0], mkt.open[1]);
-      until = "açılışa";
-    } else {
-      var base = now;
-      if (!nt.closed && curMin >= closeMin) base = new Date(zonedToUtc(mkt.tz, p.year, p.month, p.day, 23, 30));
-      targetMs = nextOpenMs(mkt, base);
-      until = "açılışa";
-    }
-    var sec = Math.max(0, Math.floor((targetMs - now.getTime()) / 1000));
-    return {
-      isOpen: isOpen,
-      statusKind: isOpen ? "open" : holidayToday ? "holiday" : "closed",
-      label: isOpen ? "Açık" : holidayToday ? "Tatil" : "Kapalı",
-      until: until,
-      text: Math.floor(sec / 3600) + " sa " + Math.floor((sec % 3600) / 60) + " dk",
-      holidayToday: holidayToday
-    };
-  }
-
-  function readCache() {
-    try { return JSON.parse(sessionStorage.getItem(CACHE_KEY) || "{}"); } catch (e) { return {}; }
-  }
-  function writeCache(map) {
-    try { sessionStorage.setItem(CACHE_KEY, JSON.stringify(map)); } catch (e) {}
-  }
-  function getCached(sym) {
-    var r = readCache()[sym];
-    if (!r || Date.now() - r.t > CACHE_TTL) return null;
-    return r;
-  }
-  function setCached(sym, data) {
-    var map = readCache();
-    map[sym] = { t: Date.now(), price: data.price, pct: data.pct };
-    writeCache(map);
+  function loadCatalog(id) {
+    return fetch("data/" + id + ".json?t=" + Date.now().toString().slice(0, 8))
+      .then(function (r) {
+        if (!r.ok) throw new Error("json");
+        return r.json();
+      })
+      .then(function (d) {
+        catalogs[id] = unique(extract(d));
+        var el = document.getElementById("n-" + id);
+        if (el) el.textContent = String(catalogs[id].length);
+        return catalogs[id];
+      })
+      .catch(function () {
+        catalogs[id] = catalogs[id] || [];
+        var el = document.getElementById("n-" + id);
+        if (el) el.textContent = "0";
+        return catalogs[id];
+      });
   }
 
   function quoteSymbol(item, mkt) {
-    var s = String(item.symbol || "").toUpperCase().trim();
+    var s = String(item.symbol || "").trim().toUpperCase();
     if (!s) return "";
     if (s.indexOf(".") !== -1) return s;
-    return s + (mkt.suffix || "");
+    if (mkt && mkt.suffix) return s + mkt.suffix;
+    return s;
   }
 
-  async function fetchOneQuote(qSym) {
-    var hit = getCached(qSym);
-    if (hit) return { price: hit.price, pct: hit.pct };
+  function displaySym(item) {
+    return String(item.symbol || "").toUpperCase().replace(/\.IS$/i, "");
+  }
+
+  /* Basit seans (hafta içi) */
+  function sessionInfo(mkt) {
     try {
-      if (window.API && API.getLiveQuote) {
-        var q = await API.getLiveQuote(qSym);
-        if (q && q.price != null && Number(q.price) > 0) {
-          var row = { price: Number(q.price), pct: q.pct != null ? q.pct : q.changePercent };
-          setCached(qSym, row);
-          return row;
-        }
+      var now = new Date();
+      var fmt = new Intl.DateTimeFormat("en-US", {
+        timeZone: mkt.tz,
+        weekday: "short",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false
+      });
+      var parts = fmt.formatToParts(now);
+      var map = {};
+      parts.forEach(function (p) { map[p.type] = p.value; });
+      var wd = map.weekday;
+      var hm = parseInt(map.hour, 10) * 60 + parseInt(map.minute, 10);
+      var weekend = wd === "Sat" || wd === "Sun";
+      var openMin, closeMin;
+      if (mkt.id === "bist") {
+        openMin = 10 * 60; closeMin = 18 * 60;
+      } else {
+        openMin = 9 * 60 + 30; closeMin = 16 * 60;
       }
-    } catch (e) {}
-    try {
-      var url = "https://query1.finance.yahoo.com/v8/finance/chart/" + encodeURIComponent(qSym) + "?interval=1d&range=5d";
-      var res = await fetch(url);
-      var data = await res.json();
-      var meta = data && data.chart && data.chart.result && data.chart.result[0] && data.chart.result[0].meta;
-      if (meta) {
-        var px = meta.regularMarketPrice || meta.previousClose;
-        if (px != null && Number(px) > 0) {
-          var row2 = { price: Number(px), pct: meta.regularMarketChangePercent };
-          setCached(qSym, row2);
-          return row2;
-        }
-      }
-    } catch (e) {}
-    return null;
-  }
-
-  function formatPrice(n) {
-    return Number(n).toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  }
-
-  function setLoadingBanner(on) {
-    document.getElementById("loadBanner").classList.toggle("show", !!on);
-  }
-
-  async function fillPrices(items, mkt) {
-    state.loadingQuotes += 1;
-    setLoadingBanner(true);
-    var i = 0;
-    async function worker() {
-      while (i < items.length) {
-        var idx = i++;
-        var item = items[idx];
-        var qSym = quoteSymbol(item, mkt);
-        var el = document.querySelector('[data-q="' + String(qSym).replace(/\\/g, "\\\\").replace(/"/g, '\\"') + '"]');
-        if (!el || !qSym) continue;
-        var q = await fetchOneQuote(qSym);
-        if (!q) {
-          el.innerHTML = '<div class="price" style="color:var(--faint);font-size:12px">Fiyat yok</div>';
-          continue;
-        }
-        var pct = q.pct;
-        var cls = pct > 0 ? "up" : pct < 0 ? "down" : "";
-        var txt = pct != null ? (pct > 0 ? "+" : "") + Number(pct).toFixed(2) + "%" : "";
-        el.innerHTML =
-          '<div class="price">' + formatPrice(q.price) + "</div>" +
-          (txt ? '<div class="chg ' + cls + '">' + txt + "</div>" : "");
-      }
+      var open = !weekend && hm >= openMin && hm < closeMin;
+      return {
+        open: open,
+        label: open ? (mkt.name + " açık") : (mkt.name + " kapalı")
+      };
+    } catch (e) {
+      return { open: false, label: mkt.name };
     }
-    var jobs = [];
-    for (var w = 0; w < PARALLEL; w++) jobs.push(worker());
-    await Promise.all(jobs);
-    state.loadingQuotes = Math.max(0, state.loadingQuotes - 1);
-    if (state.loadingQuotes === 0) setLoadingBanner(false);
-    document.getElementById("metaCache").textContent =
-      "Önbellek: " + Object.keys(readCache()).length + " · 60s";
   }
 
-  function mktCardHtml(m, locked) {
-    var ses = marketSession(m);
-    var cnt =
-      m.count != null && m.count !== "—"
-        ? '<div class="mkt-count">' + m.count + "<span>hisse</span></div>"
-        : locked
-        ? '<div class="mkt-count" style="font-size:13px;color:var(--faint)">Üyelik</div>'
-        : '<div class="mkt-count" style="font-size:12px;color:var(--faint)">…</div>';
-    var badge = locked
-      ? '<span class="lock-badge' + (m.plan === "elite" ? " elite" : "") + '">🔒 ' +
-        (m.plan === "elite" ? "Elite" : "Premium") + "</span>"
-      : '<span class="status ' + ses.statusKind + '">' + ses.label + "</span>";
-    return (
-      '<button type="button" class="mkt' +
-      (m.id === state.marketId && !locked ? " on" : "") +
-      (locked ? " locked" : "") +
-      '" data-mkt="' + m.id + '">' +
-      '<div class="mkt-top"><div class="mkt-name">' + m.flag + " " + m.name + "</div>" + badge + "</div>" +
-      cnt +
-      (locked
-        ? '<div class="mkt-sub">Dokun · plan gerekli</div>'
-        : '<div class="mkt-clock">' + ses.until + " <strong>" + ses.text + "</strong></div>" +
-          '<div class="mkt-sub">' + m.label + "</div>") +
-      "</button>"
-    );
+  function updateSession() {
+    var mkt = MARKETS[marketId];
+    var s = sessionInfo(mkt);
+    $("sesDot").className = "dot" + (s.open ? "" : " off");
+    $("sesText").textContent = s.label;
   }
 
-  function renderMarkets() {
-    document.getElementById("marketsFree").innerHTML = MARKETS.filter(function (m) {
-      return m.plan === "free";
-    }).map(function (m) { return mktCardHtml(m, false); }).join("");
-    document.getElementById("marketsLocked").innerHTML = MARKETS.filter(function (m) {
-      return m.plan !== "free";
-    }).map(function (m) { return mktCardHtml(m, true); }).join("");
-  }
-
-  async function loadJson(file) {
+  function getWatch() {
     try {
-      var res = await fetch(file + "?t=" + Date.now().toString().slice(0, 8));
-      if (!res.ok) return [];
-      var data = await res.json();
-      return uniqueBySymbol(extractStocks(data));
+      return JSON.parse(localStorage.getItem(WATCH_KEY) || "[]");
     } catch (e) {
       return [];
     }
   }
-
-  async function preloadCounts() {
-    await Promise.all(
-      MARKETS.map(async function (m) {
-        if (m.plan !== "free") {
-          m.count = "—";
-          return;
-        }
-        m.count = (await loadJson(m.file)).length;
-      })
-    );
-    renderMarkets();
+  function setWatch(arr) {
+    try {
+      localStorage.setItem(WATCH_KEY, JSON.stringify(arr));
+    } catch (e) {}
+  }
+  function toggleWatch(sym) {
+    var w = getWatch();
+    var i = w.indexOf(sym);
+    if (i >= 0) w.splice(i, 1);
+    else w.push(sym);
+    setWatch(w);
+    return w.indexOf(sym) >= 0;
   }
 
-  function showGate(m) {
-    document.getElementById("gateTitle").textContent = m.name + " kilitli";
-    document.getElementById("gateText").textContent =
-      m.name + " (" + m.label + ") yalnızca " +
-      (m.plan === "elite" ? "Elite" : "Premium ve Elite") +
-      " üyelere açıktır. Ücretsiz planda BIST, NASDAQ ve NYSE ile devam edebilirsin.";
-    var gate = document.getElementById("gate");
-    gate.classList.add("show");
-    gate.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  function money(n, mkt) {
+    if (n == null || !isFinite(n)) return "—";
+    var cur = mkt && mkt.id === "bist" ? "tr-TR" : "en-US";
+    return Number(n).toLocaleString(cur, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
-  async function loadMarket(id) {
-    var mkt = MARKETS.filter(function (m) { return m.id === id; })[0];
-    if (!mkt) return;
-    if (mkt.plan !== "free") {
-      showGate(mkt);
-      return;
-    }
-    document.getElementById("gate").classList.remove("show");
-    state.marketId = id;
-    state.shown = 0;
-    document.getElementById("list").innerHTML = "";
-    document.getElementById("empty").hidden = true;
-    document.getElementById("btnMore").hidden = true;
-    setLoadingBanner(true);
-    state.list = await loadJson(mkt.file);
-    mkt.count = state.list.length;
-    setLoadingBanner(false);
-    applyFilter();
-    renderMarkets();
+  function getCached(sym) {
+    var h = quoteCache[sym];
+    if (!h) return null;
+    if (Date.now() > h.exp) return null;
+    return h.val;
+  }
+  function setCached(sym, val) {
+    quoteCache[sym] = { val: val, exp: Date.now() + CACHE_MS };
   }
 
-  function applyFilter() {
-    var q = (document.getElementById("q").value || "").trim().toLowerCase();
-    document.getElementById("btnClear").classList.toggle("show", !!q);
-    state.filtered = !q
-      ? state.list.slice()
-      : state.list.filter(function (item) {
-          return (
-            String(item.symbol || "").toLowerCase().indexOf(q) !== -1 ||
-            String(item.name || "").toLowerCase().indexOf(q) !== -1
-          );
+  function fetchQuote(qSym) {
+    var hit = getCached(qSym);
+    if (hit) return Promise.resolve(hit);
+
+    if (window.API && typeof window.API.getLiveQuote === "function") {
+      return window.API.getLiveQuote(qSym)
+        .then(function (q) {
+          if (q && q.price != null) {
+            var row = { price: q.price, pct: q.pct != null ? q.pct : null };
+            setCached(qSym, row);
+            return row;
+          }
+          throw new Error("empty");
+        })
+        .catch(function () {
+          return fetchYahooQuote(qSym);
         });
-    state.shown = 0;
-    document.getElementById("list").innerHTML = "";
-    var mkt = MARKETS.filter(function (m) { return m.id === state.marketId; })[0];
-    document.getElementById("metaLine").innerHTML =
-      "<strong>" + (mkt ? mkt.name : "") + "</strong> · " +
-      state.filtered.length + " / " + state.list.length + " hisse" +
-      (q ? " · “" + q.replace(/</g, "") + "”" : "");
-    renderMore();
+    }
+    return fetchYahooQuote(qSym);
   }
 
-  function renderMore() {
-    var mkt = MARKETS.filter(function (m) { return m.id === state.marketId; })[0];
-    var slice = state.filtered.slice(state.shown, state.shown + PAGE);
-    if (!state.filtered.length) {
-      document.getElementById("empty").hidden = false;
-      document.getElementById("btnMore").hidden = true;
+  function fetchYahooQuote(qSym) {
+    var yUrl =
+      "https://query1.finance.yahoo.com/v8/finance/chart/" +
+      encodeURIComponent(qSym) +
+      "?interval=1d&range=5d";
+    var proxies = [];
+    if (window.NEXORA_CONFIG && window.NEXORA_CONFIG.workerOhlcUrl) {
+      /* worker history değil; basit proxy yoksa atla */
+    }
+    /* MY style: kullanıcının ultra-grafik proxy'si yok burada — allorigins dene */
+    proxies = [
+      "https://api.allorigins.win/get?url=" + encodeURIComponent(yUrl),
+      "https://api.allorigins.win/raw?url=" + encodeURIComponent(yUrl)
+    ];
+
+    var i = 0;
+    function next() {
+      if (i >= proxies.length) return Promise.resolve(null);
+      var url = proxies[i++];
+      return fetch(url, { cache: "no-store" })
+        .then(function (r) {
+          if (!r.ok) throw new Error("http");
+          return r.text();
+        })
+        .then(function (text) {
+          var payload = JSON.parse(text);
+          if (payload && payload.contents) payload = JSON.parse(payload.contents);
+          var meta =
+            payload &&
+            payload.chart &&
+            payload.chart.result &&
+            payload.chart.result[0] &&
+            payload.chart.result[0].meta;
+          if (!meta) throw new Error("meta");
+          var price = meta.regularMarketPrice != null ? meta.regularMarketPrice : meta.previousClose;
+          var prev = meta.chartPreviousClose != null ? meta.chartPreviousClose : meta.previousClose;
+          var pct = null;
+          if (price != null && prev != null && prev !== 0) {
+            pct = ((price - prev) / prev) * 100;
+          }
+          var row = { price: Number(price), pct: pct };
+          setCached(qSym, row);
+          return row;
+        })
+        .catch(function () {
+          return next();
+        });
+    }
+    return next();
+  }
+
+  function filteredList() {
+    var list = catalogs[marketId] || [];
+    var q = filterQ.trim().toLowerCase();
+    if (!q) return list;
+    return list.filter(function (it) {
+      var s = String(it.symbol || "").toLowerCase();
+      var n = String(it.name || "").toLowerCase();
+      return s.indexOf(q) !== -1 || n.indexOf(q) !== -1;
+    });
+  }
+
+  function renderList() {
+    var mkt = MARKETS[marketId];
+    var list = filteredList();
+    var watch = getWatch();
+    $("countText").textContent = list.length + " hisse";
+
+    if (!list.length) {
+      $("list").innerHTML = '<div class="empty">Sonuç yok. Başka bir arama dene.</div>';
       return;
     }
-    document.getElementById("empty").hidden = true;
+
+    /* Performans: ilk 80 satır */
+    var slice = list.slice(0, 80);
     var html = slice.map(function (item) {
-      var sym = String(item.symbol || "").toUpperCase();
+      var disp = displaySym(item);
       var qSym = quoteSymbol(item, mkt);
-      var score = item.aiScore != null ? Number(item.aiScore) : 70;
-      var watched = state.watch.indexOf(sym) !== -1;
-      var flag = item.flag || mkt.flag || "";
+      var inW = watch.indexOf(qSym) >= 0 || watch.indexOf(disp) >= 0;
+      var grafUrl =
+        "ultra-grafik.html?s=" +
+        encodeURIComponent(qSym) +
+        "&m=" +
+        encodeURIComponent(marketId);
+
       return (
-        '<article class="row"><div>' +
-        '<div class="row-sym">' + flag + " " + sym + "</div>" +
-        '<div class="row-name">' + (item.name || "—") + "</div>" +
-        '<div class="row-tags"><span class="tag">' + (item.sector || "—") + "</span></div>" +
-        '<div class="ai-mini"><span class="lab">AI</span><div class="ai-bar"><i style="width:' +
-        Math.min(100, score) + '%"></i></div><span class="sc">' + score + "</span></div></div>" +
-        '<div class="row-right"><div data-q="' + qSym + '"><div class="skel"></div><div class="skel sm"></div></div>' +
-        '<div class="row-actions">' +
-        '<a class="btn-g" href="ultra-grafik.html?s=' + encodeURIComponent(qSym) + '">Grafik</a>' +
-        '<button type="button" class="btn-w' + (watched ? " on" : "") + '" data-watch="' + sym + '">' +
-        (watched ? "Takipte" : "Takip") + "</button></div></div></article>"
+        '<article class="row" data-sym="' + disp + '">' +
+          '<div class="row-main">' +
+            '<div class="row-sym"><span class="fg">' + mkt.flag + "</span>" + disp + "</div>" +
+            '<div class="row-name">' + (item.name || mkt.name) + "</div>" +
+          "</div>" +
+          '<div class="row-price" data-q="' + qSym.replace(/"/g, "") + '">' +
+            '<div class="skel"></div><div class="skel sm"></div>' +
+          "</div>" +
+          '<div class="row-actions">' +
+            '<a class="btn-g" href="' + grafUrl + '">Grafik</a>' +
+            '<button type="button" class="btn-w' + (inW ? " on" : "") + '" data-w="' + qSym + '">' +
+              (inW ? "Takipte" : "Takip") +
+            "</button>" +
+          "</div>" +
+        "</article>"
       );
     }).join("");
-    document.getElementById("list").insertAdjacentHTML("beforeend", html);
-    state.shown += slice.length;
-    document.getElementById("btnMore").hidden = state.shown >= state.filtered.length;
-    fillPrices(slice, mkt);
+
+    if (list.length > 80) {
+      html +=
+        '<div class="empty">İlk 80 sonuç gösteriliyor. Daraltmak için arama kullan.</div>';
+    }
+
+    $("list").innerHTML = html;
+    fillQuotes(slice, mkt);
   }
 
-  function onMktClick(e) {
-    var b = e.target.closest("[data-mkt]");
-    if (b) loadMarket(b.getAttribute("data-mkt"));
+  function fillQuotes(slice, mkt) {
+    $("loadBanner").classList.add("show");
+    var i = 0;
+    var parallel = 3;
+
+    function tick() {
+      if (i >= slice.length) {
+        $("loadBanner").classList.remove("show");
+        return;
+      }
+      var batch = [];
+      for (var k = 0; k < parallel && i < slice.length; k++, i++) {
+        batch.push(slice[i]);
+      }
+      Promise.all(
+        batch.map(function (item) {
+          var qSym = quoteSymbol(item, mkt);
+          return fetchQuote(qSym).then(function (q) {
+            var el = document.querySelector('[data-q="' + cssEscape(qSym) + '"]');
+            if (!el) return;
+            if (!q || q.price == null) {
+              el.innerHTML =
+                '<div class="p">—</div><div class="c flat">—</div>';
+              return;
+            }
+            var pct = q.pct;
+            var cls = pct > 0 ? "up" : pct < 0 ? "down" : "flat";
+            var pctStr =
+              pct == null || !isFinite(pct)
+                ? "—"
+                : (pct > 0 ? "+" : "") + pct.toFixed(2) + "%";
+            el.innerHTML =
+              '<div class="p">' +
+              money(q.price, mkt) +
+              '</div><div class="c ' +
+              cls +
+              '">' +
+              pctStr +
+              "</div>";
+          });
+        })
+      ).then(tick);
+    }
+    tick();
   }
-  document.getElementById("marketsFree").addEventListener("click", onMktClick);
-  document.getElementById("marketsLocked").addEventListener("click", onMktClick);
-  document.getElementById("gateClose").addEventListener("click", function () {
-    document.getElementById("gate").classList.remove("show");
+
+  function cssEscape(s) {
+    return String(s).replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+  }
+
+  /* Events */
+  $("markets").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-m]");
+    if (!b) return;
+    document.querySelectorAll("#markets button").forEach(function (x) {
+      x.classList.remove("on");
+    });
+    b.classList.add("on");
+    marketId = b.getAttribute("data-m");
+    filterQ = "";
+    $("q").value = "";
+    updateSession();
+    renderList();
   });
-  document.getElementById("btnMore").addEventListener("click", renderMore);
 
   var qTimer;
-  document.getElementById("q").addEventListener("input", function () {
+  $("q").addEventListener("input", function () {
     clearTimeout(qTimer);
-    qTimer = setTimeout(applyFilter, 150);
-  });
-  document.getElementById("btnClear").addEventListener("click", function () {
-    document.getElementById("q").value = "";
-    applyFilter();
-  });
-  document.getElementById("list").addEventListener("click", function (e) {
-    var b = e.target.closest("[data-watch]");
-    if (!b) return;
-    var sym = b.getAttribute("data-watch");
-    var i = state.watch.indexOf(sym);
-    if (i === -1) state.watch.push(sym);
-    else state.watch.splice(i, 1);
-    saveWatch();
-    var on = state.watch.indexOf(sym) !== -1;
-    b.classList.toggle("on", on);
-    b.textContent = on ? "Takipte" : "Takip";
+    qTimer = setTimeout(function () {
+      filterQ = $("q").value;
+      renderList();
+    }, 120);
   });
 
-  renderMarkets();
-  preloadCounts();
-  loadMarket("bist");
-  setInterval(renderMarkets, 30000);
+  $("list").addEventListener("click", function (e) {
+    var w = e.target.closest("button[data-w]");
+    if (!w) return;
+    var sym = w.getAttribute("data-w");
+    var on = toggleWatch(sym);
+    w.classList.toggle("on", on);
+    w.textContent = on ? "Takipte" : "Takip";
+  });
+
+  Promise.all([loadCatalog("bist"), loadCatalog("nasdaq"), loadCatalog("nyse")]).then(
+    function () {
+      updateSession();
+      renderList();
+      setInterval(updateSession, 60000);
+    }
+  );
 })();
   </script>
 </body>
