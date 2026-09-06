@@ -1,761 +1,342 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Hisseler · Nexora AI</title>
-  <meta name="description" content="BIST, NASDAQ, NYSE hisse kartları. Grafiğe tek tık." />
-  <meta name="theme-color" content="#060a12" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --bg: #060a12;
-      --panel: rgba(15, 23, 42, 0.92);
-      --panel2: rgba(15, 23, 42, 0.72);
-      --border: rgba(148, 163, 184, 0.12);
-      --text: #f1f5f9;
-      --muted: #94a3b8;
-      --dim: #64748b;
-      --faint: #475569;
-      --cyan: #22d3ee;
-      --up: #34d399;
-      --down: #f87171;
-      --grad: linear-gradient(135deg, #22d3ee, #10b981);
-      --grad-btn: linear-gradient(135deg, #22d3ee, #6366f1);
-      --elite: linear-gradient(135deg, #a78bfa, #7c3aed);
-      --prem: linear-gradient(135deg, #fbbf24, #f59e0b);
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: Inter, system-ui, sans-serif;
-      background: var(--bg); color: var(--text);
-      min-height: 100vh; -webkit-font-smoothing: antialiased;
-    }
-    a { color: inherit; text-decoration: none; }
-    button, input { font: inherit; color: inherit; border: none; background: none; }
-    button { cursor: pointer; }
-    input { outline: none; }
-
-    .atmosphere {
-      position: fixed; inset: 0; z-index: 0; pointer-events: none;
-      background:
-        radial-gradient(ellipse 70% 40% at 10% -5%, rgba(16,185,129,.12), transparent 50%),
-        radial-gradient(ellipse 50% 35% at 90% 0%, rgba(34,211,238,.08), transparent 45%),
-        var(--bg);
-    }
-    .app { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; }
-
-    /* Nav */
-    .nav {
-      height: 56px; display: flex; align-items: center; justify-content: space-between;
-      padding: 0 14px; gap: 10px;
-      background: rgba(6,10,18,.92); backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
-      position: sticky; top: 0; z-index: 50;
-    }
-    .brand { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 14px; }
-    .mark {
-      width: 28px; height: 28px; border-radius: 9px; background: var(--grad);
-      display: grid; place-items: center; font-size: 12px; font-weight: 900; color: #042f2e;
-    }
-    .brand em {
-      font-style: normal; background: var(--grad);
-      -webkit-background-clip: text; background-clip: text; color: transparent;
-    }
-    .nav-r { display: flex; gap: 8px; }
-    .nav-r a {
-      padding: 8px 14px; border-radius: 999px; font-size: 12px; font-weight: 700;
-      color: var(--muted); box-shadow: inset 0 0 0 1px var(--border);
-    }
-    .nav-r a.pri { color: #fff; background: var(--grad-btn); box-shadow: none; }
-
-    .wrap {
-      max-width: 1100px; margin: 0 auto; padding: 14px 14px 40px;
-      width: 100%; flex: 1;
-    }
-
-    /* Market grid */
-    .mkt-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-      margin-bottom: 12px;
-    }
-    @media (min-width: 720px) {
-      .mkt-grid { grid-template-columns: repeat(3, 1fr); }
-    }
-    .mkt {
-      position: relative;
-      padding: 14px 14px 12px; border-radius: 16px;
-      background: var(--panel); border: 1px solid var(--border);
-      text-align: left; transition: border-color .15s, box-shadow .15s, transform .12s;
-    }
-    .mkt:hover { transform: translateY(-1px); border-color: rgba(34,211,238,.25); }
-    .mkt.on {
-      border-color: rgba(34,211,238,.45);
-      box-shadow: 0 0 0 1px rgba(34,211,238,.2), 0 8px 28px rgba(34,211,238,.12);
-      background: linear-gradient(160deg, rgba(34,211,238,.12), rgba(15,23,42,.95));
-    }
-    .mkt.locked {
-      border-style: dashed; opacity: 0.85;
-    }
-    .mkt-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    .mkt-name { font-weight: 800; font-size: 14px; display: flex; align-items: center; gap: 6px; }
-    .mkt-sub { margin-top: 6px; font-size: 12px; color: var(--dim); font-weight: 500; }
-    .mkt-sub strong { color: var(--muted); }
-    .pill {
-      font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 999px;
-      color: #fff;
-    }
-    .pill.free { background: rgba(52,211,153,.2); color: var(--up); }
-    .pill.prem { background: var(--prem); color: #422006; }
-    .pill.elite { background: var(--elite); }
-
-    /* Search + filters */
-    .toolbar { margin-bottom: 10px; }
-    .search {
-      width: 100%; padding: 12px 14px 12px 40px; border-radius: 14px;
-      background: rgba(6,10,18,.75); box-shadow: inset 0 0 0 1px var(--border);
-      font-size: 14px; font-weight: 600; position: relative;
-    }
-    .search-wrap { position: relative; margin-bottom: 10px; }
-    .search-wrap::before {
-      content: "⌕"; position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
-      color: var(--faint); font-size: 16px; z-index: 1; pointer-events: none;
-    }
-    .search:focus { box-shadow: inset 0 0 0 1.5px rgba(34,211,238,.4); }
-    .search::placeholder { color: var(--faint); font-weight: 500; }
-
-    .sectors {
-      display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px;
-    }
-    .sectors button {
-      padding: 6px 11px; border-radius: 999px; font-size: 11px; font-weight: 700;
-      color: var(--dim); background: var(--panel); box-shadow: inset 0 0 0 1px var(--border);
-    }
-    .sectors button.on {
-      color: #042f2e; background: var(--grad); box-shadow: none;
-    }
-
-    .meta-line {
-      display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center;
-      font-size: 12px; font-weight: 600; color: var(--dim); margin-bottom: 12px;
-    }
-    .meta-line b { color: var(--muted); }
-    .pulse {
-      width: 7px; height: 7px; border-radius: 50%; background: var(--up);
-      box-shadow: 0 0 6px var(--up); display: inline-block; margin-right: 4px;
-    }
-    .pulse.off { background: var(--down); box-shadow: 0 0 6px var(--down); }
-
-    /* Layout: list + watch */
-    .layout {
-      display: grid; gap: 14px;
-    }
-    @media (min-width: 960px) {
-      .layout { grid-template-columns: 1fr 260px; align-items: start; }
-    }
-    .cards { display: flex; flex-direction: column; gap: 10px; }
-    @media (min-width: 700px) {
-      .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    }
-
-    .card {
-      padding: 14px; border-radius: 16px;
-      background: var(--panel); border: 1px solid var(--border);
-      transition: border-color .15s, transform .12s;
-    }
-    .card:hover { border-color: rgba(34,211,238,.3); transform: translateY(-1px); }
-    .card-top { display: flex; justify-content: space-between; gap: 10px; }
-    .card-left { min-width: 0; }
-    .sym-row { display: flex; align-items: center; gap: 7px; font-weight: 800; font-size: 15px; }
-    .flag { font-size: 14px; }
-    .cname {
-      margin-top: 3px; font-size: 12px; color: var(--dim); font-weight: 500;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    .price-col { text-align: right; flex-shrink: 0; }
-    .price { font-weight: 800; font-size: 15px; font-variant-numeric: tabular-nums; }
-    .chg { font-size: 12px; font-weight: 700; margin-top: 2px; }
-    .chg.up { color: var(--up); } .chg.down { color: var(--down); } .chg.flat { color: var(--dim); }
-
-    .card-mid { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-    .tag {
-      font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 999px;
-      color: var(--muted); background: rgba(148,163,184,.08);
-      box-shadow: inset 0 0 0 1px var(--border);
-    }
-    .ai-wrap {
-      display: flex; align-items: center; gap: 8px; margin-top: 10px;
-      font-size: 11px; font-weight: 700; color: var(--dim);
-    }
-    .ai-bar {
-      flex: 1; height: 5px; border-radius: 99px;
-      background: rgba(148,163,184,.12); overflow: hidden; max-width: 120px;
-    }
-    .ai-bar i {
-      display: block; height: 100%; border-radius: 99px;
-      background: linear-gradient(90deg, #22d3ee, #6366f1, #a78bfa);
-    }
-    .ai-num { color: var(--text); font-variant-numeric: tabular-nums; min-width: 22px; }
-
-    .card-actions {
-      margin-top: 12px; display: flex; gap: 8px; justify-content: flex-end;
-    }
-    .btn-g {
-      padding: 8px 14px; border-radius: 10px; font-size: 12px; font-weight: 700;
-      color: var(--muted); box-shadow: inset 0 0 0 1px var(--border);
-    }
-    .btn-g:hover { color: var(--text); border-color: rgba(34,211,238,.3); }
-    .btn-w {
-      padding: 8px 14px; border-radius: 10px; font-size: 12px; font-weight: 700;
-      color: #042f2e; background: linear-gradient(135deg, #22d3ee, #38bdf8);
-    }
-    .btn-w.on { background: transparent; color: var(--cyan); box-shadow: inset 0 0 0 1px rgba(34,211,238,.45); }
-
-    .skel {
-      height: 14px; width: 56px; border-radius: 6px; margin-left: auto;
-      background: linear-gradient(90deg, rgba(148,163,184,.08), rgba(148,163,184,.2), rgba(148,163,184,.08));
-      background-size: 200% 100%; animation: sh 1.1s ease infinite;
-    }
-    .skel.sm { height: 10px; width: 42px; margin-top: 6px; }
-    @keyframes sh { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
-
-    /* Watch panel */
-    .watch {
-      display: none; padding: 14px; border-radius: 16px;
-      background: var(--panel); border: 1px solid var(--border);
-      position: sticky; top: 70px;
-    }
-    @media (min-width: 960px) { .watch { display: block; } }
-    .watch h3 { font-size: 13px; font-weight: 800; margin-bottom: 10px; }
-    .watch-item {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 8px 0; border-bottom: 1px solid rgba(148,163,184,.08);
-      font-size: 12px;
-    }
-    .watch-item:last-child { border-bottom: none; }
-    .watch-item a { font-weight: 800; color: var(--cyan); }
-    .watch-empty { font-size: 12px; color: var(--dim); line-height: 1.5; }
-
-    .empty { text-align: center; padding: 36px 12px; color: var(--dim); font-size: 14px; grid-column: 1 / -1; }
-
-    .gate {
-      display: none; position: fixed; inset: 0; z-index: 80;
-      background: rgba(6,10,18,.75); backdrop-filter: blur(8px);
-      align-items: center; justify-content: center; padding: 20px;
-    }
-    .gate.show { display: flex; }
-    .gate-box {
-      max-width: 360px; width: 100%; padding: 22px; border-radius: 18px;
-      background: var(--panel); border: 1px solid rgba(167,139,250,.35);
-      text-align: center;
-    }
-    .gate-box h2 { font-size: 1.1rem; font-weight: 800; margin-bottom: 8px; }
-    .gate-box p { font-size: 13px; color: var(--muted); line-height: 1.55; margin-bottom: 16px; }
-    .gate-box .btns { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
-    .gate-box a, .gate-box button {
-      padding: 10px 16px; border-radius: 12px; font-size: 13px; font-weight: 700;
-    }
-    .gate-box a.pri { color: #fff; background: var(--elite); }
-    .gate-box button {
-      color: var(--muted); box-shadow: inset 0 0 0 1px var(--border);
-    }
-
-    .legal {
-      margin-top: 18px; padding: 12px 14px; border-radius: 12px;
-      background: var(--panel2); border: 1px solid var(--border);
-      font-size: 12px; color: var(--dim); line-height: 1.55;
-    }
-    .footer {
-      border-top: 1px solid var(--border); padding: 18px 14px; text-align: center;
-      font-size: 12px; color: var(--faint);
-    }
-    .footer a { color: var(--cyan); font-weight: 600; margin: 0 6px; }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Hisseler · Nexora AI</title>
+<meta name="theme-color" content="#060a12"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#060a12;--panel:rgba(15,23,42,.94);--border:rgba(148,163,184,.12);--text:#f1f5f9;--muted:#94a3b8;--dim:#64748b;--faint:#475569;--cyan:#22d3ee;--up:#34d399;--down:#f87171;--grad:linear-gradient(135deg,#22d3ee,#10b981);--grad-btn:linear-gradient(135deg,#22d3ee,#6366f1);--elite:linear-gradient(135deg,#a78bfa,#7c3aed)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}button,input{font:inherit;color:inherit;border:none;background:none}button{cursor:pointer}input{outline:none}
+.atmosphere{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 70% 45% at 8% -8%,rgba(16,185,129,.14),transparent 52%),radial-gradient(ellipse 55% 40% at 90% 0%,rgba(34,211,238,.1),transparent 48%),var(--bg)}
+.app{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column}
+.nav{height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;background:rgba(6,10,18,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+.brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:14px}
+.mark{width:28px;height:28px;border-radius:9px;background:var(--grad);display:grid;place-items:center;font-size:12px;font-weight:900;color:#042f2e}
+.brand em{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.nav-links{display:none;gap:4px;flex:1;justify-content:center}
+@media(min-width:900px){.nav-links{display:flex}}
+.nav-links a{font-size:13px;font-weight:600;color:var(--muted);padding:7px 11px;border-radius:9px}
+.nav-links a.on{color:var(--text);background:rgba(34,211,238,.1)}
+.nav-r{display:flex;gap:8px}
+.nav-r a{padding:8px 14px;border-radius:999px;font-size:12px;font-weight:700;color:var(--muted);box-shadow:inset 0 0 0 1px var(--border)}
+.nav-r a.pri{color:#042f2e;background:var(--grad);box-shadow:none}
+.wrap{max-width:1100px;margin:0 auto;padding:16px 14px 48px;width:100%;flex:1}
+.mkt-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+@media(min-width:720px){.mkt-grid{grid-template-columns:repeat(3,1fr)}}
+.mkt{padding:14px;border-radius:16px;background:var(--panel);border:1px solid var(--border);text-align:left;transition:box-shadow .15s,border-color .15s,transform .12s}
+.mkt:hover{transform:translateY(-1px)}
+.mkt.on{border-color:rgba(34,211,238,.45);box-shadow:0 0 0 1px rgba(34,211,238,.2),0 8px 28px rgba(34,211,238,.12);background:linear-gradient(160deg,rgba(34,211,238,.1),rgba(15,23,42,.95))}
+.mkt.locked{border-style:dashed;opacity:.88}
+.mkt-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.mkt-name{font-weight:800;font-size:14px}
+.mkt-sub{margin-top:6px;font-size:12px;color:var(--dim);font-weight:500}
+.pill{font-size:10px;font-weight:800;padding:3px 8px;border-radius:999px}
+.pill.free{background:rgba(52,211,153,.18);color:var(--up)}
+.pill.elite{background:var(--elite);color:#fff}
+.pill.prem{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#422006}
+.search-wrap{position:relative;margin-bottom:10px}
+.search-wrap::before{content:"⌕";position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--faint);font-size:16px;pointer-events:none}
+.search{width:100%;padding:12px 14px 12px 40px;border-radius:14px;background:rgba(6,10,18,.75);box-shadow:inset 0 0 0 1px var(--border);font-size:14px;font-weight:600}
+.search:focus{box-shadow:inset 0 0 0 1.5px rgba(34,211,238,.4)}
+.search::placeholder{color:var(--faint);font-weight:500}
+.sectors{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.sectors button{padding:6px 11px;border-radius:999px;font-size:11px;font-weight:700;color:var(--dim);background:var(--panel);box-shadow:inset 0 0 0 1px var(--border)}
+.sectors button.on{color:#042f2e;background:var(--grad);box-shadow:none}
+.meta{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:12px;font-weight:600;color:var(--dim);margin-bottom:12px}
+.meta b{color:var(--muted)}
+.pulse{width:7px;height:7px;border-radius:50%;background:var(--up);box-shadow:0 0 6px var(--up);display:inline-block;margin-right:4px}
+.pulse.off{background:var(--down);box-shadow:0 0 6px var(--down)}
+.cards{display:flex;flex-direction:column;gap:10px}
+@media(min-width:700px){.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}}
+.card{padding:14px;border-radius:16px;background:var(--panel);border:1px solid var(--border);transition:border-color .15s,transform .12s}
+.card:hover{border-color:rgba(34,211,238,.3);transform:translateY(-1px)}
+.card-top{display:flex;justify-content:space-between;gap:10px}
+.sym-row{display:flex;align-items:center;gap:7px;font-weight:800;font-size:15px}
+.cname{margin-top:3px;font-size:12px;color:var(--dim);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.price-col{text-align:right;flex-shrink:0}
+.price{font-weight:800;font-size:15px;font-variant-numeric:tabular-nums}
+.chg{font-size:12px;font-weight:700;margin-top:2px}
+.chg.up{color:var(--up)}.chg.down{color:var(--down)}.chg.flat{color:var(--dim)}
+.tag{display:inline-block;margin-top:10px;font-size:10px;font-weight:700;padding:3px 8px;border-radius:999px;color:var(--muted);background:rgba(148,163,184,.08);box-shadow:inset 0 0 0 1px var(--border)}
+.ai-wrap{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:11px;font-weight:700;color:var(--dim)}
+.ai-bar{flex:1;height:5px;border-radius:99px;background:rgba(148,163,184,.12);overflow:hidden;max-width:120px}
+.ai-bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#22d3ee,#6366f1,#a78bfa)}
+.ai-num{color:var(--text);min-width:22px}
+.card-actions{margin-top:12px;display:flex;gap:8px;justify-content:flex-end}
+.btn-g{padding:8px 14px;border-radius:10px;font-size:12px;font-weight:700;color:var(--muted);box-shadow:inset 0 0 0 1px var(--border)}
+.btn-g:hover{color:var(--text)}
+.btn-w{padding:8px 14px;border-radius:10px;font-size:12px;font-weight:700;color:#042f2e;background:linear-gradient(135deg,#22d3ee,#38bdf8)}
+.btn-w.on{background:transparent;color:var(--cyan);box-shadow:inset 0 0 0 1px rgba(34,211,238,.45)}
+.skel{height:14px;width:56px;border-radius:6px;margin-left:auto;background:linear-gradient(90deg,rgba(148,163,184,.08),rgba(148,163,184,.2),rgba(148,163,184,.08));background-size:200% 100%;animation:sh 1.1s ease infinite}
+.skel.sm{height:10px;width:42px;margin-top:6px}
+@keyframes sh{0%{background-position:100% 0}100%{background-position:-100% 0}}
+.empty{text-align:center;padding:36px;color:var(--dim);font-size:14px;grid-column:1/-1}
+.gate{display:none;position:fixed;inset:0;z-index:80;background:rgba(6,10,18,.75);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:20px}
+.gate.show{display:flex}
+.gate-box{max-width:360px;width:100%;padding:22px;border-radius:18px;background:var(--panel);border:1px solid rgba(167,139,250,.35);text-align:center}
+.gate-box h2{font-size:1.1rem;font-weight:800;margin-bottom:8px}
+.gate-box p{font-size:13px;color:var(--muted);line-height:1.55;margin-bottom:16px}
+.gate-box .btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.gate-box a.pri{padding:10px 16px;border-radius:12px;font-size:13px;font-weight:700;color:#fff;background:var(--elite)}
+.gate-box button{padding:10px 16px;border-radius:12px;font-size:13px;font-weight:700;color:var(--muted);box-shadow:inset 0 0 0 1px var(--border)}
+.legal{margin-top:18px;padding:12px 14px;border-radius:12px;background:rgba(15,23,42,.7);border:1px solid var(--border);font-size:12px;color:var(--dim);line-height:1.55}
+.footer{border-top:1px solid var(--border);padding:18px 14px;text-align:center;font-size:12px;color:var(--faint)}
+.footer a{color:var(--cyan);font-weight:600;margin:0 6px}
+</style>
 </head>
 <body>
-  <div class="atmosphere"></div>
-  <div class="app">
-    <nav class="nav">
-      <a class="brand" href="index.html"><span class="mark">N</span>Nexora <em>AI</em></a>
-      <div class="nav-r">
-        <a href="oyun.html">Lig</a>
-        <a class="pri" href="premium.html">Planlar</a>
-      </div>
-    </nav>
-
-    <main class="wrap">
-      <div class="mkt-grid" id="mktGrid"></div>
-
-      <div class="toolbar">
-        <div class="search-wrap">
-          <input class="search" id="q" type="search" placeholder="THYAO, Apple, Aselsan…" autocomplete="off" />
-        </div>
-        <div class="sectors" id="sectors">
-          <button type="button" class="on" data-sec="">Tümü</button>
-          <button type="button" data-sec="Technology">Teknoloji</button>
-          <button type="button" data-sec="Financial">Finans</button>
-          <button type="button" data-sec="Energy">Enerji</button>
-          <button type="button" data-sec="Healthcare">Sağlık</button>
-          <button type="button" data-sec="Consumer">Tüketim</button>
-          <button type="button" data-sec="Industrial">Sanayi</button>
-        </div>
-      </div>
-
-      <div class="meta-line">
-        <span><span class="pulse" id="sesDot"></span><span id="sesText">—</span></span>
-        <span id="countLine"><b>—</b></span>
-        <span>Önbellek 60s · gecikmeli veri</span>
-      </div>
-
-      <div class="layout">
-        <div class="cards" id="cards"></div>
-        <aside class="watch">
-          <h3>Takip listem</h3>
-          <div id="watchBox"><p class="watch-empty">Kartlardan Takip ile ekle. Grafiğe buradan da geçebilirsin.</p></div>
-        </aside>
-      </div>
-
-      <aside class="legal">
-        Yatırım tavsiyesi değildir. Veriler ≈15 dk gecikmeli olabilir.
-        <a href="about.html" style="color:var(--cyan)">Hakkımızda</a>
-      </aside>
-    </main>
-
-    <footer class="footer">
-      <a href="index.html">Ana sayfa</a>
-      <a href="ultra-grafik.html">Grafik</a>
-      <a href="portfolio.html">Portföy</a>
-      <a href="https://x.com/nexora88team" target="_blank" rel="noopener">X</a>
-    </footer>
+<div class="atmosphere"></div>
+<div class="app">
+<nav class="nav">
+  <a class="brand" href="index.html"><span class="mark">N</span>Nexora <em>AI</em></a>
+  <div class="nav-links">
+    <a href="index.html">Ana</a>
+    <a class="on" href="stock.html">Hisseler</a>
+    <a href="portfolio.html">Portföy</a>
+    <a href="ultra-grafik.html">Grafik</a>
+    <a href="premium.html">Premium</a>
+    <a href="about.html">Hakkımızda</a>
   </div>
-
-  <div class="gate" id="gate">
-    <div class="gate-box">
-      <h2 id="gateTitle">Premium / Elite</h2>
-      <p id="gateMsg">Bu piyasa üyelik planına özeldir.</p>
-      <div class="btns">
-        <a class="pri" href="premium.html">Planları gör</a>
-        <button type="button" id="gateClose">Kapat</button>
-      </div>
+  <div class="nav-r">
+    <a href="oyun.html">Lig</a>
+    <a class="pri" href="premium.html">Planlar</a>
+  </div>
+</nav>
+<main class="wrap">
+  <div class="mkt-grid" id="mktGrid"></div>
+  <div class="search-wrap"><input class="search" id="q" type="search" placeholder="THYAO, Apple, Aselsan…" autocomplete="off"/></div>
+  <div class="sectors" id="sectors">
+    <button type="button" class="on" data-sec="">Tümü</button>
+    <button type="button" data-sec="Technology">Teknoloji</button>
+    <button type="button" data-sec="Financial">Finans</button>
+    <button type="button" data-sec="Energy">Enerji</button>
+    <button type="button" data-sec="Healthcare">Sağlık</button>
+    <button type="button" data-sec="Consumer">Tüketim</button>
+    <button type="button" data-sec="Industrial">Sanayi</button>
+  </div>
+  <div class="meta">
+    <span><span class="pulse" id="sesDot"></span><span id="sesText">—</span></span>
+    <span id="countLine"><b>—</b></span>
+    <span>Gecikmeli veri · 60s önbellek</span>
+  </div>
+  <div class="cards" id="cards"></div>
+  <aside class="legal">Yatırım tavsiyesi değildir. Veriler ≈15 dk gecikmeli olabilir.</aside>
+</main>
+<footer class="footer">
+  <a href="index.html">Ana</a><a href="ultra-grafik.html">Grafik</a><a href="portfolio.html">Portföy</a>
+  <a href="https://x.com/nexora88team" target="_blank" rel="noopener">X</a>
+</footer>
+</div>
+<div class="gate" id="gate">
+  <div class="gate-box">
+    <h2 id="gateTitle">Üyelik gerekli</h2>
+    <p id="gateMsg">Bu piyasa Pro / Elite planına özeldir.</p>
+    <div class="btns">
+      <a class="pri" href="premium.html">Planları gör</a>
+      <button type="button" id="gateClose">Kapat</button>
     </div>
   </div>
+</div>
+<script src="assets/js/secrets.js"></script>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/api.js"></script>
+<script>
+(function(){
+"use strict";
+var FREE=[
+  {id:"bist",name:"BIST",flag:"🇹🇷",file:"bist",suffix:".IS",tz:"Europe/Istanbul"},
+  {id:"nasdaq",name:"NASDAQ",flag:"🇺🇸",file:"nasdaq",suffix:"",tz:"America/New_York"},
+  {id:"nyse",name:"NYSE",flag:"🇺🇸",file:"nyse",suffix:"",tz:"America/New_York"}
+];
+var LOCKED=[
+  {id:"lse",name:"LSE",flag:"🇬🇧",plan:"premium"},
+  {id:"xetra",name:"XETRA",flag:"🇩🇪",plan:"premium"},
+  {id:"hkex",name:"HKEX",flag:"🇭🇰",plan:"elite"},
+  {id:"otcqb",name:"OTCQB",flag:"🇺🇸",plan:"elite"}
+];
+var marketId="nasdaq",sector="",filterQ="",catalogs={},quoteCache={},WATCH_KEY="nexora_watchlist",CACHE_MS=60000;
+var $=function(id){return document.getElementById(id)};
 
-  <script src="assets/js/secrets.js"></script>
-  <script src="assets/js/config.js"></script>
-  <script src="assets/js/api.js"></script>
-  <script>
-(function () {
-  "use strict";
+function extract(d){if(!d)return[];if(Array.isArray(d))return d;return d.stocks||d.items||[]}
+function unique(list){var s={},o=[];for(var i=0;i<list.length;i++){var k=String(list[i].symbol||"").toUpperCase().trim();if(!k||s[k])continue;s[k]=1;o.push(list[i])}return o}
+function loadCat(id){
+  if(catalogs[id]&&catalogs[id].length)return Promise.resolve(catalogs[id]);
+  return fetch("data/"+id+".json?t="+Date.now().toString().slice(0,8))
+    .then(function(r){if(!r.ok)throw 0;return r.json()})
+    .then(function(d){catalogs[id]=unique(extract(d));return catalogs[id]})
+    .catch(function(){catalogs[id]=[];return[]});
+}
+function mkt(){for(var i=0;i<FREE.length;i++)if(FREE[i].id===marketId)return FREE[i];return FREE[0]}
+function qSym(item,m){var s=String(item.symbol||"").toUpperCase().trim();if(!s)return"";if(s.indexOf(".")!==-1)return s;return m.suffix?s+m.suffix:s}
+function disp(item){return String(item.symbol||"").toUpperCase().replace(/\.IS$/i,"")}
+function aiScore(item){
+  if(item.aiScore!=null&&isFinite(+item.aiScore))return Math.max(0,Math.min(100,Math.round(+item.aiScore)));
+  var s=String(item.symbol||""),h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))%1000;return 70+(h%26);
+}
+function sectorOf(item){return String(item.sector||item.industry||"").trim()||"—"}
+function getWatch(){try{return JSON.parse(localStorage.getItem(WATCH_KEY)||"[]")}catch(e){return[]}}
+function setWatch(a){try{localStorage.setItem(WATCH_KEY,JSON.stringify(a))}catch(e){}}
 
-  var FREE = [
-    { id: "bist",   name: "BIST",   flag: "🇹🇷", plan: "free",  suffix: ".IS", tz: "Europe/Istanbul", file: "bist" },
-    { id: "nasdaq", name: "NASDAQ", flag: "🇺🇸", plan: "free",  suffix: "",    tz: "America/New_York", file: "nasdaq" },
-    { id: "nyse",   name: "NYSE",   flag: "🇺🇸", plan: "free",  suffix: "",    tz: "America/New_York", file: "nyse" }
+/** KRİTİK: grafik URL — ultra-grafik bunu okur */
+function grafHref(item,m){
+  var sym=qSym(item,m);
+  return "ultra-grafik.html?s="+encodeURIComponent(sym)+"&m="+encodeURIComponent(m.id);
+}
+
+function session(m){
+  try{
+    var fmt=new Intl.DateTimeFormat("en-US",{timeZone:m.tz,weekday:"short",hour:"2-digit",minute:"2-digit",hour12:false});
+    var parts=fmt.formatToParts(new Date()),map={};parts.forEach(function(p){map[p.type]=p.value});
+    var wd=map.weekday,hm=parseInt(map.hour,10)*60+parseInt(map.minute,10);
+    var we=wd==="Sat"||wd==="Sun";
+    var o=m.id==="bist"?10*60:9*60+30,c=m.id==="bist"?18*60:16*60;
+    var open=!we&&hm>=o&&hm<c;
+    return{open:open,label:open?m.name+" açık":m.name+" kapalı"};
+  }catch(e){return{open:false,label:m.name}}
+}
+function money(n,m){
+  if(n==null||!isFinite(n))return"—";
+  return Number(n).toLocaleString(m.id==="bist"?"tr-TR":"en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+function getCached(s){var h=quoteCache[s];if(!h||Date.now()>h.exp)return null;return h.val}
+function setCached(s,v){quoteCache[s]={val:v,exp:Date.now()+CACHE_MS}}
+
+function fetchQuote(sym){
+  var hit=getCached(sym);if(hit)return Promise.resolve(hit);
+  if(window.API&&typeof window.API.getLiveQuote==="function"){
+    return window.API.getLiveQuote(sym).then(function(q){
+      if(q&&q.price!=null){var row={price:q.price,pct:q.pct};setCached(sym,row);return row}
+      throw 0;
+    }).catch(function(){return yahooQ(sym)});
+  }
+  return yahooQ(sym);
+}
+function yahooQ(sym){
+  var y="https://query1.finance.yahoo.com/v8/finance/chart/"+encodeURIComponent(sym)+"?interval=1d&range=5d";
+  var proxies=[
+    "https://rapid-wind-0a13.ahmeteymenbakrac.workers.dev?url="+encodeURIComponent(y),
+    "https://api.allorigins.win/get?url="+encodeURIComponent(y)
   ];
-  var LOCKED = [
-    { id: "lse",   name: "LSE",   flag: "🇬🇧", plan: "premium" },
-    { id: "xetra", name: "XETRA", flag: "🇩🇪", plan: "premium" },
-    { id: "tse",   name: "TSE",   flag: "🇯🇵", plan: "premium" },
-    { id: "hkex",  name: "HKEX",  flag: "🇭🇰", plan: "elite" },
-    { id: "otcqb", name: "OTCQB", flag: "🇺🇸", plan: "elite" }
-  ];
-
-  var marketId = "nasdaq";
-  var sector = "";
-  var filterQ = "";
-  var catalogs = {};
-  var quoteCache = {};
-  var WATCH_KEY = "nexora_watchlist";
-  var CACHE_MS = 60000;
-
-  var $ = function (id) { return document.getElementById(id); };
-
-  function extract(data) {
-    if (!data) return [];
-    if (Array.isArray(data)) return data;
-    return data.stocks || data.items || [];
+  var i=0;
+  function next(){
+    if(i>=proxies.length)return Promise.resolve(null);
+    return fetch(proxies[i++],{cache:"no-store"}).then(function(r){if(!r.ok)throw 0;return r.text()}).then(function(t){
+      var p=JSON.parse(t);if(p&&p.contents)p=JSON.parse(p.contents);
+      var meta=p&&p.chart&&p.chart.result&&p.chart.result[0]&&p.chart.result[0].meta;if(!meta)throw 0;
+      var price=meta.regularMarketPrice!=null?meta.regularMarketPrice:meta.previousClose;
+      var prev=meta.chartPreviousClose!=null?meta.chartPreviousClose:meta.previousClose;
+      var pct=price!=null&&prev?((price-prev)/prev)*100:null;
+      var row={price:Number(price),pct:pct};setCached(sym,row);return row;
+    }).catch(function(){return next()});
   }
-  function unique(list) {
-    var seen = {}, out = [];
-    for (var i = 0; i < list.length; i++) {
-      var s = String(list[i].symbol || "").toUpperCase().trim();
-      if (!s || seen[s]) continue;
-      seen[s] = true;
-      out.push(list[i]);
-    }
-    return out;
-  }
+  return next();
+}
 
-  function loadCat(id) {
-    if (catalogs[id] && catalogs[id].length) return Promise.resolve(catalogs[id]);
-    return fetch("data/" + id + ".json?t=" + Date.now().toString().slice(0, 8))
-      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
-      .then(function (d) {
-        catalogs[id] = unique(extract(d));
-        return catalogs[id];
-      })
-      .catch(function () {
-        catalogs[id] = [];
-        return [];
+function renderMarkets(){
+  var html=FREE.map(function(m){
+    var n=(catalogs[m.file]||[]).length;
+    return '<button type="button" class="mkt'+(m.id===marketId?" on":"")+'" data-m="'+m.id+'">'+
+      '<div class="mkt-top"><span class="mkt-name">'+m.flag+" "+m.name+'</span><span class="pill free">Free</span></div>'+
+      '<div class="mkt-sub"><strong>'+(n||"—")+"</strong> hisse · dokun seç</div></button>";
+  }).join("");
+  html+=LOCKED.map(function(m){
+    var pill=m.plan==="elite"?"elite":"prem";
+    var lab=m.plan==="elite"?"Elite":"Pro";
+    return '<button type="button" class="mkt locked" data-lock="'+m.plan+'" data-name="'+m.name+'">'+
+      '<div class="mkt-top"><span class="mkt-name">'+m.flag+" "+m.name+'</span><span class="pill '+pill+'">🔒 '+lab+"</span></div>"+
+      '<div class="mkt-sub">Üyelik · plan gerekli</div></button>';
+  }).join("");
+  $("mktGrid").innerHTML=html;
+}
+
+function filtered(){
+  var m=mkt(),list=catalogs[m.file]||[],q=filterQ.trim().toLowerCase();
+  return list.filter(function(it){
+    if(q){var s=String(it.symbol||"").toLowerCase(),n=String(it.name||"").toLowerCase();if(s.indexOf(q)===-1&&n.indexOf(q)===-1)return false}
+    if(sector){var sec=sectorOf(it).toLowerCase();if(sec.indexOf(sector.toLowerCase())===-1)return false}
+    return true;
+  });
+}
+
+function renderCards(){
+  var m=mkt(),list=filtered(),total=(catalogs[m.file]||[]).length,ses=session(m),watch=getWatch();
+  $("sesDot").className="pulse"+(ses.open?"":" off");
+  $("sesText").textContent=ses.label;
+  $("countLine").innerHTML="<b>"+m.name+"</b> · "+list.length+" / "+total+" hisse";
+  var slice=list.slice(0,60);
+  if(!slice.length){$("cards").innerHTML='<div class="empty">Sonuç yok.</div>';return}
+  $("cards").innerHTML=slice.map(function(item){
+    var d=disp(item),qs=qSym(item,m),score=aiScore(item),sec=sectorOf(item);
+    var inW=watch.indexOf(qs)>=0||watch.indexOf(d)>=0;
+    var href=grafHref(item,m);
+    return '<article class="card">'+
+      '<div class="card-top"><div><div class="sym-row">'+m.flag+" "+d+'</div><div class="cname">'+(item.name||m.name)+'</div></div>'+
+      '<div class="price-col" data-q="'+qs.replace(/"/g,"")+'"><div class="skel"></div><div class="skel sm"></div></div></div>'+
+      '<span class="tag">'+sec+"</span>"+
+      '<div class="ai-wrap">AI <div class="ai-bar"><i style="width:'+score+'%"></i></div><span class="ai-num">'+score+"</span></div>"+
+      '<div class="card-actions">'+
+        /* DOĞRUDAN LİNK — parametreli */
+        '<a class="btn-g" href="'+href+'">Grafik</a>'+
+        '<button type="button" class="btn-w'+(inW?" on":"")+'" data-w="'+qs+'">'+(inW?"Takipte":"Takip")+"</button>"+
+      "</div></article>";
+  }).join("");
+  fillPrices(slice,m);
+}
+
+function fillPrices(slice,m){
+  var i=0;
+  function tick(){
+    if(i>=slice.length)return;
+    var batch=slice.slice(i,i+4);i+=4;
+    Promise.all(batch.map(function(item){
+      var qs=qSym(item,m);
+      return fetchQuote(qs).then(function(q){
+        var el=document.querySelector('[data-q="'+qs.replace(/\\/g,"\\\\").replace(/"/g,'\\"')+'"]');
+        if(!el)return;
+        if(!q||q.price==null){el.innerHTML='<div class="price">—</div><div class="chg flat">—</div>';return}
+        var pct=q.pct,cls=pct>0?"up":pct<0?"down":"flat";
+        var ps=pct==null||!isFinite(pct)?"—":(pct>0?"+":"")+Number(pct).toFixed(2)+"%";
+        el.innerHTML='<div class="price">'+money(q.price,m)+'</div><div class="chg '+cls+'">'+ps+"</div>";
       });
+    })).then(tick);
   }
+  tick();
+}
 
-  function mktById(id) {
-    for (var i = 0; i < FREE.length; i++) if (FREE[i].id === id) return FREE[i];
-    return FREE[0];
+$("mktGrid").addEventListener("click",function(e){
+  var lock=e.target.closest("[data-lock]");
+  if(lock){
+    $("gateTitle").textContent=lock.getAttribute("data-name")+" · kilitli";
+    $("gateMsg").textContent="Bu piyasa "+(lock.getAttribute("data-lock")==="elite"?"Elite":"Pro")+" üyelere açıktır.";
+    $("gate").classList.add("show");return;
   }
+  var b=e.target.closest("[data-m]");if(!b)return;
+  marketId=b.getAttribute("data-m");filterQ="";$("q").value="";sector="";
+  document.querySelectorAll("#sectors button").forEach(function(x){x.classList.toggle("on",x.getAttribute("data-sec")==="")});
+  renderMarkets();loadCat(mkt().file).then(renderCards);
+});
+$("gateClose").addEventListener("click",function(){$("gate").classList.remove("show")});
+$("gate").addEventListener("click",function(e){if(e.target===$("gate"))$("gate").classList.remove("show")});
+$("sectors").addEventListener("click",function(e){
+  var b=e.target.closest("button[data-sec]");if(!b)return;
+  document.querySelectorAll("#sectors button").forEach(function(x){x.classList.remove("on")});
+  b.classList.add("on");sector=b.getAttribute("data-sec")||"";renderCards();
+});
+var t;$("q").addEventListener("input",function(){clearTimeout(t);t=setTimeout(function(){filterQ=$("q").value;renderCards()},120)});
+$("cards").addEventListener("click",function(e){
+  var w=e.target.closest("[data-w]");if(!w)return;
+  e.preventDefault();
+  var sym=w.getAttribute("data-w"),arr=getWatch(),i=arr.indexOf(sym);
+  if(i>=0)arr.splice(i,1);else arr.push(sym);setWatch(arr);
+  w.classList.toggle("on",arr.indexOf(sym)>=0);w.textContent=arr.indexOf(sym)>=0?"Takipte":"Takip";
+});
 
-  function qSym(item, m) {
-    var s = String(item.symbol || "").toUpperCase().trim();
-    if (!s) return "";
-    if (s.indexOf(".") !== -1) return s;
-    return m.suffix ? s + m.suffix : s;
-  }
-  function disp(item) {
-    return String(item.symbol || "").toUpperCase().replace(/\.IS$/i, "");
-  }
-
-  function aiScore(item) {
-    if (item.aiScore != null && isFinite(Number(item.aiScore))) {
-      return Math.max(0, Math.min(100, Math.round(Number(item.aiScore))));
-    }
-    /* stabil pseudo-score from symbol */
-    var s = String(item.symbol || "");
-    var h = 0;
-    for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 1000;
-    return 70 + (h % 26);
-  }
-
-  function sectorOf(item) {
-    return String(item.sector || item.industry || "").trim() || "—";
-  }
-
-  function getWatch() {
-    try { return JSON.parse(localStorage.getItem(WATCH_KEY) || "[]"); } catch (e) { return []; }
-  }
-  function setWatch(a) {
-    try { localStorage.setItem(WATCH_KEY, JSON.stringify(a)); } catch (e) {}
-  }
-
-  function session(m) {
-    try {
-      var fmt = new Intl.DateTimeFormat("en-US", {
-        timeZone: m.tz, weekday: "short", hour: "2-digit", minute: "2-digit", hour12: false
-      });
-      var parts = fmt.formatToParts(new Date());
-      var map = {};
-      parts.forEach(function (p) { map[p.type] = p.value; });
-      var wd = map.weekday;
-      var hm = parseInt(map.hour, 10) * 60 + parseInt(map.minute, 10);
-      var we = wd === "Sat" || wd === "Sun";
-      var o = m.id === "bist" ? 10 * 60 : 9 * 60 + 30;
-      var c = m.id === "bist" ? 18 * 60 : 16 * 60;
-      var open = !we && hm >= o && hm < c;
-      return { open: open, label: open ? m.name + " açık" : m.name + " kapalı" };
-    } catch (e) {
-      return { open: false, label: m.name };
-    }
-  }
-
-  function money(n, m) {
-    if (n == null || !isFinite(n)) return "—";
-    return Number(n).toLocaleString(m.id === "bist" ? "tr-TR" : "en-US", {
-      minimumFractionDigits: 2, maximumFractionDigits: 2
-    });
-  }
-
-  function getCached(s) {
-    var h = quoteCache[s];
-    if (!h || Date.now() > h.exp) return null;
-    return h.val;
-  }
-  function setCached(s, v) {
-    quoteCache[s] = { val: v, exp: Date.now() + CACHE_MS };
-  }
-
-  function fetchQuote(sym) {
-    var hit = getCached(sym);
-    if (hit) return Promise.resolve(hit);
-    if (window.API && typeof window.API.getLiveQuote === "function") {
-      return window.API.getLiveQuote(sym).then(function (q) {
-        if (q && q.price != null) {
-          var row = { price: q.price, pct: q.pct };
-          setCached(sym, row);
-          return row;
-        }
-        throw 0;
-      }).catch(function () { return yahooQ(sym); });
-    }
-    return yahooQ(sym);
-  }
-
-  function yahooQ(sym) {
-    var y =
-      "https://query1.finance.yahoo.com/v8/finance/chart/" +
-      encodeURIComponent(sym) + "?interval=1d&range=5d";
-    var proxies = [
-      "https://api.allorigins.win/get?url=" + encodeURIComponent(y),
-      "https://api.allorigins.win/raw?url=" + encodeURIComponent(y)
-    ];
-    /* Kullanıcı proxy worker'ı (ultra-grafik MY_PROXY) varsa quote için de dene */
-    var my = "";
-    try {
-      /* stock sayfasında sabit yok; config worker */
-      if (window.NEXORA_CONFIG && window.NEXORA_CONFIG.yahooProxyUrl) {
-        my = window.NEXORA_CONFIG.yahooProxyUrl;
-      }
-    } catch (e) {}
-    if (my) proxies.unshift(my.replace(/\/$/, "") + "?url=" + encodeURIComponent(y));
-
-    var i = 0;
-    function next() {
-      if (i >= proxies.length) return Promise.resolve(null);
-      return fetch(proxies[i++], { cache: "no-store" })
-        .then(function (r) { if (!r.ok) throw 0; return r.text(); })
-        .then(function (t) {
-          var p = JSON.parse(t);
-          if (p && p.contents) p = JSON.parse(p.contents);
-          var meta = p && p.chart && p.chart.result && p.chart.result[0] && p.chart.result[0].meta;
-          if (!meta) throw 0;
-          var price = meta.regularMarketPrice != null ? meta.regularMarketPrice : meta.previousClose;
-          var prev = meta.chartPreviousClose != null ? meta.chartPreviousClose : meta.previousClose;
-          var pct = price != null && prev ? ((price - prev) / prev) * 100 : null;
-          var row = { price: Number(price), pct: pct };
-          setCached(sym, row);
-          return row;
-        })
-        .catch(function () { return next(); });
-    }
-    return next();
-  }
-
-  function renderMarkets() {
-    var html = FREE.map(function (m) {
-      var n = (catalogs[m.file] || []).length;
-      return (
-        '<button type="button" class="mkt' + (m.id === marketId ? " on" : "") + '" data-m="' + m.id + '">' +
-          '<div class="mkt-top"><span class="mkt-name">' + m.flag + " " + m.name + '</span>' +
-          '<span class="pill free">Free</span></div>' +
-          '<div class="mkt-sub"><strong>' + (n || "—") + "</strong> hisse · dokun seç</div>" +
-        "</button>"
-      );
-    }).join("");
-
-    html += LOCKED.map(function (m) {
-      var pill = m.plan === "elite" ? "elite" : "prem";
-      var lab = m.plan === "elite" ? "Elite" : "Pro";
-      return (
-        '<button type="button" class="mkt locked" data-lock="' + m.plan + '" data-name="' + m.name + '">' +
-          '<div class="mkt-top"><span class="mkt-name">' + m.flag + " " + m.name + '</span>' +
-          '<span class="pill ' + pill + '">🔒 ' + lab + "</span></div>" +
-          '<div class="mkt-sub">Üyelik · Dokun · plan gerekli</div>' +
-        "</button>"
-      );
-    }).join("");
-
-    $("mktGrid").innerHTML = html;
-  }
-
-  function filtered() {
-    var m = mktById(marketId);
-    var list = catalogs[m.file] || [];
-    var q = filterQ.trim().toLowerCase();
-    return list.filter(function (it) {
-      if (q) {
-        var s = String(it.symbol || "").toLowerCase();
-        var n = String(it.name || "").toLowerCase();
-        if (s.indexOf(q) === -1 && n.indexOf(q) === -1) return false;
-      }
-      if (sector) {
-        var sec = sectorOf(it).toLowerCase();
-        if (sec.indexOf(sector.toLowerCase()) === -1) return false;
-      }
-      return true;
-    });
-  }
-
-  function grafUrl(item, m) {
-    var sym = qSym(item, m);
-    return (
-      "ultra-grafik.html?s=" + encodeURIComponent(sym) +
-      "&m=" + encodeURIComponent(m.id)
-    );
-  }
-
-  function renderCards() {
-    var m = mktById(marketId);
-    var list = filtered();
-    var total = (catalogs[m.file] || []).length;
-    var ses = session(m);
-    $("sesDot").className = "pulse" + (ses.open ? "" : " off");
-    $("sesText").textContent = ses.label;
-    $("countLine").innerHTML = "<b>" + m.name + "</b> · " + list.length + " / " + total + " hisse";
-
-    var watch = getWatch();
-    var slice = list.slice(0, 60);
-
-    if (!slice.length) {
-      $("cards").innerHTML = '<div class="empty">Sonuç yok. Filtreyi veya aramayı değiştir.</div>';
-      return;
-    }
-
-    $("cards").innerHTML = slice.map(function (item) {
-      var d = disp(item);
-      var qs = qSym(item, m);
-      var score = aiScore(item);
-      var sec = sectorOf(item);
-      var inW = watch.indexOf(qs) >= 0 || watch.indexOf(d) >= 0;
-      var href = grafUrl(item, m);
-
-      return (
-        '<article class="card">' +
-          '<div class="card-top">' +
-            '<div class="card-left">' +
-              '<div class="sym-row"><span class="flag">' + m.flag + "</span>" + d + "</div>" +
-              '<div class="cname">' + (item.name || m.name) + "</div>" +
-            "</div>" +
-            '<div class="price-col" data-q="' + qs.replace(/"/g, "") + '">' +
-              '<div class="skel"></div><div class="skel sm"></div>' +
-            "</div>" +
-          "</div>" +
-          '<div class="card-mid"><span class="tag">' + sec + "</span></div>" +
-          '<div class="ai-wrap">AI <div class="ai-bar"><i style="width:' + score + '%"></i></div>' +
-          '<span class="ai-num">' + score + "</span></div>" +
-          '<div class="card-actions">' +
-            '<a class="btn-g" href="' + href + '">Grafik</a>' +
-            '<button type="button" class="btn-w' + (inW ? " on" : "") + '" data-w="' + qs + '">' +
-              (inW ? "Takipte" : "Takip") +
-            "</button>" +
-          "</div>" +
-        "</article>"
-      );
-    }).join("");
-
-    fillPrices(slice, m);
-    renderWatch();
-  }
-
-  function fillPrices(slice, m) {
-    var i = 0;
-    function tick() {
-      if (i >= slice.length) return;
-      var batch = slice.slice(i, i + 4);
-      i += 4;
-      Promise.all(batch.map(function (item) {
-        var qs = qSym(item, m);
-        return fetchQuote(qs).then(function (q) {
-          var el = document.querySelector('[data-q="' + qs.replace(/\\/g, "\\\\").replace(/"/g, '\\"') + '"]');
-          if (!el) return;
-          if (!q || q.price == null) {
-            el.innerHTML = '<div class="price">—</div><div class="chg flat">—</div>';
-            return;
-          }
-          var pct = q.pct;
-          var cls = pct > 0 ? "up" : pct < 0 ? "down" : "flat";
-          var ps = pct == null || !isFinite(pct) ? "—" : (pct > 0 ? "+" : "") + Number(pct).toFixed(2) + "%";
-          el.innerHTML =
-            '<div class="price">' + money(q.price, m) + '</div>' +
-            '<div class="chg ' + cls + '">' + ps + "</div>";
-        });
-      })).then(tick);
-    }
-    tick();
-  }
-
-  function renderWatch() {
-    var w = getWatch();
-    if (!w.length) {
-      $("watchBox").innerHTML =
-        '<p class="watch-empty">Kartlardan <b>Takip</b> ile ekle. Grafiğe buradan da geç.</p>';
-      return;
-    }
-    var m = mktById(marketId);
-    $("watchBox").innerHTML = w.slice(0, 12).map(function (sym) {
-      var d = String(sym).replace(/\.IS$/i, "");
-      var href =
-        "ultra-grafik.html?s=" + encodeURIComponent(sym) +
-        "&m=" + encodeURIComponent(/\.IS$/i.test(sym) ? "bist" : marketId);
-      return (
-        '<div class="watch-item">' +
-          "<span>" + d + "</span>" +
-          '<a href="' + href + '">Grafik →</a>' +
-        "</div>"
-      );
-    }).join("");
-  }
-
-  /* Events */
-  $("mktGrid").addEventListener("click", function (e) {
-    var lock = e.target.closest("[data-lock]");
-    if (lock) {
-      var plan = lock.getAttribute("data-lock");
-      var name = lock.getAttribute("data-name");
-      $("gateTitle").textContent = name + " · " + (plan === "elite" ? "Elite" : "Pro");
-      $("gateMsg").textContent =
-        "Bu bölüm yalnızca " +
-        (plan === "elite" ? "Elite" : "Pro") +
-        " üyelere açıktır. Planını yükselterek açabilirsin.";
-      $("gate").classList.add("show");
-      return;
-    }
-    var b = e.target.closest("[data-m]");
-    if (!b) return;
-    marketId = b.getAttribute("data-m");
-    filterQ = "";
-    $("q").value = "";
-    sector = "";
-    document.querySelectorAll("#sectors button").forEach(function (x) {
-      x.classList.toggle("on", x.getAttribute("data-sec") === "");
-    });
-    renderMarkets();
-    loadCat(mktById(marketId).file).then(renderCards);
-  });
-
-  $("gateClose").addEventListener("click", function () {
-    $("gate").classList.remove("show");
-  });
-  $("gate").addEventListener("click", function (e) {
-    if (e.target === $("gate")) $("gate").classList.remove("show");
-  });
-
-  $("sectors").addEventListener("click", function (e) {
-    var b = e.target.closest("button[data-sec]");
-    if (!b) return;
-    document.querySelectorAll("#sectors button").forEach(function (x) { x.classList.remove("on"); });
-    b.classList.add("on");
-    sector = b.getAttribute("data-sec") || "";
-    renderCards();
-  });
-
-  var t;
-  $("q").addEventListener("input", function () {
-    clearTimeout(t);
-    t = setTimeout(function () {
-      filterQ = $("q").value;
-      renderCards();
-    }, 120);
-  });
-
-  $("cards").addEventListener("click", function (e) {
-    var w = e.target.closest("[data-w]");
-    if (!w) return;
-    e.preventDefault();
-    var sym = w.getAttribute("data-w");
-    var arr = getWatch();
-    var i = arr.indexOf(sym);
-    if (i >= 0) arr.splice(i, 1);
-    else arr.push(sym);
-    setWatch(arr);
-    w.classList.toggle("on", arr.indexOf(sym) >= 0);
-    w.textContent = arr.indexOf(sym) >= 0 ? "Takipte" : "Takip";
-    renderWatch();
-  });
-
-  Promise.all(FREE.map(function (m) { return loadCat(m.file); })).then(function () {
-    renderMarkets();
-    renderCards();
-  });
+Promise.all(FREE.map(function(m){return loadCat(m.file)})).then(function(){renderMarkets();renderCards()});
 })();
-  </script>
+</script>
 </body>
 </html>
